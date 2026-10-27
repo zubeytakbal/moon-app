@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   description:
     "Dolunaydan sonraki küçülen şişkin ay: ay neden her gece daha geç doğar, neden sabah gökyüzünde batıda görülür, hangi taraftan eksilir? Önümüzdeki küçülen şişkin ay dönemleri.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 /** Dolunaydan son dördüne, ayın yaklaşık doğuş saati (Türkiye, ortalama). */

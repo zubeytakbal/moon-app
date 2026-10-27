@@ -6,6 +6,7 @@ import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { getUpcomingEyyamiBiyz, type BiyzMonth } from "@/lib/hijri";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
   description:
     "Eyyam-ı biyz günleri ve eyyam-ı biyz orucu ne zaman? Hicri ayların 13, 14 ve 15. günlerinin önümüzdeki aylar için Miladi tarihleri, o gecelerde ayın görünüşü. Kesin tarihler için Diyanet takvimine bakınız.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 function noteFor(m: BiyzMonth): string | null {

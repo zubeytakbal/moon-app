@@ -8,6 +8,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { OrbitDiagram } from "@/components/OrbitDiagram";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description:
     "Ay evreleri nasıl oluşur? Yeni aydan dolunaya 8 evrenin adı, sırası, ay yaşı ve görünüşü. Bir döngü kaç gün sürer, Türkiye'den ay hangi taraftan dolar? Önümüzdeki evre tarihleri.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 /** Evre tablosu. Yaş ve oran aralıkları yaklaşık, ortalama bir döngüye göredir. */

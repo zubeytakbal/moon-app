@@ -13,6 +13,7 @@ import {
 import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
   description:
     "2026 ve 2027 yeni ay tarihleri saatleriyle (Türkiye saati). Bu yılların güneş tutulmaları ve 2 Ağustos 2027 güneş tutulmasının İstanbul, İzmir, Ankara, Antalya ve diğer illerden ne kadar görüleceği.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const KIND_TR = { partial: "Parçalı", annular: "Halkalı", total: "Tam" } as const;

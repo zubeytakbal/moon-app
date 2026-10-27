@@ -5,6 +5,7 @@ import { getMoonAltitude, getUpcomingLunarEclipses, type LunarEclipse } from "@m
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
   description:
     "Bir sonraki ay tutulması ne zaman? 2026-2029 ay tutulmalarının tarihleri, evrelerinin saatleri (Türkiye saati) ve Türkiye'den görülüp görülmeyeceği. 31 Aralık 2028 yılbaşı gecesi tam ay tutulması.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const KIND_TR = { penumbral: "Yarı gölge", partial: "Parçalı", total: "Tam" } as const;

@@ -12,6 +12,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
   description:
     "Hicri takvim nasıl işler, Hicri aylar neden her yıl 11 gün öne gelir, ay başları nasıl belirlenir? Hicri ayların adları ve önümüzdeki ay başlarının astronomik tahmini. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const MONTHS = [

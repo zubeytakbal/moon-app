@@ -10,6 +10,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { ShareButton } from "@/components/ShareButton";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
     "Doğum tarihinizi girin, o gün ayın hangi evrede olduğunu, yüzde kaç aydınlık ve kaç günlük olduğunu görün. Doğduğunuzdan beri kaç dolunay geçti, ay hangi yaş günlerinizde yine aynı görünecek?",
   // Girilen tarihler (?tarih=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 /** Ünlü tarihler: aracı denemek için örnek. */

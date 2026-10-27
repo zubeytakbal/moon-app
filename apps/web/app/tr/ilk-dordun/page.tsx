@@ -9,6 +9,7 @@ import {
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description:
     "İlk dördün ne zaman? Önümüzdeki ilk dördün tarihleri. Yarım görünen aya neden dördün denir, neden öğleden sonra gündüz görülür, kraterleri izlemek için neden en iyi zamandır?",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 /** Ayın gökyüzündeki günlük yolu, ilk dördün günü (yaklaşık, Türkiye). */

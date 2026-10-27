@@ -6,6 +6,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   description:
     "Süper ay nedir, normal dolunaydan ne kadar büyük görünür, neden tek bir tanımı yok? Bir sonraki süper ay ve 2026-2030 arasındaki bütün süper aylar (Türkiye saati). Süper ay deprem tetikler mi?",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 interface MoonWithDistance {

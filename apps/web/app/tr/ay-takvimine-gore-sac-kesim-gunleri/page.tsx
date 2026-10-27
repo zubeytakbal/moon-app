@@ -19,6 +19,7 @@ import {
   parseMonth,
   WEEKDAYS_SHORT,
 } from "@/lib/months";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     "Ay takvimine göre saç kesim günleri: büyüyen ay (uzaması için) ve küçülen ay (şeklini koruması için) günleri, ayın burcu ve geleneğin en çok önerdiği günler. İstediğiniz ayı seçebilirsiniz.",
   // Ay seçimi (?ay=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takvimine-gore-sac-kesim-gunleri">) {

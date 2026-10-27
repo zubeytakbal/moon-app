@@ -7,6 +7,7 @@ import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/Phas
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { nameFullMoons } from "@/lib/full-moon-names";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
   description:
     "Her ayın dolunayının geleneksel adı ve anlamı: Kurt Ayı, Kar Ayı, Solucan Ayı, Pembe Ay, Çiçek Ayı, Çilek Ayı, Hasat Ayı, Avcı Ayı, Soğuk Ay ve diğerleri. İsimlerin kökeni ve bir sonraki tarihleri.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 /** Her ismin anlamı. Sıra, takvim yılındaki yerine göredir. */

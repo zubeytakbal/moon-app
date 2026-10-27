@@ -10,6 +10,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { ShareButton } from "@/components/ShareButton";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
     "Doğum tarihinizi ve saatinizi girin, ay burcunuzu hesaplayın. Doğum saatini bilmiyorsanız ayın o gün burç değiştirip değiştirmediğini ve saatini gösteririz. Güneş burcunuz ve doğduğunuz günün ay evresi de sonuçta.",
   // Girilen tarihler (?tarih=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/ay-burcu-hesaplama">) {

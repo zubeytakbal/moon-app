@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { getLunation, getMoonPhase, type PhaseKey } from "@moon-app/moon";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { pageOpenGraph } from "@/lib/og";
 import { ALL_PAGES, HOME_PATH, PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
   description:
     "Ayın bugünkü evresi, bu ayın dolunay ve yeni ay tarihleri, 81 il için ay doğuş-batış saatleri ve ay evrelerinin anlatımı. Hesaplar Türkiye saatine göre.",
   alternates: { canonical: HOME_PATH },
+  openGraph: pageOpenGraph({
+    path: HOME_PATH,
+    title: "Gökyüzündeki ay, bugün ve her gün",
+    description:
+      "Ayın evresi, doğuş ve batış saatleri, dolunay tarihleri. Türkiye saatine göre, astronomik hesaplarla.",
+  }),
 };
 
 const PHASE_ANGLE: Record<PhaseKey, number> = {

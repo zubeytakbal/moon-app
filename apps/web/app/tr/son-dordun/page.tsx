@@ -10,6 +10,7 @@ import {
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
   description:
     "Son dördün ne zaman? Önümüzdeki son dördün tarihleri. Gece yarısı doğan, sol yarısı aydınlık ay: ilk dördünden farkı, sabah gökyüzünde nerede görüldüğü.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function LastQuarterPage() {

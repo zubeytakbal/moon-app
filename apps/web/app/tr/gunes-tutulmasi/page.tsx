@@ -8,6 +8,7 @@ import { CitySelect } from "@/components/CitySelect";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     "Bir sonraki güneş tutulması ne zaman ve ilinizden ne kadarı görülecek? 2 Ağustos 2027 güneş tutulmasının 81 ildeki saatleri ve örtülme oranı, İstanbul'dan görülecek 1 Haziran 2030 halkalı tutulması, güvenli izleme kuralları.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const KIND_TR = { partial: "Parçalı", annular: "Halkalı", total: "Tam" } as const;

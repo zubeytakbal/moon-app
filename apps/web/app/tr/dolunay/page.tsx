@@ -5,6 +5,7 @@ import { getMoonAltitude, getUpcomingPrincipalPhases } from "@moon-app/moon";
 import { ArticleFooter, NextPrincipal, PhaseHero, PhaseNav } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   description:
     "Bir sonraki dolunay ne zaman? Önümüzdeki 12 dolunayın tarihi ve saati (Türkiye saati), dolunayın İstanbul'da gece ne kadar yükseldiği. Dolunay neden kışın yüksekte, ufukta neden büyük görünür?",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function FullMoonPage() {

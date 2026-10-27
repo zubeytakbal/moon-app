@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
   description:
     "Ay şu an boşlukta mı? Önümüzdeki dört haftanın boşluktaki ay dönemleri, başlangıç ve bitiş saatleri (Türkiye saati), ayın son açısı ve gireceği burç. Boşluktaki ay ne demek?",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const ASPECT_TR: Record<number, string> = {

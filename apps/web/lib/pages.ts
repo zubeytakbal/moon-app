@@ -293,3 +293,41 @@ export function pagesByGroup(): { group: PageGroup; name: string; pages: SitePag
     .map((group) => ({ group, name: GROUP_NAMES[group], pages: ALL_PAGES.filter((p) => p.group === group) }))
     .filter((g) => g.pages.length > 0);
 }
+
+type PageKey = keyof typeof PAGES;
+
+/** Her sayfanın altında önerilen ilgili sayfalar. Konu bağına göre elle seçilmiştir. */
+const RELATED: Record<PageKey, PageKey[]> = {
+  bugunAy: ["ayTakvimi", "ayHangiBurcta", "ayEvreleri"],
+  ayTakvimi: ["bugunAy", "dolunay2027", "sacKesim"],
+  dogdugumGun: ["ayBurcu", "dolunayIsimleri", "ayEvreleri"],
+  ayEvreleri: ["bugunAy", "dolunay", "hilal"],
+  dolunay2027: ["dolunay", "superAy", "dolunayIsimleri"],
+  yeniAy20262027: ["gunesTutulmasi", "yeniAy", "hicriTakvim"],
+  superAy: ["dolunay2027", "kanliAy", "dolunay"],
+  ayTutulmalari: ["kanliAy", "gunesTutulmasi", "dolunay"],
+  dolunayIsimleri: ["dolunay2027", "superAy", "dogdugumGun"],
+  hicriTakvim: ["eyyamiBiyz", "hilalGozlemi", "yeniAy"],
+  hilalGozlemi: ["hicriTakvim", "hilal", "yeniAy"],
+  ayHangiBurcta: ["ayBurcu", "aybosluk", "sacKesim"],
+  ayBurcu: ["ayHangiBurcta", "dogdugumGun", "aybosluk"],
+  kanliAy: ["ayTutulmalari", "superAy", "gunesTutulmasi"],
+  gunesTutulmasi: ["yeniAy20262027", "ayTutulmalari", "kanliAy"],
+  sacKesim: ["ekimDikim", "ayHangiBurcta", "ayTakvimi"],
+  aybosluk: ["ayHangiBurcta", "ayBurcu", "sacKesim"],
+  ekimDikim: ["sacKesim", "ayTakvimi", "ayHangiBurcta"],
+  eyyamiBiyz: ["hicriTakvim", "dolunay", "hilalGozlemi"],
+  yeniAy: ["yeniAy20262027", "gunesTutulmasi", "hilalGozlemi"],
+  hilal: ["hilalGozlemi", "hicriTakvim", "ayEvreleri"],
+  ilkDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
+  buyuyenSiskinAy: ["dolunay", "bugunAy", "ayTakvimi"],
+  dolunay: ["dolunay2027", "kanliAy", "dolunayIsimleri"],
+  kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
+  sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
+};
+
+/** Sayfa yolu → ilgili sayfalar. */
+export function relatedPages(path: string): SitePage[] {
+  const key = (Object.keys(PAGES) as PageKey[]).find((k) => PAGES[k].path === path);
+  return key ? RELATED[key].map((k) => PAGES[k]) : [];
+}

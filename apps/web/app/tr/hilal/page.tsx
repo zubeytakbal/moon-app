@@ -4,6 +4,7 @@ import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } f
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   description:
     "Büyüyen hilal akşam batıda, küçülen hilal sabah doğuda görülür. Hilal dönemlerinin tarihleri, ayın karanlık kısmındaki soluk ışık (Dünya ışığı) ve hilalin mevsime göre duruşu.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function CrescentPage() {

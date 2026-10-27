@@ -16,6 +16,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
     "Yeni hilali görmek için ne zaman ve nereye bakmalı? İlinize göre önümüzdeki akşamların gün batımı, ay batışı, hilalin yüksekliği ve yönü. Hilal gözlemi için pratik ipuçları ve güvenlik uyarıları.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal-gozlemi">) {

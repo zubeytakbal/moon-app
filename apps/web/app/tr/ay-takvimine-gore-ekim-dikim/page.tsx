@@ -19,6 +19,7 @@ import {
   parseMonth,
   WEEKDAYS_SHORT,
 } from "@/lib/months";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
     "Ay takvimine göre ekim dikim günleri: büyüyen ayda toprak üstü ürünler, küçülen ayda kök bitkileri ve budama, yeni ay ve dolunayda dinlenme. Biyodinamik kök, yaprak, çiçek ve meyve günleri. İstediğiniz ayı seçin.",
   // Ay seçimi (?ay=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 type Work = "ust" | "kok" | "dinlenme";

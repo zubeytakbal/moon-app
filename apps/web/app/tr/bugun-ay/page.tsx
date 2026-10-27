@@ -15,6 +15,7 @@ import { CitySelect } from "@/components/CitySelect";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 import { Explainer } from "./Explainer";
@@ -29,6 +30,7 @@ export const metadata: Metadata = {
     "Bugün ay hangi evrede, yüzde kaçı aydınlık, kaç günlük? 81 il için ayın doğuş ve batış saatleri ve bir sonraki dolunay tarihi.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PATH },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));

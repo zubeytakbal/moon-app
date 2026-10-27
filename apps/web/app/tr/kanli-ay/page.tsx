@@ -7,6 +7,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
   description:
     "Bir sonraki kanlı ay (tam ay tutulması) ne zaman ve Türkiye'den görülecek mi? 2025-2037 kanlı ayları, kızıllığın süresi, ayın neden kırmızıya döndüğü ve Anadolu'daki tutulma gelenekleri.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 interface BloodMoon {
@@ -290,7 +292,9 @@ async function BloodMoonList() {
             <span className="shrink-0" style={visible ? undefined : { filter: "grayscale(1) brightness(0.6)" }}>
               <span
                 className="block rounded-full"
-                style={{ filter: "grayscale(1) sepia(1) saturate(3.5) hue-rotate(-28deg) brightness(0.55) contrast(1.1)" }}
+                style={{
+                  filter: "grayscale(1) sepia(1) saturate(3.5) hue-rotate(-28deg) brightness(0.55) contrast(1.1)",
+                }}
               >
                 <MoonPhaseIcon phaseAngle={180} size={52} title="" />
               </span>

@@ -19,6 +19,7 @@ import {
   parseMonth,
   WEEKDAYS_SHORT as WEEKDAYS,
 } from "@/lib/months";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
     "Ay takvimi: bu ayın her günü için ay evresi ve aydınlık oranı, dolunay, yeni ay ve dördün tarihleri saatleriyle (Türkiye saati). Önceki ve sonraki aylara geçebilirsiniz.",
   // Ay seçimi (?ay=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function MoonCalendarPage({ searchParams }: PageProps<"/tr/ay-takvimi">) {

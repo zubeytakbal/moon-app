@@ -15,6 +15,7 @@ import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/Phas
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { nameFullMoons } from "@/lib/full-moon-names";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
   description:
     "2027 yılının 12 dolunayı tarih ve saatleriyle (Türkiye saati). Süper ay ve mikro ay, 2027 ay tutulmaları, Hasat Ayı ve dolunayların geleneksel adları, İstanbul'da ayın doğuş saatleri.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function FullMoons2027Page() {

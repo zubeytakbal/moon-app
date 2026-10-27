@@ -6,6 +6,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description:
     "İlk dördün ile dolunay arasındaki büyüyen şişkin ay: ne zaman görülür, dolunaydan nasıl ayırt edilir, ay neden dolunaya yaklaştıkça çok daha hızlı parlaklaşır? Gün gün aydınlık oranı.",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function WaxingGibbousPage() {

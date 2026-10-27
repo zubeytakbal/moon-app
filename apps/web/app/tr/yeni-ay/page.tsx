@@ -9,6 +9,7 @@ import {
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description:
     "Yeni ay ne zaman? Önümüzdeki yeni ay tarihleri ve saatleri (Türkiye saati). Yeni ay neden görünmez, Hicri ayın başlangıcından farkı ne, güneş tutulması neden sadece yeni ayda olur?",
   alternates: { canonical: PAGE.path },
+  openGraph: pageOpenGraph(PAGE),
 };
 
 export default function NewMoonPage() {
