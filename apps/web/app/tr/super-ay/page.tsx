@@ -143,7 +143,7 @@ export default function SupermoonPage() {
             headline="Süper Ay Nedir? Ne Zaman? 2026-2030 Süper Ay Tarihleri"
             updated={UPDATED}
             sources={[
-              { label: "NASA Science, Supermoons", href: "https://science.nasa.gov/moon/supermoon/" },
+              { label: "NASA Science, Supermoons", href: "https://science.nasa.gov/moon/supermoons/" },
               { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
             ]}
           />

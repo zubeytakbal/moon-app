@@ -105,6 +105,16 @@ export const PAGES = {
     description: "Süper ay ne kadar büyük görünür, neden tek bir tanımı yok? 2026-2030 süper ay tarihleri.",
     cardPhaseAngle: 180,
   },
+  ayTutulmalari: {
+    path: "/tr/ay-tutulmalari",
+    title: "Ay Tutulmaları",
+    navLabel: "Ay Tutulmaları",
+    group: "tarihler",
+    inHeader: true,
+    featured: true,
+    description: "2026-2029 ay tutulmaları: saatleri, evreleri ve Türkiye'den görülüp görülmeyeceği.",
+    cardPhaseAngle: 180,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

@@ -212,6 +212,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 17. ✅ `/tr/super-ay`: süper ay nedir, tanım tartışması, gerçek oranlı süper/mikro ay karşılaştırması, 2026-2030 süper ayları, "süper ay deprem tetikler mi?" (kanıt yok, deprem tahmini yapılamaz). Eşik `lib/supermoon.ts` içinde ortak (`SUPERMOON_KM`).
 
+18. ✅ `/tr/ay-tutulmalari`: 2026-2029 ay tutulmaları, her biri için evre zaman çizelgesi (ayın İstanbul'da ufkun altında kaldığı süre taralı), Türkiye'den görünürlük (tamamı/bir kısmı/görülmez), Türkiye'den görülecek bir sonraki tutulma, 31 Aralık 2028 yılbaşı tam tutulması (aynı zamanda mavi ay), Saros örneği (12 Ocak 2047).
+- NASA kaynak bağlantılarını eklemeden önce erişilebilir olduklarını kontrol et (süper ay bağlantısı 404'tü, `/moon/supermoons/` olarak düzeltildi).
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
