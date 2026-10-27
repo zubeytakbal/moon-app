@@ -1,12 +1,29 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { getLunation, getMoonPhase, type PhaseKey } from "@moon-app/moon";
+import { Suspense, type ReactNode } from "react";
+import {
+  findProvince,
+  getLunation,
+  getMoonPhase,
+  getMoonRiseSet,
+  getMoonSign,
+  getMoonSignIngresses,
+  getNextFullMoon,
+  getVoidOfCoursePeriods,
+  TURKEY_PROVINCES,
+  type PhaseKey,
+} from "@moon-app/moon";
+import { CitySelect } from "@/components/CitySelect";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { PageVisual } from "@/components/PageVisual";
+import { SiteSearch, type SearchItem } from "@/components/SiteSearch";
+import { toHijri } from "@/lib/hijri";
 import { pageOpenGraph } from "@/lib/og";
-import { ALL_PAGES, HOME_PATH, PAGES } from "@/lib/pages";
+import { ALL_PAGES, GROUP_NAMES, HOME_PATH, PAGES, pagesByGroup } from "@/lib/pages";
+import { getUpcomingSkyEvents, type SkyEventKind } from "@/lib/sky-events";
+import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 export const metadata: Metadata = {
@@ -34,14 +51,26 @@ const PHASE_ANGLE: Record<PhaseKey, number> = {
 };
 
 const timeZone = siteConfig.defaultLocation.timeZone;
-const FEATURED = ALL_PAGES.filter((p) => p.featured);
+const DAY_MS = 86_400_000;
+const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const SEARCH_ITEMS: SearchItem[] = ALL_PAGES.map((p) => ({
+  path: p.path,
+  title: p.title,
+  description: p.description,
+  group: GROUP_NAMES[p.group],
+}));
 
-export default function HomePage() {
+export default function HomePage({ searchParams }: PageProps<"/tr">) {
   return (
     <>
       <Hero />
       <main className="mx-auto w-full max-w-5xl px-4">
+        {/* İl seçimi (?il=...) aynı sayfada değişir; beklerken varsayılan il gösterilir. */}
+        <Suspense fallback={<TodaySky slug={siteConfig.defaultLocation.slug} />}>
+          <SelectedTodaySky searchParams={searchParams} />
+        </Suspense>
         <LunationTimeline />
+        <UpcomingEvents />
         <Explore />
         <About />
       </main>
@@ -91,30 +120,239 @@ async function Hero() {
           Ayın evresi, doğuş ve batış saatleri, dolunay tarihleri. Hepsi Türkiye saatine göre, astronomik hesaplarla.
         </p>
 
-        <Link
-          href={PAGES.bugunAy.path}
-          className="group mt-8 flex max-w-md items-center gap-4 rounded-2xl border border-white/15 bg-black/40 p-4 backdrop-blur-sm transition hover:border-white/30 hover:bg-black/55"
-        >
-          <span className="shrink-0">
-            <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={56} title={phase.name} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs uppercase tracking-wider text-zinc-400">
-              Bu gece · <time dateTime={now.toISOString()}>{date.format(now)}</time>
-            </span>
-            <span className="mt-0.5 block text-lg font-semibold">
-              {phase.name} <span className="font-light text-zinc-300">· %{illumination}</span>
-            </span>
-            <span className="text-sm text-indigo-300">Bugünün ayrıntıları</span>
-          </span>
-          <span
-            aria-hidden="true"
-            className="text-xl text-zinc-400 transition group-hover:translate-x-1 group-hover:text-white"
+        <div className="mt-8 flex flex-col gap-3 md:flex-row md:items-start">
+          <Link
+            href={PAGES.bugunAy.path}
+            className="group flex max-w-md flex-1 items-center gap-4 rounded-2xl border border-white/15 bg-black/40 p-4 backdrop-blur-sm transition hover:border-white/30 hover:bg-black/55"
           >
-            →
-          </span>
-        </Link>
+            <span className="shrink-0">
+              <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={56} title={phase.name} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xs uppercase tracking-wider text-zinc-400">
+                Bu gece · <time dateTime={now.toISOString()}>{date.format(now)}</time>
+              </span>
+              <span className="mt-0.5 block text-lg font-semibold">
+                {phase.name} <span className="font-light text-zinc-300">· %{illumination}</span>
+              </span>
+              <span className="text-sm text-indigo-300">Bugünün ayrıntıları</span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="text-xl text-zinc-400 transition group-hover:translate-x-1 group-hover:text-white"
+            >
+              →
+            </span>
+          </Link>
+          <SiteSearch items={SEARCH_ITEMS} />
+        </div>
       </div>
+    </section>
+  );
+}
+
+async function SelectedTodaySky({ searchParams }: Pick<PageProps<"/tr">, "searchParams">) {
+  const { il } = await searchParams;
+  const city = findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  return <TodaySky slug={city.slug} />;
+}
+
+/** "Bugün gökyüzünde" paneli: seçili il için ayın bugünkü durumu tek bakışta. Saatte bir yenilenir. */
+async function TodaySky({ slug }: { slug: string }) {
+  "use cache";
+  cacheLife("hours");
+
+  const city = findProvince(slug) ?? siteConfig.defaultLocation;
+  const now = new Date();
+  const phase = getMoonPhase(now, timeZone);
+  const { rise, set } = getMoonRiseSet(now, city);
+  const sign = getMoonSign(now);
+  const [nextIngress] = getMoonSignIngresses(now, 1);
+  const voc = getVoidOfCoursePeriods(new Date(now.getTime() - 3 * DAY_MS), 4).find((v) => v.end > now)!;
+  const vocActive = voc.start <= now;
+  const nextFull = getNextFullMoon(now);
+  const hijri = toHijri(now, timeZone);
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const dayTime = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long" });
+  const daysToFull = Math.ceil((nextFull.getTime() - now.getTime()) / DAY_MS);
+
+  return (
+    <section aria-labelledby="bugun" className="pt-14 sm:pt-20">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Bugün gökyüzünde</p>
+          <h2 id="bugun" className="mt-1 text-3xl font-semibold tracking-tight">
+            {city.name} için ay
+          </h2>
+        </div>
+        <CitySelect action={HOME_PATH} options={CITY_OPTIONS} selected={city.slug} />
+      </div>
+      <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <SkyTile
+          href={PAGES.bugunAy.path}
+          label="Ayın evresi"
+          icon={<MoonPhaseIcon phaseAngle={phase.phaseAngle} size={40} title="" />}
+        >
+          {phase.name}
+          <Sub>%{Math.round(phase.illumination * 100)} aydınlık</Sub>
+        </SkyTile>
+        <SkyTile href={`${PAGES.bugunAy.path}?il=${city.slug}`} label="Doğuş · Batış" icon={<Arrows />}>
+          <span className="tabular-nums">
+            {rise ? time.format(rise) : "–"} · {set ? time.format(set) : "–"}
+          </span>
+          <Sub>{rise && set ? "Türkiye saati" : "Bugün ay doğmuyor ya da batmıyor"}</Sub>
+        </SkyTile>
+        <SkyTile
+          href={PAGES.ayHangiBurcta.path}
+          label="Ayın burcu"
+          icon={<span className="text-3xl text-amber-300">{ZODIAC_SYMBOLS[sign.index]}</span>}
+        >
+          {sign.name}
+          <Sub>
+            {nextIngress.sign.name}: {dayTime.format(nextIngress.date)}
+          </Sub>
+        </SkyTile>
+        <SkyTile href={PAGES.aybosluk.path} label="Ay boşlukta mı?" icon={<Dot active={vocActive} />}>
+          {vocActive ? "Evet" : "Hayır"}
+          <Sub>{vocActive ? `Bitiş: ${dayTime.format(voc.end)}` : `Sonraki: ${dayTime.format(voc.start)}`}</Sub>
+        </SkyTile>
+        <SkyTile
+          href={PAGES.dolunay.path}
+          label="Sonraki dolunay"
+          icon={<MoonPhaseIcon phaseAngle={180} size={40} title="" />}
+        >
+          {date.format(nextFull)}
+          <Sub>{daysToFull} gün sonra</Sub>
+        </SkyTile>
+        <SkyTile
+          href={PAGES.hicriTakvim.path}
+          label="Hicri tarih"
+          icon={<MoonPhaseIcon phaseAngle={30} size={40} title="" />}
+        >
+          {hijri.day} {hijri.monthName}
+          <Sub>{hijri.year} · yaklaşık</Sub>
+        </SkyTile>
+      </ul>
+    </section>
+  );
+}
+
+function SkyTile({
+  href,
+  label,
+  icon,
+  children,
+}: {
+  href: string;
+  label: string;
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <li>
+      <Link
+        href={href}
+        className="flex h-full items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+      >
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#05070d]">{icon}</span>
+        <span className="min-w-0">
+          <span className="block text-xs uppercase tracking-wider text-zinc-500">{label}</span>
+          <span className="mt-0.5 block text-lg font-semibold leading-tight">{children}</span>
+        </span>
+      </Link>
+    </li>
+  );
+}
+
+function Sub({ children }: { children: ReactNode }) {
+  return <span className="mt-0.5 block text-sm font-normal text-zinc-500">{children}</span>;
+}
+
+function Arrows() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#e4e4e7" strokeWidth="1.8" aria-hidden="true">
+      <path d="M7 19V5M7 5L3.5 8.5M7 5l3.5 3.5M17 5v14M17 19l-3.5-3.5M17 19l3.5-3.5" />
+    </svg>
+  );
+}
+
+function Dot({ active }: { active: boolean }) {
+  return (
+    <span className={`h-4 w-4 rounded-full ${active ? "bg-amber-400 shadow-[0_0_12px_#fbbf24]" : "bg-emerald-400"}`} />
+  );
+}
+
+const RED_FILTER = "grayscale(1) sepia(1) saturate(3.5) hue-rotate(-28deg) brightness(0.55) contrast(1.1)";
+
+const EVENT_STYLE: Record<SkyEventKind, { icon: ReactNode; tone: string }> = {
+  supermoon: { icon: <MoonPhaseIcon phaseAngle={180} size={44} glow title="" />, tone: "text-indigo-300" },
+  "lunar-eclipse": { icon: <MoonPhaseIcon phaseAngle={200} size={40} title="" />, tone: "text-zinc-300" },
+  "blood-moon": {
+    icon: (
+      <span style={{ filter: RED_FILTER }}>
+        <MoonPhaseIcon phaseAngle={180} size={40} title="" />
+      </span>
+    ),
+    tone: "text-red-300",
+  },
+  "solar-eclipse": {
+    icon: <span className="h-9 w-9 rounded-full bg-amber-300 shadow-[inset_-12px_-4px_0_#05070d]" />,
+    tone: "text-amber-300",
+  },
+  "blue-moon": { icon: <MoonPhaseIcon phaseAngle={180} size={40} title="" />, tone: "text-sky-300" },
+  eyyam: { icon: <MoonPhaseIcon phaseAngle={170} size={40} title="" />, tone: "text-emerald-300" },
+};
+
+/** Önümüzdeki üç yılın öne çıkan gökyüzü olayları. Saatte bir yenilenir. */
+async function UpcomingEvents() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const events = getUpcomingSkyEvents(now, siteConfig.defaultLocation).slice(0, 8);
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+
+  return (
+    <section aria-labelledby="olaylar" className="border-t border-zinc-200 py-14 dark:border-zinc-800 sm:py-20">
+      <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Takviminize not edin</p>
+      <h2 id="olaylar" className="mt-1 text-3xl font-semibold tracking-tight">
+        Yaklaşan gökyüzü olayları
+      </h2>
+      <ol className="mt-8 space-y-3">
+        {events.map((e) => {
+          const days = Math.ceil((e.date.getTime() - now.getTime()) / DAY_MS);
+          return (
+            <li key={`${e.kind}-${e.date.toISOString()}`}>
+              <Link
+                href={e.href}
+                className="group flex items-center gap-4 rounded-2xl bg-[#05070d] p-4 text-white transition hover:bg-[#0d111c] sm:gap-6 sm:p-5"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center">{EVENT_STYLE[e.kind].icon}</span>
+                <span className="w-28 shrink-0 sm:w-44">
+                  <time dateTime={e.date.toISOString()} className="block font-semibold">
+                    {date.format(e.date)}
+                  </time>
+                  <span className="text-sm text-zinc-400">{days} gün sonra</span>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className={`block font-semibold ${EVENT_STYLE[e.kind].tone}`}>{e.title}</span>
+                  <span className="block text-sm text-zinc-400">{e.detail}</span>
+                </span>
+                <span aria-hidden="true" className="hidden text-zinc-500 transition group-hover:translate-x-1 sm:block">
+                  →
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
@@ -183,36 +421,34 @@ async function LunationTimeline() {
 }
 
 function Explore() {
+  const groups = pagesByGroup().filter((g) => g.group !== "kurumsal");
   return (
     <section aria-labelledby="kesfet" className="border-t border-zinc-200 py-14 dark:border-zinc-800 sm:py-20">
       <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Keşfet</p>
       <h2 id="kesfet" className="mt-1 text-3xl font-semibold tracking-tight">
-        Ay hakkında
+        Bütün sayfalar
       </h2>
-      <ul className={`mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 ${FEATURED.length > 2 ? "lg:grid-cols-3" : ""}`}>
-        {FEATURED.map((page) => (
-          <li key={page.path}>
-            <Link
-              href={page.path}
-              className="group block h-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
-            >
-              <div className="starfield flex h-40 items-center justify-center bg-[#05070d]">
-                <MoonPhaseIcon phaseAngle={page.cardPhaseAngle} size={110} glow title="" />
-              </div>
-              <div className="p-5">
-                <p className="text-lg font-semibold">{page.title}</p>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{page.description}</p>
-                <p className="mt-3 text-sm font-medium text-indigo-600 dark:text-indigo-300">
-                  Sayfaya git{" "}
-                  <span aria-hidden="true" className="inline-block transition group-hover:translate-x-1">
-                    →
-                  </span>
-                </p>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {groups.map((g) => (
+        <div key={g.group} className="mt-10">
+          <h3 className="text-xl font-semibold">{g.name}</h3>
+          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {g.pages.map((page) => (
+              <li key={page.path}>
+                <Link
+                  href={page.path}
+                  className="group block h-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                >
+                  <PageVisual page={page} />
+                  <div className="p-4">
+                    <p className="font-semibold group-hover:underline">{page.title}</p>
+                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{page.description}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
   );
 }
