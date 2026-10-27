@@ -96,6 +96,10 @@ export interface LocalSolarEclipse {
   peakSunAltitude: number;
   beginSunAltitude: number;
   endSunAltitude: number;
+  /** En derin anda ay ile Güneş merkezleri arasındaki açı, Güneş'in görünen yarıçapı cinsinden. */
+  peakSeparation: number;
+  /** Ayın görünen yarıçapının Güneş'inkine oranı (1'den büyükse ay Güneş'i tamamen örtebilir). */
+  moonToSunRadius: number;
 }
 
 /**
@@ -105,6 +109,12 @@ export interface LocalSolarEclipse {
 export function getLocalSolarEclipse(date: Date, location: GeoLocation): LocalSolarEclipse {
   const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
   const e = Astronomy.SearchLocalSolarEclipse(date, observer);
+  const peak = e.peak.time;
+  const sun = Astronomy.Equator(Astronomy.Body.Sun, peak, observer, true, true);
+  const moon = Astronomy.Equator(Astronomy.Body.Moon, peak, observer, true, true);
+  const sunRadius = Math.atan(695_700 / (sun.dist * Astronomy.KM_PER_AU));
+  const moonRadius = Math.atan(1_737.4 / (moon.dist * Astronomy.KM_PER_AU));
+  const separation = (Astronomy.AngleBetween(sun.vec, moon.vec) * Math.PI) / 180;
   return {
     kind: e.kind as SolarEclipseKind,
     obscuration: e.obscuration,
@@ -114,5 +124,7 @@ export function getLocalSolarEclipse(date: Date, location: GeoLocation): LocalSo
     peakSunAltitude: e.peak.altitude,
     beginSunAltitude: e.partial_begin.altitude,
     endSunAltitude: e.partial_end.altitude,
+    peakSeparation: separation / sunRadius,
+    moonToSunRadius: moonRadius / sunRadius,
   };
 }

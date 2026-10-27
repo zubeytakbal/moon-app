@@ -176,6 +176,17 @@ export const PAGES = {
     description: "Bir sonraki kanlı ay ne zaman, Türkiye'den görülecek mi? Ay tutulmada neden kırmızıya döner?",
     cardPhaseAngle: 180,
   },
+  gunesTutulmasi: {
+    path: "/tr/gunes-tutulmasi",
+    title: "Güneş Tutulması",
+    navLabel: "Güneş Tutulması",
+    group: "tarihler",
+    inHeader: true,
+    featured: true,
+    description:
+      "Bir sonraki güneş tutulması ne zaman, ilinizden ne kadarı görülecek? 2 Ağustos 2027 ve 1 Haziran 2030.",
+    cardPhaseAngle: 0,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

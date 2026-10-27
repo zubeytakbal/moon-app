@@ -238,6 +238,8 @@ Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için 
 
 24. ✅ `/tr/kanli-ay`: yalnız tam ay tutulmaları 2025-2037, kızıllık aralığı ve süresi, İstanbul'dan görünürlük, süper kanlı ay işareti, Türkiye'den görülecek bir sonraki (31 Aralık 2028), Danjon ölçeği, Pinatubo örneği, Anadolu tencere-tava geleneği. Kızıl ay görseli: NASA fotoğrafı + CSS filtresi (`grayscale sepia saturate hue-rotate`).
 
+25. ✅ `/tr/gunes-tutulmasi`: il seçici (`?il=`) ile ilden görülecek sonraki 3 güneş tutulması (örtülme, saatler, gerçek oranlı çizim; `getLocalSolarEclipse` artık `peakSeparation`, `moonToSunRadius` döndürüyor), 2 Ağustos 2027 için 81 il tablosu (en yüksek Muğla %74), 2100'e kadar Türkiye'den tam/halkalı tutulmalar (1 Haziran 2030 halkalı İstanbul dahil 13 il; 2060, 2081 İstanbul-Ankara, 2088, 2093; `CENTRAL_ECLIPSES` sabiti, 81 il taramasıyla üretildi), 1999 ve 2006 tam tutulmaları doğrulandı, ayrıntılı göz güvenliği.
+
 **Kullanıcının yol haritası (27 Ekim 2026, Keyword Planner verisiyle):** ~30 sayfaya ulaşınca içerik üretimi durur → site düzeni ve konu sistemi toplu düzeltme → "app'de gözükme" (anlamı netleştirilecek: Google'da görünürlük mü, mobil uygulama mı) → AdSense başvurusu.
 Kalan içerik sırası (aylık arama hacmi): 1) Bugün ay hangi burçta (10-100B) 2) Ay burcu hesaplama (10-100B) 3) Kanlı ay, yalnız tam tutulmalar (10-100B) 4) Güneş tutulması, genel sayfa + 2 Ağustos 2027 Türkiye ("güneş tutulması 2027" ~100, "güneş tutulması" 10-100B) 5) Ay takvimine göre saç kesim günleri (1-10B, kullanıcı onayladı) 6) Boşlukta ay takvimi (1-10B) 7) Ay takvimine göre ekim dikim (100-1B) 8) Eyyam-ı biyz (100-1B). Ardından 4 zorunlu sayfa.
 Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay nasıldı ~1B.
