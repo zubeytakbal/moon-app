@@ -202,6 +202,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 13. ✅ `/tr/ay-takvimi`: aylık takvim (masaüstü ızgara, telefonda liste), `?ay=YYYY-MM` aynı sayfada (canonical tek adres, ay bağlantıları `rel="nofollow"`), mavi ay ve 19 yıllık Meton döngüsü örneği hesaplanıyor (`getMonthCalendar`, `getNextBlueMoon`).
 - Not: Yeni rota eklenince `PageProps<"/tr/...">` tipi için önce `npx next typegen` (ya da build) çalıştırılmalı.
 
+14. ✅ `/tr/dogdugum-gun-ay`: tarih (+isteğe bağlı saat) formu (`next/form`, `?tarih=YYYY-MM-DD&saat=HHMM`, canonical tek adres, örnek bağlantılar nofollow), sonuç kartı, geçen dolunay/tur sayısı, 19/38/57. yaş günü (Meton), paylaş düğmesi (`ShareButton`).
+- "Bir sonraki dolunay ne zaman" için ayrı sayfa yapılmadı: Dolunay sayfasıyla aynı soru (yamyamlık riski). Listedeki 30 sayfadan bu düşüldü.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

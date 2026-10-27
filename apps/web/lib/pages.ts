@@ -56,6 +56,16 @@ export const PAGES = {
     description: "Aylık ay takvimi: her günün ay evresi ve aydınlık oranı, dolunay ve yeni ay saatleri.",
     cardPhaseAngle: 300,
   },
+  dogdugumGun: {
+    path: "/tr/dogdugum-gun-ay",
+    title: "Doğduğum Gün Ay Nasıldı?",
+    navLabel: "Doğduğum Gün Ay",
+    group: "araclar",
+    inHeader: true,
+    featured: true,
+    description: "Doğum tarihinizi girin: o gün ay hangi evredeydi, ne kadar aydınlıktı, kaç günlüktü?",
+    cardPhaseAngle: 160,
+  },
   ayEvreleri: {
     path: "/tr/ay-evreleri",
     title: "Ay Evreleri Nedir?",
