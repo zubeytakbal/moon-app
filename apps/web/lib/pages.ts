@@ -4,13 +4,14 @@
  * (bkz. CLAUDE.md, kırmızı çizgiler). Hiçbir sayfa döngüyle üretilmez.
  */
 
-export type PageGroup = "araclar" | "evreler" | "tarihler" | "hicri-gelenek" | "bilgi" | "kurumsal";
+export type PageGroup = "araclar" | "evreler" | "tarihler" | "hicri-gelenek" | "burclar" | "bilgi" | "kurumsal";
 
 export const GROUP_NAMES: Record<PageGroup, string> = {
   araclar: "Araçlar",
   evreler: "Ay Evreleri",
   tarihler: "Tarihler",
   "hicri-gelenek": "Hicri ve Gelenek",
+  burclar: "Ay ve Burçlar",
   bilgi: "Bilgi",
   kurumsal: "Kurumsal",
 };
@@ -143,6 +144,17 @@ export const PAGES = {
     description:
       "Yeni hilali ne zaman, nereye bakarak görebilirsiniz? İlinize göre önümüzdeki akşamların hilal koşulları.",
     cardPhaseAngle: 25,
+  },
+  ayHangiBurcta: {
+    path: "/tr/bugun-ay-hangi-burcta",
+    title: "Bugün Ay Hangi Burçta?",
+    navLabel: "Bugün Ay Hangi Burçta?",
+    group: "burclar",
+    inHeader: true,
+    featured: true,
+    description:
+      "Ay şu an hangi burçta, ne zaman burç değiştirecek? Önümüzdeki günlerin ay burçları, Türkiye saatiyle.",
+    cardPhaseAngle: 60,
   },
   yeniAy: {
     path: "/tr/yeni-ay",

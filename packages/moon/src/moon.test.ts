@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getCurrentSignIngress,
+  getMoonSign,
+  getMoonSignIngresses,
   getCrescentEvenings,
   getLocalSolarEclipse,
   getUpcomingSolarEclipses,
@@ -294,5 +297,36 @@ describe("getCrescentEvenings", () => {
     assert.ok(evenings[0].ageHours < 0);
     assert.ok(evenings[2].meetsCriteria);
     assert.ok(evenings[2].moonAltitude > evenings[1].moonAltitude);
+  });
+});
+
+describe("zodiac", () => {
+  it("dolunayda ay, Güneş'in karşı burcundadır (26 Ekim 2026: Güneş Akrep'te, ay Boğa'da)", () => {
+    const sign = getMoonSign(new Date("2026-10-26T04:12:00Z"));
+    assert.equal(sign.name, "Boğa");
+  });
+
+  it("burç geçişleri sırayla ve 2-3 gün arayla gelir", () => {
+    const list = getMoonSignIngresses(new Date("2026-10-27T00:00:00Z"), 12);
+    for (let i = 1; i < list.length; i++) {
+      assert.equal(list[i].sign.index, (list[i - 1].sign.index + 1) % 12);
+      const days = (list[i].date.getTime() - list[i - 1].date.getTime()) / 86_400_000;
+      assert.ok(days > 1.9 && days < 2.9, `${days.toFixed(2)} gün`);
+    }
+  });
+
+  it("geçiş anında burç değişir", () => {
+    const [first] = getMoonSignIngresses(new Date("2026-10-27T00:00:00Z"), 1);
+    const before = getMoonSign(new Date(first.date.getTime() - 60_000));
+    const after = getMoonSign(new Date(first.date.getTime() + 60_000));
+    assert.notEqual(before.index, after.index);
+    assert.equal(after.index, first.sign.index);
+  });
+
+  it("içinde bulunulan burca giriş anı verilen andan öncedir", () => {
+    const now = new Date("2026-10-27T12:00:00Z");
+    const current = getCurrentSignIngress(now);
+    assert.ok(current.date <= now);
+    assert.equal(current.sign.index, getMoonSign(now).index);
   });
 });

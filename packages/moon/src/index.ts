@@ -19,3 +19,4 @@ export { localDateParts, zonedTimeToUtc } from "./time.ts";
 export { getFullMoonsOfYear, getMoonDistanceKm, getSeasons, getUpcomingLunarEclipses, type LunarEclipse, type LunarEclipseKind } from "./events.ts";
 export { getLocalSolarEclipse, getUpcomingSolarEclipses, type LocalSolarEclipse, type SolarEclipse, type SolarEclipseKind } from "./events.ts";
 export { CRESCENT_MIN_ALTITUDE, CRESCENT_MIN_ELONGATION, getCrescentEvenings, type CrescentEvening } from "./crescent.ts";
+export { getCurrentSignIngress, getMoonConstellation, getMoonEclipticLongitude, getMoonSign, getMoonSignIngresses, ZODIAC_SIGNS_TR, type MoonSign, type SignIngress, type ZodiacSign } from "./zodiac.ts";

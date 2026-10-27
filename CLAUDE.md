@@ -230,6 +230,13 @@ Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için 
 
 21. ✅ `/tr/hilal-gozlemi`: il seçici (`?il=`), ilgili yeni aydan sonraki 4 akşam için gün batımı, ay batışı (gözlem penceresi), nereye bakılacağı (gün batımı noktasına göre derece, `moonAzimuth`/`sunAzimuth`), kaba kolaylık tahmini; gözlem rehberi, dürbün güvenliği, rekor (15,5 saat).
 
+22. ✅ `/tr/bugun-ay-hangi-burcta` (yeni grup "Ay ve Burçlar", `burclar`): şu anki ay burcu ve derecesi, burca giriş/çıkış saatleri, önümüzdeki 10 burç geçişi, astrolojik burç ile IAU takımyıldızı karşılaştırması (presesyon ~24°), "geleneksel takvim" etiketi ve mor/altın görsel dil. Hesaplar `packages/moon/src/zodiac.ts` (tropikal, `EclipticGeoMoon`). Burç yorumu yapılmaz.
+- Not: Kullanıcı bazen kendi `npm run dev` sunucusunu açık tutuyor. Onun süreçlerine dokunma; `next build` uzun sürerse arka planda bitmesini bekle.
+
+**Kullanıcının yol haritası (27 Ekim 2026, Keyword Planner verisiyle):** ~30 sayfaya ulaşınca içerik üretimi durur → site düzeni ve konu sistemi toplu düzeltme → "app'de gözükme" (anlamı netleştirilecek: Google'da görünürlük mü, mobil uygulama mı) → AdSense başvurusu.
+Kalan içerik sırası (aylık arama hacmi): 1) Bugün ay hangi burçta (10-100B) 2) Ay burcu hesaplama (10-100B) 3) Kanlı ay, yalnız tam tutulmalar (10-100B) 4) Güneş tutulması, genel sayfa + 2 Ağustos 2027 Türkiye ("güneş tutulması 2027" ~100, "güneş tutulması" 10-100B) 5) Ay takvimine göre saç kesim günleri (1-10B, kullanıcı onayladı) 6) Boşlukta ay takvimi (1-10B) 7) Ay takvimine göre ekim dikim (100-1B) 8) Eyyam-ı biyz (100-1B). Ardından 4 zorunlu sayfa.
+Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay nasıldı ~1B.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
