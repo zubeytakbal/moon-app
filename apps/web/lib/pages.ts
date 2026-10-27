@@ -134,6 +134,16 @@ export const PAGES = {
     description: "Hicri takvim nasıl işler, aylar ne zaman başlar? Önümüzdeki Hicri ay başlarının astronomik tahmini.",
     cardPhaseAngle: 35,
   },
+  hilalGozlemi: {
+    path: "/tr/hilal-gozlemi",
+    title: "Hilal Gözlemi Nasıl Yapılır?",
+    navLabel: "Hilal Gözlemi",
+    group: "hicri-gelenek",
+    inHeader: true,
+    description:
+      "Yeni hilali ne zaman, nereye bakarak görebilirsiniz? İlinize göre önümüzdeki akşamların hilal koşulları.",
+    cardPhaseAngle: 25,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

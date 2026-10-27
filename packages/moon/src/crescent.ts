@@ -22,6 +22,11 @@ export interface CrescentEvening {
   ageHours: number;
   /** Ay, Güneş'ten sonra mı batıyor? (Önce batarsa hilal görülemez.) */
   moonSetsAfterSun: boolean;
+  /** O akşam ayın batış anı (bulunamazsa null). */
+  moonSet: Date | null;
+  /** Gün batımında ayın ve Güneş'in yönü (azimut, derece; kuzey 0, doğu 90, güney 180, batı 270). */
+  moonAzimuth: number;
+  sunAzimuth: number;
   /** Yükseklik ve açı eşikleri karşılanıyor mu? */
   meetsCriteria: boolean;
 }
@@ -39,6 +44,10 @@ export function getCrescentEvenings(newMoon: Date, location: GeoLocation, days =
     const sunset = sunsetTime.date;
     const moonSet = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, -1, noon, 1);
     const moonAltitude = getMoonAltitude(sunset, location);
+    const moonEq = Astronomy.Equator(Astronomy.Body.Moon, sunset, observer, true, true);
+    const sunEq = Astronomy.Equator(Astronomy.Body.Sun, sunset, observer, true, true);
+    const moonAzimuth = Astronomy.Horizon(sunset, observer, moonEq.ra, moonEq.dec, "normal").azimuth;
+    const sunAzimuth = Astronomy.Horizon(sunset, observer, sunEq.ra, sunEq.dec, "normal").azimuth;
     const elongation = Astronomy.AngleFromSun(Astronomy.Body.Moon, sunset);
     const ageHours = (sunset.getTime() - newMoon.getTime()) / 3_600_000;
     const moonSetsAfterSun = !!moonSet && moonSet.date > sunset;
@@ -48,6 +57,9 @@ export function getCrescentEvenings(newMoon: Date, location: GeoLocation, days =
       elongation,
       ageHours,
       moonSetsAfterSun,
+      moonSet: moonSet ? moonSet.date : null,
+      moonAzimuth,
+      sunAzimuth,
       meetsCriteria:
         ageHours > 0 &&
         moonSetsAfterSun &&

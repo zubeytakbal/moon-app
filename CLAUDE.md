@@ -220,6 +220,8 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 20. ✅ `/tr/hicri-takvim`: Hicri aylar (şu anki ay işaretli), bugünün yaklaşık Hicri tarihi (Intl `islamic-umalqura`, "Diyanet'le bir gün fark olabilir" notuyla), önümüzdeki 6 ay başının astronomik tahmini (`getCrescentEvenings`, Ankara gün batımı, yükseklik ≥5°, açı ≥8°).
 - Doğrulama: Diyanet 2027 takvimiyle (vakithesaplama.diyanet.gov.tr) Ramazan başı aynı (8 Şubat 2027); Recep, Şaban, Şevval'de bizim tahmin bir gün sonra. Sayfada "resmî ay başı çoğu zaman bir gün öncedir" yazıyor. Asla resmî tarih gibi sunma.
 
+21. ✅ `/tr/hilal-gozlemi`: il seçici (`?il=`), ilgili yeni aydan sonraki 4 akşam için gün batımı, ay batışı (gözlem penceresi), nereye bakılacağı (gün batımı noktasına göre derece, `moonAzimuth`/`sunAzimuth`), kaba kolaylık tahmini; gözlem rehberi, dürbün güvenliği, rekor (15,5 saat).
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
