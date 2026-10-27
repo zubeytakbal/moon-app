@@ -1,0 +1,181 @@
+# Moon App: Proje Notları
+
+> Bu dosya projenin kalıcı hafızasıdır. Her oturumun başında okunur.
+> **Kullanıcıya her zaman Türkçe cevap ver.** Teknik terimleri sade bir dille açıkla.
+
+## 1. Proje
+
+Ay konusunda uzmanlaşmış bir web sitesi, ileride de mobil uygulama.
+
+- **Amaç:** "Ay konusunda en iyi kaynak" olmak.
+- **Hedef:** Google'dan organik trafik almak, ileride AdSense.
+- **Dil:** Önce Türkçe. Sonra Almanca, İspanyolca gibi diller eklenecek.
+- **Marka ve domain:** Henüz belli değil. Geçici ad **"Moon App"**.
+  - Site adı kodun içine sabit yazılmaz. Tek bir config dosyasından (`site.config.ts`) okunur.
+  - Domain yayından **önce** kesinleşmeli. Yayından sonra domain değiştirmek SEO'ya pahalıya patlar.
+
+## 2. Kapsam
+
+**Astronomi (bilimsel):** evreler, ay takvimi, doğuş/batış saatleri, dolunay/yeniay tarihleri, tutulmalar, süper ay, hicri takvim ve hilal, eyyam-ı biyz, ay takvimine göre ekim.
+
+**Aya bağlı astroloji (geleneksel takvim):** ay burcu, bugün ay hangi burçta, boşluktaki ay.
+- Bunlar bilimsel gerçek gibi değil, **"geleneksel takvim"** olarak sunulur.
+- Astronomi ve astroloji bölümleri ayrı tutulur, astroloji görsel olarak da hafifçe ayrışır.
+
+**Kapsam dışı:** günlük burç yorumları, burç uyumu, yükselen burç, genel astroloji, tarot/rün vb.
+
+## 3. Kırmızı çizgiler (çok önemli)
+
+Kullanıcının önceki sitesi "şablonik içerik" nedeniyle AdSense'ten **4 kez reddedildi**, Google trafiği **bir günde %96 düştü**. Bu yüzden şu kurallar kesindir:
+
+1. **Toplu veya kalıp sayfa üretilmez.** "12 Mart 2027 ay evresi" gibi her gün için ya da il × tarih kombinasyonlarıyla sayfa YOK.
+2. **Sayfa listesi elle yazılır.** Hiçbir sayfa veritabanından ya da döngüyle (il × tarih, yıl × ay gibi) otomatik üretilmez. Her yeni sayfayı kullanıcı onaylar.
+3. **Her sayfa farklı bir soruya cevap verir ve kendi yapısı olur.** Aynı iskelete metin doldurmak yok.
+   - Örnek: 8 evre rehberi aynı şablon gibi görünmemeli. Dolunay sayfası isimler ve tutulmayla, hilal sayfası hicri takvim ve gözlemle, yeni ay sayfası "neden görünmez" sorusuyla öne çıkar.
+   - Tarih listeleri sadece tablo olmaz, her birinde o yıla özgü notlar olur (hangi dolunay süper ay, hangisi tutulmayla çakışıyor vb.).
+4. **Seçiciler yeni sayfa açmaz.** İl veya tarih seçmek aynı sayfada veriyi değiştirir. `/ankara` gibi adresler yok. Parametreli adresler (`?il=ankara`) canonical olarak ana sayfayı gösterir ya da `noindex` olur.
+5. **Sitemap'te sadece elle onaylanmış sayfalar** yer alır.
+6. **Yarım, boş veya "yakında" yazan sayfa yayına çıkmaz.** İçeriği tamamlanmamış sayfa derlenmez.
+7. **Araç sayfaları "ince içerik" olmamalı.** Sadece rakam gösteren bir araç yetmez. Her aracın altında o soruya özgü gerçek bir açıklama olur.
+8. **Metinler özgündür.** Başka sitelerden alınmış veya yeniden yazılmış (spin edilmiş) metin kullanılmaz. Sistem ve özellikler örnek alınabilir, metin ve görsel kimlik alınmaz.
+9. **Diğer diller makine çevirisi olmaz.** Her dil kendi içeriğiyle açılır.
+
+## 4. Teknik yapı
+
+**Monorepo (npm workspaces):**
+
+| Klasör | İçerik | Durum |
+|---|---|---|
+| `apps/web` | Next.js 16 (App Router, TypeScript, Tailwind v4, Turbopack) | create-next-app ile kuruldu (Next 16.4.3, React 19.3) |
+| `packages/moon` | Ortak ay hesaplama paketi (TypeScript). Web ve mobil birlikte kullanır | Henüz yok |
+| `apps/mobile` | İleride Expo (React Native) | **Şimdilik oluşturma** |
+
+**Ay hesapları:**
+- Kütüphane: **astronomy-engine** (MIT lisanslı, internetsiz çalışır, hassasiyeti yeterli).
+- Hesaplar sunucuda veya cihazda yapılır. **Dış API'ye bağımlılık yok.**
+- Varsayılan konum **İstanbul**, saat dilimi **Europe/Istanbul**. Kullanıcı il seçebilir.
+- Güney yarımkürede ayın ters görünmesi gibi konum farkları ileride desteklenebilecek şekilde tasarlanır.
+
+**Next.js kuralları:**
+- Server Components varsayılandır. `"use client"` sadece etkileşimli parçalarda kullanılır.
+- Bu Next.js sürümünde değişiklikler var. Kod yazmadan önce `apps/web/node_modules/next/dist/docs/` içindeki ilgili rehberi oku (bkz. `apps/web/AGENTS.md`).
+- Bilgi yazıları **MDX** ile yazılır, statik üretilir (SSG).
+
+**"Bugün" sayfaları (karar verildi):**
+- Tek sayfa, sabit adres (örn. `/tr/bugun-ay`). İçerik her gün kendiliğinden yenilenir, yeni sayfa oluşmaz.
+- Veri sunucuda, o anki tarihe göre (Europe/Istanbul) hesaplanır ve **1 saat** önbellekte tutulur (revalidate). Google her zaman dolu ve güncel sayfa görür.
+- İsteğe bağlı olarak tarayıcıda küçük canlı güncellemeler eklenebilir (yüzde, geri sayım).
+- Sayfada "Son güncelleme" tarihi gösterilir, yapılandırılmış veride `dateModified` olarak da yazılır.
+- Aynı mantık şu sayfalar için de geçerli: bir sonraki dolunay, bugün ay hangi burçta, ay takvimi (varsayılan olarak içinde bulunulan ay), ay yaşı.
+- Tarih listesi sayfaları (2027 dolunayları vb.) sabittir, sadece "sıradaki" vurgusu otomatik kayar.
+
+**Çok dil:** URL yapısı `/tr/`, `/de/`, `/es/`. Şimdilik sadece Türkçe, ama yapı yeni dile hazır olsun.
+
+**SEO:**
+- Her sayfada düzgün `title` ve `description`.
+- `sitemap.xml`, `robots.txt`, uygun yerlerde yapılandırılmış veri.
+- **Yayına alınana kadar `robots.txt` taramayı engeller.**
+
+**Performans:** Mobilde hızlı olmalı. PageSpeed'de yeşil hedefleniyor.
+
+## 5. Hassas konular
+
+- **Hicri takvim:** Diyanet hesaba dayalı bir takvim kullanır, bazı gruplar çıplak gözle hilal gözlemini esas alır. Site "astronomik hesap şunu söylüyor, resmi takvim için Diyanet'e bakın" çizgisinde durur. Bayram tarihlerini kesin hüküm gibi sunma.
+- **Eski site:** Eski sayfalar taşınmaz, 301 yönlendirmesi yapılmaz (eski sitenin kalite cezası yeni siteye geçebilir). Kullanıcının kendi yazdığı özgün yazılar elden geçirilip yeniden kullanılabilir. Bu durumda eski sitedeki kopya kaldırılmalı ya da `noindex` yapılmalı. Şablonla üretilmiş eski sayfaların hiçbir parçası alınmaz.
+- **Görseller:** NASA görselleri çoğunlukla kaynak gösterilerek kullanılabilir, ama her görselin künyesi tek tek kontrol edilir. NASA logosu kullanılmaz, "NASA onaylı" gibi bir izlenim verilmez.
+
+## 6. Tasarım ilkeleri (önerildi, kesin onay bekliyor)
+
+Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/weather-on-the-moon/). Düzenden ilham alınır, görsel kimlik bize ait olur.
+
+- **Genel stil:** temiz, editoryal, bilimsel. Koyu uzay temalı başlık alanları, açık ve okunaklı metin alanları.
+- **Breadcrumb:** `Ana Sayfa › Ay Evreleri › Dolunay`
+- **Gruplu menü:** Araçlar / Evreler / Tarihler / Hicri ve Gelenek / Bilgi
+- **"Kısaca" kutusu:** her sayfanın başında 2-3 maddelik özet (öne çıkan snippet'ler için de faydalı)
+- Net H2/H3 başlıklar, kısa paragraflar
+- **Yazar kutusu ve "Kaynaklar" bölümü** (Google'ın E-E-A-T değerlendirmesi için)
+- **"İlgili konular" kartları** (iç linkleme)
+- **"Son güncelleme" tarihi**
+- Mobil uygulama için referanslar: Moonly (konu olarak en yakın), Co-Star (minimal siyah-beyaz tasarım).
+
+## 7. Lansman sayfaları (30 + 4)
+
+> Bugün 27 Ekim 2026. 2026 sayfalarının ömrü kısa, **2027 sayfaları öncelikli.**
+
+**Araçlar (8)**
+1. Bugün ay nasıl
+2. Ay takvimi (aylık görünüm)
+3. Ay doğuş ve batış saatleri (il seçmeli)
+4. Doğduğum gün ay nasıldı
+5. Ay yaşı hesaplama
+6. Bir sonraki dolunay ne zaman
+7. Ay burcu hesaplama *(geleneksel takvim)*
+8. Bugün ay hangi burçta / boşlukta mı *(geleneksel takvim)*
+
+**Evre rehberleri (8)**
+9. Ay evreleri nedir (ana rehber)
+10. Yeni ay
+11. Hilal
+12. İlk dördün
+13. Büyüyen şişkin ay
+14. Dolunay
+15. Küçülen şişkin ay
+16. Son dördün
+
+**Tarih listeleri (6)**
+17. 2026 dolunay tarihleri
+18. 2027 dolunay tarihleri
+19. 2026-2027 yeniay tarihleri
+20. Süper ay nedir, 2027 süper ay tarihleri
+21. 2026-2027 ay tutulmaları
+22. Dolunay isimleri (Kurt Ayı, Hasat Ayı vb.)
+
+**Hicri ve gelenek (4)**
+23. Hicri takvim ve ay başları
+24. Hilal gözlemi nasıl yapılır
+25. Eyyam-ı biyz günleri
+26. Ay takvimine göre ekim
+
+**Bilgi (4)**
+27. Ay neden şekil değiştirir
+28. Ayın karanlık yüzü gerçekten karanlık mı
+29. Ay ve gelgit ilişkisi
+30. Kanlı ay neden kırmızı görünür
+
+**Zorunlu sayfalar (4):** Hakkımızda, İletişim, Gizlilik politikası, Çerez bilgilendirmesi.
+
+## 8. Çalışma şekli
+
+- Adım adım ilerle. **Büyük bir yapısal karar vermeden önce kullanıcıya sor.**
+- Her adımdan sonra ne yapıldığını kısaca ve sade bir dille özetle, nasıl test edileceğini söyle.
+- Kullanıcı teknik değil. Jargonu açıkla, gereksiz teknik ayrıntıya girme.
+- Ortam: Windows, proje `C:\dev\moon-app`, terminal PowerShell.
+- **Git:** Repo kök klasörde (`C:\dev\moon-app`), branch `main`, remote `https://github.com/zubeytakbal/moon-app`. Commit ve push kullanıcının onayıyla yapılır.
+
+## 9. Açık sorular
+
+- Araç sayfalarının altındaki açıklama metinlerini kim yazacak?
+- Eski site: AdSense'ten reddedilen site mi? Search Console'da manuel işlem var mı? Kaç sayfa var?
+- Tasarım ilkelerinin (bölüm 6) kesin onayı.
+- Marka adı ve domain.
+
+## 10. Yol haritası
+
+**İlk görev:**
+1. ✅ CLAUDE.md
+2. ✅ Kökte npm workspaces, `packages/moon` paketi (`@moon-app/moon`), `apps/web`'e bağlı
+3. ✅ `packages/moon`: `getMoonPhase`, `getMoonRiseSet`, `getNextFullMoon`, `getNextNewMoon` + testler
+4. ✅ `/tr/bugun-ay` sayfası (iskelet; tasarım ve açıklama metni henüz yok, yayına hazır değil)
+
+**Sıradaki adaylar:** il seçici, sayfanın altındaki açıklama metni, genel site düzeni (menü, breadcrumb), ilk commit + push.
+
+## 11. Teknik notlar
+
+- **Komutlar (kökten):** `npm run dev` (geliştirme sunucusu), `npm run build`, `npm test` (ay paketi testleri).
+- `packages/moon` derlenmeden, doğrudan TypeScript olarak kullanılır. Node 24 testleri tip silme ile çalıştırır, bu yüzden paket içi importlar `.ts` uzantılıdır ve sadece silinebilir TS sözdizimi kullanılır (enum yok). `apps/web/tsconfig.json` bu yüzden `allowImportingTsExtensions` içerir.
+- **Evre adı kuralı:** Ana evreler (yeni ay, ilk dördün, dolunay, son dördün) anlıktır. O anın düştüğü **yerel günün tamamı** o evrenin adını alır. Diğer günlerde ad evre açısına göre verilir.
+- **Doğuş/batış:** Ayda bir gün ay doğmaz, bir gün batmaz. Fonksiyon bu günlerde `null` döner, arayüz bunu açıkça yazar.
+- **Önbellek:** "Bugün" sayfaları `"use cache"` + `cacheLife("hours")` ile en geç saatte bir yenilenir (`cacheComponents` açık).
+- `apps/web/node_modules` create-next-app'ten kaldı (Windows taşımaya izin vermedi). Kökteki `node_modules` ile birlikte çalışıyor. Sorun çıkarsa silinip kökten `npm install` yapılabilir.
+
+> Her yeni adımda kod yazmadan önce kullanıcıya kısa bir plan sun ve onayını bekle.

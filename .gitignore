@@ -1,0 +1,33 @@
+# Bağımlılıklar
+node_modules/
+
+# Next.js / build çıktıları
+.next/
+out/
+build/
+dist/
+
+# Ortam değişkenleri
+.env
+.env*.local
+.env.*
+!.env.example
+
+# Loglar
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistem / editör
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
