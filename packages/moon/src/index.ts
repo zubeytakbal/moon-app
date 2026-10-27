@@ -12,5 +12,5 @@ export {
   type PhaseKey,
   type PrincipalPhase,
 } from "./phase.ts";
-export { getMoonRiseSet, type MoonRiseSet } from "./rise-set.ts";
+export { getMoonAltitude, getMoonRiseSet, type MoonRiseSet } from "./rise-set.ts";
 export { findProvince, TURKEY_PROVINCES, type Province } from "./provinces-tr.ts";

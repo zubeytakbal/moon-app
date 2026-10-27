@@ -59,9 +59,16 @@ export default function MoonPhasesPage() {
           </p>
           <ol className="mt-10 grid grid-cols-4 gap-x-2 gap-y-6 sm:grid-cols-8" aria-label="Ayın 8 evresi">
             {PHASE_ROWS.map((row) => (
-              <li key={row.key} className="flex flex-col items-center text-center">
-                <MoonPhaseIcon phaseAngle={row.angle} size={88} title={PHASE_NAMES_TR[row.key]} />
-                <span className="mt-2 text-xs leading-tight text-zinc-300 sm:text-sm">{PHASE_NAMES_TR[row.key]}</span>
+              <li key={row.key}>
+                <Link
+                  href={PHASE_PAGE[row.key]}
+                  className="group flex flex-col items-center text-center transition hover:-translate-y-0.5"
+                >
+                  <MoonPhaseIcon phaseAngle={row.angle} size={88} title={PHASE_NAMES_TR[row.key]} />
+                  <span className="mt-2 text-xs leading-tight text-zinc-300 group-hover:text-white sm:text-sm">
+                    {PHASE_NAMES_TR[row.key]}
+                  </span>
+                </Link>
               </li>
             ))}
           </ol>
@@ -206,22 +213,42 @@ export default function MoonPhasesPage() {
   );
 }
 
+/** Her evrenin kendi sayfası (iki hilal aynı sayfada anlatılır). */
+const PHASE_PAGE: Record<PhaseKey, string> = {
+  "new-moon": PAGES.yeniAy.path,
+  "waxing-crescent": PAGES.hilal.path,
+  "first-quarter": PAGES.ilkDordun.path,
+  "waxing-gibbous": PAGES.buyuyenSiskinAy.path,
+  "full-moon": PAGES.dolunay.path,
+  "waning-gibbous": PAGES.kuculenSiskinAy.path,
+  "last-quarter": PAGES.sonDordun.path,
+  "waning-crescent": PAGES.hilal.path,
+};
+
 function PhaseTable() {
   return (
     <ol className="mt-6 divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white shadow-sm dark:bg-zinc-900 dark:divide-zinc-800 dark:border-zinc-800">
       {PHASE_ROWS.map((row, i) => (
-        <li key={row.key} className="flex items-center gap-4 p-4">
-          <span className="w-5 shrink-0 text-right text-sm text-zinc-400">{i + 1}</span>
-          <span className="shrink-0 rounded-full bg-[#05070d] p-1.5">
-            <MoonPhaseIcon phaseAngle={row.angle} size={44} title={PHASE_NAMES_TR[row.key]} />
-          </span>
-          <div className="min-w-0">
-            <p className="font-semibold">{PHASE_NAMES_TR[row.key]}</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">{row.look}</p>
-            <p className="mt-1 text-xs text-zinc-500">
-              Ay yaşı: {row.age} gün · Aydınlık: {row.lit}
-            </p>
-          </div>
+        <li key={row.key}>
+          <Link
+            href={PHASE_PAGE[row.key]}
+            className="group flex items-center gap-4 p-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+          >
+            <span className="w-5 shrink-0 text-right text-sm text-zinc-400">{i + 1}</span>
+            <span className="shrink-0 rounded-full bg-[#05070d] p-1.5">
+              <MoonPhaseIcon phaseAngle={row.angle} size={44} title={PHASE_NAMES_TR[row.key]} />
+            </span>
+            <div className="min-w-0">
+              <p className="font-semibold">{PHASE_NAMES_TR[row.key]}</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">{row.look}</p>
+              <p className="mt-1 text-xs text-zinc-500">
+                Ay yaşı: {row.age} gün · Aydınlık: {row.lit}
+              </p>
+            </div>
+            <span aria-hidden="true" className="ml-auto text-zinc-400 transition group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
         </li>
       ))}
     </ol>

@@ -197,6 +197,8 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 10. ✅ Ana sayfa `/tr` (`/` buraya yönlenir): bugünün ayı, bu ayın döngüsü zaman çizelgesi (`getLunation`), Keşfet kartları (`lib/pages.ts` içindeki `description` ve `cardPhaseAngle` alanlarından), "nasıl hesaplıyoruz"
 11. ✅ Dil seçici (`LanguageSwitcher`, `siteConfig.languages`). Şimdilik sadece Türkçe.
 
+12. ✅ 7 evre sayfası: `/tr/yeni-ay`, `/tr/hilal` (büyüyen + küçülen), `/tr/ilk-dordun`, `/tr/buyuyen-siskin-ay`, `/tr/dolunay`, `/tr/kuculen-siskin-ay`, `/tr/son-dordun`. Ortak parçalar `components/phase/PhaseParts.tsx` (hero, sonraki evre/dönem kutusu, tarih tabloları, önceki/sonraki geçişi, kaynaklar). Her sayfanın soruları ve yapısı farklı; dolunayda İstanbul'da gece en yüksek konum tablosu (`getMoonAltitude`), büyüyen şişkinde gün gün aydınlık oranı. Kullanıcı en sonda toplu düzeltme yapacağını söyledi.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

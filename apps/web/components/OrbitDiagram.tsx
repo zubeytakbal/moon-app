@@ -38,8 +38,9 @@ export function OrbitDiagram() {
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-labelledby="orbit-title orbit-desc">
         <title id="orbit-title">Ay evrelerinin oluşumu</title>
         <desc id="orbit-desc">
-          Güneş ışığı soldan gelir. Ay, Dünya etrafında dönerken her zaman Güneş&apos;e bakan yarısı aydınlıktır. Dünya&apos;dan
-          bu aydınlık yarının ne kadarı görüldüğüne göre yeni aydan dolunaya ve tekrar yeni aya kadar sekiz evre oluşur.
+          Güneş ışığı soldan gelir. Ay, Dünya etrafında dönerken her zaman Güneş&apos;e bakan yarısı aydınlıktır.
+          Dünya&apos;dan bu aydınlık yarının ne kadarı görüldüğüne göre yeni aydan dolunaya ve tekrar yeni aya kadar
+          sekiz evre oluşur.
         </desc>
         <defs>
           <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">

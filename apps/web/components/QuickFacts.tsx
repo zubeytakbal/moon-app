@@ -10,7 +10,9 @@ export function QuickFacts({ children }: { children: ReactNode }) {
       <h2 id="kisaca" className="text-sm font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
         Kısaca
       </h2>
-      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-zinc-800 marker:text-indigo-400 dark:text-zinc-200">{children}</ul>
+      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-zinc-800 marker:text-indigo-400 dark:text-zinc-200">
+        {children}
+      </ul>
     </aside>
   );
 }

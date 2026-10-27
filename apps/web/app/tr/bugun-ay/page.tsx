@@ -55,7 +55,13 @@ const location = siteConfig.defaultLocation;
 function formatters() {
   const base = { timeZone: location.timeZone } as const;
   return {
-    date: new Intl.DateTimeFormat(siteConfig.locale, { ...base, day: "numeric", month: "long", year: "numeric", weekday: "long" }),
+    date: new Intl.DateTimeFormat(siteConfig.locale, {
+      ...base,
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      weekday: "long",
+    }),
     time: new Intl.DateTimeFormat(siteConfig.locale, { ...base, hour: "2-digit", minute: "2-digit" }),
     weekday: new Intl.DateTimeFormat(siteConfig.locale, { ...base, weekday: "long" }),
     dayMonth: new Intl.DateTimeFormat(siteConfig.locale, { ...base, day: "numeric", month: "short" }),
@@ -162,7 +168,9 @@ async function Hero() {
           ))}
         </ol>
       </div>
-      <p className="sr-only">Ay görseli: NASA Scientific Visualization Studio, evre gölgesi bu sayfada hesaplanmıştır.</p>
+      <p className="sr-only">
+        Ay görseli: NASA Scientific Visualization Studio, evre gölgesi bu sayfada hesaplanmıştır.
+      </p>
     </section>
   );
 }
@@ -194,7 +202,8 @@ async function Summary() {
           Ayın bugünkü evresi: <strong>{phase.name}</strong> ({fmt.percent.format(phase.illumination)} aydınlık).
         </li>
         <li>
-          {location.name}: ay doğuşu {rise ? fmt.time.format(rise) : "yok"}, ay batışı {set ? fmt.time.format(set) : "yok"}.
+          {location.name}: ay doğuşu {rise ? fmt.time.format(rise) : "yok"}, ay batışı{" "}
+          {set ? fmt.time.format(set) : "yok"}.
         </li>
         <li>Bir sonraki dolunay: {fmt.date.format(nextFull)}.</li>
       </QuickFacts>

@@ -20,9 +20,9 @@ export function Explainer() {
             anın düştüğü günün tamamına o evrenin adını veriyoruz. Aradaki günlere hilal ya da şişkin ay deniyor.
           </li>
           <li>
-            <strong>Aydınlık oranı:</strong> Ay diskinin yüzde kaçının Güneş ışığıyla aydınlandığı. İlk ve son
-            dördünde bu oran yaklaşık %50&apos;dir. Dolunayda bile çoğu zaman tam %100&apos;e ulaşmaz, çünkü ay
-            Güneş&apos;in tam karşısına nadiren denk gelir. Denk geldiğinde ay tutulması olur.
+            <strong>Aydınlık oranı:</strong> Ay diskinin yüzde kaçının Güneş ışığıyla aydınlandığı. İlk ve son dördünde
+            bu oran yaklaşık %50&apos;dir. Dolunayda bile çoğu zaman tam %100&apos;e ulaşmaz, çünkü ay Güneş&apos;in tam
+            karşısına nadiren denk gelir. Denk geldiğinde ay tutulması olur.
           </li>
           <li>
             <strong>Ay yaşı:</strong> Son yeni aydan bu yana geçen gün sayısı. Bir ay döngüsü ortalama 29,5 gün sürer.
@@ -37,8 +37,8 @@ export function Explainer() {
 
         <h2>Ayı bugün ne zaman görebilirim?</h2>
         <p>
-          Ayın gökyüzünde ne zaman bulunacağı evresine bağlıdır. Ay, evresine göre günün farklı saatlerinde doğar.
-          Doğuş ve batış saatlerine bakarak ayı ne zaman arayacağınızı kabaca tahmin edebilirsiniz:
+          Ayın gökyüzünde ne zaman bulunacağı evresine bağlıdır. Ay, evresine göre günün farklı saatlerinde doğar. Doğuş
+          ve batış saatlerine bakarak ayı ne zaman arayacağınızı kabaca tahmin edebilirsiniz:
         </p>
         <table>
           <thead>
@@ -82,42 +82,41 @@ export function Explainer() {
           </tbody>
         </table>
         <p>
-          İlk dördün civarında ayı gündüz, mavi gökyüzünde görmek de mümkündür. Bu ay dönemlerinde öğleden sonra doğu
-          ya da güney yönüne bakmanız yeterli.
+          İlk dördün civarında ayı gündüz, mavi gökyüzünde görmek de mümkündür. Bu ay dönemlerinde öğleden sonra doğu ya
+          da güney yönüne bakmanız yeterli.
         </p>
 
         <h2>Ay neden her gün daha geç doğuyor?</h2>
         <p>
-          Ay, Dünya&apos;nın etrafında bir turunu yaklaşık 27,3 günde tamamlar. Bu yüzden her gün gökyüzünde yaklaşık
-          13 derece doğuya kayar. Dünya kendi etrafında bir tur döndüğünde ay aynı yere gelmemiş olur. Dünya&apos;nın
-          ayı yakalamak için biraz daha dönmesi gerekir. Bu fark, ayın her gün ortalama 50 dakika kadar geç doğmasına
-          yol açar.
+          Ay, Dünya&apos;nın etrafında bir turunu yaklaşık 27,3 günde tamamlar. Bu yüzden her gün gökyüzünde yaklaşık 13
+          derece doğuya kayar. Dünya kendi etrafında bir tur döndüğünde ay aynı yere gelmemiş olur. Dünya&apos;nın ayı
+          yakalamak için biraz daha dönmesi gerekir. Bu fark, ayın her gün ortalama 50 dakika kadar geç doğmasına yol
+          açar.
         </p>
         <p>
-          Bu süre her gün aynı değildir. Mevsime ve ayın yörüngesindeki konumuna göre yarım saatin altına inebilir ya
-          da bir saati geçebilir. Sonbaharda dolunay civarında ay birkaç gün üst üste yalnızca 20-30 dakika gecikmeyle doğar. Böylece akşamlar gün batımından hemen sonra aydınlık kalır.
-          Eskiden çiftçilerin akşamları hasat yapmasına yardım ettiği için bu dolunaya &quot;hasat ayı&quot; denir.
+          Bu süre her gün aynı değildir. Mevsime ve ayın yörüngesindeki konumuna göre yarım saatin altına inebilir ya da
+          bir saati geçebilir. Sonbaharda dolunay civarında ay birkaç gün üst üste yalnızca 20-30 dakika gecikmeyle
+          doğar. Böylece akşamlar gün batımından hemen sonra aydınlık kalır. Eskiden çiftçilerin akşamları hasat
+          yapmasına yardım ettiği için bu dolunaya &quot;hasat ayı&quot; denir.
         </p>
 
         <h2>Neden bazı günler &quot;ay doğmuyor&quot; yazıyor?</h2>
         <p>
           Ay her gün yaklaşık 50 dakika geç doğduğu için, doğuş saati bir gün gece yarısından hemen önceye denk gelirse
-          ertesi gün ancak gece yarısından sonraya kalır. Aradaki takvim gününde ay hiç doğmamış olur. Aynı şey
-          batış için de geçerlidir. Bu yüzden her ay döngüsünde ayın doğmadığı bir gün ve batmadığı bir gün vardır.
-          Bu bir hata değildir, ayın hareketinin doğal sonucudur.
+          ertesi gün ancak gece yarısından sonraya kalır. Aradaki takvim gününde ay hiç doğmamış olur. Aynı şey batış
+          için de geçerlidir. Bu yüzden her ay döngüsünde ayın doğmadığı bir gün ve batmadığı bir gün vardır. Bu bir
+          hata değildir, ayın hareketinin doğal sonucudur.
         </p>
 
         <h2>Doğuş saatleri illere göre neden farklı?</h2>
         <p>
           Türkiye batıdan doğuya yaklaşık 19 boylam genişliğindedir ama tek bir saat dilimi kullanır. Gökyüzündeki
           olaylar ise doğuda daha erken yaşanır: her boylam derecesi yaklaşık 4 dakikalık fark demektir. Bu yüzden ay,
-          Van ya da Iğdır&apos;da Edirne&apos;ye göre bir saate yakın daha erken doğar. Enlem de doğuş saatini
-          etkiler. Kuzeydeki ve güneydeki iller arasında, aynı boylamda olsalar bile birkaç dakikadan yarım saate
-          yakın farklar görülebilir.
+          Van ya da Iğdır&apos;da Edirne&apos;ye göre bir saate yakın daha erken doğar. Enlem de doğuş saatini etkiler.
+          Kuzeydeki ve güneydeki iller arasında, aynı boylamda olsalar bile birkaç dakikadan yarım saate yakın farklar
+          görülebilir.
         </p>
-        <p>
-          Bulunduğunuz ili yukarıdaki listeden seçerek o ile ait saatleri görebilirsiniz.
-        </p>
+        <p>Bulunduğunuz ili yukarıdaki listeden seçerek o ile ait saatleri görebilirsiniz.</p>
 
         <h2>Hesaplamalar nasıl yapılıyor?</h2>
         <p>
@@ -132,8 +131,8 @@ export function Explainer() {
         <ul>
           <li>Saatler Türkiye saatiyle (UTC+3) verilir.</li>
           <li>
-            Doğuş, ay diskinin üst kenarının ufukta göründüğü an, batış ise tamamen kaybolduğu andır. Hesapta
-            atmosferin ışığı kırarak ayı olduğundan biraz yüksek göstermesi de hesaba katılır.
+            Doğuş, ay diskinin üst kenarının ufukta göründüğü an, batış ise tamamen kaybolduğu andır. Hesapta atmosferin
+            ışığı kırarak ayı olduğundan biraz yüksek göstermesi de hesaba katılır.
           </li>
           <li>
             Saatler il merkezi için ve düz, açık bir ufuk varsayılarak hesaplanır. Dağlar, binalar ya da hava koşulları

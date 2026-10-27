@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getMoonAltitude,
   getLunation,
   getMoonPhase,
   getMoonRiseSet,
@@ -193,5 +194,20 @@ describe("TURKEY_PROVINCES", () => {
     const edirne = getMoonRiseSet(date, findProvince("edirne")!).rise!;
     const diffMinutes = (edirne.getTime() - van.getTime()) / MINUTE;
     assert.ok(diffMinutes > 50 && diffMinutes < 80, `fark ${diffMinutes.toFixed(0)} dk`);
+  });
+});
+
+describe("getMoonAltitude", () => {
+  it("İstanbul'da kış dolunayı yüksekte, yaz dolunayı alçakta görülür", () => {
+    // Gece boyunca (yerel 18:00-06:00) en yüksek konum.
+    const maxAltitude = (eveningUtc: string) => {
+      let max = -90;
+      for (let m = 0; m <= 12 * 60; m += 10) {
+        max = Math.max(max, getMoonAltitude(new Date(new Date(eveningUtc).getTime() + m * MINUTE), ISTANBUL));
+      }
+      return max;
+    };
+    assert.ok(maxAltitude("2026-12-24T15:00:00Z") > 65);
+    assert.ok(maxAltitude("2027-06-19T15:00:00Z") < 25);
   });
 });

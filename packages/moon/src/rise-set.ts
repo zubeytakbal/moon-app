@@ -27,3 +27,10 @@ export function getMoonRiseSet(date: Date, location: GeoLocation): MoonRiseSet {
 
   return { rise: find(1), set: find(-1) };
 }
+
+/** Verilen anda ayın ufuktan yüksekliği (derece, atmosferik kırılma dahil). Negatifse ay ufkun altındadır. */
+export function getMoonAltitude(date: Date, location: GeoLocation): number {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const eq = Astronomy.Equator(Astronomy.Body.Moon, date, observer, true, true);
+  return Astronomy.Horizon(date, observer, eq.ra, eq.dec, "normal").altitude;
+}

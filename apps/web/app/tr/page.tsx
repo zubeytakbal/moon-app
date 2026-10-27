@@ -27,6 +27,7 @@ const PHASE_ANGLE: Record<PhaseKey, number> = {
 };
 
 const timeZone = siteConfig.defaultLocation.timeZone;
+const FEATURED = ALL_PAGES.filter((p) => p.featured);
 
 export default function HomePage() {
   return (
@@ -181,8 +182,8 @@ function Explore() {
       <h2 id="kesfet" className="mt-1 text-3xl font-semibold tracking-tight">
         Ay hakkında
       </h2>
-      <ul className={`mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 ${ALL_PAGES.length > 2 ? "lg:grid-cols-3" : ""}`}>
-        {ALL_PAGES.map((page) => (
+      <ul className={`mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 ${FEATURED.length > 2 ? "lg:grid-cols-3" : ""}`}>
+        {FEATURED.map((page) => (
           <li key={page.path}>
             <Link
               href={page.path}
