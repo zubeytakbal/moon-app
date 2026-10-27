@@ -206,6 +206,16 @@ export const PAGES = {
     description: "Ay şu an boşlukta mı? Önümüzdeki boşluktaki ay dönemleri, başlangıç ve bitiş saatleriyle.",
     cardPhaseAngle: 300,
   },
+  ekimDikim: {
+    path: "/tr/ay-takvimine-gore-ekim-dikim",
+    title: "Ay Takvimine Göre Ekim Dikim",
+    navLabel: "Ekim Dikim Takvimi",
+    group: "hicri-gelenek",
+    inHeader: true,
+    description:
+      "Geleneğe göre hangi gün ne ekilir? Büyüyen ve küçülen ay, dinlenme günleri ve biyodinamik takvim, ay ay.",
+    cardPhaseAngle: 70,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
