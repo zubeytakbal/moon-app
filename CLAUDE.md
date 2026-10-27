@@ -236,6 +236,8 @@ Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için 
 23. ✅ `/tr/ay-burcu-hesaplama`: doğum tarihi + saati (`?tarih=&saat=`, canonical tek adres), ay burcu, derece, element, güneş burcu (`getSunSign`), doğum anındaki ay evresi; saat yoksa ve ay o gün burç değiştirdiyse iki olasılık ve geçiş saati. İl sorulmaz (ay burcu yere bağlı değil, Türkiye tek saat dilimi). Yükselen burç kapsam dışı.
 - Kullanıcı kararı: 30 sayfa tamamlanınca yeni sayfa üretimi durur; her sayfa internetteki rakiplerle ve trafik verileriyle karşılaştırılıp güncellenir. "Boşa sayfa üretmeyeceğiz."
 
+24. ✅ `/tr/kanli-ay`: yalnız tam ay tutulmaları 2025-2037, kızıllık aralığı ve süresi, İstanbul'dan görünürlük, süper kanlı ay işareti, Türkiye'den görülecek bir sonraki (31 Aralık 2028), Danjon ölçeği, Pinatubo örneği, Anadolu tencere-tava geleneği. Kızıl ay görseli: NASA fotoğrafı + CSS filtresi (`grayscale sepia saturate hue-rotate`).
+
 **Kullanıcının yol haritası (27 Ekim 2026, Keyword Planner verisiyle):** ~30 sayfaya ulaşınca içerik üretimi durur → site düzeni ve konu sistemi toplu düzeltme → "app'de gözükme" (anlamı netleştirilecek: Google'da görünürlük mü, mobil uygulama mı) → AdSense başvurusu.
 Kalan içerik sırası (aylık arama hacmi): 1) Bugün ay hangi burçta (10-100B) 2) Ay burcu hesaplama (10-100B) 3) Kanlı ay, yalnız tam tutulmalar (10-100B) 4) Güneş tutulması, genel sayfa + 2 Ağustos 2027 Türkiye ("güneş tutulması 2027" ~100, "güneş tutulması" 10-100B) 5) Ay takvimine göre saç kesim günleri (1-10B, kullanıcı onayladı) 6) Boşlukta ay takvimi (1-10B) 7) Ay takvimine göre ekim dikim (100-1B) 8) Eyyam-ı biyz (100-1B). Ardından 4 zorunlu sayfa.
 Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay nasıldı ~1B.

@@ -166,6 +166,16 @@ export const PAGES = {
     description: "Doğum tarihinizi ve saatinizi girin, doğduğunuz anda ayın hangi burçta olduğunu öğrenin.",
     cardPhaseAngle: 120,
   },
+  kanliAy: {
+    path: "/tr/kanli-ay",
+    title: "Kanlı Ay",
+    navLabel: "Kanlı Ay",
+    group: "tarihler",
+    inHeader: true,
+    featured: true,
+    description: "Bir sonraki kanlı ay ne zaman, Türkiye'den görülecek mi? Ay tutulmada neden kırmızıya döner?",
+    cardPhaseAngle: 180,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
