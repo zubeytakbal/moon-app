@@ -171,12 +171,20 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 - Oradan alınabilecek özellik fikirleri: 7 günlük evre şeridi, tarih seçici (geçmiş/gelecek gün), dolunay takvim aboneliği (.ics / Google Takvim), "Türkiye'den bakınca ay sağdan dolar, sağdan boşalır" ipucu, konum kullanma, sonraki ana evreye geri sayım.
 - Yeni site yayına çıkınca birimceviri'deki ay sayfasının durumu (kaldırma ya da noindex; **yönlendirme değil**) kullanıcıyla kararlaştırılacak.
 
+## 9b. Arama talebi sinyalleri (Google otomatik tamamlama, 27 Ekim 2026)
+
+Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için yayından sonra Search Console, önce Keyword Planner.
+- **Güçlü:** bugün ay hangi evrede · doğduğum gün ay nasıldı (çok güçlü) · ay evreleri (takvimi 2026) · ay takvimi · dolunay/yeni ay ne zaman · ilk/son dördün, şişkin ay (öğrenci) · 2027 dolunay takvimi / "dolunay ve yeniaylar" · ay tutulması ne zaman, kanlı ay tutulması · dolunay isimleri · hicri takvimde bugün / bugün ayın kaçı · ay burcu hesaplama · ay hangi burçta bugün · ay boşlukta takvimi 2026 · güneş tutulması 2 ağustos 2027 türkiye · ay takvimine göre ekim dikim işleri 2026 (ay ay) · eyyam-ı biyz **orucu** ne zaman.
+- **Zayıf/karışık:** hilal gözlemi (az) · "süper ay" ("Süper Ayı" oyunuyla karışıyor) · ay yaşı (insanlar bebek yaşını ay olarak arıyor; sayfa yapılmadı, doğru karar).
+- **Listede olmayan fırsatlar:** "ay takvimine göre saç kesim günleri (2026)" (ay takvimi aramasında en üstte; kapsam kararı kullanıcıda) · 2 Ağustos 2027 güneş tutulmasına özel sayfa.
+
 ## 10. Açık sorular
 
 - Araç sayfalarının altındaki açıklama metinlerini kim yazacak?
 - Eski site (birimceviri.app): Search Console'da manuel işlem var mı?
 - Tasarım ilkelerinin (bölüm 6) kesin onayı.
 - Marka adı ve domain.
+- "Ay takvimine göre saç kesim günleri" kapsama alınacak mı? (yüksek talep, geleneksel uygulama)
 
 ## 11. Yol haritası
 
