@@ -27,9 +27,9 @@ export function localDateParts(date: Date, timeZone: string): { year: number; mo
   return { year: p.year, month: p.month, day: p.day };
 }
 
-/** Bir saat dilimindeki yerel gece yarısını UTC anına çevirir. */
-function zonedMidnightToUtc(year: number, month: number, day: number, timeZone: string): Date {
-  const guess = Date.UTC(year, month - 1, day);
+/** Bir saat dilimindeki yerel tarih ve saati (ay 1-12) UTC anına çevirir. */
+export function zonedTimeToUtc(year: number, month: number, day: number, hour: number, timeZone: string): Date {
+  const guess = Date.UTC(year, month - 1, day, hour);
   // Yaz saati geçişlerinde ilk tahmin kayabilir, iki tur düzeltme yeterli.
   let utc = guess - timeZoneOffsetMs(new Date(guess), timeZone);
   utc = guess - timeZoneOffsetMs(new Date(utc), timeZone);
@@ -39,10 +39,10 @@ function zonedMidnightToUtc(year: number, month: number, day: number, timeZone: 
 /** Verilen anın düştüğü yerel günün başlangıcı ve bitişi (UTC anları). */
 export function localDayRange(date: Date, timeZone: string): { start: Date; end: Date } {
   const { year, month, day } = localDateParts(date, timeZone);
-  const start = zonedMidnightToUtc(year, month, day, timeZone);
+  const start = zonedTimeToUtc(year, month, day, 0, timeZone);
   // Date.UTC taşan günleri bir sonraki aya/yıla kendisi aktarır.
   const next = new Date(Date.UTC(year, month - 1, day + 1));
-  const end = zonedMidnightToUtc(next.getUTCFullYear(), next.getUTCMonth() + 1, next.getUTCDate(), timeZone);
+  const end = zonedTimeToUtc(next.getUTCFullYear(), next.getUTCMonth() + 1, next.getUTCDate(), 0, timeZone);
   return { start, end };
 }
 

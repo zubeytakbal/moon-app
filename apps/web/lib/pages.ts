@@ -46,6 +46,16 @@ export const PAGES = {
     description: "Ayın bugünkü evresi, aydınlık oranı ve 81 il için doğuş-batış saatleri.",
     cardPhaseAngle: 120,
   },
+  ayTakvimi: {
+    path: "/tr/ay-takvimi",
+    title: "Ay Takvimi",
+    navLabel: "Ay Takvimi",
+    group: "araclar",
+    inHeader: true,
+    featured: true,
+    description: "Aylık ay takvimi: her günün ay evresi ve aydınlık oranı, dolunay ve yeni ay saatleri.",
+    cardPhaseAngle: 300,
+  },
   ayEvreleri: {
     path: "/tr/ay-evreleri",
     title: "Ay Evreleri Nedir?",

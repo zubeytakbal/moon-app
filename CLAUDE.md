@@ -199,6 +199,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 12. ✅ 7 evre sayfası: `/tr/yeni-ay`, `/tr/hilal` (büyüyen + küçülen), `/tr/ilk-dordun`, `/tr/buyuyen-siskin-ay`, `/tr/dolunay`, `/tr/kuculen-siskin-ay`, `/tr/son-dordun`. Ortak parçalar `components/phase/PhaseParts.tsx` (hero, sonraki evre/dönem kutusu, tarih tabloları, önceki/sonraki geçişi, kaynaklar). Her sayfanın soruları ve yapısı farklı; dolunayda İstanbul'da gece en yüksek konum tablosu (`getMoonAltitude`), büyüyen şişkinde gün gün aydınlık oranı. Kullanıcı en sonda toplu düzeltme yapacağını söyledi.
 
+13. ✅ `/tr/ay-takvimi`: aylık takvim (masaüstü ızgara, telefonda liste), `?ay=YYYY-MM` aynı sayfada (canonical tek adres, ay bağlantıları `rel="nofollow"`), mavi ay ve 19 yıllık Meton döngüsü örneği hesaplanıyor (`getMonthCalendar`, `getNextBlueMoon`).
+- Not: Yeni rota eklenince `PageProps<"/tr/...">` tipi için önce `npx next typegen` (ya da build) çalıştırılmalı.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

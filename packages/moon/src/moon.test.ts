@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getMonthCalendar,
+  getNextBlueMoon,
   getMoonAltitude,
   getLunation,
   getMoonPhase,
@@ -209,5 +211,33 @@ describe("getMoonAltitude", () => {
     };
     assert.ok(maxAltitude("2026-12-24T15:00:00Z") > 65);
     assert.ok(maxAltitude("2027-06-19T15:00:00Z") < 25);
+  });
+});
+
+describe("getMonthCalendar", () => {
+  it("Kasım 2026: 30 gün, pazar başlar, ana evreler doğru günlerde", () => {
+    const days = getMonthCalendar(2026, 11, TZ);
+    assert.equal(days.length, 30);
+    assert.equal(days[0].weekday, 6);
+    const principal = days.filter((d) => d.principal).map((d) => `${d.day}:${d.principal!.key}`);
+    assert.deepEqual(principal, ["1:last-quarter", "9:new-moon", "17:first-quarter", "24:full-moon"]);
+    assert.equal(days[23].phase.key, "full-moon");
+  });
+
+  it("artık yıl şubatı 29 gündür", () => {
+    assert.equal(getMonthCalendar(2028, 2, TZ).length, 29);
+  });
+});
+
+describe("getNextBlueMoon", () => {
+  it("bir takvim ayındaki ikinci dolunayı bulur", () => {
+    const blue = getNextBlueMoon(new Date("2026-10-27T00:00:00Z"), TZ);
+    assert.ok(blue);
+    const prevMonthFull = getMonthCalendar(
+      Number(blue.date.toISOString().slice(0, 4)),
+      Number(blue.date.toISOString().slice(5, 7)),
+      TZ,
+    ).filter((d) => d.principal?.key === "full-moon");
+    assert.equal(prevMonthFull.length, 2);
   });
 });
