@@ -217,6 +217,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 19. ✅ `/tr/dolunay-isimleri`: 12 ay + Hasat Ayı kartları (anlam + bir sonraki tarih, `nameFullMoons`), özel isimler (Mavi Ay, Süper Ay, Kanlı Ay), kökeni (Old Farmer's Almanac, Kuzey Amerika; Türk geleneği değil), "ayın on dördü gibi" deyimi. Tarihler grubu tamamlandı.
 
+20. ✅ `/tr/hicri-takvim`: Hicri aylar (şu anki ay işaretli), bugünün yaklaşık Hicri tarihi (Intl `islamic-umalqura`, "Diyanet'le bir gün fark olabilir" notuyla), önümüzdeki 6 ay başının astronomik tahmini (`getCrescentEvenings`, Ankara gün batımı, yükseklik ≥5°, açı ≥8°).
+- Doğrulama: Diyanet 2027 takvimiyle (vakithesaplama.diyanet.gov.tr) Ramazan başı aynı (8 Şubat 2027); Recep, Şaban, Şevval'de bizim tahmin bir gün sonra. Sayfada "resmî ay başı çoğu zaman bir gün öncedir" yazıyor. Asla resmî tarih gibi sunma.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

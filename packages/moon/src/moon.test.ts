@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getCrescentEvenings,
   getLocalSolarEclipse,
   getUpcomingSolarEclipses,
   getFullMoonsOfYear,
@@ -281,5 +282,17 @@ describe("solar eclipses", () => {
   it("12 Ağustos 2026 tutulması İstanbul'dan görülmez (bir sonraki görülen 2027'dedir)", () => {
     const local = getLocalSolarEclipse(new Date("2026-08-01T00:00:00Z"), ISTANBUL);
     assert.equal(local.peak.getUTCFullYear(), 2027);
+  });
+});
+
+describe("getCrescentEvenings", () => {
+  it("yeni aydan önceki akşam ölçüt karşılanmaz, sonraki akşamlarda hilal yükselir", () => {
+    const ankara = findProvince("ankara")!;
+    const evenings = getCrescentEvenings(new Date("2026-01-18T19:52:39Z"), ankara);
+    assert.equal(evenings.length, 4);
+    assert.equal(evenings[0].meetsCriteria, false);
+    assert.ok(evenings[0].ageHours < 0);
+    assert.ok(evenings[2].meetsCriteria);
+    assert.ok(evenings[2].moonAltitude > evenings[1].moonAltitude);
   });
 });

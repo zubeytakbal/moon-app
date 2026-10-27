@@ -124,6 +124,16 @@ export const PAGES = {
     description: "Kurt Ayı, Çilek Ayı, Hasat Ayı... Dolunay isimlerinin anlamı, kökeni ve bir sonraki tarihleri.",
     cardPhaseAngle: 180,
   },
+  hicriTakvim: {
+    path: "/tr/hicri-takvim",
+    title: "Hicri Takvim ve Ay Başları",
+    navLabel: "Hicri Takvim",
+    group: "hicri-gelenek",
+    inHeader: true,
+    featured: true,
+    description: "Hicri takvim nasıl işler, aylar ne zaman başlar? Önümüzdeki Hicri ay başlarının astronomik tahmini.",
+    cardPhaseAngle: 35,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
