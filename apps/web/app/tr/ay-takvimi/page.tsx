@@ -5,32 +5,26 @@ import { Suspense } from "react";
 import { getMonthCalendar, getNextBlueMoon, getUpcomingPrincipalPhases, type CalendarDay } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
+import { MonthLink } from "@/components/MonthLink";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import {
+  adjacentMonths,
+  currentMonth,
+  MAX_YEAR,
+  MIN_YEAR,
+  MONTH_NAMES as MONTHS,
+  monthParam,
+  parseMonth,
+  WEEKDAYS_SHORT as WEEKDAYS,
+} from "@/lib/months";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ayTakvimi;
 const UPDATED = "2026-10-27";
 const timeZone = siteConfig.defaultLocation.timeZone;
-const WEEKDAYS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
-const MONTHS = [
-  "Ocak",
-  "Şubat",
-  "Mart",
-  "Nisan",
-  "Mayıs",
-  "Haziran",
-  "Temmuz",
-  "Ağustos",
-  "Eylül",
-  "Ekim",
-  "Kasım",
-  "Aralık",
-];
-const MIN_YEAR = 1900;
-const MAX_YEAR = 2100;
 
 export const metadata: Metadata = {
   title: `Ay Takvimi: Aylık Ay Evreleri, Dolunay ve Yeni Ay Günleri | ${siteConfig.name}`,
@@ -80,17 +74,6 @@ export default function MoonCalendarPage({ searchParams }: PageProps<"/tr/ay-tak
   );
 }
 
-/** "2026-11" biçimindeki ay parametresini çözer; geçersizse null döner. */
-function parseMonth(value: string | string[] | undefined): { year: number; month: number } | null {
-  if (typeof value !== "string") return null;
-  const m = /^(\d{4})-(\d{2})$/.exec(value);
-  if (!m) return null;
-  const year = Number(m[1]);
-  const month = Number(m[2]);
-  if (year < MIN_YEAR || year > MAX_YEAR || month < 1 || month > 12) return null;
-  return { year, month };
-}
-
 async function SelectedMonth({ searchParams }: Pick<PageProps<"/tr/ay-takvimi">, "searchParams">) {
   const { ay } = await searchParams;
   const selected = parseMonth(ay);
@@ -101,15 +84,8 @@ async function CurrentMonth() {
   "use cache";
   cacheLife("hours");
 
-  const parts = new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "numeric" }).formatToParts(
-    new Date(),
-  );
-  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
-  return <MonthCalendar year={get("year")} month={get("month")} />;
-}
-
-function monthParam(year: number, month: number) {
-  return `${year}-${String(month).padStart(2, "0")}`;
+  const { year, month } = currentMonth(timeZone);
+  return <MonthCalendar year={year} month={month} />;
 }
 
 /** Bir ayın takvimi: koyu giriş alanı, ay değiştirme, ana evreler ve günler. Saatte bir yenilenir. */
@@ -126,8 +102,7 @@ async function MonthCalendar({ year, month }: { year: number; month: number }) {
   }).format(new Date());
   const isToday = (d: CalendarDay) => today === `${monthParam(year, month)}-${String(d.day).padStart(2, "0")}`;
 
-  const prev = month === 1 ? { year: year - 1, month: 12 } : { year, month: month - 1 };
-  const next = month === 12 ? { year: year + 1, month: 1 } : { year, month: month + 1 };
+  const { prev, next } = adjacentMonths(year, month);
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
   const principals = days.filter((d) => d.principal);
 
@@ -247,22 +222,6 @@ async function MonthCalendar({ year, month }: { year: number; month: number }) {
         </ol>
       </div>
     </section>
-  );
-}
-
-function MonthLink({ href, label, children }: { href: string; label: string; children: string }) {
-  return (
-    <Link
-      href={href}
-      // Sonsuz ay bağlantılarının taranmasını önler; sayfanın tek adresi canonical ile belirtilir.
-      rel="nofollow"
-      scroll={false}
-      aria-label={label}
-      title={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-xl text-zinc-200 hover:border-white/30 hover:text-white"
-    >
-      {children}
-    </Link>
   );
 }
 

@@ -187,6 +187,16 @@ export const PAGES = {
       "Bir sonraki güneş tutulması ne zaman, ilinizden ne kadarı görülecek? 2 Ağustos 2027 ve 1 Haziran 2030.",
     cardPhaseAngle: 0,
   },
+  sacKesim: {
+    path: "/tr/ay-takvimine-gore-sac-kesim-gunleri",
+    title: "Ay Takvimine Göre Saç Kesim Günleri",
+    navLabel: "Saç Kesim Günleri",
+    group: "hicri-gelenek",
+    inHeader: true,
+    featured: true,
+    description: "Geleneğe göre saç ne zaman kesilir? Büyüyen ve küçülen ay günleri, ayın burcu, ay ay takvim.",
+    cardPhaseAngle: 100,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
