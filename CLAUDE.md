@@ -154,15 +154,17 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 ## 9. Kullanıcının diğer sitesi: birimceviri.app
 
+> **Bu, AdSense'ten reddedilen ve trafiği düşen eski sitedir** (kullanıcı 27 Ekim 2026'da doğruladı). Yeni siteyle arasında **teknik bağ kurulmaz:** 301 yönlendirmesi, karşılıklı bağlantı, ortak metin yok.
+
 - Kullanıcının mevcut sitesi. 500+ dönüşüm ve 260+ hesaplayıcı sayfası var. `/ay-evreleri` sayfası tek sayfada evre, 81 il doğuş/batış, takvim, burç, süper ay, tutulma ve SSS topluyor (astronomy-engine kullanıyor).
 - **Metin oradan kopyalanmaz.** İki site aynı aramalarda yarışır, Google kopyayı cezalandırır. Fikir ve özellik alınabilir (kullanıcının kendi işi).
 - Oradan alınabilecek özellik fikirleri: 7 günlük evre şeridi, tarih seçici (geçmiş/gelecek gün), dolunay takvim aboneliği (.ics / Google Takvim), "Türkiye'den bakınca ay sağdan dolar, sağdan boşalır" ipucu, konum kullanma, sonraki ana evreye geri sayım.
-- Yeni site yayına çıkınca birimceviri'deki ay sayfasının durumu (kaldırma / noindex / yeni siteye bağlantı) kullanıcıyla kararlaştırılacak.
+- Yeni site yayına çıkınca birimceviri'deki ay sayfasının durumu (kaldırma ya da noindex; **yönlendirme değil**) kullanıcıyla kararlaştırılacak.
 
 ## 10. Açık sorular
 
 - Araç sayfalarının altındaki açıklama metinlerini kim yazacak?
-- Eski site: AdSense'ten reddedilen site mi? Search Console'da manuel işlem var mı? Kaç sayfa var?
+- Eski site (birimceviri.app): Search Console'da manuel işlem var mı?
 - Tasarım ilkelerinin (bölüm 6) kesin onayı.
 - Marka adı ve domain.
 
