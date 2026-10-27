@@ -197,6 +197,15 @@ export const PAGES = {
     description: "Geleneğe göre saç ne zaman kesilir? Büyüyen ve küçülen ay günleri, ayın burcu, ay ay takvim.",
     cardPhaseAngle: 100,
   },
+  aybosluk: {
+    path: "/tr/ay-boslukta-takvimi",
+    title: "Ay Boşlukta Takvimi",
+    navLabel: "Ay Boşlukta Takvimi",
+    group: "burclar",
+    inHeader: true,
+    description: "Ay şu an boşlukta mı? Önümüzdeki boşluktaki ay dönemleri, başlangıç ve bitiş saatleriyle.",
+    cardPhaseAngle: 300,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

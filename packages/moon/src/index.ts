@@ -20,3 +20,4 @@ export { getFullMoonsOfYear, getMoonDistanceKm, getSeasons, getUpcomingLunarEcli
 export { getLocalSolarEclipse, getUpcomingSolarEclipses, type LocalSolarEclipse, type SolarEclipse, type SolarEclipseKind } from "./events.ts";
 export { CRESCENT_MIN_ALTITUDE, CRESCENT_MIN_ELONGATION, getCrescentEvenings, type CrescentEvening } from "./crescent.ts";
 export { getCurrentSignIngress, getMoonConstellation, getMoonEclipticLongitude, getMoonSign, getMoonSignIngresses, getSunSign, ZODIAC_SIGNS_TR, type MoonSign, type SignIngress, type ZodiacSign } from "./zodiac.ts";
+export { BODY_NAMES_TR, findLastAspect, getVoidOfCoursePeriods, type LastAspect, type VoidOfCourse } from "./void-of-course.ts";

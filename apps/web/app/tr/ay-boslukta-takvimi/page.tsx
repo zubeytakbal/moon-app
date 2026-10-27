@@ -1,0 +1,250 @@
+import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
+import Link from "next/link";
+import { BODY_NAMES_TR, getVoidOfCoursePeriods, type VoidOfCourse } from "@moon-app/moon";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { JsonLd } from "@/components/JsonLd";
+import { Prose } from "@/components/Prose";
+import { QuickFacts } from "@/components/QuickFacts";
+import { PAGES } from "@/lib/pages";
+import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
+import { siteConfig } from "@/site.config";
+
+const PAGE = PAGES.aybosluk;
+const UPDATED = "2026-10-27";
+const timeZone = siteConfig.defaultLocation.timeZone;
+const HOUR_MS = 3_600_000;
+const DAY_MS = 86_400_000;
+
+export const metadata: Metadata = {
+  title: `Ay Boşlukta mı? Boşluktaki Ay Takvimi (Türkiye Saati) | ${siteConfig.name}`,
+  description:
+    "Ay şu an boşlukta mı? Önümüzdeki dört haftanın boşluktaki ay dönemleri, başlangıç ve bitiş saatleri (Türkiye saati), ayın son açısı ve gireceği burç. Boşluktaki ay ne demek?",
+  alternates: { canonical: PAGE.path },
+};
+
+const ASPECT_TR: Record<number, string> = {
+  0: "kavuşum",
+  60: "altmışlık",
+  90: "kare",
+  120: "üçgen",
+  180: "karşıt",
+};
+
+function durationText(ms: number) {
+  const hours = ms / HOUR_MS;
+  if (hours < 1) return `${Math.max(1, Math.round(hours * 60))} dakika`;
+  const h = Math.floor(hours);
+  const m = Math.round((hours - h) * 60);
+  return m === 0 ? `${h} saat` : `${h} saat ${m} dakika`;
+}
+
+/** Şu an ve önümüzdeki dört hafta: içinde bulunulan boşluk varsa o da dahil. */
+function upcoming(now: Date): VoidOfCourse[] {
+  // Bir önceki burç geçişinden başlayarak ara ki şu an süren boşluk da listeye girsin.
+  return getVoidOfCoursePeriods(new Date(now.getTime() - 3 * DAY_MS), 16)
+    .filter((v) => v.end > now)
+    .slice(0, 12);
+}
+
+export default function VoidOfCoursePage() {
+  return (
+    <>
+      <Hero />
+      <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
+        <QuickFacts>
+          <li>
+            Ay, bulunduğu burçta son açısını yaptıktan sonra bir sonraki burca girene kadar &quot;boşlukta&quot;
+            sayılır.
+          </li>
+          <li>Bu dönemler birkaç dakikadan iki güne kadar sürebilir ve her 2-3 günde bir yaşanır.</li>
+          <li>Geleneksel takvimde bir inanıştır; ayın konumu ve açılar astronomik olarak hesaplanır.</li>
+        </QuickFacts>
+
+        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">Önümüzdeki boşluktaki ay dönemleri</h2>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+          Başlangıç: ayın son açısı. Bitiş: ayın yeni burca girişi. Bütün saatler Türkiye saatidir.
+        </p>
+        <PeriodList />
+
+        <Prose>
+          <h2>&quot;Ay boşlukta&quot; ne demek?</h2>
+          <p>
+            Ay, burçlar kuşağında ilerlerken Güneş&apos;le ve gezegenlerle belirli açılar yapar. Astrolojide en çok
+            bakılan açılar kavuşum (0°), altmışlık (60°), kare (90°), üçgen (120°) ve karşıttır (180°). Ay bulunduğu
+            burçtaki son açısını yaptıktan sonra, bir sonraki burca girene kadar başka bir açı yapmaz. Bu aralığa{" "}
+            <strong>boşluktaki ay</strong> (İngilizcede &quot;void of course&quot;) denir.
+          </p>
+
+          <h2>Gelenekte boşluktaki ay</h2>
+          <p>
+            Astroloji geleneğinde boşluktaki ay dönemleri, yeni bir işe başlamak, önemli bir karar almak ya da bir
+            sözleşme imzalamak için uygun görülmez. Bu dönemde başlanan işlerin &quot;bir yere varmayacağına&quot;
+            inanılır. Rutin işler, dinlenme ve önceden başlanmış işleri bitirmek için ise sakıncalı sayılmaz.
+          </p>
+
+          <h2>Neden kaynaklar farklı saatler veriyor?</h2>
+          <p>
+            Boşluktaki ayın başlangıcı, hangi gök cisimlerinin hesaba katıldığına göre değişir. Geleneksel astroloji
+            yalnızca Güneş&apos;e, Merkür&apos;e, Venüs&apos;e, Mars&apos;a, Jüpiter&apos;e ve Satürn&apos;e bakar.
+            Modern astroloji bunlara Uranüs&apos;ü, Neptün&apos;ü ve Plüton&apos;u da ekler. Bu sayfada modern küme
+            kullanılmıştır; bu yüzden boşluk dönemleri geleneksel takvimlere göre bazen daha kısadır. Hesaplarımızı
+            yayımlanmış modern takvimlerle karşılaştırdık: örneğin 4-5 Kasım 2026&apos;daki 31 saatlik ve 24 Kasım
+            2026&apos;daki 1 saatlik boşluklar birebir örtüşüyor.
+          </p>
+
+          <h2>Ayın burcu</h2>
+          <p>
+            Boşluk, ayın yeni burca girmesiyle biter. Ayın şu anki burcunu ve burç geçiş saatlerini{" "}
+            <Link href={PAGES.ayHangiBurcta.path}>Bugün Ay Hangi Burçta?</Link> sayfasında bulabilirsiniz.
+          </p>
+
+          <h2>Bilimsel bir not</h2>
+          <p>
+            Ayın ve gezegenlerin gökyüzündeki konumları ve aralarındaki açılar astronomik olarak kesin hesaplanabilir.
+            Ancak bu açıların ya da boşluktaki ayın insanlar ve olaylar üzerinde bir etkisi olduğuna dair bilimsel bir
+            kanıt yoktur. Bu takvimi, yaygın bir geleneğin doğru saatlerle hesaplanmış hali olarak sunuyoruz.
+          </p>
+        </Prose>
+
+        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
+          <p>
+            Konumlar Astronomy Engine ile yer merkezli olarak hesaplanmıştır. Açı anları saniye düzeyinde bulunur,
+            dakikaya yuvarlanarak gösterilir.
+          </p>
+          <p className="mt-2">
+            Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
+          </p>
+        </section>
+      </main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: PAGE.title,
+          url: new URL(PAGE.path, siteConfig.url).toString(),
+          inLanguage: "tr-TR",
+          dateModified: UPDATED,
+        }}
+      />
+    </>
+  );
+}
+
+const fmt = () => ({
+  dateTime: new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  }),
+  day: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "short", weekday: "short" }),
+  time: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" }),
+});
+
+/** Giriş: ay şu an boşlukta mı? Saatte bir yenilenir. */
+async function Hero() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const [first, second] = upcoming(now);
+  const active = first.start <= now;
+  const next = active ? second : first;
+  const f = fmt();
+
+  return (
+    <section className="bg-gradient-to-b from-[#1b1236] to-[#05070d] text-white">
+      <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-6">
+        <Breadcrumb page={PAGE} tone="dark" />
+        <div className="mt-8 flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-200">
+            Geleneksel takvim
+          </span>
+        </div>
+        <h1 className="mt-4 text-lg font-medium text-zinc-300">Ay boşlukta mı?</h1>
+        <p className={`mt-2 text-5xl font-bold tracking-tight sm:text-7xl ${active ? "text-amber-300" : ""}`}>
+          {active ? "Evet, boşlukta" : "Hayır"}
+        </p>
+        <p className="mt-4 max-w-2xl text-lg text-zinc-300">
+          {active
+            ? `Boşluk ${f.dateTime.format(first.start)} başladı, ay ${first.nextSign.name} burcuna geçince ${f.dateTime.format(first.end)} bitecek.`
+            : `Ay şu an boşlukta değil. Bir sonraki boşluk ${f.dateTime.format(first.start)} başlayacak.`}
+        </p>
+        <div className="mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+            <p className="text-xs uppercase tracking-wider text-zinc-400">{active ? "Kalan süre" : "Başlamasına"}</p>
+            <p className="mt-1 text-2xl font-semibold">
+              {durationText((active ? first.end : first.start).getTime() - now.getTime())}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+            <p className="text-xs uppercase tracking-wider text-zinc-400">
+              {active ? "Sonraki boşluk" : "Boşluk süresi"}
+            </p>
+            <p className="mt-1 text-2xl font-semibold">
+              {active ? f.dateTime.format(next.start) : durationText(first.end.getTime() - first.start.getTime())}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Önümüzdeki boşluk dönemleri. Saatte bir yenilenir. */
+async function PeriodList() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const list = upcoming(now);
+  const f = fmt();
+
+  return (
+    <ol className="mt-6 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+      {list.map((v) => {
+        const active = v.start <= now;
+        const ms = v.end.getTime() - v.start.getTime();
+        return (
+          <li
+            key={v.end.toISOString()}
+            className={`flex items-start gap-4 px-4 py-3 sm:px-5 ${active ? "bg-amber-50 dark:bg-amber-950/30" : ""}`}
+          >
+            <span
+              aria-hidden="true"
+              className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b1236] text-xl text-amber-200"
+            >
+              {ZODIAC_SYMBOLS[v.nextSign.index]}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold">
+                <time dateTime={v.start.toISOString()}>
+                  {f.day.format(v.start)} {f.time.format(v.start)}
+                </time>
+                {" → "}
+                <time dateTime={v.end.toISOString()}>
+                  {f.day.format(v.end)} {f.time.format(v.end)}
+                </time>
+                {active && (
+                  <span className="ml-2 rounded bg-amber-500 px-1.5 py-0.5 text-xs font-semibold text-white">
+                    Şu an
+                  </span>
+                )}
+              </p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                {v.lastAspect
+                  ? `Son açı: ${BODY_NAMES_TR[v.lastAspect.body]} ile ${ASPECT_TR[v.lastAspect.aspect]}`
+                  : "Son açı bulunamadı"}{" "}
+                · {v.nextSign.name} burcuna geçiş
+              </p>
+            </div>
+            <span className="shrink-0 text-sm tabular-nums text-zinc-500">{durationText(ms)}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getVoidOfCoursePeriods,
   getCurrentSignIngress,
   getMoonSign,
   getMoonSignIngresses,
@@ -337,5 +338,22 @@ describe("getSunSign", () => {
     assert.equal(getSunSign(new Date("2026-10-27T12:00:00Z")).name, "Akrep");
     assert.equal(getSunSign(new Date("2027-01-01T12:00:00Z")).name, "Oğlak");
     assert.equal(getSunSign(new Date("2027-03-22T12:00:00Z")).name, "Koç");
+  });
+});
+
+describe("getVoidOfCoursePeriods", () => {
+  // Yayımlanmış takvimlerle karşılaştırıldı (authorityastrology.com, Kasım 2026).
+  it("Kasım 2026'nın en uzun boşluğu: Başak'tan Terazi'ye, 31 saati aşkın", () => {
+    const v = getVoidOfCoursePeriods(new Date("2026-11-04T00:00:00Z"), 1)[0];
+    assert.equal(v.nextSign.name, "Terazi");
+    const hours = (v.end.getTime() - v.start.getTime()) / 3_600_000;
+    assert.ok(hours > 31 && hours < 32.5, `${hours.toFixed(1)} saat`);
+  });
+
+  it("24 Kasım 2026: Boğa'dan İkizler'e yaklaşık 1 saatlik boşluk", () => {
+    const v = getVoidOfCoursePeriods(new Date("2026-11-24T00:00:00Z"), 1)[0];
+    assert.equal(v.nextSign.name, "İkizler");
+    const hours = (v.end.getTime() - v.start.getTime()) / 3_600_000;
+    assert.ok(hours > 0.7 && hours < 1.3, `${hours.toFixed(2)} saat`);
   });
 });
