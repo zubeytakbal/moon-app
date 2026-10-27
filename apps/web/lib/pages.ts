@@ -86,6 +86,16 @@ export const PAGES = {
     description: "2027'nin 12 dolunayı saatleriyle: süper ay, mikro ay, tutulmalar ve geleneksel adları.",
     cardPhaseAngle: 180,
   },
+  yeniAy20262027: {
+    path: "/tr/2026-2027-yeniay-tarihleri",
+    title: "2026-2027 Yeni Ay Tarihleri",
+    navLabel: "2026-2027 Yeni Ay Tarihleri",
+    group: "tarihler",
+    inHeader: true,
+    description:
+      "2026 ve 2027'nin yeni ayları saatleriyle; güneş tutulmaları ve 2 Ağustos 2027 tutulmasının Türkiye'den görünüşü.",
+    cardPhaseAngle: 0,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

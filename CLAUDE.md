@@ -208,6 +208,8 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 15. ✅ `/tr/2027-dolunay-tarihleri`: 2026'nın kalan dolunayları + 2027'nin 12 dolunayı (ad, saat, İstanbul doğuşu, uzaklık, süper/mikro ay, tutulma ve Türkiye'den görünürlüğü). Süper ay eşiği 362.500 km (Nolle'ye yakın, sayfada açıkça yazıyor). Geleneksel adlar `lib/full-moon-names.ts` (Kuzey Amerika kökenli, Hasat/Avcı/Mavi Ay kuralları). Tutulma, uzaklık, mevsim fonksiyonları `packages/moon/src/events.ts`.
 - Karar: "2026 dolunay tarihleri" ayrı sayfa yapılmadı (yalnız yıl değişen şablon sayfa olurdu, 2 dolunayı kalmıştı); 2027 sayfasına bölüm olarak eklendi.
 
+16. ✅ `/tr/2026-2027-yeniay-tarihleri`: iki yılın yeni ayları (tutulma ve kara ay notları), 2026-2027 güneş tutulmaları (bölge açıklamaları elle, `ECLIPSE_REGIONS`), 2 Ağustos 2027 tutulmasının 8 ilden örtülme oranı ve saatleri (`getLocalSolarEclipse`), göz güvenliği uyarısı.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

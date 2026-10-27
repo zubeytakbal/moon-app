@@ -1,4 +1,5 @@
 import * as Astronomy from "astronomy-engine";
+import type { GeoLocation } from "./location.ts";
 import { getUpcomingPrincipalPhases, type PrincipalPhase } from "./phase.ts";
 
 /** Verilen anda ayın merkezinin Dünya'nın merkezine uzaklığı (km). */
@@ -55,4 +56,63 @@ export function getFullMoonsOfYear(year: number): PrincipalPhase[] {
       p.date >= new Date(Date.UTC(year, 0, 1) - 3 * 3_600_000) &&
       p.date < new Date(Date.UTC(year + 1, 0, 1) - 3 * 3_600_000),
   );
+}
+
+export type SolarEclipseKind = "partial" | "annular" | "total";
+
+export interface SolarEclipse {
+  kind: SolarEclipseKind;
+  /** Dünya genelinde tutulmanın en derin anı. */
+  peak: Date;
+  /** Tam ya da halkalı tutulmada, en derin anda gölgenin merkezinin düştüğü yer. */
+  centerLatitude?: number;
+  centerLongitude?: number;
+}
+
+/** Verilen andan sonraki `count` adet güneş tutulması (Dünya geneli). */
+export function getUpcomingSolarEclipses(date: Date, count: number): SolarEclipse[] {
+  const result: SolarEclipse[] = [];
+  let e = Astronomy.SearchGlobalSolarEclipse(date);
+  for (let i = 0; i < count; i++) {
+    result.push({
+      kind: e.kind as SolarEclipseKind,
+      peak: e.peak.date,
+      centerLatitude: e.latitude,
+      centerLongitude: e.longitude,
+    });
+    e = Astronomy.NextGlobalSolarEclipse(e.peak);
+  }
+  return result;
+}
+
+export interface LocalSolarEclipse {
+  kind: SolarEclipseKind;
+  /** Güneş diskinin örtülen alan oranı (0-1), en derin anda. */
+  obscuration: number;
+  begin: Date;
+  peak: Date;
+  end: Date;
+  /** En derin anda Güneş'in ufuktan yüksekliği (derece). Negatifse Güneş batmıştır. */
+  peakSunAltitude: number;
+  beginSunAltitude: number;
+  endSunAltitude: number;
+}
+
+/**
+ * Bir gözlem yerinden görülen, verilen andan sonraki ilk güneş tutulması.
+ * Güneş tutulmanın tamamı boyunca ufkun altındaysa da sonuç döner; görünürlüğü yükseklik değerleri gösterir.
+ */
+export function getLocalSolarEclipse(date: Date, location: GeoLocation): LocalSolarEclipse {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const e = Astronomy.SearchLocalSolarEclipse(date, observer);
+  return {
+    kind: e.kind as SolarEclipseKind,
+    obscuration: e.obscuration,
+    begin: e.partial_begin.time.date,
+    peak: e.peak.time.date,
+    end: e.partial_end.time.date,
+    peakSunAltitude: e.peak.altitude,
+    beginSunAltitude: e.partial_begin.altitude,
+    endSunAltitude: e.partial_end.altitude,
+  };
 }

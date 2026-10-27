@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getLocalSolarEclipse,
+  getUpcomingSolarEclipses,
   getFullMoonsOfYear,
   getMoonDistanceKm,
   getUpcomingLunarEclipses,
@@ -262,5 +264,22 @@ describe("events", () => {
   it("ay-Dünya uzaklığı makul aralıkta", () => {
     const d = getMoonDistanceKm(new Date("2026-10-27T12:00:00Z"));
     assert.ok(d > 356_000 && d < 407_000);
+  });
+});
+
+describe("solar eclipses", () => {
+  it("2 Ağustos 2027 tam güneş tutulması, İstanbul'dan parçalı (%50-70) görülür", () => {
+    const global = getUpcomingSolarEclipses(new Date("2027-07-01T00:00:00Z"), 1)[0];
+    assert.equal(global.kind, "total");
+    assert.equal(global.peak.toISOString().slice(0, 10), "2027-08-02");
+    const local = getLocalSolarEclipse(new Date("2027-07-01T00:00:00Z"), ISTANBUL);
+    assert.equal(local.kind, "partial");
+    assert.ok(local.obscuration > 0.5 && local.obscuration < 0.7, `örtülme ${local.obscuration}`);
+    assert.ok(local.peakSunAltitude > 0);
+  });
+
+  it("12 Ağustos 2026 tutulması İstanbul'dan görülmez (bir sonraki görülen 2027'dedir)", () => {
+    const local = getLocalSolarEclipse(new Date("2026-08-01T00:00:00Z"), ISTANBUL);
+    assert.equal(local.peak.getUTCFullYear(), 2027);
   });
 });
