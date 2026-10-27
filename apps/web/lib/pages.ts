@@ -216,6 +216,16 @@ export const PAGES = {
       "Geleneğe göre hangi gün ne ekilir? Büyüyen ve küçülen ay, dinlenme günleri ve biyodinamik takvim, ay ay.",
     cardPhaseAngle: 70,
   },
+  eyyamiBiyz: {
+    path: "/tr/eyyam-i-biyz",
+    title: "Eyyam-ı Biyz Günleri",
+    navLabel: "Eyyam-ı Biyz",
+    group: "hicri-gelenek",
+    inHeader: true,
+    description:
+      "Eyyam-ı biyz orucu ne zaman? Hicri ayların 13, 14 ve 15. günleri, önümüzdeki aylar için tarihleriyle.",
+    cardPhaseAngle: 175,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
