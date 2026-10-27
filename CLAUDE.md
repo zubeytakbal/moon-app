@@ -259,6 +259,10 @@ Sıra: 1) teknik eksikler 2) ana sayfa yenileme ("Bugün gökyüzünde" paneli, 
 
 - ✅ 2) Ana sayfa: arama kutusu (`SiteSearch`, Türkçe karakter duyarsız, istemci tarafı), "Bugün gökyüzünde" paneli (il seçmeli `?il=`; evre, doğuş-batış, burç, boşlukta mı, sonraki dolunay, Hicri tarih), "Yaklaşan gökyüzü olayları" (`lib/sky-events.ts`: süper ay, ay/güneş tutulmaları ve görünürlük, mavi ay, eyyam-ı biyz), kategorili "Bütün sayfalar" (`PageVisual`, konuya özgü görseller). Dikkat: `.starfield` arka plan görseli kullanır; aynı öğede `bg-gradient-*` ile birlikte kullanma (gradyanı ezer).
 
+- ✅ Menü düzeltmesi (kullanıcı fark etti: "ay evreleri 8 tane, menüde 6 görünüyor"): açıklamalı uzun açılır menü ekrandan taşıyordu. Artık 5+ öğeli menüler iki sütunlu, ay ikonlu ve kısa; Ay Evreleri menüsü 8 evreyi sırayla gösteriyor (Büyüyen/Küçülen Hilal → `/tr/hilal#buyuyen-hilal` / `#kuculen-hilal`).
+- **Hata dersi:** `MoonPhaseIcon` SVG tanım kimlikleri (clipPath/filter) aynı evrede çakışıyordu; ilk tanım gizli bir menüdeyse ikon görünmüyordu. Artık `useId` ile benzersiz. SVG'lerde sabit `id` kullanma.
+- Açılır menü gibi fareyle açılan öğeleri test etmek için: Edge `--remote-debugging-port` + Node'un yerleşik `WebSocket`'iyle CDP (`Input.dispatchMouseEvent`) — betik örneği oturum karalama klasöründeydi (`hover.mjs`).
+
 **Kullanıcının yol haritası (27 Ekim 2026, Keyword Planner verisiyle):** ~30 sayfaya ulaşınca içerik üretimi durur → site düzeni ve konu sistemi toplu düzeltme → "app'de gözükme" (anlamı netleştirilecek: Google'da görünürlük mü, mobil uygulama mı) → AdSense başvurusu.
 Kalan içerik sırası (aylık arama hacmi): 1) Bugün ay hangi burçta (10-100B) 2) Ay burcu hesaplama (10-100B) 3) Kanlı ay, yalnız tam tutulmalar (10-100B) 4) Güneş tutulması, genel sayfa + 2 Ağustos 2027 Türkiye ("güneş tutulması 2027" ~100, "güneş tutulması" 10-100B) 5) Ay takvimine göre saç kesim günleri (1-10B, kullanıcı onayladı) 6) Boşlukta ay takvimi (1-10B) 7) Ay takvimine göre ekim dikim (100-1B) 8) Eyyam-ı biyz (100-1B). Ardından 4 zorunlu sayfa.
 Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay nasıldı ~1B.

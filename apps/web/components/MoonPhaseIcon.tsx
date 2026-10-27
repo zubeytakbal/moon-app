@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 interface MoonPhaseIconProps {
   /** Ay ile Güneş arasındaki boylam farkı (0-360). 0 yeni ay, 180 dolunay. */
   phaseAngle: number;
@@ -35,8 +37,9 @@ export function MoonPhaseIcon({ phaseAngle, size = 200, southern = false, title,
     "Z",
   ].join(" ");
 
-  // Aynı sayfada aynı evre birden çok kez çizilse bile tanımlar aynı olduğu için çakışma sorun yaratmaz.
-  const id = `moon-${Math.round(phaseAngle * 10)}-${size <= 80 ? "s" : size <= 500 ? "m" : "l"}`;
+  // Her çizimin tanımları (kesme şablonu, filtre) benzersiz kimlik taşımalı: aynı kimlik sayfada birden çok kez
+  // geçerse tarayıcı ilkini kullanır; ilki gizli bir menüdeyse ikon hiç görünmez.
+  const id = `moon-${useId().replace(/:/g, "")}`;
   const src =
     size <= 80 ? "/moon/full-moon-160.webp" : size <= 500 ? "/moon/full-moon.webp" : "/moon/full-moon-2000.webp";
   const blur = size <= 80 ? 0.6 : size <= 500 ? 1.1 : 0.8;

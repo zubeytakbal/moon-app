@@ -3,9 +3,31 @@ import Link from "next/link";
 import { getMoonPhase } from "@moon-app/moon";
 import { HOME_PATH, pagesByGroup, PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
-import { DesktopNav, MobileNav, type NavSection } from "./HeaderNav";
+import { DesktopNav, MobileNav, type NavItem, type NavSection } from "./HeaderNav";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MoonPhaseIcon } from "./MoonPhaseIcon";
+
+/**
+ * Ay Evreleri menüsü sekiz evreyi gökyüzündeki sırasıyla gösterir. İki hilal aynı sayfada
+ * anlatıldığı için Büyüyen ve Küçülen Hilal, Hilal sayfasının ilgili bölümüne gider.
+ */
+const PHASE_MENU: NavItem[] = [
+  { page: PAGES.ayEvreleri, label: "Ay Evreleri Nedir?", angle: 90 },
+  { page: PAGES.yeniAy, label: "Yeni Ay", angle: 4 },
+  { page: PAGES.hilal, label: "Büyüyen Hilal", angle: 45, hash: "#buyuyen-hilal" },
+  { page: PAGES.ilkDordun, label: "İlk Dördün", angle: 90 },
+  { page: PAGES.buyuyenSiskinAy, label: "Büyüyen Şişkin Ay", angle: 135 },
+  { page: PAGES.dolunay, label: "Dolunay", angle: 180 },
+  { page: PAGES.kuculenSiskinAy, label: "Küçülen Şişkin Ay", angle: 225 },
+  { page: PAGES.sonDordun, label: "Son Dördün", angle: 270 },
+  { page: PAGES.hilal, label: "Küçülen Hilal", angle: 315, hash: "#kuculen-hilal" },
+].map(({ page, label, angle, hash }, i) => ({
+  path: `${page.path}${hash ?? ""}`,
+  label,
+  description: page.description,
+  phaseAngle: angle,
+  wide: i === 0,
+}));
 
 /**
  * İki katlı üst menü. Üst kat: logo, canlı ay göstergesi, dil. Alt kat: bölümler.
@@ -16,7 +38,15 @@ export function SiteHeader() {
     .filter((g) => g.group !== "kurumsal")
     .map((g) => ({
       label: g.name,
-      items: g.pages.map((p) => ({ path: p.path, label: p.navLabel, description: p.description })),
+      items:
+        g.group === "evreler"
+          ? PHASE_MENU
+          : g.pages.map((p) => ({
+              path: p.path,
+              label: p.navLabel,
+              description: p.description,
+              phaseAngle: p.cardPhaseAngle,
+            })),
     }));
 
   return (

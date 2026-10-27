@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MoonPhaseIcon } from "./MoonPhaseIcon";
 
 export interface NavItem {
   path: string;
   label: string;
   description: string;
+  /** Menüde gösterilecek ay ikonunun evre açısı. */
+  phaseAngle: number;
+  /** İki sütunlu menüde satırın tamamını kaplasın mı (bölümün genel sayfası için). */
+  wide?: boolean;
 }
 
 /** Menüdeki bir bölüm. Tek sayfası olan bölüm doğrudan bağlantı, birden çok sayfası olan açılır menü olur. */
@@ -17,8 +22,12 @@ export interface NavSection {
 }
 
 function isActive(pathname: string, path: string) {
-  return pathname === path || pathname.startsWith(`${path}/`);
+  const base = path.split("#")[0];
+  return pathname === base || pathname.startsWith(`${base}/`);
 }
+
+/** Uzun bölümler açılır menüde iki sütun ve kısa satırlarla gösterilir; böylece ekrana sığar. */
+const COMPACT_FROM = 5;
 
 const linkBase = "flex h-12 items-center gap-1 border-b-2 px-3 text-[0.9375rem] font-semibold transition";
 const linkState = (active: boolean) =>
@@ -61,13 +70,31 @@ export function DesktopNav({ sections }: { sections: NavSection[] }) {
                   <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" />
                 </svg>
               </button>
-              <div className="invisible absolute left-1/2 top-full z-30 w-80 -translate-x-1/2 pt-1 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                <ul className="rounded-2xl border border-white/10 bg-[#0d111c] p-2 shadow-2xl">
+              <div
+                className={`invisible absolute left-1/2 top-full z-30 -translate-x-1/2 pt-1 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 ${
+                  section.items.length >= COMPACT_FROM ? "w-[34rem]" : "w-80"
+                }`}
+              >
+                <ul
+                  className={`max-h-[75vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0d111c] p-2 shadow-2xl ${
+                    section.items.length >= COMPACT_FROM ? "grid grid-cols-2 gap-1" : ""
+                  }`}
+                >
                   {section.items.map((item) => (
-                    <li key={item.path}>
-                      <Link href={item.path} className="block rounded-xl px-4 py-3 hover:bg-white/5">
-                        <span className="block font-medium text-white">{item.label}</span>
-                        <span className="mt-0.5 block text-sm text-zinc-400">{item.description}</span>
+                    <li key={item.path} className={item.wide ? "col-span-2 border-b border-white/10 pb-1" : undefined}>
+                      <Link
+                        href={item.path}
+                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-white/5"
+                      >
+                        <span className="shrink-0">
+                          <MoonPhaseIcon phaseAngle={item.phaseAngle} size={30} title="" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-medium text-white">{item.label}</span>
+                          {section.items.length < COMPACT_FROM && (
+                            <span className="mt-0.5 block text-sm text-zinc-400">{item.description}</span>
+                          )}
+                        </span>
                       </Link>
                     </li>
                   ))}
@@ -142,10 +169,10 @@ export function MobileNav({ sections }: { sections: NavSection[] }) {
                         <Link
                           href={item.path}
                           aria-current={active ? "page" : undefined}
-                          className={`block rounded-xl px-4 py-3 ${active ? "bg-white/10" : "hover:bg-white/5"}`}
+                          className={`flex items-center gap-3 rounded-xl px-4 py-2.5 ${active ? "bg-white/10" : "hover:bg-white/5"}`}
                         >
-                          <span className="block font-medium text-white">{item.label}</span>
-                          <span className="mt-0.5 block text-sm text-zinc-400">{item.description}</span>
+                          <MoonPhaseIcon phaseAngle={item.phaseAngle} size={28} title="" />
+                          <span className="font-medium text-white">{item.label}</span>
                         </Link>
                       </li>
                     );

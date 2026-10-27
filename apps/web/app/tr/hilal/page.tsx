@@ -75,14 +75,18 @@ export default function CrescentPage() {
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki büyüyen hilal dönemleri</h2>
+        <h2 id="buyuyen-hilal" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">
+          Önümüzdeki büyüyen hilal dönemleri
+        </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Büyüyen hilal, yeni ay ile ilk dördün arasındaki günlerde görülür. İlk bir iki akşam hilal çok incedir ve
           çıplak gözle bulunması zordur.
         </p>
         <UpcomingPeriodTable from="new-moon" to="first-quarter" count={4} />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki küçülen hilal dönemleri</h2>
+        <h2 id="kuculen-hilal" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">
+          Önümüzdeki küçülen hilal dönemleri
+        </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Küçülen hilal, son dördün ile yeni ay arasındaki sabahlarda görülür.
         </p>
