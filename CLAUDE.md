@@ -167,7 +167,10 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 3. ✅ `packages/moon`: `getMoonPhase`, `getMoonRiseSet`, `getNextFullMoon`, `getNextNewMoon` + testler
 4. ✅ `/tr/bugun-ay` sayfası (iskelet; tasarım ve açıklama metni henüz yok, yayına hazır değil)
 
-**Sıradaki adaylar:** il seçici, sayfanın altındaki açıklama metni, genel site düzeni (menü, breadcrumb), ilk commit + push.
+5. ✅ İl seçici: 81 il (`TURKEY_PROVINCES`), `?il=...` aynı sayfada, canonical tek adres
+6. ✅ Site düzeni: üst menü, alt bilgi (site haritası), breadcrumb (+JSON-LD), "Kısaca" kutusu, WebPage `dateModified`
+
+**Sıradaki adaylar:** "Bugün ay" sayfasının altına açıklama metni (yayın için şart), ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
 
 ## 11. Teknik notlar
 
@@ -176,6 +179,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 - **Evre adı kuralı:** Ana evreler (yeni ay, ilk dördün, dolunay, son dördün) anlıktır. O anın düştüğü **yerel günün tamamı** o evrenin adını alır. Diğer günlerde ad evre açısına göre verilir.
 - **Doğuş/batış:** Ayda bir gün ay doğmaz, bir gün batmaz. Fonksiyon bu günlerde `null` döner, arayüz bunu açıkça yazar.
 - **Önbellek:** "Bugün" sayfaları `"use cache"` + `cacheLife("hours")` ile en geç saatte bir yenilenir (`cacheComponents` açık).
+- **Sayfa listesi:** `apps/web/lib/pages.ts`. Menü, alt bilgi ve breadcrumb buradan okunur. Yeni sayfa ancak içeriği tamamlanınca buraya eklenir.
+- **Türkçe ekler:** Saat, yüzde ve il adlarına ek getirmekten kaçın (18:33'te / 09:00'da, İstanbul'da / Van'da değişir). "İstanbul: ay doğuşu 18:33" gibi eksiz yaz.
+- **Yayın öncesi kontrol listesi:** `site.config.ts` içinde `url` gerçek domain olmalı, `allowIndexing: true` yapılmalı, `/` yönlendirmesi gerçek ana sayfayla değiştirilmeli.
 - `apps/web/node_modules` create-next-app'ten kaldı (Windows taşımaya izin vermedi). Kökteki `node_modules` ile birlikte çalışıyor. Sorun çıkarsa silinip kökten `npm install` yapılabilir.
 
 > Her yeni adımda kod yazmadan önce kullanıcıya kısa bir plan sun ve onayını bekle.

@@ -10,11 +10,16 @@ import {
   isSouthernHemisphere,
   TURKEY_PROVINCES,
 } from "@moon-app/moon";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { CitySelect } from "@/components/CitySelect";
+import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { QuickFacts } from "@/components/QuickFacts";
+import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
-const PATH = "/tr/bugun-ay";
+const PAGE = PAGES.bugunAy;
+const PATH = PAGE.path;
 
 export const metadata: Metadata = {
   title: `Bugün Ay Nasıl? Ayın Evresi ve Doğuş-Batış Saatleri | ${siteConfig.name}`,
@@ -28,8 +33,9 @@ const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 
 export default function TodayMoonPage({ searchParams }: PageProps<"/tr/bugun-ay">) {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-10 sm:py-16">
-      <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Bugün Ay Nasıl?</h1>
+    <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-12">
+      <Breadcrumb page={PAGE} />
+      <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">{PAGE.title}</h1>
       <TodayMoon />
       {/* Seçili il isteğe göre değişir. Beklerken (ve Google için) varsayılan il gösterilir. */}
       <Suspense fallback={<CityMoonTimes slug={siteConfig.defaultLocation.slug} />}>
@@ -69,6 +75,8 @@ async function TodayMoon() {
 
   const now = new Date();
   const phase = getMoonPhase(now, location.timeZone);
+  const { rise, set } = getMoonRiseSet(now, location);
+  const nextFull = getNextFullMoon(now);
   const fmt = formatters();
   const percent = new Intl.NumberFormat(siteConfig.locale, { style: "percent", maximumFractionDigits: 0 });
   const decimal = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 1 });
@@ -78,6 +86,31 @@ async function TodayMoon() {
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
         <time dateTime={now.toISOString()}>{fmt.date.format(now)}</time>
       </p>
+
+      <div className="mt-6">
+        <QuickFacts>
+          {/* Saat, yüzde ve il adlarına gelen ekler (18:33'te / 09:00'da) değiştiği için ek kullanılmıyor. */}
+          <li>
+            Ayın bugünkü evresi: <strong>{phase.name}</strong> ({percent.format(phase.illumination)} aydınlık).
+          </li>
+          <li>
+            {location.name}: ay doğuşu {rise ? fmt.time.format(rise) : "yok"}, ay batışı{" "}
+            {set ? fmt.time.format(set) : "yok"}.
+          </li>
+          <li>Bir sonraki dolunay: {fmt.date.format(nextFull)}.</li>
+        </QuickFacts>
+      </div>
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: PAGE.title,
+          url: new URL(PATH, siteConfig.url).toString(),
+          inLanguage: "tr-TR",
+          dateModified: now.toISOString(),
+        }}
+      />
 
       <section className="mt-8 flex flex-col items-center gap-6 rounded-2xl bg-[#0b1020] px-6 py-10 text-white sm:flex-row sm:gap-10 sm:px-10">
         <MoonPhaseIcon
