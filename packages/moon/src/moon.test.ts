@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getMoonPhase, getMoonRiseSet, getNextFullMoon, getNextNewMoon, ISTANBUL } from "./index.ts";
+import {
+  findProvince,
+  getMoonPhase,
+  getMoonRiseSet,
+  getNextFullMoon,
+  getNextNewMoon,
+  ISTANBUL,
+  TURKEY_PROVINCES,
+} from "./index.ts";
 import { localDayRange } from "./time.ts";
 
 const TZ = "Europe/Istanbul";
@@ -114,5 +122,41 @@ describe("getMoonRiseSet", () => {
       if (!set) missing.push(`${label} batış yok`);
     }
     assert.deepEqual(missing, ["2026-11-02 doğuş yok", "2026-11-17 batış yok", "2026-11-30 doğuş yok"]);
+  });
+});
+
+describe("TURKEY_PROVINCES", () => {
+  it("81 il var, plaka ve adresler benzersiz", () => {
+    assert.equal(TURKEY_PROVINCES.length, 81);
+    assert.equal(new Set(TURKEY_PROVINCES.map((p) => p.plate)).size, 81);
+    assert.equal(new Set(TURKEY_PROVINCES.map((p) => p.slug)).size, 81);
+  });
+
+  it("koordinatlar Türkiye sınırları içinde", () => {
+    for (const p of TURKEY_PROVINCES) {
+      assert.ok(p.latitude > 35.8 && p.latitude < 42.2, `${p.name} enlemi`);
+      assert.ok(p.longitude > 25.6 && p.longitude < 44.9, `${p.name} boylamı`);
+    }
+  });
+
+  it("Türkçe karakterli adlar sade adreslere çevrilir", () => {
+    assert.equal(findProvince("sanliurfa")?.name, "Şanlıurfa");
+    assert.equal(findProvince("igdir")?.name, "Iğdır");
+    assert.equal(findProvince("istanbul")?.name, "İstanbul");
+    assert.equal(findProvince("yok-boyle-il"), undefined);
+  });
+
+  it("Türk alfabesine göre sıralı (Ç, C'den sonra gelir)", () => {
+    const names = TURKEY_PROVINCES.map((p) => p.name);
+    assert.ok(names.indexOf("Çanakkale") > names.indexOf("Bursa"));
+    assert.ok(names.indexOf("Çanakkale") < names.indexOf("Denizli"));
+  });
+
+  it("doğudaki illerde ay, batıdakilerden önce doğar", () => {
+    const date = new Date("2026-10-27T12:00:00Z");
+    const van = getMoonRiseSet(date, findProvince("van")!).rise!;
+    const edirne = getMoonRiseSet(date, findProvince("edirne")!).rise!;
+    const diffMinutes = (edirne.getTime() - van.getTime()) / MINUTE;
+    assert.ok(diffMinutes > 50 && diffMinutes < 80, `fark ${diffMinutes.toFixed(0)} dk`);
   });
 });
