@@ -59,7 +59,7 @@ Kullanıcının önceki sitesi "şablonik içerik" nedeniyle AdSense'ten **4 kez
 **Next.js kuralları:**
 - Server Components varsayılandır. `"use client"` sadece etkileşimli parçalarda kullanılır.
 - Bu Next.js sürümünde değişiklikler var. Kod yazmadan önce `apps/web/node_modules/next/dist/docs/` içindeki ilgili rehberi oku (bkz. `apps/web/AGENTS.md`).
-- Bilgi yazıları **MDX** ile yazılır, statik üretilir (SSG).
+- Bilgi yazıları şimdilik TSX içinde `Prose` bileşeniyle yazılıyor (metni Claude yazdığı için MDX'e gerek kalmadı). Statik üretilir.
 
 **"Bugün" sayfaları (karar verildi):**
 - Tek sayfa, sabit adres (örn. `/tr/bugun-ay`). İçerik her gün kendiliğinden yenilenir, yeni sayfa oluşmaz.
@@ -180,6 +180,8 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 6. ✅ Site düzeni: üst menü, alt bilgi (site haritası), breadcrumb (+JSON-LD), "Kısaca" kutusu, WebPage `dateModified`
 
 7. 🟡 "Bugün ay" açıklama metni yazıldı (`app/tr/bugun-ay/Explainer.tsx`), kullanıcı onayı bekliyor
+
+8. 🟡 `/tr/ay-evreleri` ana rehber: yörünge çizimi (`OrbitDiagram`), 8 evre listesi, önümüzdeki ana evreler, açıklama metni. Kullanıcı onayı bekliyor. Sıradaki: 7 evre sayfası (yeni ay, hilal, ilk dördün, büyüyen şişkin, dolunay, küçülen şişkin, son dördün). Her biri farklı soruya odaklanmalı, aynı iskelet olmamalı.
 
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 

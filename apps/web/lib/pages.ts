@@ -26,6 +26,7 @@ export interface SitePage {
 
 export const PAGES = {
   bugunAy: { path: "/tr/bugun-ay", title: "Bugün Ay Nasıl?", group: "araclar", inHeader: true },
+  ayEvreleri: { path: "/tr/ay-evreleri", title: "Ay Evreleri Nedir?", group: "evreler", inHeader: true },
 } as const satisfies Record<string, SitePage>;
 
 export const ALL_PAGES: SitePage[] = Object.values(PAGES);

@@ -6,6 +6,7 @@ import {
   getMoonRiseSet,
   getNextFullMoon,
   getNextNewMoon,
+  getUpcomingPrincipalPhases,
   ISTANBUL,
   TURKEY_PROVINCES,
 } from "./index.ts";
@@ -89,6 +90,27 @@ describe("getMoonPhase", () => {
       seen.add(getMoonPhase(new Date(Date.UTC(2026, 10, 1 + day, 9)), TZ).key);
     }
     assert.equal(seen.size, 8);
+  });
+});
+
+describe("getUpcomingPrincipalPhases", () => {
+  it("ana evreleri sırayla ve doğru anlarda verir", () => {
+    const phases = getUpcomingPrincipalPhases(new Date("2026-10-27T12:00:00Z"), 5);
+    assert.deepEqual(
+      phases.map((p) => p.key),
+      ["last-quarter", "new-moon", "first-quarter", "full-moon", "last-quarter"],
+    );
+    assert.equal(phases[1].name, "Yeni Ay");
+    assertNear(phases[1].date, "2026-11-09T07:02:00Z", 5);
+    assertNear(phases[3].date, "2026-11-24T14:53:00Z", 5);
+  });
+
+  it("ardışık ana evreler arasında 6-9 gün vardır", () => {
+    const phases = getUpcomingPrincipalPhases(new Date("2027-01-01T00:00:00Z"), 12);
+    for (let i = 1; i < phases.length; i++) {
+      const days = (phases[i].date.getTime() - phases[i - 1].date.getTime()) / 86_400_000;
+      assert.ok(days > 6 && days < 9, `${days.toFixed(2)} gün`);
+    }
   });
 });
 

@@ -75,6 +75,24 @@ function intermediatePhase(phaseAngle: number): PhaseKey {
   return "waning-crescent";
 }
 
+export interface PrincipalPhase {
+  key: PhaseKey;
+  name: string;
+  date: Date;
+}
+
+/** Verilen andan sonraki `count` adet ana evre (yeni ay, ilk dördün, dolunay, son dördün), sırasıyla. */
+export function getUpcomingPrincipalPhases(date: Date, count: number): PrincipalPhase[] {
+  const result: PrincipalPhase[] = [];
+  let quarter = Astronomy.SearchMoonQuarter(date);
+  for (let i = 0; i < count; i++) {
+    const key = QUARTER_KEYS[quarter.quarter];
+    result.push({ key, name: PHASE_NAMES_TR[key], date: quarter.time.date });
+    quarter = Astronomy.NextMoonQuarter(quarter);
+  }
+  return result;
+}
+
 /** Verilen andan sonraki ilk dolunay. */
 export function getNextFullMoon(date: Date): Date {
   return searchPhase(180, date);
