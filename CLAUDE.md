@@ -210,6 +210,8 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 16. ✅ `/tr/2026-2027-yeniay-tarihleri`: iki yılın yeni ayları (tutulma ve kara ay notları), 2026-2027 güneş tutulmaları (bölge açıklamaları elle, `ECLIPSE_REGIONS`), 2 Ağustos 2027 tutulmasının 8 ilden örtülme oranı ve saatleri (`getLocalSolarEclipse`), göz güvenliği uyarısı.
 
+17. ✅ `/tr/super-ay`: süper ay nedir, tanım tartışması, gerçek oranlı süper/mikro ay karşılaştırması, 2026-2030 süper ayları, "süper ay deprem tetikler mi?" (kanıt yok, deprem tahmini yapılamaz). Eşik `lib/supermoon.ts` içinde ortak (`SUPERMOON_KM`).
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

@@ -16,6 +16,7 @@ import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { nameFullMoons } from "@/lib/full-moon-names";
 import { PAGES } from "@/lib/pages";
+import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.dolunay2027;
@@ -23,8 +24,6 @@ const YEAR = 2027;
 const UPDATED = "2026-10-27";
 const location = siteConfig.defaultLocation;
 const timeZone = location.timeZone;
-/** Bu sitede süper ay eşiği: dolunay anında Dünya'ya bundan yakın olan ay. */
-const SUPERMOON_KM = 362_500;
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {

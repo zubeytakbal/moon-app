@@ -96,6 +96,15 @@ export const PAGES = {
       "2026 ve 2027'nin yeni ayları saatleriyle; güneş tutulmaları ve 2 Ağustos 2027 tutulmasının Türkiye'den görünüşü.",
     cardPhaseAngle: 0,
   },
+  superAy: {
+    path: "/tr/super-ay",
+    title: "Süper Ay Nedir?",
+    navLabel: "Süper Ay",
+    group: "tarihler",
+    inHeader: true,
+    description: "Süper ay ne kadar büyük görünür, neden tek bir tanımı yok? 2026-2030 süper ay tarihleri.",
+    cardPhaseAngle: 180,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
