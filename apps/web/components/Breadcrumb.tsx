@@ -4,7 +4,7 @@ import { siteConfig } from "@/site.config";
 import { JsonLd } from "./JsonLd";
 
 /** Sayfa yolu: Ana Sayfa › Grup › Sayfa. Google için BreadcrumbList verisi de üretir. */
-export function Breadcrumb({ page }: { page: SitePage }) {
+export function Breadcrumb({ page, tone = "light" }: { page: SitePage; tone?: "light" | "dark" }) {
   // Grup sayfaları henüz yok; grup adı bağlantısız gösterilir.
   const items: { name: string; path?: string }[] = [
     { name: "Ana Sayfa", path: "/" },
@@ -12,16 +12,20 @@ export function Breadcrumb({ page }: { page: SitePage }) {
     { name: page.title, path: page.path },
   ];
   const linked = items.filter((i) => i.path);
+  const colors =
+    tone === "dark"
+      ? "text-zinc-400 [&_a:hover]:text-white"
+      : "text-zinc-500 [&_a:hover]:text-zinc-900 dark:[&_a:hover]:text-zinc-100";
 
   return (
-    <nav aria-label="Sayfa yolu" className="text-sm text-zinc-500">
+    <nav aria-label="Sayfa yolu" className={`text-sm ${colors}`}>
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;
           return (
             <li key={item.name} className="flex items-center gap-2">
               {item.path && !isLast ? (
-                <Link href={item.path} className="hover:text-zinc-900 hover:underline dark:hover:text-zinc-100">
+                <Link href={item.path} className="hover:underline">
                   {item.name}
                 </Link>
               ) : (

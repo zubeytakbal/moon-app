@@ -34,7 +34,7 @@ export function OrbitDiagram() {
   };
 
   return (
-    <figure className="mt-8 overflow-hidden rounded-2xl bg-[#0b1020] p-4 text-white sm:p-6">
+    <figure className="mt-8 overflow-hidden starfield rounded-2xl bg-[#05070d] p-4 text-white sm:p-6">
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-labelledby="orbit-title orbit-desc">
         <title id="orbit-title">Ay evrelerinin oluşumu</title>
         <desc id="orbit-desc">

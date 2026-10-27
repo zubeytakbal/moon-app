@@ -84,7 +84,16 @@ Kullanıcının önceki sitesi "şablonik içerik" nedeniyle AdSense'ten **4 kez
 - **Eski site:** Eski sayfalar taşınmaz, 301 yönlendirmesi yapılmaz (eski sitenin kalite cezası yeni siteye geçebilir). Kullanıcının kendi yazdığı özgün yazılar elden geçirilip yeniden kullanılabilir. Bu durumda eski sitedeki kopya kaldırılmalı ya da `noindex` yapılmalı. Şablonla üretilmiş eski sayfaların hiçbir parçası alınmaz.
 - **Görseller:** NASA görselleri çoğunlukla kaynak gösterilerek kullanılabilir, ama her görselin künyesi tek tek kontrol edilir. NASA logosu kullanılmaz, "NASA onaylı" gibi bir izlenim verilmez.
 
-## 6. Tasarım ilkeleri (önerildi, kesin onay bekliyor)
+## 6. Tasarım ilkeleri
+
+> **Kullanıcı geri bildirimi (27 Ekim 2026):** İlk sade tasarımı "çok kötü" buldu; birimceviri.app'teki ay sayfasını çok daha profesyonel buluyor. Beklenti: gerçekçi, görsel olarak güçlü sayfalar. Düz renkli çizimler, küçük yazılar ve "form gibi" kutular kullanma.
+
+**Uygulanan görsel dil:**
+- Koyu, tam genişlik giriş alanı (`bg-[#05070d]` + `.starfield`), üst menü ve alt bilgi de aynı koyu ton. İçerik alanı açık renkli, `max-w-3xl`.
+- **Gerçek ay fotoğrafı:** `public/moon/full-moon.webp` (NASA SVS "Moon Phase and Libration, 2026", kare 7157, 730px, kamu malı; künye: "NASA Scientific Visualization Studio"). Evre gölgesi `MoonPhaseIcon` içinde hesaplanıp yumuşatılarak bindirilir. Küçük boylar için `full-moon-160.webp`.
+- İri, ince rakamlar (`font-extralight`, `tabular-nums`), bölüm başlıklarının üstünde küçük büyük harfli etiketler, `rounded-2xl` gölgeli kartlar, vurgu rengi indigo.
+- 7 günlük evre şeridi, geri sayım çipleri gibi zengin bilgi kutuları.
+
 
 Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/weather-on-the-moon/). Düzenden ilham alınır, görsel kimlik bize ait olur.
 
