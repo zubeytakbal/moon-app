@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getFullMoonsOfYear,
+  getMoonDistanceKm,
+  getUpcomingLunarEclipses,
   getMonthCalendar,
   getNextBlueMoon,
   getMoonAltitude,
@@ -239,5 +242,25 @@ describe("getNextBlueMoon", () => {
       TZ,
     ).filter((d) => d.principal?.key === "full-moon");
     assert.equal(prevMonthFull.length, 2);
+  });
+});
+
+describe("events", () => {
+  it("2026'nın ilk ay tutulması 3 Mart'taki tam tutulmadır", () => {
+    const [first] = getUpcomingLunarEclipses(new Date("2026-01-01T00:00:00Z"), 1);
+    assert.equal(first.kind, "total");
+    assertNear(first.peak, "2026-03-03T11:33:00Z", 10);
+  });
+
+  it("2027'de 12 dolunay var, en yakını ocakta", () => {
+    const fulls = getFullMoonsOfYear(2027);
+    assert.equal(fulls.length, 12);
+    const closest = fulls.reduce((a, b) => (getMoonDistanceKm(a.date) < getMoonDistanceKm(b.date) ? a : b));
+    assert.equal(closest.date.toISOString().slice(0, 7), "2027-01");
+  });
+
+  it("ay-Dünya uzaklığı makul aralıkta", () => {
+    const d = getMoonDistanceKm(new Date("2026-10-27T12:00:00Z"));
+    assert.ok(d > 356_000 && d < 407_000);
   });
 });

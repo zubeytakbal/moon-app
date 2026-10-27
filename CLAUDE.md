@@ -205,6 +205,9 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 14. ✅ `/tr/dogdugum-gun-ay`: tarih (+isteğe bağlı saat) formu (`next/form`, `?tarih=YYYY-MM-DD&saat=HHMM`, canonical tek adres, örnek bağlantılar nofollow), sonuç kartı, geçen dolunay/tur sayısı, 19/38/57. yaş günü (Meton), paylaş düğmesi (`ShareButton`).
 - "Bir sonraki dolunay ne zaman" için ayrı sayfa yapılmadı: Dolunay sayfasıyla aynı soru (yamyamlık riski). Listedeki 30 sayfadan bu düşüldü.
 
+15. ✅ `/tr/2027-dolunay-tarihleri`: 2026'nın kalan dolunayları + 2027'nin 12 dolunayı (ad, saat, İstanbul doğuşu, uzaklık, süper/mikro ay, tutulma ve Türkiye'den görünürlüğü). Süper ay eşiği 362.500 km (Nolle'ye yakın, sayfada açıkça yazıyor). Geleneksel adlar `lib/full-moon-names.ts` (Kuzey Amerika kökenli, Hasat/Avcı/Mavi Ay kuralları). Tutulma, uzaklık, mevsim fonksiyonları `packages/moon/src/events.ts`.
+- Karar: "2026 dolunay tarihleri" ayrı sayfa yapılmadı (yalnız yıl değişen şablon sayfa olurdu, 2 dolunayı kalmıştı); 2027 sayfasına bölüm olarak eklendi.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.

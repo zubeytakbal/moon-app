@@ -76,6 +76,16 @@ export const PAGES = {
     description: "Ay neden şekil değiştirir? Yeni aydan dolunaya 8 evrenin adı, sırası ve anlamı.",
     cardPhaseAngle: 90,
   },
+  dolunay2027: {
+    path: "/tr/2027-dolunay-tarihleri",
+    title: "2027 Dolunay Tarihleri",
+    navLabel: "2027 Dolunay Tarihleri",
+    group: "tarihler",
+    inHeader: true,
+    featured: true,
+    description: "2027'nin 12 dolunayı saatleriyle: süper ay, mikro ay, tutulmalar ve geleneksel adları.",
+    cardPhaseAngle: 180,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
