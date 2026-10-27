@@ -115,6 +115,15 @@ export const PAGES = {
     description: "2026-2029 ay tutulmaları: saatleri, evreleri ve Türkiye'den görülüp görülmeyeceği.",
     cardPhaseAngle: 180,
   },
+  dolunayIsimleri: {
+    path: "/tr/dolunay-isimleri",
+    title: "Dolunay İsimleri",
+    navLabel: "Dolunay İsimleri",
+    group: "tarihler",
+    inHeader: true,
+    description: "Kurt Ayı, Çilek Ayı, Hasat Ayı... Dolunay isimlerinin anlamı, kökeni ve bir sonraki tarihleri.",
+    cardPhaseAngle: 180,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",
