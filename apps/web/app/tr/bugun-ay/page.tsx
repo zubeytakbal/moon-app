@@ -17,6 +17,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { QuickFacts } from "@/components/QuickFacts";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { Explainer } from "./Explainer";
 
 const PAGE = PAGES.bugunAy;
 const PATH = PAGE.path;
@@ -42,6 +43,7 @@ export default function TodayMoonPage({ searchParams }: PageProps<"/tr/bugun-ay"
         <SelectedCityMoonTimes searchParams={searchParams} />
       </Suspense>
       <NextPhases />
+      <Explainer />
     </main>
   );
 }

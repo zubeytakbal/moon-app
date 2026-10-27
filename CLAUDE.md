@@ -152,14 +152,21 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 - Ortam: Windows, proje `C:\dev\moon-app`, terminal PowerShell.
 - **Git:** Repo kök klasörde (`C:\dev\moon-app`), branch `main`, remote `https://github.com/zubeytakbal/moon-app`. Commit ve push kullanıcının onayıyla yapılır.
 
-## 9. Açık sorular
+## 9. Kullanıcının diğer sitesi: birimceviri.app
+
+- Kullanıcının mevcut sitesi. 500+ dönüşüm ve 260+ hesaplayıcı sayfası var. `/ay-evreleri` sayfası tek sayfada evre, 81 il doğuş/batış, takvim, burç, süper ay, tutulma ve SSS topluyor (astronomy-engine kullanıyor).
+- **Metin oradan kopyalanmaz.** İki site aynı aramalarda yarışır, Google kopyayı cezalandırır. Fikir ve özellik alınabilir (kullanıcının kendi işi).
+- Oradan alınabilecek özellik fikirleri: 7 günlük evre şeridi, tarih seçici (geçmiş/gelecek gün), dolunay takvim aboneliği (.ics / Google Takvim), "Türkiye'den bakınca ay sağdan dolar, sağdan boşalır" ipucu, konum kullanma, sonraki ana evreye geri sayım.
+- Yeni site yayına çıkınca birimceviri'deki ay sayfasının durumu (kaldırma / noindex / yeni siteye bağlantı) kullanıcıyla kararlaştırılacak.
+
+## 10. Açık sorular
 
 - Araç sayfalarının altındaki açıklama metinlerini kim yazacak?
 - Eski site: AdSense'ten reddedilen site mi? Search Console'da manuel işlem var mı? Kaç sayfa var?
 - Tasarım ilkelerinin (bölüm 6) kesin onayı.
 - Marka adı ve domain.
 
-## 10. Yol haritası
+## 11. Yol haritası
 
 **İlk görev:**
 1. ✅ CLAUDE.md
@@ -170,9 +177,13 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 5. ✅ İl seçici: 81 il (`TURKEY_PROVINCES`), `?il=...` aynı sayfada, canonical tek adres
 6. ✅ Site düzeni: üst menü, alt bilgi (site haritası), breadcrumb (+JSON-LD), "Kısaca" kutusu, WebPage `dateModified`
 
-**Sıradaki adaylar:** "Bugün ay" sayfasının altına açıklama metni (yayın için şart), ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
+7. 🟡 "Bugün ay" açıklama metni yazıldı (`app/tr/bugun-ay/Explainer.tsx`), kullanıcı onayı bekliyor
 
-## 11. Teknik notlar
+**Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
+
+**Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
+
+## 12. Teknik notlar
 
 - **Komutlar (kökten):** `npm run dev` (geliştirme sunucusu), `npm run build`, `npm test` (ay paketi testleri).
 - `packages/moon` derlenmeden, doğrudan TypeScript olarak kullanılır. Node 24 testleri tip silme ile çalıştırır, bu yüzden paket içi importlar `.ts` uzantılıdır ve sadece silinebilir TS sözdizimi kullanılır (enum yok). `apps/web/tsconfig.json` bu yüzden `allowImportingTsExtensions` içerir.
