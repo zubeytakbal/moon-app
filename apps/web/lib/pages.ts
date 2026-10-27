@@ -17,8 +17,10 @@ export const GROUP_NAMES: Record<PageGroup, string> = {
 
 export interface SitePage {
   path: string;
-  /** Menüde ve breadcrumb'da görünen kısa ad. */
+  /** Breadcrumb'da ve kartlarda görünen ad. */
   title: string;
+  /** Üst menüdeki kısa ad. */
+  navLabel: string;
   group: PageGroup;
   /** Ana sayfadaki kartta görünen tek cümlelik açıklama. */
   description: string;
@@ -35,6 +37,7 @@ export const PAGES = {
   bugunAy: {
     path: "/tr/bugun-ay",
     title: "Bugün Ay Nasıl?",
+    navLabel: "Bugün Ay",
     group: "araclar",
     inHeader: true,
     description: "Ayın bugünkü evresi, aydınlık oranı ve 81 il için doğuş-batış saatleri.",
@@ -43,6 +46,7 @@ export const PAGES = {
   ayEvreleri: {
     path: "/tr/ay-evreleri",
     title: "Ay Evreleri Nedir?",
+    navLabel: "Ay Evreleri",
     group: "evreler",
     inHeader: true,
     description: "Ay neden şekil değiştirir? Yeni aydan dolunaya 8 evrenin adı, sırası ve anlamı.",
