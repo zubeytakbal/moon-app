@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GROUP_NAMES, type SitePage } from "@/lib/pages";
+import { GROUP_NAMES, HOME_PATH, type SitePage } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 import { JsonLd } from "./JsonLd";
 
@@ -7,7 +7,7 @@ import { JsonLd } from "./JsonLd";
 export function Breadcrumb({ page, tone = "light" }: { page: SitePage; tone?: "light" | "dark" }) {
   // Grup sayfaları henüz yok; grup adı bağlantısız gösterilir.
   const items: { name: string; path?: string }[] = [
-    { name: "Ana Sayfa", path: "/" },
+    { name: "Ana Sayfa", path: HOME_PATH },
     { name: GROUP_NAMES[page.group] },
     { name: page.title, path: page.path },
   ];

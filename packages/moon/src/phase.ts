@@ -93,6 +93,25 @@ export function getUpcomingPrincipalPhases(date: Date, count: number): Principal
   return result;
 }
 
+export interface Lunation {
+  /** Döngüyü başlatan yeni ay. */
+  start: Date;
+  /** Döngüyü bitiren (bir sonraki) yeni ay. */
+  end: Date;
+  /** İlk dördün, dolunay, son dördün ve döngüyü bitiren yeni ay. */
+  phases: PrincipalPhase[];
+}
+
+/** Verilen anın içinde bulunduğu ay döngüsü (bir yeni aydan bir sonrakine). */
+export function getLunation(date: Date): Lunation {
+  const startTime = Astronomy.SearchMoonPhase(0, date, -(SYNODIC_MONTH_DAYS + 2));
+  if (!startTime) throw new Error("Önceki yeni ay bulunamadı");
+  const start = startTime.date;
+  // Aramayı yeni aydan bir saat sonra başlatırız ki döngüyü başlatan yeni ay tekrar dönmesin.
+  const phases = getUpcomingPrincipalPhases(new Date(start.getTime() + 3_600_000), 4);
+  return { start, end: phases[3].date, phases };
+}
+
 /** Verilen andan sonraki ilk dolunay. */
 export function getNextFullMoon(date: Date): Date {
   return searchPhase(180, date);

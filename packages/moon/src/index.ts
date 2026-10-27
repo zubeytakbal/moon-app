@@ -1,11 +1,13 @@
 export { ISTANBUL, isSouthernHemisphere, type GeoLocation } from "./location.ts";
 export {
+  getLunation,
   getMoonPhase,
   getNextFullMoon,
   getNextNewMoon,
   getUpcomingPrincipalPhases,
   PHASE_NAMES_TR,
   SYNODIC_MONTH_DAYS,
+  type Lunation,
   type MoonPhaseInfo,
   type PhaseKey,
   type PrincipalPhase,

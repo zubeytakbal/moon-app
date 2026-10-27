@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   findProvince,
+  getLunation,
   getMoonPhase,
   getMoonRiseSet,
   getNextFullMoon,
@@ -111,6 +112,18 @@ describe("getUpcomingPrincipalPhases", () => {
       const days = (phases[i].date.getTime() - phases[i - 1].date.getTime()) / 86_400_000;
       assert.ok(days > 6 && days < 9, `${days.toFixed(2)} gün`);
     }
+  });
+});
+
+describe("getLunation", () => {
+  it("27 Ekim 2026, 10 Ekim yeni ayıyla başlayıp 9 Kasım yeni ayıyla biten döngüdedir", () => {
+    const l = getLunation(new Date("2026-10-27T12:00:00Z"));
+    assert.equal(l.start.toISOString().slice(0, 10), "2026-10-10");
+    assertNear(l.end, "2026-11-09T07:02:00Z", 5);
+    assert.deepEqual(
+      l.phases.map((p) => p.key),
+      ["first-quarter", "full-moon", "last-quarter", "new-moon"],
+    );
   });
 });
 

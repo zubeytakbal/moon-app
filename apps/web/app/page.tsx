@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-// Geçici: ana sayfa hazır olana kadar "Bugün ay nasıl" sayfasına yönlendirir.
+// Kök adres, şimdilik tek dil olan Türkçe ana sayfaya yönlendirir.
 export default function Home() {
-  redirect("/tr/bugun-ay");
+  redirect("/tr");
 }

@@ -192,6 +192,10 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 
 8. 🟡 `/tr/ay-evreleri` ana rehber: yörünge çizimi (`OrbitDiagram`), 8 evre listesi, önümüzdeki ana evreler, açıklama metni. Kullanıcı onayı bekliyor. Sıradaki: 7 evre sayfası (yeni ay, hilal, ilk dördün, büyüyen şişkin, dolunay, küçülen şişkin, son dördün). Her biri farklı soruya odaklanmalı, aynı iskelet olmamalı.
 
+9. ✅ Yeni tasarım (gerçek ay fotoğrafı, koyu hero) iki sayfaya uygulandı
+10. ✅ Ana sayfa `/tr` (`/` buraya yönlenir): bugünün ayı, bu ayın döngüsü zaman çizelgesi (`getLunation`), Keşfet kartları (`lib/pages.ts` içindeki `description` ve `cardPhaseAngle` alanlarından), "nasıl hesaplıyoruz"
+11. ✅ Dil seçici (`LanguageSwitcher`, `siteConfig.languages`). Şimdilik sadece Türkçe.
+
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
@@ -205,7 +209,7 @@ Ana ilham kaynağı: [NASA, Weather on the Moon](https://science.nasa.gov/moon/w
 - **Önbellek:** "Bugün" sayfaları `"use cache"` + `cacheLife("hours")` ile en geç saatte bir yenilenir (`cacheComponents` açık).
 - **Sayfa listesi:** `apps/web/lib/pages.ts`. Menü, alt bilgi ve breadcrumb buradan okunur. Yeni sayfa ancak içeriği tamamlanınca buraya eklenir.
 - **Türkçe ekler:** Saat, yüzde ve il adlarına ek getirmekten kaçın (18:33'te / 09:00'da, İstanbul'da / Van'da değişir). "İstanbul: ay doğuşu 18:33" gibi eksiz yaz.
-- **Yayın öncesi kontrol listesi:** `site.config.ts` içinde `url` gerçek domain olmalı, `allowIndexing: true` yapılmalı, `/` yönlendirmesi gerçek ana sayfayla değiştirilmeli.
+- **Yayın öncesi kontrol listesi:** `site.config.ts` içinde `url` gerçek domain olmalı, `allowIndexing: true` yapılmalı, `/` → `/tr` yönlendirmesi çok dil gelince dil algılamaya çevrilebilir.
 - `apps/web/node_modules` create-next-app'ten kaldı (Windows taşımaya izin vermedi). Kökteki `node_modules` ile birlikte çalışıyor. Sorun çıkarsa silinip kökten `npm install` yapılabilir.
 
 > Her yeni adımda kod yazmadan önce kullanıcıya kısa bir plan sun ve onayını bekle.

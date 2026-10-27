@@ -11,5 +11,7 @@ export const siteConfig = {
   /** Yayına alınana kadar false kalmalı: robots.txt tüm taramayı engeller. */
   allowIndexing: false,
   locale: "tr-TR",
+  /** Sitenin dilleri. Yeni dil, içeriği hazır olunca buraya eklenir (makine çevirisi yok, bkz. CLAUDE.md). */
+  languages: [{ code: "tr", label: "Türkçe", home: "/tr" }],
   defaultLocation: findProvince("istanbul") as Province,
 } as const;
