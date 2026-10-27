@@ -156,6 +156,16 @@ export const PAGES = {
       "Ay şu an hangi burçta, ne zaman burç değiştirecek? Önümüzdeki günlerin ay burçları, Türkiye saatiyle.",
     cardPhaseAngle: 60,
   },
+  ayBurcu: {
+    path: "/tr/ay-burcu-hesaplama",
+    title: "Ay Burcu Hesaplama",
+    navLabel: "Ay Burcu Hesaplama",
+    group: "burclar",
+    inHeader: true,
+    featured: true,
+    description: "Doğum tarihinizi ve saatinizi girin, doğduğunuz anda ayın hangi burçta olduğunu öğrenin.",
+    cardPhaseAngle: 120,
+  },
   yeniAy: {
     path: "/tr/yeni-ay",
     title: "Yeni Ay",

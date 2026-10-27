@@ -233,6 +233,9 @@ Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için 
 22. ✅ `/tr/bugun-ay-hangi-burcta` (yeni grup "Ay ve Burçlar", `burclar`): şu anki ay burcu ve derecesi, burca giriş/çıkış saatleri, önümüzdeki 10 burç geçişi, astrolojik burç ile IAU takımyıldızı karşılaştırması (presesyon ~24°), "geleneksel takvim" etiketi ve mor/altın görsel dil. Hesaplar `packages/moon/src/zodiac.ts` (tropikal, `EclipticGeoMoon`). Burç yorumu yapılmaz.
 - Not: Kullanıcı bazen kendi `npm run dev` sunucusunu açık tutuyor. Onun süreçlerine dokunma; `next build` uzun sürerse arka planda bitmesini bekle.
 
+23. ✅ `/tr/ay-burcu-hesaplama`: doğum tarihi + saati (`?tarih=&saat=`, canonical tek adres), ay burcu, derece, element, güneş burcu (`getSunSign`), doğum anındaki ay evresi; saat yoksa ve ay o gün burç değiştirdiyse iki olasılık ve geçiş saati. İl sorulmaz (ay burcu yere bağlı değil, Türkiye tek saat dilimi). Yükselen burç kapsam dışı.
+- Kullanıcı kararı: 30 sayfa tamamlanınca yeni sayfa üretimi durur; her sayfa internetteki rakiplerle ve trafik verileriyle karşılaştırılıp güncellenir. "Boşa sayfa üretmeyeceğiz."
+
 **Kullanıcının yol haritası (27 Ekim 2026, Keyword Planner verisiyle):** ~30 sayfaya ulaşınca içerik üretimi durur → site düzeni ve konu sistemi toplu düzeltme → "app'de gözükme" (anlamı netleştirilecek: Google'da görünürlük mü, mobil uygulama mı) → AdSense başvurusu.
 Kalan içerik sırası (aylık arama hacmi): 1) Bugün ay hangi burçta (10-100B) 2) Ay burcu hesaplama (10-100B) 3) Kanlı ay, yalnız tam tutulmalar (10-100B) 4) Güneş tutulması, genel sayfa + 2 Ağustos 2027 Türkiye ("güneş tutulması 2027" ~100, "güneş tutulması" 10-100B) 5) Ay takvimine göre saç kesim günleri (1-10B, kullanıcı onayladı) 6) Boşlukta ay takvimi (1-10B) 7) Ay takvimine göre ekim dikim (100-1B) 8) Eyyam-ı biyz (100-1B). Ardından 4 zorunlu sayfa.
 Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay nasıldı ~1B.

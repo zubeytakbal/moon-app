@@ -87,3 +87,10 @@ export function getMoonConstellation(date: Date): string {
   const eq = Astronomy.Equator(Astronomy.Body.Moon, date, observer, false, true);
   return Astronomy.Constellation(eq.ra, eq.dec).name;
 }
+
+/** Güneş'in, tarihin gerçek ekinoksuna göre ekliptik boylamından bulunan burcu ("güneş burcu"). */
+export function getSunSign(date: Date): MoonSign {
+  const lon = ((Astronomy.SunPosition(date).elon % 360) + 360) % 360;
+  const index = Math.floor(lon / 30) % 12;
+  return { index, name: ZODIAC_SIGNS_TR[index], degree: lon - index * 30 };
+}

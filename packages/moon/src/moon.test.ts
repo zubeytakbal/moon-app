@@ -5,6 +5,7 @@ import {
   getCurrentSignIngress,
   getMoonSign,
   getMoonSignIngresses,
+  getSunSign,
   getCrescentEvenings,
   getLocalSolarEclipse,
   getUpcomingSolarEclipses,
@@ -328,5 +329,13 @@ describe("zodiac", () => {
     const current = getCurrentSignIngress(now);
     assert.ok(current.date <= now);
     assert.equal(current.sign.index, getMoonSign(now).index);
+  });
+});
+
+describe("getSunSign", () => {
+  it("27 Ekim Akrep, 1 Ocak Oğlak, 21 Mart Koç", () => {
+    assert.equal(getSunSign(new Date("2026-10-27T12:00:00Z")).name, "Akrep");
+    assert.equal(getSunSign(new Date("2027-01-01T12:00:00Z")).name, "Oğlak");
+    assert.equal(getSunSign(new Date("2027-03-22T12:00:00Z")).name, "Koç");
   });
 });
