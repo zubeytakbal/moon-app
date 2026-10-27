@@ -36,9 +36,10 @@ export function MoonPhaseIcon({ phaseAngle, size = 200, southern = false, title,
   ].join(" ");
 
   // Aynı sayfada aynı evre birden çok kez çizilse bile tanımlar aynı olduğu için çakışma sorun yaratmaz.
-  const id = `moon-${Math.round(phaseAngle * 10)}-${size <= 80 ? "s" : "l"}`;
-  const src = size <= 80 ? "/moon/full-moon-160.webp" : "/moon/full-moon.webp";
-  const blur = size <= 80 ? 0.6 : 1.1;
+  const id = `moon-${Math.round(phaseAngle * 10)}-${size <= 80 ? "s" : size <= 500 ? "m" : "l"}`;
+  const src =
+    size <= 80 ? "/moon/full-moon-160.webp" : size <= 500 ? "/moon/full-moon.webp" : "/moon/full-moon-2000.webp";
+  const blur = size <= 80 ? 0.6 : size <= 500 ? 1.1 : 0.8;
   const pad = glow ? 12 : 0;
 
   return (

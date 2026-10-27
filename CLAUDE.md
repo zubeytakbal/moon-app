@@ -90,7 +90,8 @@ Kullanıcının önceki sitesi "şablonik içerik" nedeniyle AdSense'ten **4 kez
 
 **Uygulanan görsel dil:**
 - Koyu, tam genişlik giriş alanı (`bg-[#05070d]` + `.starfield`), üst menü ve alt bilgi de aynı koyu ton. İçerik alanı açık renkli, `max-w-3xl`.
-- **Gerçek ay fotoğrafı:** `public/moon/full-moon.webp` (NASA SVS "Moon Phase and Libration, 2026", kare 7157, 730px, kamu malı; künye: "NASA Scientific Visualization Studio"). Evre gölgesi `MoonPhaseIcon` içinde hesaplanıp yumuşatılarak bindirilir. Küçük boylar için `full-moon-160.webp`.
+- **Gerçek ay fotoğrafı:** NASA SVS "Moon Phase and Libration, 2026" (svs.gsfc.nasa.gov/5587), 5760px "plain" kare 7157 (26 Ekim 2026 dolunayı), kamu malı; künye: "NASA Scientific Visualization Studio". `public/moon/` altında 160 / 800 / 2000 px WebP. `MoonPhaseIcon` gösterim boyutuna göre dosyayı seçer, evre gölgesini hesaplayıp yumuşatarak bindirir.
+- **Referans:** Kullanıcı NASA'nın science.nasa.gov/moon sayfasını örnek gösterdi: iki katlı menü (üstte logo/araçlar, altta ortalı kalın bölüm menüsü), ekranı kaplayan sinematik ay görseli üzerinde dev başlık. Ana sayfa girişi bu tarzda (dev ay yayı + başlık).
 - İri, ince rakamlar (`font-extralight`, `tabular-nums`), bölüm başlıklarının üstünde küçük büyük harfli etiketler, `rounded-2xl` gölgeli kartlar, vurgu rengi indigo.
 - 7 günlük evre şeridi, geri sayım çipleri gibi zengin bilgi kutuları.
 

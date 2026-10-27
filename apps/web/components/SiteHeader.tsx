@@ -1,34 +1,42 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { getMoonPhase } from "@moon-app/moon";
-import { ALL_PAGES, HOME_PATH, PAGES } from "@/lib/pages";
+import { HOME_PATH, pagesByGroup, PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
-import { DesktopNav, MobileNav, type NavItem } from "./HeaderNav";
+import { DesktopNav, MobileNav, type NavSection } from "./HeaderNav";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MoonPhaseIcon } from "./MoonPhaseIcon";
 
+/**
+ * İki katlı üst menü. Üst kat: logo, canlı ay göstergesi, dil. Alt kat: bölümler.
+ * Bölümler `lib/pages.ts` gruplarından gelir; boş bölüm gösterilmez.
+ */
 export function SiteHeader() {
-  const items: NavItem[] = ALL_PAGES.filter((p) => p.inHeader).map((p) => ({
-    path: p.path,
-    label: p.navLabel,
-    description: p.description,
-  }));
+  const sections: NavSection[] = pagesByGroup()
+    .filter((g) => g.group !== "kurumsal")
+    .map((g) => ({
+      label: g.name,
+      items: g.pages.map((p) => ({ path: p.path, label: p.navLabel, description: p.description })),
+    }));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#05070d] text-white">
-      <div className="relative mx-auto flex h-16 w-full max-w-5xl items-center gap-4 px-4">
-        <Link href={HOME_PATH} className="flex items-center gap-2.5" aria-label={`${siteConfig.name} ana sayfa`}>
-          <MoonPhaseIcon phaseAngle={140} size={30} title="" />
-          <span className="text-[1.0625rem] font-semibold tracking-tight">{siteConfig.name}</span>
-        </Link>
-
-        <div className="ml-auto flex items-center gap-2 md:ml-6 md:flex-1">
-          <DesktopNav items={items} />
-          <div className="flex items-center gap-2 md:ml-auto">
+    <header className="sticky top-0 z-50 bg-[#05070d] text-white">
+      <div className="relative border-b border-white/10">
+        <div className="mx-auto flex h-16 w-full max-w-5xl items-center gap-3 px-4">
+          <Link href={HOME_PATH} className="flex items-center gap-2.5" aria-label={`${siteConfig.name} ana sayfa`}>
+            <MoonPhaseIcon phaseAngle={140} size={32} title="" />
+            <span className="text-lg font-bold tracking-tight">{siteConfig.name}</span>
+          </Link>
+          <div className="ml-auto flex items-center gap-2">
             <MoonNow />
             <LanguageSwitcher />
-            <MobileNav items={items} />
+            <MobileNav sections={sections} />
           </div>
+        </div>
+      </div>
+      <div className="hidden border-b border-white/10 bg-[#0a0d16] md:block">
+        <div className="mx-auto w-full max-w-5xl px-4">
+          <DesktopNav sections={sections} />
         </div>
       </div>
     </header>
@@ -50,7 +58,7 @@ async function MoonNow() {
       title={`Şu an: ${phase.name}, yüzde ${illumination} aydınlık`}
     >
       <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={24} title={phase.name} />
-      <span className="tabular-nums">%{illumination}</span>
+      <span className="font-medium tabular-nums">%{illumination}</span>
       <span className="hidden text-zinc-400 lg:inline">{phase.name}</span>
     </Link>
   );

@@ -61,52 +61,51 @@ async function Hero() {
   const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
 
   return (
-    <section className="starfield relative overflow-hidden bg-[#05070d] text-white">
-      <div className="mx-auto grid w-full max-w-5xl items-center gap-10 px-4 py-12 md:grid-cols-[1fr_auto] md:py-20">
-        <div className="order-2 md:order-1">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-indigo-300">Ay rehberi</p>
-          <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
-            Gökyüzündeki ay, bugün ve her gün
-          </h1>
-          <p className="mt-5 max-w-lg text-lg text-zinc-300">
-            Ayın evresi, doğuş ve batış saatleri, dolunay tarihleri. Hepsi Türkiye saatine göre, astronomik hesaplarla.
-          </p>
+    <section className="starfield relative flex min-h-[640px] flex-col justify-end overflow-hidden bg-[#05070d] text-white md:min-h-[min(88vh,860px)]">
+      {/* Dev ay: yalnızca üst yayı görünür, evre gölgesi o anki evreye göre. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[34%] w-[max(900px,125vw)] -translate-x-1/2 md:top-[24%] md:w-[min(125vw,1900px)]"
+      >
+        <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={1600} title="" />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-gradient-to-t from-[#05070d] via-[#05070d]/70 to-transparent"
+      />
 
-          <Link
-            href={PAGES.bugunAy.path}
-            className="group mt-8 flex max-w-md items-center gap-4 rounded-2xl border border-white/15 bg-white/[0.06] p-4 transition hover:border-white/30 hover:bg-white/10"
+      <div className="relative mx-auto w-full max-w-5xl px-4 pb-14 md:pb-20">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">Ay rehberi</p>
+        <h1 className="mt-4 max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl md:text-[5.25rem]">
+          Gökyüzündeki ay, bugün ve her gün
+        </h1>
+        <p className="mt-6 max-w-xl text-lg text-zinc-200 md:text-xl">
+          Ayın evresi, doğuş ve batış saatleri, dolunay tarihleri. Hepsi Türkiye saatine göre, astronomik hesaplarla.
+        </p>
+
+        <Link
+          href={PAGES.bugunAy.path}
+          className="group mt-8 flex max-w-md items-center gap-4 rounded-2xl border border-white/15 bg-black/40 p-4 backdrop-blur-sm transition hover:border-white/30 hover:bg-black/55"
+        >
+          <span className="shrink-0">
+            <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={56} title={phase.name} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs uppercase tracking-wider text-zinc-400">
+              Bu gece · <time dateTime={now.toISOString()}>{date.format(now)}</time>
+            </span>
+            <span className="mt-0.5 block text-lg font-semibold">
+              {phase.name} <span className="font-light text-zinc-300">· %{illumination}</span>
+            </span>
+            <span className="text-sm text-indigo-300">Bugünün ayrıntıları</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="text-xl text-zinc-400 transition group-hover:translate-x-1 group-hover:text-white"
           >
-            <span className="shrink-0">
-              <MoonPhaseIcon phaseAngle={phase.phaseAngle} size={56} title={phase.name} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-xs uppercase tracking-wider text-zinc-400">
-                <time dateTime={now.toISOString()}>{date.format(now)}</time>
-              </span>
-              <span className="mt-0.5 block text-lg font-semibold">
-                {phase.name} <span className="font-light text-zinc-300">· %{illumination}</span>
-              </span>
-              <span className="text-sm text-indigo-300">Bugünün ayrıntıları</span>
-            </span>
-            <span
-              aria-hidden="true"
-              className="text-xl text-zinc-400 transition group-hover:translate-x-1 group-hover:text-white"
-            >
-              →
-            </span>
-          </Link>
-        </div>
-
-        <div className="order-1 flex justify-center md:order-2">
-          <div className="w-[min(70vw,400px)]">
-            <MoonPhaseIcon
-              phaseAngle={phase.phaseAngle}
-              size={400}
-              glow
-              title={`Ayın şu anki görünümü: ${phase.name}`}
-            />
-          </div>
-        </div>
+            →
+          </span>
+        </Link>
       </div>
     </section>
   );
