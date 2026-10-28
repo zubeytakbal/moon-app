@@ -284,6 +284,7 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 - Ders: kilit dosyası Windows'ta üretildiği için Linux yerel paketleri eksikti; `apps/web/package.json` `optionalDependencies` (lightningcss-linux-x64-gnu, @tailwindcss/oxide-linux-x64-gnu). Paket sürümü değişirse bunları da güncelle.
 - Ders: `cacheComponents` açıkken route segment `dynamicParams` kullanılamaz; derlemede üretilmesi gereken rota çıktısı için `generateStaticParams` + `"use cache"` yardımcı fonksiyon (bkz. `app/og/[slug]/route.tsx`). Cloudflare'de çalışma anında disk (`node:fs`) yok.
 - Kullanıcı ekran görüntülerini sohbete ekleyemiyor; `C:\Users\Excalibur\OneDrive\Pictures\Screenshots` klasöründeki en yeni dosyayı oku. Cloudflare derleme kaydı için "Download log" → `Downloads` klasörü. Cloudflare paneli tarayıcıda otomatik Türkçeye çevriliyor; kutulara yazarken çeviriyi kapattır.
+- Domain geçmişi: lunatlas.com 2020-2022 arası başkasının Türkçe WordPress blogu "LunAtlas" (yaşam/sağlık/bilim yazıları; Wayback'te spam izi yok). Search Console doğrulandı (alan adı mülkü, 28 Ekim 2026): Manuel işlemler ve Güvenlik sorunları "Hiçbir sorun algılanmadı". Eski adresler (www.lunatlas.com/...) 404 döner, bu normal. Eski site haritası kaydı (sitemap_index.xml, 2020) önceki sahipten.
 - Kalan: workers.dev adresini kapat (kopya içerik), www → kök yönlendirmesi, Search Console + site haritası, e-posta yönlendirmesi, GA4 + çerez izni (CMP), AdSense (1-2 ay sonra).
 
 ## 11b. Yıllık güncelleme takvimi
