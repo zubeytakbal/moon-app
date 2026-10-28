@@ -5,10 +5,10 @@ import { JsonLd } from "./JsonLd";
 
 /** Sayfa yolu: Ana Sayfa › Grup › Sayfa. Google için BreadcrumbList verisi de üretir. */
 export function Breadcrumb({ page, tone = "light" }: { page: SitePage; tone?: "light" | "dark" }) {
-  // Grup sayfaları henüz yok; grup adı bağlantısız gösterilir.
+  // Grup sayfaları henüz yok; grup adı bağlantısız gösterilir. "Bugün Ay" tek sayfalık bölüm olduğu için atlanır.
   const items: { name: string; path?: string }[] = [
     { name: "Ana Sayfa", path: HOME_PATH },
-    { name: GROUP_NAMES[page.group] },
+    ...(page.group === "bugun" ? [] : [{ name: GROUP_NAMES[page.group] }]),
     { name: page.title, path: page.path },
   ];
   const linked = items.filter((i) => i.path);

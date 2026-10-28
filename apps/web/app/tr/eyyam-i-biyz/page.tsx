@@ -36,7 +36,7 @@ export default function EyyamiBiyzPage() {
       <PhaseHero
         page={PAGE}
         angle={175}
-        eyebrow="Hicri ve gelenek"
+        eyebrow="Hicri"
         lead="Hicri ayların 13, 14 ve 15. günlerine eyyam-ı biyz, yani “beyaz günler” denir. Adını, ayın dolunaya yaklaşıp geceleri ışıl ışıl aydınlattığı bu günlerden alır."
         aside={<NextBiyz />}
       />

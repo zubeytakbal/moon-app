@@ -37,3 +37,30 @@ body {
     radial-gradient(1px 1px at 52% 6%, rgb(255 255 255 / 0.35), transparent 60%),
     radial-gradient(ellipse 80% 60% at 75% 40%, rgb(99 102 241 / 0.10), transparent 70%);
 }
+
+/*
+ * Lunatlas amblemi ("Dünya ışığı"): gerçek ay fotoğrafından parlak bir hilal ve ayın
+ * Dünya ışığıyla soluk görünen geri kalanı. Bkz. components/Emblem.tsx.
+ */
+.emblem {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 9999px;
+}
+.emblem::before,
+.emblem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: url("/moon/full-moon-160.webp") center / 108% no-repeat;
+}
+.emblem::before {
+  filter: brightness(0.22) saturate(0.6);
+}
+.emblem::after {
+  mask-image: radial-gradient(circle at 30% 50%, transparent 0 55%, #000 63%);
+}
+.emblem-glow {
+  box-shadow: 0 0 18px rgb(200 210 255 / 0.25);
+}

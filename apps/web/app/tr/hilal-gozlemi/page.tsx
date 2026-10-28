@@ -41,7 +41,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
       <PhaseHero
         page={PAGE}
         angle={25}
-        eyebrow="Hicri ve gelenek"
+        eyebrow="Hicri"
         lead="Yeni aydan sonra batı ufkunda beliren ince hilal, gökyüzünün en zarif ve en zor görüntülerinden biridir. Ne zaman ve nereye bakacağınızı bilirseniz bulmak çok daha kolaydır."
         aside={
           <div className="rounded-2xl border border-white/15 bg-black/40 p-5 text-sm text-zinc-200 backdrop-blur-sm">

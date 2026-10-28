@@ -62,7 +62,7 @@ export default function HijriCalendarPage() {
       <PhaseHero
         page={PAGE}
         angle={35}
-        eyebrow="Hicri ve gelenek"
+        eyebrow="Hicri"
         lead="Hicri takvim bir ay takvimidir: her ay, yeni aydan sonra hilalin görülmesiyle başlar. Bu sayfada takvimin nasıl işlediğini ve önümüzdeki ay başlarının astronomik tahminini bulabilirsiniz."
         aside={<TodayHijri />}
       />

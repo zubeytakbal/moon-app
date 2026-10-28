@@ -47,7 +47,7 @@ export default function SupermoonPage() {
       <PhaseHero
         page={PAGE}
         angle={180}
-        eyebrow="Tarihler"
+        eyebrow="Takvim"
         lead="Dolunay, ayın Dünya'ya en çok yaklaştığı zamana denk geldiğinde ay biraz daha büyük ve parlak görünür. Bu sayfada farkın gerçekte ne kadar olduğunu ve önümüzdeki süper ayları bulabilirsiniz."
         aside={<NextSupermoon />}
       />

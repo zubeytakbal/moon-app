@@ -42,7 +42,7 @@ export default function FullMoons2027Page() {
       <PhaseHero
         page={PAGE}
         angle={180}
-        eyebrow="Tarihler"
+        eyebrow="Takvim"
         lead="2027'de 12 dolunay var. Her birinin tarihi, saati, Dünya'ya uzaklığı ve o yıla özgü notları bu sayfada."
         aside={<NextPrincipal phase="full-moon" />}
       />

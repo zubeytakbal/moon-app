@@ -18,10 +18,10 @@ import { CitySelect } from "@/components/CitySelect";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { PageVisual } from "@/components/PageVisual";
-import { SiteSearch, type SearchItem } from "@/components/SiteSearch";
+import { SiteSearch } from "@/components/SiteSearch";
 import { toHijri } from "@/lib/hijri";
 import { pageOpenGraph } from "@/lib/og";
-import { ALL_PAGES, GROUP_NAMES, HOME_PATH, PAGES, pagesByGroup } from "@/lib/pages";
+import { HOME_PATH, PAGES, pagesByGroup, SEARCH_ITEMS } from "@/lib/pages";
 import { getUpcomingSkyEvents, type SkyEventKind } from "@/lib/sky-events";
 import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
@@ -53,13 +53,6 @@ const PHASE_ANGLE: Record<PhaseKey, number> = {
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
-const SEARCH_ITEMS: SearchItem[] = ALL_PAGES.map((p) => ({
-  path: p.path,
-  title: p.title,
-  description: p.description,
-  group: GROUP_NAMES[p.group],
-}));
-
 export default function HomePage({ searchParams }: PageProps<"/tr">) {
   return (
     <>
@@ -85,6 +78,17 @@ export default function HomePage({ searchParams }: PageProps<"/tr">) {
           description:
             "Ay evreleri, ay takvimi, 81 il için ay doğuş-batış saatleri, dolunay ve tutulma tarihleri, Hicri takvim. Türkiye saatine göre astronomik hesaplar.",
           inLanguage: "tr-TR",
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          // Google'ın arama sonuçlarında ve bilgi panelinde göstereceği logo.
+          name: siteConfig.name,
+          url: new URL("/", siteConfig.url).toString(),
+          logo: new URL("/logo.png", siteConfig.url).toString(),
+          email: siteConfig.contactEmail,
         }}
       />
     </>

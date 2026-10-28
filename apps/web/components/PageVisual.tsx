@@ -4,11 +4,12 @@ import { MoonPhaseIcon } from "./MoonPhaseIcon";
 
 /** Bölümlere göre kart arka planı. Yıldız dokusu (`starfield`) arka plan görselini kullandığı için renk düz verilir. */
 const GROUP_BG: Record<SitePage["group"], string> = {
-  araclar: "bg-[#10162e]",
+  bugun: "bg-[#10162e]",
   evreler: "bg-[#0b0e16]",
-  tarihler: "bg-[#1c1006]",
-  "hicri-gelenek": "bg-[#0b1a12]",
-  burclar: "bg-[#1a1030]",
+  takvim: "bg-[#10162e]",
+  tutulmalar: "bg-[#1c1006]",
+  hicri: "bg-[#0b1a12]",
+  "gelenek-burclar": "bg-[#1a1030]",
   bilgi: "bg-[#0b0e16]",
   kurumsal: "bg-[#0b0e16]",
 };
@@ -116,7 +117,7 @@ export function PageVisual({ page }: { page: SitePage }) {
       </div>
     );
   else if (path === PAGES.gunesTutulmasi.path || path === PAGES.yeniayTarihleri.path) visual = <SolarEclipse />;
-  else if (page.group === "burclar") {
+  else if (path === PAGES.ayHangiBurcta.path || path === PAGES.ayBurcu.path || path === PAGES.aybosluk.path) {
     const index = path === PAGES.ayBurcu.path ? 3 : path === PAGES.aybosluk.path ? 11 : 1;
     visual = (
       <div className="flex items-center gap-3">
@@ -124,7 +125,7 @@ export function PageVisual({ page }: { page: SitePage }) {
         <MoonPhaseIcon phaseAngle={page.cardPhaseAngle} size={64} title="" />
       </div>
     );
-  } else if (page.group === "hicri-gelenek")
+  } else if (page.group === "hicri")
     visual = (
       <div className="relative">
         <MoonPhaseIcon phaseAngle={page.cardPhaseAngle} size={96} title="" />

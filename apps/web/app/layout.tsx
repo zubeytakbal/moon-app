@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { RelatedPages } from "@/components/RelatedPages";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -10,6 +10,13 @@ import { siteConfig } from "@/site.config";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   // latin-ext: ğ, ş, ı, İ gibi Türkçe harfler için gerekli.
+  subsets: ["latin", "latin-ext"],
+});
+
+/** Yalnız logodaki "LUNATLAS" yazısı için (bkz. components/Emblem.tsx). */
+const brandFont = Josefin_Sans({
+  variable: "--font-brand",
+  weight: ["300", "400"],
   subsets: ["latin", "latin-ext"],
 });
 
@@ -24,7 +31,7 @@ const RELATED_BY_PATH = Object.fromEntries(ALL_PAGES.map((p) => [p.path, related
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="tr" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="tr" className={`${geistSans.variable} ${brandFont.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <SiteHeader />
         <div className="flex-1">{children}</div>

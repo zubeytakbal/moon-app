@@ -50,7 +50,7 @@ export default function NewMoons20262027Page() {
       <PhaseHero
         page={PAGE}
         angle={0}
-        eyebrow="Tarihler"
+        eyebrow="Takvim"
         lead="2026 ve 2027'nin bütün yeni ayları, saatleriyle. Güneş tutulmaları yalnızca yeni ayda olur; bu iki yılın tutulmalarını ve Türkiye'den görünüşlerini de burada bulabilirsiniz."
         aside={<NextPrincipal phase="new-moon" />}
       />

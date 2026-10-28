@@ -81,7 +81,7 @@ export default function LunarEclipsesPage() {
       <PhaseHero
         page={PAGE}
         angle={180}
-        eyebrow="Tarihler"
+        eyebrow="Tutulmalar"
         lead="Ay tutulması, dolunayda ayın Dünya'nın gölgesine girmesidir. Güneş tutulmasının aksine çıplak gözle izlemek tamamen güvenlidir; tek şart, o sırada ayın bulunduğunuz yerde ufkun üzerinde olması."
         aside={<NextEclipse />}
       />

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MoonPhaseIcon } from "./MoonPhaseIcon";
+import { SiteSearch, type SearchItem } from "./SiteSearch";
 
 export interface NavItem {
   path: string;
@@ -182,6 +183,47 @@ export function MobileNav({ sections }: { sections: NavSection[] }) {
             ))}
           </div>
         </nav>
+      )}
+    </div>
+  );
+}
+
+/** Telefonda arama: büyüteçle açılır, menünün altında tam genişlikte kutu gösterir. */
+export function MobileSearch({ items }: { items: SearchItem[] }) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [lastPath, setLastPath] = useState(pathname);
+
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
+
+  return (
+    <div className="md:hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="mobil-arama"
+        aria-label={open ? "Aramayı kapat" : "Sitede ara"}
+        className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-200 hover:bg-white/10"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+          {open ? (
+            <path d="M6 6l12 12M18 6L6 18" />
+          ) : (
+            <>
+              <circle cx="11" cy="11" r="7" />
+              <path d="M20 20l-3.5-3.5" />
+            </>
+          )}
+        </svg>
+      </button>
+      {open && (
+        <div id="mobil-arama" className="absolute inset-x-0 top-full border-b border-white/10 bg-[#05070d] px-4 py-3">
+          <SiteSearch items={items} variant="header" autoFocus />
+        </div>
       )}
     </div>
   );

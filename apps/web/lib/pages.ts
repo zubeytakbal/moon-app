@@ -4,14 +4,24 @@
  * (bkz. CLAUDE.md, kırmızı çizgiler). Hiçbir sayfa döngüyle üretilmez.
  */
 
-export type PageGroup = "araclar" | "evreler" | "tarihler" | "hicri-gelenek" | "burclar" | "bilgi" | "kurumsal";
+export type PageGroup =
+  | "bugun"
+  | "evreler"
+  | "takvim"
+  | "tutulmalar"
+  | "hicri"
+  | "gelenek-burclar"
+  | "bilgi"
+  | "kurumsal";
 
+/** Üst menünün bölümleri de bu sırayla dizilir. */
 export const GROUP_NAMES: Record<PageGroup, string> = {
-  araclar: "Araçlar",
+  bugun: "Bugün Ay",
   evreler: "Ay Evreleri",
-  tarihler: "Tarihler",
-  "hicri-gelenek": "Hicri ve Gelenek",
-  burclar: "Ay ve Burçlar",
+  takvim: "Takvim",
+  tutulmalar: "Tutulmalar",
+  hicri: "Hicri",
+  "gelenek-burclar": "Gelenek ve Burçlar",
   bilgi: "Bilgi",
   kurumsal: "Kurumsal",
 };
@@ -41,7 +51,7 @@ export const PAGES = {
     path: "/tr/bugun-ay",
     title: "Bugün Ay Nasıl?",
     navLabel: "Bugün Ay",
-    group: "araclar",
+    group: "bugun",
     inHeader: true,
     featured: true,
     description: "Ayın bugünkü evresi, aydınlık oranı ve 81 il için doğuş-batış saatleri.",
@@ -51,21 +61,11 @@ export const PAGES = {
     path: "/tr/ay-takvimi",
     title: "Ay Takvimi",
     navLabel: "Ay Takvimi",
-    group: "araclar",
+    group: "takvim",
     inHeader: true,
     featured: true,
     description: "Aylık ay takvimi: her günün ay evresi ve aydınlık oranı, dolunay ve yeni ay saatleri.",
     cardPhaseAngle: 300,
-  },
-  dogdugumGun: {
-    path: "/tr/dogdugum-gun-ay",
-    title: "Doğduğum Gün Ay Nasıldı?",
-    navLabel: "Doğduğum Gün Ay",
-    group: "araclar",
-    inHeader: true,
-    featured: true,
-    description: "Doğum tarihinizi girin: o gün ay hangi evredeydi, ne kadar aydınlıktı, kaç günlüktü?",
-    cardPhaseAngle: 160,
   },
   ayEvreleri: {
     path: "/tr/ay-evreleri",
@@ -81,7 +81,7 @@ export const PAGES = {
     path: "/tr/dolunay-tarihleri",
     title: "2027 Dolunay Tarihleri",
     navLabel: "2027 Dolunay Tarihleri",
-    group: "tarihler",
+    group: "takvim",
     inHeader: true,
     featured: true,
     description: "2027'nin 12 dolunayı saatleriyle: süper ay, mikro ay, tutulmalar ve geleneksel adları.",
@@ -91,7 +91,7 @@ export const PAGES = {
     path: "/tr/yeniay-tarihleri",
     title: "2026-2027 Yeni Ay Tarihleri",
     navLabel: "2026-2027 Yeni Ay Tarihleri",
-    group: "tarihler",
+    group: "takvim",
     inHeader: true,
     description:
       "2026 ve 2027'nin yeni ayları saatleriyle; güneş tutulmaları ve 2 Ağustos 2027 tutulmasının Türkiye'den görünüşü.",
@@ -101,7 +101,7 @@ export const PAGES = {
     path: "/tr/super-ay",
     title: "Süper Ay Nedir?",
     navLabel: "Süper Ay",
-    group: "tarihler",
+    group: "takvim",
     inHeader: true,
     description: "Süper ay ne kadar büyük görünür, neden tek bir tanımı yok? 2026-2030 süper ay tarihleri.",
     cardPhaseAngle: 180,
@@ -110,7 +110,7 @@ export const PAGES = {
     path: "/tr/ay-tutulmalari",
     title: "Ay Tutulmaları",
     navLabel: "Ay Tutulmaları",
-    group: "tarihler",
+    group: "tutulmalar",
     inHeader: true,
     featured: true,
     description: "2026-2029 ay tutulmaları: saatleri, evreleri ve Türkiye'den görülüp görülmeyeceği.",
@@ -120,7 +120,7 @@ export const PAGES = {
     path: "/tr/dolunay-isimleri",
     title: "Dolunay İsimleri",
     navLabel: "Dolunay İsimleri",
-    group: "tarihler",
+    group: "takvim",
     inHeader: true,
     description: "Kurt Ayı, Çilek Ayı, Hasat Ayı... Dolunay isimlerinin anlamı, kökeni ve bir sonraki tarihleri.",
     cardPhaseAngle: 180,
@@ -129,7 +129,7 @@ export const PAGES = {
     path: "/tr/hicri-takvim",
     title: "Hicri Takvim ve Ay Başları",
     navLabel: "Hicri Takvim",
-    group: "hicri-gelenek",
+    group: "hicri",
     inHeader: true,
     featured: true,
     description: "Hicri ↔ Miladi tarih çevirici. Hicri takvim nasıl işler, aylar ne zaman başlar?",
@@ -139,7 +139,7 @@ export const PAGES = {
     path: "/tr/hilal-gozlemi",
     title: "Hilal Gözlemi Nasıl Yapılır?",
     navLabel: "Hilal Gözlemi",
-    group: "hicri-gelenek",
+    group: "hicri",
     inHeader: true,
     description:
       "Yeni hilali ne zaman, nereye bakarak görebilirsiniz? İlinize göre önümüzdeki akşamların hilal koşulları.",
@@ -149,7 +149,7 @@ export const PAGES = {
     path: "/tr/bugun-ay-hangi-burcta",
     title: "Bugün Ay Hangi Burçta?",
     navLabel: "Bugün Ay Hangi Burçta?",
-    group: "burclar",
+    group: "gelenek-burclar",
     inHeader: true,
     featured: true,
     description:
@@ -160,7 +160,7 @@ export const PAGES = {
     path: "/tr/ay-burcu-hesaplama",
     title: "Ay Burcu Hesaplama",
     navLabel: "Ay Burcu Hesaplama",
-    group: "burclar",
+    group: "gelenek-burclar",
     inHeader: true,
     featured: true,
     description: "Doğum tarihinizi ve saatinizi girin, doğduğunuz anda ayın hangi burçta olduğunu öğrenin.",
@@ -170,7 +170,7 @@ export const PAGES = {
     path: "/tr/kanli-ay",
     title: "Kanlı Ay",
     navLabel: "Kanlı Ay",
-    group: "tarihler",
+    group: "tutulmalar",
     inHeader: true,
     featured: true,
     description: "Bir sonraki kanlı ay ne zaman, Türkiye'den görülecek mi? Ay tutulmada neden kırmızıya döner?",
@@ -180,7 +180,7 @@ export const PAGES = {
     path: "/tr/gunes-tutulmasi",
     title: "Güneş Tutulması",
     navLabel: "Güneş Tutulması",
-    group: "tarihler",
+    group: "tutulmalar",
     inHeader: true,
     featured: true,
     description:
@@ -191,7 +191,7 @@ export const PAGES = {
     path: "/tr/ay-takvimine-gore-sac-kesim-gunleri",
     title: "Ay Takvimine Göre Saç Kesim Günleri",
     navLabel: "Saç Kesim Günleri",
-    group: "hicri-gelenek",
+    group: "gelenek-burclar",
     inHeader: true,
     featured: true,
     description: "Geleneğe göre saç ne zaman kesilir? Büyüyen ve küçülen ay günleri, ayın burcu, ay ay takvim.",
@@ -201,7 +201,7 @@ export const PAGES = {
     path: "/tr/ay-boslukta-takvimi",
     title: "Ay Boşlukta Takvimi",
     navLabel: "Ay Boşlukta Takvimi",
-    group: "burclar",
+    group: "gelenek-burclar",
     inHeader: true,
     description: "Ay şu an boşlukta mı? Önümüzdeki boşluktaki ay dönemleri, başlangıç ve bitiş saatleriyle.",
     cardPhaseAngle: 300,
@@ -210,7 +210,7 @@ export const PAGES = {
     path: "/tr/ay-takvimine-gore-ekim-dikim",
     title: "Ay Takvimine Göre Ekim Dikim",
     navLabel: "Ekim Dikim Takvimi",
-    group: "hicri-gelenek",
+    group: "gelenek-burclar",
     inHeader: true,
     description:
       "Geleneğe göre hangi gün ne ekilir? Büyüyen ve küçülen ay, dinlenme günleri ve biyodinamik takvim, ay ay.",
@@ -220,7 +220,7 @@ export const PAGES = {
     path: "/tr/eyyam-i-biyz",
     title: "Eyyam-ı Biyz Günleri",
     navLabel: "Eyyam-ı Biyz",
-    group: "hicri-gelenek",
+    group: "hicri",
     inHeader: true,
     description:
       "Eyyam-ı biyz orucu ne zaman? Hicri ayların 13, 14 ve 15. günleri, önümüzdeki aylar için tarihleriyle.",
@@ -283,6 +283,16 @@ export const PAGES = {
     description: "Gece yarısı doğan yarım ay: sabah gökyüzünde görülür, sol yarısı aydınlıktır.",
     cardPhaseAngle: 270,
   },
+  dogdugumGun: {
+    path: "/tr/dogdugum-gun-ay",
+    title: "Doğduğum Gün Ay Nasıldı?",
+    navLabel: "Doğduğum Gün Ay",
+    group: "evreler",
+    inHeader: true,
+    featured: true,
+    description: "Doğum tarihinizi girin: o gün ay hangi evredeydi, ne kadar aydınlıktı, kaç günlüktü?",
+    cardPhaseAngle: 160,
+  },
   yontem: {
     path: "/tr/yontem-ve-dogruluk",
     title: "Yöntem ve Doğruluk",
@@ -326,6 +336,14 @@ export const PAGES = {
 } as const satisfies Record<string, SitePage>;
 
 export const ALL_PAGES: SitePage[] = Object.values(PAGES);
+
+/** Site içi aramanın tarandığı liste (üst menüde ve ana sayfada). */
+export const SEARCH_ITEMS = ALL_PAGES.map((p) => ({
+  path: p.path,
+  title: p.title,
+  description: p.description,
+  group: GROUP_NAMES[p.group],
+}));
 
 /** Sayfaları gruplarına göre, GROUP_NAMES sırasıyla döner. Boş gruplar atlanır. */
 export function pagesByGroup(): { group: PageGroup; name: string; pages: SitePage[] }[] {

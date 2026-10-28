@@ -114,7 +114,7 @@ export default function FullMoonNamesPage() {
       <PhaseHero
         page={PAGE}
         angle={180}
-        eyebrow="Tarihler"
+        eyebrow="Takvim"
         lead="Her ayın dolunayının bir adı vardır: Kurt Ayı, Çilek Ayı, Hasat Ayı... Bu adlar nereden geliyor, ne anlama geliyor ve bir sonraki ne zaman?"
         aside={<NextPrincipal phase="full-moon" />}
       />
