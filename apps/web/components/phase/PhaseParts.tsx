@@ -322,7 +322,20 @@ export function ArticleFooter({
               </a>
             </li>
           ))}
-          <li>Tarih ve saatler: Astronomy Engine ile Türkiye saatine göre hesaplanmıştır.</li>
+          <li>
+            Tarih ve saatler: Astronomy Engine ile Türkiye saatine göre hesaplanmıştır
+            {page.path !== PAGES.yontem.path && (
+              <>
+                {" "}
+                (
+                <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+                  nasıl doğruladık?
+                </Link>
+                )
+              </>
+            )}
+            .
+          </li>
           <li>Ay görseli: NASA Scientific Visualization Studio.</li>
         </ul>
         <p className="mt-4">

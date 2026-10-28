@@ -283,6 +283,14 @@ export const PAGES = {
     description: "Gece yarısı doğan yarım ay: sabah gökyüzünde görülür, sol yarısı aydınlıktır.",
     cardPhaseAngle: 270,
   },
+  yontem: {
+    path: "/tr/yontem-ve-dogruluk",
+    title: "Yöntem ve Doğruluk",
+    navLabel: "Yöntem ve Doğruluk",
+    group: "kurumsal",
+    description: "Hesaplarımızı nasıl yapıyor, NASA, USNO ve Diyanet verileriyle nasıl karşılaştırıyoruz?",
+    cardPhaseAngle: 90,
+  },
 } as const satisfies Record<string, SitePage>;
 
 export const ALL_PAGES: SitePage[] = Object.values(PAGES);
@@ -324,6 +332,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   dolunay: ["dolunay2027", "kanliAy", "dolunayIsimleri"],
   kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
+  yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
 };
 
 /** Sayfa yolu → ilgili sayfalar. */
