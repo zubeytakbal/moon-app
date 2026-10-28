@@ -6,8 +6,8 @@ import { findProvince, type Province } from "@moon-app/moon";
  */
 export const siteConfig = {
   name: "Lunatlas",
-  /** Sitenin tam adresi. Yayında "https://lunatlas.com" olacak (canonical adresler buna göre üretilir). */
-  url: "http://localhost:3000",
+  /** Sitenin tam adresi (canonical adresler, site haritası ve paylaşım görselleri buna göre üretilir). */
+  url: "https://lunatlas.com",
   /** İletişim adresi. Domain alınınca Gmail'e yönlendirme kurulacak. */
   contactEmail: "iletisim@lunatlas.com",
   /** Yayına alınana kadar false kalmalı: robots.txt tüm taramayı engeller. */
