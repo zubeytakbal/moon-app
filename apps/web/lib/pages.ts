@@ -291,6 +291,38 @@ export const PAGES = {
     description: "Hesaplarımızı nasıl yapıyor, NASA, USNO ve Diyanet verileriyle nasıl karşılaştırıyoruz?",
     cardPhaseAngle: 90,
   },
+  hakkimizda: {
+    path: "/tr/hakkimizda",
+    title: "Hakkımızda",
+    navLabel: "Hakkımızda",
+    group: "kurumsal",
+    description: "Site nedir, içerikler ve hesaplar nasıl hazırlanıyor?",
+    cardPhaseAngle: 180,
+  },
+  iletisim: {
+    path: "/tr/iletisim",
+    title: "İletişim",
+    navLabel: "İletişim",
+    group: "kurumsal",
+    description: "Hata bildirimi, öneri ve sorularınız için e-posta adresimiz.",
+    cardPhaseAngle: 180,
+  },
+  gizlilik: {
+    path: "/tr/gizlilik-politikasi",
+    title: "Gizlilik Politikası",
+    navLabel: "Gizlilik Politikası",
+    group: "kurumsal",
+    description: "Hangi bilgiler, ne amaçla işlenir? KVKK kapsamındaki haklarınız.",
+    cardPhaseAngle: 180,
+  },
+  cerez: {
+    path: "/tr/cerez-politikasi",
+    title: "Çerez Politikası",
+    navLabel: "Çerez Politikası",
+    group: "kurumsal",
+    description: "Kullanılan çerezler ve nasıl yönetebileceğiniz.",
+    cardPhaseAngle: 180,
+  },
 } as const satisfies Record<string, SitePage>;
 
 export const ALL_PAGES: SitePage[] = Object.values(PAGES);
@@ -333,6 +365,10 @@ const RELATED: Record<PageKey, PageKey[]> = {
   kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
+  hakkimizda: [],
+  iletisim: [],
+  gizlilik: [],
+  cerez: [],
 };
 
 /** Sayfa yolu → ilgili sayfalar. */

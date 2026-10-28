@@ -275,6 +275,11 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
 
+## 11a. Zorunlu sayfalar ve yayın hazırlığı
+- ✅ Zorunlu sayfalar (28 Ekim 2026): `/tr/hakkimizda` ("Lunatlas ekibi"; kullanıcı tek kişi ama ad yazılmasın istedi), `/tr/iletisim` (`siteConfig.contactEmail`), `/tr/gizlilik-politikasi` (KVKK aydınlatma, GA4, AdSense zorunlu açıklamaları, araç girdileri adreste, konum cihazda), `/tr/cerez-politikasi` (çerez tablosu). Ortak düzen `components/CorporatePage.tsx`. Hukuki danışmanlık değil; kullanıcı okuyacak.
+- **Barındırma: Cloudflare** (kullanıcı kararı, Vercel değil). OpenNext Cloudflare adaptörü (Next 16, `use cache`, PPR destekli). Yapılacaklar: derlemeyi Cloudflare Workers Builds (GitHub'dan, Linux) yapsın, çünkü OpenNext Windows'ta tam desteklenmiyor; `app/og/route.tsx` diskten (`node:fs`) yazı tipi okuyor, Workers'a uygun hale getir; `next/image` için `images.unoptimized` (görseller zaten küçük WebP); Worker boyutu ücretsiz planda 3 MiB (sıkıştırılmış), aşarsa kullanıcıya sor (5$/ay plan).
+- **Yayın günü kontrol listesi:** `siteConfig.url = "https://lunatlas.com"`, `allowIndexing: true`; e-posta yönlendirmesi (Cloudflare Email Routing → Gmail); Google Analytics (GA4, veri saklama 14 ay, onay modu); çerez bildirimi (AdSense "Gizlilik ve mesajlaşma" CMP ya da başka sertifikalı CMP) ve alt bilgiye "Çerez tercihleri" bağlantısı (Çerez Politikası sayfası buna atıf yapıyor); Search Console + sitemap; AdSense sonra, `ads.txt` ile.
+
 ## 11b. Yıllık güncelleme takvimi
 - Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
 - Tablolar, "sıradaki" vurgusu, süper ay/tutulma etiketleri hesapla kendiliğinden güncellenir.
