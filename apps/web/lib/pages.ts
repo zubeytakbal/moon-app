@@ -132,7 +132,7 @@ export const PAGES = {
     group: "hicri-gelenek",
     inHeader: true,
     featured: true,
-    description: "Hicri takvim nasıl işler, aylar ne zaman başlar? Önümüzdeki Hicri ay başlarının astronomik tahmini.",
+    description: "Hicri ↔ Miladi tarih çevirici. Hicri takvim nasıl işler, aylar ne zaman başlar?",
     cardPhaseAngle: 35,
   },
   hilalGozlemi: {

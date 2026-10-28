@@ -12,6 +12,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { HijriConverter } from "@/components/HijriConverter";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -24,9 +25,9 @@ const OBSERVER = findProvince("ankara")!;
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {
-  title: `Hicri Takvim Nedir? Hicri Aylar ve Ay Başları | ${siteConfig.name}`,
+  title: `Hicri Takvim: Hicri Miladi Tarih Çevirme, Hicri Aylar | ${siteConfig.name}`,
   description:
-    "Hicri takvim nasıl işler, Hicri aylar neden her yıl 11 gün öne gelir, ay başları nasıl belirlenir? Hicri ayların adları ve önümüzdeki ay başlarının astronomik tahmini. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
+    "Hicri tarihi Miladiye, Miladi tarihi Hicriye çevirin. Hicri takvim nasıl işler, aylar neden her yıl 11 gün öne gelir? Hicri aylar ve önümüzdeki ay başları. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -73,10 +74,14 @@ export default function HijriCalendarPage() {
               Bu yüzden Ramazan ve bayramlar her yıl yaklaşık 11 gün öne gelir, 33 yılda bütün mevsimleri dolaşır.
             </li>
             <li>
-              Bu sayfadaki tarihler astronomik tahmindir.{" "}
+              Çevirici Ümmülkurâ takvimini, ay başı tablosu astronomik tahmini kullanır.{" "}
               <strong>Resmî dinî günler için Diyanet takvimi esastır.</strong>
             </li>
           </QuickFacts>
+        </div>
+
+        <div className="mx-auto max-w-3xl">
+          <HijriConverter />
         </div>
 
         <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">Hicri aylar</h2>

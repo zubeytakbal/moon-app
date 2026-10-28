@@ -1,49 +1,7 @@
 import { getMoonPhase, zonedTimeToUtc } from "@moon-app/moon";
+import { toHijri } from "./hijri-calendar";
 
-/**
- * Hicri tarih, Ümmülkurâ takvimine göre (Intl). Diyanet'in 2027 dinî günleri listesindeki
- * 9 tarihle (Miraç, Berat, Ramazan, Kadir, iki bayram, Hicri yılbaşı, Aşure, Mevlid) birebir
- * örtüştüğü kontrol edildi (27 Ekim 2026). Resmî tarihler için yine de Diyanet esas alınmalıdır.
- */
-export const HIJRI_MONTHS = [
-  "Muharrem",
-  "Safer",
-  "Rebiülevvel",
-  "Rebiülahir",
-  "Cemaziyelevvel",
-  "Cemaziyelahir",
-  "Recep",
-  "Şaban",
-  "Ramazan",
-  "Şevval",
-  "Zilkade",
-  "Zilhicce",
-];
-
-export interface HijriDate {
-  year: number;
-  /** 1 Muharrem ... 12 Zilhicce. */
-  month: number;
-  monthName: string;
-  day: number;
-}
-
-export function toHijri(date: Date, timeZone: string): HijriDate {
-  const parts = new Intl.DateTimeFormat("tr-TR-u-ca-islamic-umalqura", {
-    timeZone,
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).formatToParts(date);
-  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
-  const monthName = get("month");
-  return {
-    year: Number(get("year").replace(/\D/g, "")),
-    month: HIJRI_MONTHS.indexOf(monthName) + 1,
-    monthName,
-    day: Number(get("day")),
-  };
-}
+export { HIJRI_MONTHS, toHijri, type HijriDate } from "./hijri-calendar";
 
 const DAY_MS = 86_400_000;
 
