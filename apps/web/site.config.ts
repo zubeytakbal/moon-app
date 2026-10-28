@@ -6,6 +6,8 @@ import { findProvince, type Province } from "@moon-app/moon";
  */
 export const siteConfig = {
   name: "Lunatlas",
+  /** Adın yanında görünen kısa Türkçe açıklama; ad yabancı olduğu için sitenin ne olduğunu söyler. */
+  tagline: "Ay rehberi",
   /** Sitenin tam adresi (canonical adresler, site haritası ve paylaşım görselleri buna göre üretilir). */
   url: "https://lunatlas.com",
   /** İletişim adresi. Domain alınınca Gmail'e yönlendirme kurulacak. */

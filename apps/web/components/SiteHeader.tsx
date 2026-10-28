@@ -55,7 +55,10 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center gap-3 px-4">
           <Link href={HOME_PATH} className="flex items-center gap-2.5" aria-label={`${siteConfig.name} ana sayfa`}>
             <MoonPhaseIcon phaseAngle={140} size={32} title="" />
-            <span className="text-lg font-bold tracking-tight">{siteConfig.name}</span>
+            <span className="flex items-baseline gap-2">
+              <span className="text-lg font-bold tracking-tight">{siteConfig.name}</span>
+              <span className="hidden text-sm text-zinc-400 sm:inline">{siteConfig.tagline}</span>
+            </span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             <MoonNow />

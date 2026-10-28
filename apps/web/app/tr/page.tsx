@@ -78,8 +78,12 @@ export default function HomePage({ searchParams }: PageProps<"/tr">) {
         data={{
           "@context": "https://schema.org",
           "@type": "WebSite",
+          // Google arama sonuçlarındaki site adı için: kök adres, ad ve Türkçe açıklayıcı ikinci ad.
           name: siteConfig.name,
-          url: new URL(HOME_PATH, siteConfig.url).toString(),
+          alternateName: `${siteConfig.name} ${siteConfig.tagline}`,
+          url: new URL("/", siteConfig.url).toString(),
+          description:
+            "Ay evreleri, ay takvimi, 81 il için ay doğuş-batış saatleri, dolunay ve tutulma tarihleri, Hicri takvim. Türkiye saatine göre astronomik hesaplar.",
           inLanguage: "tr-TR",
         }}
       />
