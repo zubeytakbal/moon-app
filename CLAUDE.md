@@ -285,7 +285,8 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 - Ders: `cacheComponents` açıkken route segment `dynamicParams` kullanılamaz; derlemede üretilmesi gereken rota çıktısı için `generateStaticParams` + `"use cache"` yardımcı fonksiyon (bkz. `app/og/[slug]/route.tsx`). Cloudflare'de çalışma anında disk (`node:fs`) yok.
 - Kullanıcı ekran görüntülerini sohbete ekleyemiyor; `C:\Users\Excalibur\OneDrive\Pictures\Screenshots` klasöründeki en yeni dosyayı oku. Cloudflare derleme kaydı için "Download log" → `Downloads` klasörü. Cloudflare paneli tarayıcıda otomatik Türkçeye çevriliyor; kutulara yazarken çeviriyi kapattır.
 - Domain geçmişi: lunatlas.com 2020-2022 arası başkasının Türkçe WordPress blogu "LunAtlas" (yaşam/sağlık/bilim yazıları; Wayback'te spam izi yok). Search Console doğrulandı (alan adı mülkü, 28 Ekim 2026): Manuel işlemler ve Güvenlik sorunları "Hiçbir sorun algılanmadı". Eski adresler (www.lunatlas.com/...) 404 döner, bu normal. Eski site haritası kaydı (sitemap_index.xml, 2020) önceki sahipten.
-- Kalan: workers.dev adresini kapat (kopya içerik), www → kök yönlendirmesi, Search Console + site haritası, e-posta yönlendirmesi, GA4 + çerez izni (CMP), AdSense (1-2 ay sonra).
+- ✅ Search Console (alan adı mülkü) ve site haritası. ✅ E-posta: Cloudflare Email Routing, `iletisim@lunatlas.com` → Gmail (28 Ekim 2026 test edildi). Site adının yanında "Ay rehberi" (`siteConfig.tagline`), WebSite JSON-LD `alternateName`.
+- Kalan: workers.dev adresini kapat (kopya içerik), www → kök yönlendirmesi, GA4 + çerez izni (CMP), `ads.txt` (AdSense yayıncı kimliği gelince), AdSense başvurusu (sayfalar dizine girince, 2-4 hafta).
 
 ## 11b. Yıllık güncelleme takvimi
 - Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
