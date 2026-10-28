@@ -115,7 +115,7 @@ export function PageVisual({ page }: { page: SitePage }) {
         />
       </div>
     );
-  else if (path === PAGES.gunesTutulmasi.path || path === PAGES.yeniAy20262027.path) visual = <SolarEclipse />;
+  else if (path === PAGES.gunesTutulmasi.path || path === PAGES.yeniayTarihleri.path) visual = <SolarEclipse />;
   else if (page.group === "burclar") {
     const index = path === PAGES.ayBurcu.path ? 3 : path === PAGES.aybosluk.path ? 11 : 1;
     visual = (

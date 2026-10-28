@@ -185,7 +185,7 @@ export default function FullMoonNamesPage() {
               ve en parlak haline gelir. Hicri ayın 13, 14 ve 15. günlerine bu yüzden &quot;beyaz günler&quot; anlamında
               eyyam-ı biyz denir. Dolunayın kendisi hakkında daha fazlası için{" "}
               <Link href={PAGES.dolunay.path}>Dolunay</Link> sayfasına, bu yılın bütün dolunayları için{" "}
-              <Link href={PAGES.dolunay2027.path}>2027 Dolunay Tarihleri</Link> sayfasına bakabilirsiniz.
+              <Link href={PAGES.dolunayTarihleri.path}>2027 Dolunay Tarihleri</Link> sayfasına bakabilirsiniz.
             </p>
 
             <h2>Hasat Ayı neden özel?</h2>

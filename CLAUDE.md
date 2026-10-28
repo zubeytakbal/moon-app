@@ -213,10 +213,10 @@ Hacim değil, yalnızca aranıp aranmadığını gösterir. Gerçek hacim için 
 14. ✅ `/tr/dogdugum-gun-ay`: tarih (+isteğe bağlı saat) formu (`next/form`, `?tarih=YYYY-MM-DD&saat=HHMM`, canonical tek adres, örnek bağlantılar nofollow), sonuç kartı, geçen dolunay/tur sayısı, 19/38/57. yaş günü (Meton), paylaş düğmesi (`ShareButton`).
 - "Bir sonraki dolunay ne zaman" için ayrı sayfa yapılmadı: Dolunay sayfasıyla aynı soru (yamyamlık riski). Listedeki 30 sayfadan bu düşüldü.
 
-15. ✅ `/tr/2027-dolunay-tarihleri`: 2026'nın kalan dolunayları + 2027'nin 12 dolunayı (ad, saat, İstanbul doğuşu, uzaklık, süper/mikro ay, tutulma ve Türkiye'den görünürlüğü). Süper ay eşiği 362.500 km (Nolle'ye yakın, sayfada açıkça yazıyor). Geleneksel adlar `lib/full-moon-names.ts` (Kuzey Amerika kökenli, Hasat/Avcı/Mavi Ay kuralları). Tutulma, uzaklık, mevsim fonksiyonları `packages/moon/src/events.ts`.
+15. ✅ `/tr/dolunay-tarihleri` (önce `/tr/2027-dolunay-tarihleri`; yayından önce yılsız yapıldı): 2026'nın kalan dolunayları + 2027'nin 12 dolunayı (ad, saat, İstanbul doğuşu, uzaklık, süper/mikro ay, tutulma ve Türkiye'den görünürlüğü). Süper ay eşiği 362.500 km (Nolle'ye yakın, sayfada açıkça yazıyor). Geleneksel adlar `lib/full-moon-names.ts` (Kuzey Amerika kökenli, Hasat/Avcı/Mavi Ay kuralları). Tutulma, uzaklık, mevsim fonksiyonları `packages/moon/src/events.ts`.
 - Karar: "2026 dolunay tarihleri" ayrı sayfa yapılmadı (yalnız yıl değişen şablon sayfa olurdu, 2 dolunayı kalmıştı); 2027 sayfasına bölüm olarak eklendi.
 
-16. ✅ `/tr/2026-2027-yeniay-tarihleri`: iki yılın yeni ayları (tutulma ve kara ay notları), 2026-2027 güneş tutulmaları (bölge açıklamaları elle, `ECLIPSE_REGIONS`), 2 Ağustos 2027 tutulmasının 8 ilden örtülme oranı ve saatleri (`getLocalSolarEclipse`), göz güvenliği uyarısı.
+16. ✅ `/tr/yeniay-tarihleri` (önce `2026-2027-yeniay-tarihleri`): iki yılın yeni ayları (tutulma ve kara ay notları), 2026-2027 güneş tutulmaları (bölge açıklamaları elle, `ECLIPSE_REGIONS`), 2 Ağustos 2027 tutulmasının 8 ilden örtülme oranı ve saatleri (`getLocalSolarEclipse`), göz güvenliği uyarısı.
 
 17. ✅ `/tr/super-ay`: süper ay nedir, tanım tartışması, gerçek oranlı süper/mikro ay karşılaştırması, 2026-2030 süper ayları, "süper ay deprem tetikler mi?" (kanıt yok, deprem tahmini yapılamaz). Eşik `lib/supermoon.ts` içinde ortak (`SUPERMOON_KM`).
 
@@ -274,6 +274,11 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 **Lansman sırası (kullanıcıyla kararlaştırıldı):** bugün ay → ay evreleri ana rehberi + 7 evre → diğer araçlar → tarih listeleri (önce 2027) → hicri/gelenek + bilgi → zorunlu sayfalar. Metinleri Claude yazar, kullanıcı okuyup onaylar ve küçük kişisel bilgi/fotoğraf ekler.
 
 **Sıradaki adaylar:**, ana sayfa (`/` şimdilik `/tr/bugun-ay`'a yönlendiriyor), sıradaki araç sayfaları.
+
+## 11b. Yıllık güncelleme takvimi
+- Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
+- Tablolar, "sıradaki" vurgusu, süper ay/tutulma etiketleri hesapla kendiliğinden güncellenir.
+- Yıla özgü elle yazılmış notlar (en büyük/küçük dolunay, Hasat Ayı tarihi, o yılın tutulmaları, mavi ay) **her yıl Ekim'de** bir sonraki yıla göre yeniden yazılır (kırmızı çizgi 3: her yılın kendi notu olur, kalıp metin olmaz). Ekim 2027: Dolunay Tarihleri → 2028, Yeniay Tarihleri → 2027-2028.
 
 ## 12. Teknik notlar
 

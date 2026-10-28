@@ -18,7 +18,7 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
-const PAGE = PAGES.yeniAy20262027;
+const PAGE = PAGES.yeniayTarihleri;
 const YEARS = [2026, 2027];
 const UPDATED = "2026-10-27";
 const timeZone = siteConfig.defaultLocation.timeZone;

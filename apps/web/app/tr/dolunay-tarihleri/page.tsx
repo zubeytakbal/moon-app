@@ -21,7 +21,7 @@ import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
-const PAGE = PAGES.dolunay2027;
+const PAGE = PAGES.dolunayTarihleri;
 const YEAR = 2027;
 const UPDATED = "2026-10-27";
 const location = siteConfig.defaultLocation;
