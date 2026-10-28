@@ -3,7 +3,14 @@ import { cacheLife } from "next/cache";
 import Form from "next/form";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BODY_NAMES_TR, getVoidOfCoursePeriods, zonedTimeToUtc, type VoidOfCourse } from "@moon-app/moon";
+import {
+  BODY_NAMES_TR,
+  findLastAspect,
+  getMoonSignIngresses,
+  getVoidOfCoursePeriods,
+  zonedTimeToUtc,
+  type VoidOfCourse,
+} from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
@@ -44,10 +51,16 @@ function durationText(ms: number) {
   return m === 0 ? `${h} saat` : `${h} saat ${m} dakika`;
 }
 
-/** Şu an ve önümüzdeki dört hafta: içinde bulunulan boşluk varsa o da dahil. */
-function upcoming(now: Date): VoidOfCourse[] {
+/**
+ * Şu an ve önümüzdeki dört hafta: içinde bulunulan boşluk varsa o da dahil. Son açı araması pahalı
+ * olduğu için giriş ve liste bu tek önbellekli sonucu paylaşır.
+ */
+async function upcoming(): Promise<VoidOfCourse[]> {
+  "use cache";
+  cacheLife("hours");
+  const now = new Date();
   // Bir önceki burç geçişinden başlayarak ara ki şu an süren boşluk da listeye girsin.
-  return getVoidOfCoursePeriods(new Date(now.getTime() - 3 * DAY_MS), 16)
+  return getVoidOfCoursePeriods(new Date(now.getTime() - 3 * DAY_MS), 14)
     .filter((v) => v.end > now)
     .slice(0, 12);
 }
@@ -180,7 +193,7 @@ async function Hero() {
   cacheLife("hours");
 
   const now = new Date();
-  const [first, second] = upcoming(now);
+  const [first, second] = await upcoming();
   const active = first.start <= now;
   const next = active ? second : first;
   const f = fmt();
@@ -230,7 +243,7 @@ async function PeriodList() {
   cacheLife("hours");
 
   const now = new Date();
-  const list = upcoming(now);
+  const list = await upcoming();
   const f = fmt();
 
   return (
@@ -409,9 +422,16 @@ async function CheckResult({ year, month, day, minutes }: CheckInput) {
   const dayStart = zonedTimeToUtc(year, month, day, 0, timeZone);
   const dayEnd = zonedTimeToUtc(year, month, day + 1, 0, timeZone);
   const span = dayEnd.getTime() - dayStart.getTime();
-  const periods = getVoidOfCoursePeriods(new Date(dayStart.getTime() - 3 * DAY_MS), 5).filter(
-    (v) => v.end > dayStart && v.start < dayEnd,
-  );
+  // Güne yalnızca, bitişi (burç geçişi) gün başından sonra olan ilk iki boşluk düşebilir: ay bir burçta
+  // iki günden fazla kalır, ikinci geçiş ancak ilki gün içindeyse önemlidir. Pahalı son açı araması
+  // yalnızca bu geçişler için yapılır.
+  const [first, second] = getMoonSignIngresses(dayStart, 2);
+  const periods = (first.date < dayEnd ? [first, second] : [first])
+    .map((ingress) => {
+      const lastAspect = findLastAspect(ingress.date);
+      return { start: lastAspect ? lastAspect.date : ingress.date, end: ingress.date, lastAspect, nextSign: ingress.sign };
+    })
+    .filter((v) => v.start < dayEnd);
   // Günün içine düşen kısımlar.
   const voids = periods.map((v) => ({
     period: v,
