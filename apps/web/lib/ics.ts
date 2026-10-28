@@ -186,3 +186,38 @@ export async function buildCalendar(): Promise<string> {
   lines.push("END:VCALENDAR");
   return lines.map(fold).join("\r\n") + "\r\n";
 }
+
+/**
+ * Tek bir tüm gün (ya da birkaç günlük) etkinlikten oluşan .ics dosyası. Araçlardaki
+ * "Takvime ekle" düğmeleri kullanır. Günler "YYYYMMDD", bitiş günü dahil değildir.
+ */
+export function buildSingleEventIcs(e: { uid: string; summary: string; description: string; url: string; start: string; end: string }) {
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    `PRODID:-//${siteConfig.name}//TR`,
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `UID:${e.uid}@${new URL(siteConfig.url).hostname}`,
+    `DTSTAMP:${e.start}T000000Z`,
+    `DTSTART;VALUE=DATE:${e.start}`,
+    `DTEND;VALUE=DATE:${e.end}`,
+    fold(`SUMMARY:${escapeText(e.summary)}`),
+    fold(`DESCRIPTION:${escapeText(`${e.description}\n\n${e.url}`)}`),
+    fold(`URL:${e.url}`),
+    "END:VEVENT",
+    "END:VCALENDAR",
+    "",
+  ].join("\r\n");
+}
+
+/** Google Takvim'de etkinlik oluşturma bağlantısı (tüm gün; bitiş günü dahil değildir). */
+export function googleCalendarLink(e: { summary: string; description: string; url: string; start: string; end: string }) {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: e.summary,
+    dates: `${e.start}/${e.end}`,
+    details: `${e.description}\n\n${e.url}`,
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}

@@ -9,6 +9,7 @@ import { MonthLink } from "@/components/MonthLink";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
+import { buildSingleEventIcs, googleCalendarLink } from "@/lib/ics";
 import {
   adjacentMonths,
   currentMonth,
@@ -25,23 +26,61 @@ import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.sacKesim;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-28";
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Gelenekte saç kesimi için en çok önerilen burç. */
 const FAVORED_SIGN = "Aslan";
+const WEEKDAYS_LONG = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 
 export const metadata: Metadata = {
-  title: `Ay Takvimine Göre Saç Kesim Günleri: Bu Ay Hangi Günler? | ${siteConfig.name}`,
+  title: `Ay Takvimine Göre Saç Kesim Günleri: Size Uygun Gün Hangisi? | ${siteConfig.name}`,
   description:
-    "Ay takvimine göre saç kesim günleri: büyüyen ay (uzaması için) ve küçülen ay (şeklini koruması için) günleri, ayın burcu ve geleneğin en çok önerdiği günler. İstediğiniz ayı seçebilirsiniz.",
-  // Ay seçimi (?ay=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
+    "Ay takvimine göre saç kesim günleri: saçınız hızlı uzasın mı, şeklini mi korusun? Önümüzdeki uygun günleri bulun, takviminize ekleyin. Büyüyen ay, küçülen ay ve ayın burcu aylık takvimde.",
+  // Ay ve amaç seçimi (?ay=, ?amac=) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
 
+/** Aracın seçenekleri. Yalnızca sayfada anlatılan geleneksel kurallar kullanılır. */
+const GOALS = {
+  uzatma: {
+    label: "Hızlı uzasın",
+    rule: "büyüyen ay",
+    summary: "Saç kesimi: uzaması için uygun (büyüyen ay)",
+  },
+  koruma: {
+    label: "Şeklini korusun",
+    rule: "küçülen ay",
+    summary: "Saç kesimi: şeklini koruması için uygun (küçülen ay)",
+  },
+  "en-iyi": {
+    label: "En çok önerilen ★",
+    rule: `büyüyen ay ${FAVORED_SIGN} burcunda`,
+    summary: `Saç kesimi: geleneğin en çok önerdiği gün (büyüyen ay, ${FAVORED_SIGN})`,
+  },
+} as const;
+type Goal = keyof typeof GOALS;
+
+function parseGoal(value: string | string[] | undefined): Goal {
+  return typeof value === "string" && value in GOALS ? (value as Goal) : "uzatma";
+}
+
+/** Aracın ve takvimin seçimlerini koruyarak sayfa adresi üretir; varsayılan değerler adrese yazılmaz. */
+function pageHref({ goal, weekend, ay }: { goal: Goal; weekend: boolean; ay?: string }) {
+  const params = new URLSearchParams();
+  if (goal !== "uzatma") params.set("amac", goal);
+  if (weekend) params.set("hs", "1");
+  if (ay) params.set("ay", ay);
+  const query = params.toString();
+  return query ? `${PAGE.path}?${query}` : PAGE.path;
+}
+
 export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takvimine-gore-sac-kesim-gunleri">) {
   return (
     <>
+      <Suspense fallback={<HairFinder goal="uzatma" weekend={false} />}>
+        <SelectedFinder searchParams={searchParams} />
+      </Suspense>
       <Suspense fallback={<CurrentMonth />}>
         <SelectedMonth searchParams={searchParams} />
       </Suspense>
@@ -88,6 +127,16 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
             evresi ve burcu astronomik olarak hesaplanmıştır.
           </p>
 
+          <h2>Uygun günü nasıl buluyoruz?</h2>
+          <p>
+            Sayfanın başındaki araç, bugünden başlayarak her günü tek tek inceler: o gün öğle saatinde ay büyüyor mu,
+            küçülüyor mu ve hangi burçta? Seçtiğiniz amaca uyan günler art arda geliyorsa tek bir dönem olarak
+            gösterilir; &quot;yalnız hafta sonu&quot; seçeneğinde ise uygun cumartesi ve pazar günleri tek tek
+            listelenir. Büyüyen ayın {FAVORED_SIGN} burcuna denk gelmesi yılda yalnızca birkaç kez olduğu için bu
+            seçenekte bir yıl ilerisine kadar bakılır. Bulduğunuz günü Google Takvim&apos;e ya da telefonunuzun
+            takvimine tek dokunuşla ekleyebilirsiniz.
+          </p>
+
           <h2>Bilim ne diyor?</h2>
           <p>
             Saç, ayda ortalama 1 santimetre kadar uzar. Uzama hızını genetik yapı, yaş, hormonlar, beslenme ve genel
@@ -114,7 +163,7 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
             geçiş saati ayrıca gösterilir.
           </p>
           <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
+            Son güncelleme: <time dateTime={UPDATED}>28 Ekim 2026</time>
           </p>
         </section>
       </main>
@@ -132,19 +181,276 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
   );
 }
 
+/* ---------- Araç: size uygun günü bulun ---------- */
+
+interface DayInfo {
+  /** Bugünden kaç gün sonra. */
+  offset: number;
+  /** "YYYYMMDD" */
+  key: string;
+  year: number;
+  month: number;
+  day: number;
+  /** 0 = pazartesi */
+  weekday: number;
+  waxing: boolean;
+  phaseAngle: number;
+  signName: string;
+  signIndex: number;
+}
+
+/** Türkiye'de bugünden `offset` gün sonraki günün öğle saatindeki ay bilgisi. */
+function dayInfo(base: { year: number; month: number; day: number }, offset: number): DayInfo {
+  const date = new Date(Date.UTC(base.year, base.month - 1, base.day + offset));
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+  const noon = zonedTimeToUtc(year, month, day, 12, timeZone);
+  const phase = getMoonPhase(noon, timeZone);
+  const sign = getMoonSign(noon);
+  return {
+    offset,
+    key: `${year}${String(month).padStart(2, "0")}${String(day).padStart(2, "0")}`,
+    year,
+    month,
+    day,
+    weekday: (date.getUTCDay() + 6) % 7,
+    waxing: phase.isWaxing,
+    phaseAngle: phase.phaseAngle,
+    signName: sign.name,
+    signIndex: sign.index,
+  };
+}
+
+function matches(goal: Goal, d: DayInfo) {
+  if (goal === "uzatma") return d.waxing;
+  if (goal === "koruma") return !d.waxing;
+  return d.waxing && d.signName === FAVORED_SIGN;
+}
+
+/** Bitişi dahil olmayan "YYYYMMDD" (takvim etkinlikleri için). */
+function nextDayKey(d: DayInfo) {
+  return new Date(Date.UTC(d.year, d.month - 1, d.day + 1)).toISOString().slice(0, 10).replace(/-/g, "");
+}
+
+const shortDate = (d: DayInfo) => `${d.day} ${MONTH_NAMES[d.month - 1]}`;
+const longDate = (d: DayInfo) => `${shortDate(d)} ${WEEKDAYS_LONG[d.weekday]}`;
+
+async function SelectedFinder({
+  searchParams,
+}: Pick<PageProps<"/tr/ay-takvimine-gore-sac-kesim-gunleri">, "searchParams">) {
+  const { amac, hs, ay } = await searchParams;
+  return (
+    <HairFinder goal={parseGoal(amac)} weekend={hs === "1"} ay={parseMonth(ay) ? (ay as string) : undefined} />
+  );
+}
+
+/** Seçilen amaca göre bugünden itibaren uygun günler. Saatte bir yenilenir. */
+async function HairFinder({ goal, weekend, ay }: { goal: Goal; weekend: boolean; ay?: string }) {
+  "use cache";
+  cacheLife("hours");
+
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  const base = { year: parts[0], month: parts[1], day: parts[2] };
+  const today = dayInfo(base, 0);
+  const todayFavored = matches("en-iyi", today);
+
+  // Art arda uygun günler tek dönem olur; hafta sonu seçeneğinde günler tek tek listelenir.
+  const horizon = goal === "en-iyi" ? 400 : 90;
+  const limit = weekend ? 6 : 3;
+  const results: { first: DayInfo; last: DayInfo }[] = [];
+  let open: { first: DayInfo; last: DayInfo } | null = null;
+  for (let i = 0; i < horizon && results.length < limit; i++) {
+    const d = i === 0 ? today : dayInfo(base, i);
+    const ok = matches(goal, d) && (!weekend || d.weekday >= 5);
+    if (weekend) {
+      if (ok) results.push({ first: d, last: d });
+      continue;
+    }
+    if (ok) {
+      if (open) open.last = d;
+      else open = { first: d, last: d };
+    } else if (open) {
+      results.push(open);
+      open = null;
+    }
+  }
+  if (open && results.length < limit) results.push(open);
+
+  const info = GOALS[goal];
+  const todayText = today.waxing ? "büyüyen ay, uzaması için uygun" : "küçülen ay, şeklini koruması için uygun";
+
+  return (
+    <section className="bg-gradient-to-b from-[#1b1236] to-[#140d2a] text-white" aria-labelledby="sac-baslik">
+      <div className="mx-auto w-full max-w-5xl px-4 pb-10 pt-6">
+        <Breadcrumb page={PAGE} tone="dark" />
+        <div className="mt-8 flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-200">
+            Geleneksel takvim
+          </span>
+        </div>
+        <h1 id="sac-baslik" className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+          Ay Takvimine Göre Saç Kesim Günleri
+        </h1>
+
+        <p className="mt-5 flex items-center gap-3 text-zinc-200">
+          <MoonPhaseIcon phaseAngle={today.phaseAngle} size={36} title="" />
+          <span>
+            <strong className="text-white">Bugün ({longDate(today)}):</strong> {todayText}. Ay {today.signName}{" "}
+            burcunda.
+            {todayFavored && <span className="ml-1 text-amber-300">★ Geleneğin en çok önerdiği gün.</span>}
+          </span>
+        </p>
+
+        <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
+          <h2 className="text-xl font-semibold">Size uygun günü bulun</h2>
+          <p className="mt-1 text-sm text-zinc-400">Saçınız için ne istiyorsunuz?</p>
+          <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Amaç">
+            {(Object.keys(GOALS) as Goal[]).map((g) => (
+              <Link
+                key={g}
+                href={pageHref({ goal: g, weekend, ay })}
+                rel="nofollow"
+                scroll={false}
+                aria-current={g === goal ? "true" : undefined}
+                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                  g === goal
+                    ? "border-amber-300/70 bg-amber-300/15 text-amber-100"
+                    : "border-white/15 text-zinc-300 hover:border-white/30 hover:text-white"
+                }`}
+              >
+                {GOALS[g].label}
+              </Link>
+            ))}
+            <Link
+              href={pageHref({ goal, weekend: !weekend, ay })}
+              rel="nofollow"
+              scroll={false}
+              aria-pressed={weekend}
+              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+                weekend
+                  ? "border-indigo-300/70 bg-indigo-400/15 text-indigo-100"
+                  : "border-white/15 text-zinc-300 hover:border-white/30 hover:text-white"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`flex h-4 w-4 items-center justify-center rounded border text-[0.65rem] ${
+                  weekend ? "border-indigo-200 bg-indigo-300 text-[#140d2a]" : "border-zinc-400"
+                }`}
+              >
+                {weekend ? "✓" : ""}
+              </span>
+              Yalnız hafta sonu
+            </Link>
+          </div>
+
+          <h3 className="mt-7 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            Önümüzdeki uygun {weekend ? "günler" : "dönemler"} · {info.rule}
+          </h3>
+          {results.length ? (
+            <ul className="mt-3 space-y-3">
+              {results.map(({ first, last }) => {
+                const single = first.key === last.key;
+                const days =
+                  Math.round(
+                    (Date.UTC(last.year, last.month - 1, last.day) - Date.UTC(first.year, first.month - 1, first.day)) /
+                      86_400_000,
+                  ) + 1;
+                const event = {
+                  summary: info.summary,
+                  description: `Ay takvimine göre geleneksel saç kesim günü (${info.rule}). Bilimsel bir kanıtı yoktur.`,
+                  url: new URL(PAGE.path, siteConfig.url).toString(),
+                  start: first.key,
+                  end: nextDayKey(last),
+                };
+                // Dönemin simgesi ortadaki günün evresidir (ilk gün yeni aya yakın ve karanlık olabilir).
+                const icon = single ? first : dayInfo(base, Math.floor((first.offset + last.offset) / 2));
+                const ics = buildSingleEventIcs({ ...event, uid: `sac-${goal}-${first.key}` });
+                return (
+                  <li
+                    key={first.key}
+                    className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 sm:flex-row sm:items-center"
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <MoonPhaseIcon phaseAngle={icon.phaseAngle} size={40} title="" />
+                      <div className="min-w-0">
+                        <p className="font-semibold">
+                          {single ? longDate(first) : `${shortDate(first)} – ${shortDate(last)}`}
+                          {first.key === today.key && (
+                            <span className="ml-2 rounded-full bg-emerald-400/20 px-2 py-0.5 text-xs font-medium text-emerald-200">
+                              bugün
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-sm text-zinc-400">
+                          {single
+                            ? `Ay ${first.signName} burcunda`
+                            : `${WEEKDAYS_LONG[first.weekday]} – ${WEEKDAYS_LONG[last.weekday]} · ${days} gün`}
+                          {single && goal === "en-iyi" && <span className="ml-1 text-amber-300">★</span>}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 text-sm">
+                      <a
+                        href={googleCalendarLink(event)}
+                        target="_blank"
+                        rel="noopener nofollow"
+                        className="rounded-full border border-white/15 px-3 py-1.5 text-zinc-200 hover:border-white/30 hover:text-white"
+                      >
+                        Google Takvim
+                      </a>
+                      <a
+                        href={`data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`}
+                        download={`sac-kesimi-${first.key}.ics`}
+                        className="rounded-full border border-white/15 px-3 py-1.5 text-zinc-200 hover:border-white/30 hover:text-white"
+                      >
+                        Takvime ekle (.ics)
+                      </a>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-zinc-400">Önümüzdeki dönemde bu koşula uyan gün bulunamadı.</p>
+          )}
+          {goal === "en-iyi" && (
+            <p className="mt-4 text-xs text-zinc-400">
+              Büyüyen ay {FAVORED_SIGN} burcuna yalnızca ocak sonu ile ağustos arasında, ayda bir iki gün denk gelir.
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Aylık takvim ---------- */
+
 async function SelectedMonth({
   searchParams,
 }: Pick<PageProps<"/tr/ay-takvimine-gore-sac-kesim-gunleri">, "searchParams">) {
-  const { ay } = await searchParams;
+  const { ay, amac, hs } = await searchParams;
   const selected = parseMonth(ay);
-  return selected ? <HairCalendar year={selected.year} month={selected.month} /> : <CurrentMonth />;
+  const goal = parseGoal(amac);
+  const weekend = hs === "1";
+  return selected ? (
+    <HairCalendar year={selected.year} month={selected.month} goal={goal} weekend={weekend} />
+  ) : (
+    <CurrentMonth goal={goal} weekend={weekend} />
+  );
 }
 
-async function CurrentMonth() {
+/** İçinde bulunulan ayın takvimi; "şu an" önbellek içinde okunur. */
+async function CurrentMonth({ goal = "uzatma", weekend = false }: { goal?: Goal; weekend?: boolean }) {
   "use cache";
   cacheLife("hours");
   const { year, month } = currentMonth(timeZone);
-  return <HairCalendar year={year} month={month} />;
+  return <HairCalendar year={year} month={month} goal={goal} weekend={weekend} />;
 }
 
 interface HairDay {
@@ -161,7 +467,17 @@ interface HairDay {
 }
 
 /** Bir ayın saç kesim takvimi. Saatte bir yenilenir (bugün vurgusu için). */
-async function HairCalendar({ year, month }: { year: number; month: number }) {
+async function HairCalendar({
+  year,
+  month,
+  goal,
+  weekend,
+}: {
+  year: number;
+  month: number;
+  goal: Goal;
+  weekend: boolean;
+}) {
   "use cache";
   cacheLife("hours");
 
@@ -218,39 +534,35 @@ async function HairCalendar({ year, month }: { year: number; month: number }) {
   const monthName = MONTH_NAMES[month - 1];
 
   return (
-    <section className="bg-gradient-to-b from-[#1b1236] to-[#05070d] text-white" aria-labelledby="sac-baslik">
-      <div className="mx-auto w-full max-w-5xl px-4 pb-12 pt-6">
-        <Breadcrumb page={PAGE} tone="dark" />
-        <div className="mt-8 flex flex-wrap items-center gap-2">
-          <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-200">
-            Geleneksel takvim
-          </span>
-        </div>
-        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+    <section className="bg-gradient-to-b from-[#140d2a] to-[#05070d] text-white" aria-labelledby="sac-takvim">
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 pt-4">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-lg font-medium text-zinc-300">Ay takvimine göre saç kesim günleri</p>
-            <h1 id="sac-baslik" className="mt-1 text-4xl font-bold tracking-tight sm:text-6xl">
+            <p className="text-sm font-medium uppercase tracking-wider text-zinc-400">Aylık saç kesim takvimi</p>
+            <h2 id="sac-takvim" className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
               {monthName} {year}
-            </h1>
+            </h2>
           </div>
           <nav aria-label="Ay değiştir" className="flex items-center gap-2">
             {prev.year >= MIN_YEAR && (
               <MonthLink
-                href={`${PAGE.path}?ay=${monthParam(prev.year, prev.month)}`}
+                href={pageHref({ goal, weekend, ay: monthParam(prev.year, prev.month) })}
                 label={`${MONTH_NAMES[prev.month - 1]} ${prev.year}`}
               >
                 ‹
               </MonthLink>
             )}
             <Link
-              href={PAGE.path}
+              href={pageHref({ goal, weekend })}
+              rel="nofollow"
+              scroll={false}
               className="rounded-full border border-white/15 px-4 py-2 text-sm text-zinc-200 hover:border-white/30 hover:text-white"
             >
               Bu ay
             </Link>
             {next.year <= MAX_YEAR && (
               <MonthLink
-                href={`${PAGE.path}?ay=${monthParam(next.year, next.month)}`}
+                href={pageHref({ goal, weekend, ay: monthParam(next.year, next.month) })}
                 label={`${MONTH_NAMES[next.month - 1]} ${next.year}`}
               >
                 ›
