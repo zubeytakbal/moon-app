@@ -15,6 +15,7 @@ import {
   getUpcomingLunarEclipses,
   getMonthCalendar,
   getNextBlueMoon,
+  getDarkNight,
   getMoonAltitude,
   getMoonPosition,
   getNextMoonEvent,
@@ -370,5 +371,31 @@ describe("getMoonPosition", () => {
     const atRise = getMoonPosition(rise, ISTANBUL);
     assert.ok(atRise.azimuth > 45 && atRise.azimuth < 135, `doğuş azimutu ${atRise.azimuth}`);
     assert.ok(Math.abs(atRise.altitude) < 1);
+  });
+});
+
+describe("getDarkNight", () => {
+  it("yeni ay gecesi (9 Kasım 2026, İstanbul) neredeyse bütün astronomik gece karanlık", () => {
+    const n = getDarkNight(new Date("2026-11-09T12:00:00Z"), ISTANBUL);
+    assert.ok(n.dusk && n.dawn);
+    const night = (n.dawn!.getTime() - n.dusk!.getTime()) / 60_000;
+    assert.ok(night > 600 && night < 700, `astronomik gece ${night} dk`);
+    assert.ok(n.minutes > night - 60, `karanlık ${n.minutes} dk`);
+  });
+
+  it("dolunay gecesi (24 Kasım 2026, İstanbul) karanlık yok ya da çok kısa", () => {
+    const n = getDarkNight(new Date("2026-11-24T12:00:00Z"), ISTANBUL);
+    assert.ok(n.minutes < 30, `karanlık ${n.minutes} dk`);
+  });
+
+  it("karanlık aralıklar astronomik gecenin içinde ve ay o sırada ufkun altında", () => {
+    for (let d = 0; d < 30; d++) {
+      const n = getDarkNight(new Date(Date.UTC(2026, 10, 1 + d, 12)), ISTANBUL);
+      for (const r of n.dark) {
+        assert.ok(r.start >= n.dusk! && r.end <= n.dawn!);
+        const mid = new Date((r.start.getTime() + r.end.getTime()) / 2);
+        assert.ok(getMoonAltitude(mid, ISTANBUL) < 0.5, `gün ${d + 1}`);
+      }
+    }
   });
 });

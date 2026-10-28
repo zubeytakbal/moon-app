@@ -56,3 +56,60 @@ export function getNextMoonEvent(date: Date, location: GeoLocation, direction: "
   const time = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, direction === "rise" ? 1 : -1, date, 2);
   return time ? time.date : null;
 }
+
+/** Güneş'in ufkun bu kadar altına inince gökyüzü tamamen kararır (astronomik gece). */
+export const ASTRONOMICAL_TWILIGHT_DEG = -18;
+
+export interface DarkNight {
+  /** Astronomik gecenin başlangıcı (akşam alacakaranlığının sonu). Gece tam kararmıyorsa null. */
+  dusk: Date | null;
+  /** Astronomik gecenin sonu (sabah alacakaranlığının başı). */
+  dawn: Date | null;
+  /** Gökyüzünün tamamen karanlık ve ayın ufkun altında olduğu aralıklar. */
+  dark: { start: Date; end: Date }[];
+  /** Karanlık aralıkların toplamı (dakika). */
+  minutes: number;
+}
+
+/**
+ * Verilen anın düştüğü yerel günün akşamından başlayan gecede, yıldız gözlemi için tam karanlık
+ * aralıklar: Güneş ufkun 18° altında ve ay ufkun altında.
+ */
+export function getDarkNight(date: Date, location: GeoLocation): DarkNight {
+  const { start } = localDayRange(date, location.timeZone);
+  const noon = new Date(start.getTime() + 12 * 3_600_000);
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const dusk = Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, -1, noon, 1, ASTRONOMICAL_TWILIGHT_DEG);
+  const dawn = dusk
+    ? Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, +1, dusk, 1, ASTRONOMICAL_TWILIGHT_DEG)
+    : null;
+  if (!dusk || !dawn) return { dusk: null, dawn: null, dark: [], minutes: 0 };
+
+  const a = dusk.date.getTime();
+  const b = dawn.date.getTime();
+  // Gece boyunca ayın doğuş ve batışları; gece 12 saatten kısa olduğu için en fazla birer tane olur.
+  const events: { t: number; up: boolean }[] = [];
+  let t = new Date(a);
+  for (;;) {
+    const rise = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, +1, t, 1);
+    const set = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, -1, t, 1);
+    const next = [rise && { t: rise.date.getTime(), up: true }, set && { t: set.date.getTime(), up: false }]
+      .filter((e): e is { t: number; up: boolean } => !!e && e.t < b)
+      .sort((x, y) => x.t - y.t)[0];
+    if (!next) break;
+    events.push(next);
+    t = new Date(next.t + 60_000);
+  }
+  // Akşam ay ufkun üzerinde mi? İlk olay batışsa evet; olay yoksa yüksekliğe bakılır.
+  let up = events.length ? !events[0].up : getMoonAltitude(dusk.date, location) > 0;
+  const dark: { start: Date; end: Date }[] = [];
+  let cursor = a;
+  for (const e of events) {
+    if (!up && e.t > cursor) dark.push({ start: new Date(cursor), end: new Date(e.t) });
+    up = e.up;
+    cursor = e.t;
+  }
+  if (!up && b > cursor) dark.push({ start: new Date(cursor), end: new Date(b) });
+  const minutes = Math.round(dark.reduce((sum, d) => sum + (d.end.getTime() - d.start.getTime()), 0) / 60_000);
+  return { dusk: dusk.date, dawn: dawn.date, dark, minutes };
+}

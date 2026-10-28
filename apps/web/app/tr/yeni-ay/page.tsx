@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { findProvince, TURKEY_PROVINCES } from "@moon-app/moon";
+import { CitySelect } from "@/components/CitySelect";
 import {
   ArticleFooter,
   NextPrincipal,
@@ -14,19 +17,22 @@ import { IMAGES } from "@/lib/images";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 import { OrbitTiltDiagram } from "@/components/EclipseDiagrams";
+import { DarkNights } from "./DarkNights";
 
 const PAGE = PAGES.yeniAy;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-28";
+const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 
 export const metadata: Metadata = {
   title: `Yeni Ay Nedir, Ne Zaman? Neden Görünmez? | ${siteConfig.name}`,
   description:
-    "Yeni ay ne zaman? Önümüzdeki yeni ay tarihleri ve saatleri (Türkiye saati). Yeni ay neden görünmez, Hicri ayın başlangıcından farkı ne, güneş tutulması neden sadece yeni ayda olur?",
+    "Yeni ay ne zaman? Önümüzdeki yeni ay tarihleri ve saatleri (Türkiye saati), ilinize göre yıldız gözlemi için karanlık geceler. Yeni ay neden görünmez, Hicri ayın başlangıcından farkı ne, güneş tutulması neden sadece yeni ayda olur?",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
 
-export default function NewMoonPage() {
+export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) {
   return (
     <>
       <PhaseHero
@@ -37,6 +43,15 @@ export default function NewMoonPage() {
         aside={<NextPrincipal phase="new-moon" />}
         photo={IMAGES.earthset}
       />
+      <section className="bg-[#05070d] text-white" aria-labelledby="karanlik-geceler">
+        <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-2">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
+            <Suspense fallback={<DarkSkyPlanner slug={siteConfig.defaultLocation.slug} />}>
+              <SelectedPlanner searchParams={searchParams} />
+            </Suspense>
+          </div>
+        </div>
+      </section>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <QuickFacts>
           <li>Yeni ayda ay, Güneş ile Dünya arasındadır. Aydınlık yüzü bize ters bakar.</li>
@@ -102,8 +117,23 @@ export default function NewMoonPage() {
             gece de ay ya çok geç doğar ya da çok erken batar, gökyüzü yine karanlık kalır.
           </p>
           <p>
-            Şehir ışıklarından uzak bir yere gidecekseniz, yukarıdaki tablodan bir sonraki yeni ayın tarihini seçip
-            planınızı o haftaya göre yapabilirsiniz.
+            Şehir ışıklarından uzak bir yere gidecekseniz, sayfanın başındaki planlayıcıdan ilinizi seçip önümüzdeki
+            iki haftanın en karanlık gecelerini görebilirsiniz.
+          </p>
+
+          <h3>Karanlık saatleri nasıl hesaplıyoruz?</h3>
+          <p>
+            Güneş battıktan sonra gökyüzü hemen kararmaz; Güneş ufkun 18 derece altına inene kadar alacakaranlık sürer.
+            Gökbilimciler bu noktadan sonrasına &quot;astronomik gece&quot; der: sönük yıldızlar ve Samanyolu ancak o
+            zaman tam olarak görünür. Planlayıcı her gece için önce bu astronomik geceyi bulur, sonra ayın ufkun
+            üzerinde olduğu saatleri çıkarır. Geriye kalan, gökyüzünün hem Güneş hem ay ışığından arındığı saatlerdir.
+            Hesap seçtiğiniz ilin konumuna göre yapılır; doğudaki illerde gece daha erken başlar, kuzeydeki illerde yaz
+            geceleri daha kısadır.
+          </p>
+          <p>
+            Bu saatler gökyüzünün kendisini anlatır; bulutları ve ışık kirliliğini hesaba katamaz. Şehir merkezinde
+            en karanlık gecede bile yalnızca parlak yıldızlar görülür. Gözlem için ışıklardan en az birkaç on kilometre
+            uzaklaşmak ve gözlerin karanlığa alışması için 20-30 dakika beklemek gerekir.
           </p>
 
           <h2>Aydan bakınca: &quot;dolu Dünya&quot;</h2>
@@ -126,6 +156,34 @@ export default function NewMoonPage() {
           ]}
         />
       </main>
+    </>
+  );
+}
+
+async function SelectedPlanner({ searchParams }: Pick<PageProps<"/tr/yeni-ay">, "searchParams">) {
+  const { il } = await searchParams;
+  const city = findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  return <DarkSkyPlanner slug={city.slug} />;
+}
+
+/** Yıldız gözlemi için karanlık gece planlayıcı: başlık, il seçici ve 14 gecelik çizelge. */
+function DarkSkyPlanner({ slug }: { slug: string }) {
+  return (
+    <>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 id="karanlik-geceler" className="text-xl font-semibold">
+            Yıldız gözlemi için karanlık geceler
+          </h2>
+          <p className="mt-1 max-w-xl text-sm text-zinc-400">
+            Önümüzdeki 14 gece: gökyüzünün tamamen karardığı ve ayın ufkun altında olduğu saatler.
+          </p>
+        </div>
+        <div className="rounded-xl bg-white p-1 text-zinc-900">
+          <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={slug} />
+        </div>
+      </div>
+      <DarkNights slug={slug} />
     </>
   );
 }
