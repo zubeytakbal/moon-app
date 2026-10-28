@@ -10,6 +10,8 @@ import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.superAy;
 const UPDATED = "2026-10-27";
@@ -115,6 +117,8 @@ export default function SupermoonPage() {
               ya da dağların arkasından çekilmiştir. Gözümüzün ufuktaki ayı büyük algılaması da (ay yanılsaması) bu
               etkiyi artırır. Bunu <Link href={PAGES.dolunay.path}>Dolunay</Link> sayfasında anlattık.
             </p>
+
+            <NasaFigure images={[IMAGES.supermoonCapitol]} />
 
             <h2>Süper ay deprem tetikler mi?</h2>
             <p>

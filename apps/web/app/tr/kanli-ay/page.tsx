@@ -11,6 +11,8 @@ import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.kanliAy;
 const UPDATED = "2026-10-27";
@@ -116,6 +118,8 @@ export default function BloodMoonPage() {
               gün batımlarının ışığıdır. Aydan bakan biri, Dünya&apos;nın çevresinde kıpkırmızı parlayan ince bir halka
               görürdü.
             </p>
+
+            <NasaFigure images={[IMAGES.bloodMoon]} />
 
             <h2>Her kanlı ay aynı renkte mi?</h2>
             <p>

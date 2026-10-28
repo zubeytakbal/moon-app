@@ -8,6 +8,8 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.dolunay;
 const UPDATED = "2026-10-27";
@@ -76,6 +78,8 @@ export default function FullMoonPage() {
             parmağınızın tırnağıyla ufuktaki ayı kapatın, saatler sonra yüksekteki ayı da aynı tırnak tam olarak
             kapatacaktır.
           </p>
+
+          <NasaFigure images={[IMAGES.supermoonHorizon]} />
 
           <h2>Dolunay ne kadar sürer?</h2>
           <p>

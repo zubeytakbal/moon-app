@@ -10,8 +10,10 @@ import {
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
+import { IMAGES } from "@/lib/images";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { OrbitTiltDiagram } from "@/components/EclipseDiagrams";
 
 const PAGE = PAGES.yeniAy;
 const UPDATED = "2026-10-27";
@@ -33,6 +35,7 @@ export default function NewMoonPage() {
         eyebrow="Ay evreleri · 1"
         lead="Ay ile Güneş'in gökyüzünde aynı yönde buluştuğu an. Döngünün başlangıcıdır ama ayın görünmediği tek evredir."
         aside={<NextPrincipal phase="new-moon" />}
+        photo={IMAGES.earthset}
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <QuickFacts>
@@ -89,6 +92,8 @@ export default function NewMoonPage() {
             Tutulma ancak yeni ay, iki yörüngenin kesiştiği noktaya yakın bir zamana denk geldiğinde yaşanır. Bu durum
             yılda iki ile beş kez gerçekleşir ve her tutulma Dünya&apos;nın yalnızca bir bölümünden görülür.
           </p>
+
+          <OrbitTiltDiagram />
 
           <h2>Yıldız gözlemi için en iyi hafta</h2>
           <p>

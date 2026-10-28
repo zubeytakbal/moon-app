@@ -8,6 +8,9 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
+import { LunarEclipseDiagram } from "@/components/EclipseDiagrams";
 
 const PAGE = PAGES.ayTutulmalari;
 const UPDATED = "2026-10-27";
@@ -128,11 +131,15 @@ export default function LunarEclipsesPage() {
               kısım (yarı gölge). <Link href={PAGES.dolunay.path}>Dolunayda</Link> ay, Dünya&apos;nın tam arkasına
               gelir. Ay bu sırada gölgenin içinden geçerse ay tutulması olur.
             </p>
+
+            <LunarEclipseDiagram />
             <p>
               Ayın yörüngesi Dünya&apos;nın yörüngesine göre yaklaşık 5 derece eğik olduğu için ay çoğu dolunayda
               gölgenin biraz üstünden ya da altından geçer. Tutulma, yılda birkaç kez, dolunay iki yörüngenin kesiştiği
               noktaya yakın bir zamana denk geldiğinde yaşanır.
             </p>
+
+            <NasaFigure images={[IMAGES.lunarEclipseSequence]} />
 
             <h2>Tutulma türleri</h2>
             <ul>

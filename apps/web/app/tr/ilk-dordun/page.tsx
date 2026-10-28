@@ -12,6 +12,8 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ilkDordun;
 const UPDATED = "2026-10-27";
@@ -116,6 +118,8 @@ export default function FirstQuarterPage() {
               arasında parlayan halkalar gibi görünür.
             </li>
           </ul>
+
+          <NasaFigure images={[IMAGES.firstQuarterTerminator]} />
 
           <h2>İlk dördünden sonra</h2>
           <p>

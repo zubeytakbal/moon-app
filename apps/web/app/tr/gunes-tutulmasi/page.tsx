@@ -11,6 +11,9 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
+import { SolarEclipseDiagram } from "@/components/EclipseDiagrams";
 
 const PAGE = PAGES.gunesTutulmasi;
 const UPDATED = "2026-10-27";
@@ -127,6 +130,8 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
               Bu tesadüf sayesinde ikisi gökyüzünde neredeyse aynı büyüklükte görünür ve Ay, Güneş&apos;i tam olarak
               örtebilir.
             </p>
+
+            <SolarEclipseDiagram />
             <ul>
               <li>
                 <strong>Tam tutulma:</strong> Ay Güneş&apos;i tamamen örter. Gündüz birkaç dakikalığına alacakaranlık
@@ -147,6 +152,8 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
               1999&apos;da (Amasya, Tokat, Sivas, Elazığ ve çevresi) ve 29 Mart 2006&apos;da (Antalya ve çevresi) tam
               tutulmaya tanıklık etti.
             </p>
+
+            <NasaFigure images={[IMAGES.solarCorona, IMAGES.solarDiamondRing]} />
 
             <h2>Güneş tutulması güvenli nasıl izlenir?</h2>
             <p>

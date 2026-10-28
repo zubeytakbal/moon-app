@@ -11,6 +11,8 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { NasaFigure } from "@/components/NasaFigure";
+import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ayEvreleri;
 /** İçerik son kez elle güncellendiğinde değiştirilir. */
@@ -113,6 +115,8 @@ export default function MoonPhasesPage() {
             Dünya&apos;nın gölgesi aya yalnızca ay tutulmalarında düşer ve bu durum yılda en fazla birkaç kez, sadece
             dolunay sırasında yaşanır. Evrelerde gördüğümüz karanlık kısım, ayın o an gece yaşayan tarafıdır.
           </p>
+
+          <NasaFigure images={[IMAGES.earthrise]} />
 
           <h2>Ayın 8 evresi</h2>
           <p>

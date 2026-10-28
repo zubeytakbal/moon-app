@@ -1,10 +1,13 @@
 import { cacheLife } from "next/cache";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getUpcomingPrincipalPhases, PHASE_NAMES_TR } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { HeroCredit } from "@/components/NasaFigure";
+import type { SiteImage } from "@/lib/images";
 import { PAGES, type SitePage } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
@@ -40,32 +43,54 @@ function countdown(ms: number): string {
   return hours === 0 ? `${days} gün` : `${days} gün ${hours} saat`;
 }
 
-/** Evre sayfasının koyu giriş alanı: büyük ay görseli, başlık ve sağdaki canlı bilgi kutusu. */
+/**
+ * Evre sayfasının koyu giriş alanı: büyük ay görseli, başlık ve canlı bilgi kutusu.
+ * `photo` verilirse hesaplanan ay görseli yerine bu fotoğraf sağ tarafa arka plan olarak yerleşir
+ * (örneğin yeni ayda görünecek bir ay olmadığı için).
+ */
 export function PhaseHero({
   page,
   angle,
   eyebrow,
   lead,
   aside,
+  photo,
 }: {
   page: SitePage;
   angle: number;
   eyebrow: string;
   lead: string;
   aside: ReactNode;
+  photo?: SiteImage;
 }) {
   return (
     <section className="starfield relative overflow-hidden bg-[#05070d] text-white">
+      {photo ? (
+        <div className="pointer-events-none absolute inset-0 md:left-[30%]">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            preload
+            sizes="(min-width: 768px) 70vw, 100vw"
+            className="object-cover object-[60%_center] opacity-70 md:opacity-100"
+          />
+        </div>
+      ) : (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-[22%] top-1/2 w-[min(85vw,640px)] -translate-y-1/2 opacity-90 md:right-[2%]"
+        >
+          <MoonPhaseIcon phaseAngle={angle} size={760} title="" />
+        </div>
+      )}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-[22%] top-1/2 w-[min(85vw,640px)] -translate-y-1/2 opacity-90 md:right-[2%]"
-      >
-        <MoonPhaseIcon phaseAngle={angle} size={760} title="" />
-      </div>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#05070d] via-[#05070d]/80 to-transparent"
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-r from-[#05070d] to-transparent ${
+          photo ? "via-[#05070d]/85 via-45%" : "via-[#05070d]/80"
+        }`}
       />
+      {photo && <HeroCredit image={photo} />}
       <div className="relative mx-auto w-full max-w-5xl px-4 pb-14 pt-6 md:pb-20">
         <Breadcrumb page={page} tone="dark" />
         <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">{eyebrow}</p>
