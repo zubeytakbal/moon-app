@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { getMoonAltitude, getMoonDistanceKm, getUpcomingLunarEclipses, type LunarEclipse } from "@moon-app/moon";
+import { Suspense } from "react";
+import {
+  findProvince,
+  getMoonAltitude,
+  getMoonDistanceKm,
+  getUpcomingLunarEclipses,
+  TURKEY_PROVINCES,
+  type LunarEclipse,
+  type Province,
+} from "@moon-app/moon";
+import { AddToCalendar } from "@/components/AddToCalendar";
+import { CitySelect } from "@/components/CitySelect";
+import { icsTime } from "@/lib/ics";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
@@ -18,14 +30,15 @@ const PAGE = PAGES.kanliAy;
 const UPDATED = "2026-10-27";
 const FROM = new Date(Date.UTC(2025, 0, 1));
 const UNTIL_YEAR = 2037;
-const location = siteConfig.defaultLocation;
-const timeZone = location.timeZone;
+const timeZone = siteConfig.defaultLocation.timeZone;
+const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
   title: `Kanlı Ay Ne Zaman? Bir Sonraki Kanlı Ay ve Türkiye'den Görünüşü | ${siteConfig.name}`,
   description:
     "Bir sonraki kanlı ay (tam ay tutulması) ne zaman ve Türkiye'den görülecek mi? 2025-2037 kanlı ayları, kızıllığın süresi, ayın neden kırmızıya döndüğü ve Anadolu'daki tutulma gelenekleri.",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -35,12 +48,12 @@ interface BloodMoon {
   start: Date;
   end: Date;
   minutes: number;
-  /** Kızıllık süresinin ne kadarında ayın İstanbul'da ufkun üzerinde olduğu (0-1). */
+  /** Kızıllık süresinin ne kadarında ayın seçilen ilde ufkun üzerinde olduğu (0-1). */
   visibleShare: number;
   km: number;
 }
 
-function bloodMoons(): BloodMoon[] {
+function bloodMoons(location: Province): BloodMoon[] {
   return getUpcomingLunarEclipses(FROM, 40)
     .filter((e) => e.kind === "total" && e.peak.getUTCFullYear() <= UNTIL_YEAR)
     .map((eclipse) => {
@@ -79,10 +92,20 @@ function RedMoon({ size }: { size: number }) {
   );
 }
 
-export default function BloodMoonPage() {
+function cityOf(il: string | string[] | undefined): Province {
+  return findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+}
+
+function verdictOf(share: number) {
+  return share > 0.97 ? "tamamı görülür" : share > 0 ? "bir kısmı görülür" : "görülmez";
+}
+
+export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay">) {
   return (
     <>
-      <Hero />
+      <Suspense fallback={<Hero slug={siteConfig.defaultLocation.slug} />}>
+        <SelectedHero searchParams={searchParams} />
+      </Suspense>
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
           <QuickFacts>
@@ -97,12 +120,9 @@ export default function BloodMoonPage() {
           </QuickFacts>
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">2025-{UNTIL_YEAR} kanlı ayları</h2>
-        <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-          Saatler, ayın tamamen kızardığı aralıktır (Türkiye saati). Görünürlük, bu aralıkta ayın İstanbul&apos;da ufkun
-          üzerinde olup olmadığına göre hesaplanmıştır.
-        </p>
-        <BloodMoonList />
+        <Suspense fallback={<BloodMoonSection slug={siteConfig.defaultLocation.slug} />}>
+          <SelectedSection searchParams={searchParams} />
+        </Suspense>
 
         <div className="mx-auto max-w-3xl">
           <Prose>
@@ -211,13 +231,19 @@ export default function BloodMoonPage() {
   );
 }
 
-/** Giriş: bir sonraki kanlı ay ve Türkiye'den görülecek ilki. Saatte bir yenilenir. */
-async function Hero() {
+async function SelectedHero({ searchParams }: Pick<PageProps<"/tr/kanli-ay">, "searchParams">) {
+  const { il } = await searchParams;
+  return <Hero slug={cityOf(il).slug} />;
+}
+
+/** Giriş: seçilen ilden görülecek bir sonraki kanlı ay. Saatte bir yenilenir. */
+async function Hero({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
+  const city = cityOf(slug);
   const now = new Date();
-  const list = bloodMoons();
+  const list = bloodMoons(city);
   const nextVisible = list.find((b) => b.eclipse.peak > now && b.visibleShare > 0.5);
   const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
@@ -237,15 +263,36 @@ async function Hero() {
           {nextVisible && (
             <div className="mt-8 max-w-md rounded-2xl border border-red-300/30 bg-red-500/10 p-5">
               <p className="text-xs uppercase tracking-wider text-red-200/80">
-                Türkiye&apos;den görülecek bir sonraki kanlı ay
+                Görülecek bir sonraki kanlı ay ({city.name})
               </p>
               <p className="mt-1 text-2xl font-semibold">{date.format(nextVisible.eclipse.peak)}</p>
               <p className="mt-0.5 text-zinc-300">
                 Kızıllık {time.format(nextVisible.start)}-{time.format(nextVisible.end)} · {nextVisible.minutes} dakika
               </p>
-              <p className="mt-3 inline-block rounded-full bg-red-500/20 px-3 py-1 text-sm font-medium text-red-100">
-                {days} gün sonra
+              <p className="mt-0.5 text-sm text-zinc-400">
+                Görünürlük ({city.name}): {verdictOf(nextVisible.visibleShare)}
               </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-red-500/20 px-3 py-1 text-sm font-medium text-red-100">
+                  {days} gün sonra
+                </span>
+                <a href="#il-sec" className="text-sm text-zinc-300 underline hover:text-white">
+                  İlinizi seçin
+                </a>
+              </div>
+              <div className="mt-4">
+                <AddToCalendar
+                  fileName={`kanli-ay-${nextVisible.eclipse.peak.toISOString().slice(0, 10)}.ics`}
+                  event={{
+                    uid: `kanli-ay-${nextVisible.eclipse.peak.toISOString().slice(0, 10)}-${city.slug}`,
+                    summary: "Kanlı ay (tam ay tutulması)",
+                    description: `Ayın tamamen kızıl olduğu aralık: ${time.format(nextVisible.start)}-${time.format(nextVisible.end)} (Türkiye saati). Görünürlük (${city.name}): ${verdictOf(nextVisible.visibleShare)}. Çıplak gözle izlemek güvenlidir.`,
+                    url: new URL(PAGE.path, siteConfig.url).toString(),
+                    start: icsTime(nextVisible.start),
+                    end: icsTime(nextVisible.end),
+                  }}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -259,12 +306,38 @@ async function Hero() {
   );
 }
 
-async function BloodMoonList() {
+async function SelectedSection({ searchParams }: Pick<PageProps<"/tr/kanli-ay">, "searchParams">) {
+  const { il } = await searchParams;
+  return <BloodMoonSection slug={cityOf(il).slug} />;
+}
+
+/** Liste başlığı, il seçici ve liste: görünürlük seçilen ile göre. */
+function BloodMoonSection({ slug }: { slug: string }) {
+  const city = cityOf(slug);
+  return (
+    <section aria-labelledby="kanli-ay-listesi" className="mt-12">
+      <div id="il-sec" className="flex scroll-mt-32 flex-wrap items-end justify-between gap-3">
+        <h2 id="kanli-ay-listesi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          2025-{UNTIL_YEAR} kanlı ayları
+        </h2>
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+      </div>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Saatler, ayın tamamen kızardığı aralıktır (Türkiye saati). Görünürlük, bu aralıkta ayın seçtiğiniz ilde ufkun
+        üzerinde olup olmadığına göre hesaplanır.
+      </p>
+      <BloodMoonList slug={city.slug} />
+    </section>
+  );
+}
+
+async function BloodMoonList({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
+  const city = cityOf(slug);
   const now = new Date();
-  const list = bloodMoons();
+  const list = bloodMoons(city);
   const nextIndex = list.findIndex((b) => b.eclipse.peak > now);
   const date = new Intl.DateTimeFormat(siteConfig.locale, {
     timeZone,
@@ -279,12 +352,7 @@ async function BloodMoonList() {
     <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
       {list.map((b, i) => {
         const past = b.eclipse.peak < now;
-        const verdict =
-          b.visibleShare > 0.97
-            ? "Türkiye'den tamamı görülür"
-            : b.visibleShare > 0
-              ? "Türkiye'den bir kısmı görülür"
-              : "Türkiye'den görülmez";
+        const verdict = `Görünürlük (${city.name}): ${verdictOf(b.visibleShare)}`;
         const visible = b.visibleShare > 0;
         return (
           <li

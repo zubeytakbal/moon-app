@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { getMoonAltitude, getUpcomingLunarEclipses, type LunarEclipse } from "@moon-app/moon";
+import { Suspense } from "react";
+import {
+  findProvince,
+  getMoonAltitude,
+  getUpcomingLunarEclipses,
+  TURKEY_PROVINCES,
+  type LunarEclipse,
+  type Province,
+} from "@moon-app/moon";
+import { AddToCalendar } from "@/components/AddToCalendar";
+import { CitySelect } from "@/components/CitySelect";
+import { icsTime } from "@/lib/ics";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
@@ -17,14 +28,15 @@ const PAGE = PAGES.ayTutulmalari;
 const UPDATED = "2026-10-27";
 const FROM = new Date(Date.UTC(2026, 0, 1));
 const COUNT = 9;
-const location = siteConfig.defaultLocation;
-const timeZone = location.timeZone;
+const timeZone = siteConfig.defaultLocation.timeZone;
+const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
   title: `Ay Tutulmaları 2026-2029: Tarihleri, Saatleri ve Türkiye'den Görünüşü | ${siteConfig.name}`,
   description:
     "Bir sonraki ay tutulması ne zaman? 2026-2029 ay tutulmalarının tarihleri, evrelerinin saatleri (Türkiye saati) ve Türkiye'den görülüp görülmeyeceği. 31 Aralık 2028 yılbaşı gecesi tam ay tutulması.",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -48,9 +60,9 @@ function phasesOf(e: LunarEclipse): Phase[] {
 
 /**
  * Tutulmanın gözle fark edilen kısmında (gölgeye girme varsa o, yoksa yarı gölge) ayın
- * İstanbul'da ufkun üzerinde kaldığı oran.
+ * seçilen ilde ufkun üzerinde kaldığı oran.
  */
-function visibility(e: LunarEclipse): { share: number; aboveIntervals: [number, number][] } {
+function visibility(e: LunarEclipse, location: Province): { share: number; aboveIntervals: [number, number][] } {
   const phases = phasesOf(e);
   const main = phases.find((ph) => ph.key === "partial") ?? phases[0];
   const outer = phases[0];
@@ -75,7 +87,15 @@ function visibility(e: LunarEclipse): { share: number; aboveIntervals: [number, 
   return { share: total ? up / total : 0, aboveIntervals: intervals };
 }
 
-export default function LunarEclipsesPage() {
+function cityOf(il: string | string[] | undefined): Province {
+  return findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+}
+
+function verdictOf(share: number) {
+  return share === 0 ? "görülmez" : share > 0.97 ? "tamamı görülür" : "bir kısmı görülür";
+}
+
+export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tutulmalari">) {
   return (
     <>
       <PhaseHero
@@ -83,7 +103,11 @@ export default function LunarEclipsesPage() {
         angle={180}
         eyebrow="Tutulmalar"
         lead="Ay tutulması, dolunayda ayın Dünya'nın gölgesine girmesidir. Güneş tutulmasının aksine çıplak gözle izlemek tamamen güvenlidir; tek şart, o sırada ayın bulunduğunuz yerde ufkun üzerinde olması."
-        aside={<NextEclipse />}
+        aside={
+          <Suspense fallback={<NextEclipse slug={siteConfig.defaultLocation.slug} />}>
+            <SelectedNext searchParams={searchParams} />
+          </Suspense>
+        }
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
@@ -94,34 +118,9 @@ export default function LunarEclipsesPage() {
           </QuickFacts>
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">2026-2029 ay tutulmaları</h2>
-        <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-          Saatler Türkiye saatidir. Çizelgedeki taralı kısım, ayın İstanbul&apos;da ufkun altında olduğu, yani
-          tutulmanın görülemediği zamandır. Doğudaki illerde ay biraz daha erken doğar ve erken batar.
-        </p>
-        <ul
-          className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-600 dark:text-zinc-400"
-          aria-label="Çizelge açıklaması"
-        >
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-6 rounded-full bg-zinc-500/50" aria-hidden="true" /> Yarı gölge
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-6 rounded-full bg-zinc-300 ring-1 ring-zinc-400" aria-hidden="true" /> Gölgede
-            (parçalı)
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-2.5 w-6 rounded-full bg-red-700" aria-hidden="true" /> Tamamen gölgede
-          </li>
-          <li className="flex items-center gap-2">
-            <span
-              className="h-3 w-6 rounded bg-[#05070d] bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.25)_0_3px,transparent_3px_6px)]"
-              aria-hidden="true"
-            />{" "}
-            Ay ufkun altında (İstanbul)
-          </li>
-        </ul>
-        <EclipseList />
+        <Suspense fallback={<EclipseSection slug={siteConfig.defaultLocation.slug} />}>
+          <SelectedSection searchParams={searchParams} />
+        </Suspense>
 
         <div className="mx-auto max-w-3xl">
           <Prose>
@@ -219,36 +218,115 @@ export default function LunarEclipsesPage() {
   );
 }
 
-/** Bir sonraki, Türkiye'den görülebilen ay tutulması. */
-async function NextEclipse() {
+async function SelectedNext({ searchParams }: Pick<PageProps<"/tr/ay-tutulmalari">, "searchParams">) {
+  const { il } = await searchParams;
+  return <NextEclipse slug={cityOf(il).slug} />;
+}
+
+/** Seçilen ilden görülebilen bir sonraki ay tutulması. Saatte bir yenilenir. */
+async function NextEclipse({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
+  const city = cityOf(slug);
   const now = new Date();
   const eclipses = getUpcomingLunarEclipses(now, 8);
-  const next = eclipses.find((e) => visibility(e).share > 0);
+  const next = eclipses.find((e) => visibility(e, city).share > 0);
   if (!next) return null;
+  const share = visibility(next, city).share;
+  const main = phasesOf(next).find((ph) => ph.key === "partial") ?? phasesOf(next)[0];
   const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
   const days = Math.ceil((next.peak.getTime() - now.getTime()) / 86_400_000);
 
   return (
     <div className="rounded-2xl border border-white/15 bg-black/40 p-5 backdrop-blur-sm">
-      <p className="text-xs uppercase tracking-wider text-zinc-400">Türkiye&apos;den görülecek bir sonraki tutulma</p>
+      <p className="text-xs uppercase tracking-wider text-zinc-400">Görülecek bir sonraki tutulma ({city.name})</p>
       <p className="mt-1 text-2xl font-semibold">{date.format(next.peak)}</p>
       <p className="mt-0.5 text-zinc-300">
         {KIND_TR[next.kind]} ay tutulması · en derin an {time.format(next.peak)}
       </p>
-      <p className="mt-3 inline-block rounded-full bg-indigo-500/20 px-3 py-1 text-sm font-medium text-indigo-200">
-        {days} gün sonra
+      <p className="mt-0.5 text-sm text-zinc-400">
+        Görünürlük ({city.name}): {verdictOf(share)}
       </p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-sm font-medium text-indigo-200">
+          {days} gün sonra
+        </span>
+        <a href="#il-sec" className="text-sm text-zinc-300 underline hover:text-white">
+          İlinizi seçin
+        </a>
+      </div>
+      <div className="mt-4">
+        <AddToCalendar
+          fileName={`ay-tutulmasi-${next.peak.toISOString().slice(0, 10)}.ics`}
+          event={{
+            uid: `ay-tutulmasi-${next.peak.toISOString().slice(0, 10)}-${city.slug}`,
+            summary: `${KIND_TR[next.kind]} ay tutulması`,
+            description: `En derin an ${time.format(next.peak)} (Türkiye saati). Görünürlük (${city.name}): ${verdictOf(share)}. Çıplak gözle izlemek güvenlidir.`,
+            url: new URL(PAGE.path, siteConfig.url).toString(),
+            start: icsTime(new Date(main.start)),
+            end: icsTime(new Date(main.end)),
+          }}
+        />
+      </div>
     </div>
   );
 }
 
-async function EclipseList() {
+async function SelectedSection({ searchParams }: Pick<PageProps<"/tr/ay-tutulmalari">, "searchParams">) {
+  const { il } = await searchParams;
+  return <EclipseSection slug={cityOf(il).slug} />;
+}
+
+/** Liste başlığı, il seçici, lejant ve liste: görünürlük seçilen ile göre. */
+function EclipseSection({ slug }: { slug: string }) {
+  const city = cityOf(slug);
+  return (
+    <section aria-labelledby="tutulma-listesi" className="mt-12">
+      <div id="il-sec" className="flex scroll-mt-32 flex-wrap items-end justify-between gap-3">
+        <h2 id="tutulma-listesi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          2026-2029 ay tutulmaları
+        </h2>
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+      </div>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Saatler Türkiye saatidir. Görünürlük, seçtiğiniz il için hesaplanır; çizelgedeki taralı kısım, ayın orada
+        ufkun altında olduğu, yani tutulmanın görülemediği zamandır. Doğudaki illerde ay biraz daha erken doğar ve
+        erken batar; ay doğarken ya da batarken yaşanan tutulmalarda iller arasındaki fark bu yüzden büyüktür.
+      </p>
+        <ul
+          className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-600 dark:text-zinc-400"
+          aria-label="Çizelge açıklaması"
+        >
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-6 rounded-full bg-zinc-500/50" aria-hidden="true" /> Yarı gölge
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-6 rounded-full bg-zinc-300 ring-1 ring-zinc-400" aria-hidden="true" /> Gölgede
+            (parçalı)
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="h-2.5 w-6 rounded-full bg-red-700" aria-hidden="true" /> Tamamen gölgede
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              className="h-3 w-6 rounded bg-[#05070d] bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.25)_0_3px,transparent_3px_6px)]"
+              aria-hidden="true"
+            />{" "}
+            Ay ufkun altında ({city.name})
+          </li>
+        </ul>
+      <EclipseList slug={city.slug} />
+    </section>
+  );
+}
+
+async function EclipseList({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
+
+  const city = cityOf(slug);
 
   const now = new Date();
   const eclipses = getUpcomingLunarEclipses(FROM, COUNT);
@@ -269,13 +347,8 @@ async function EclipseList() {
         const outer = phases[0];
         const span = outer.end - outer.start;
         const pos = (t: number) => ((t - outer.start) / span) * 100;
-        const { share, aboveIntervals } = visibility(e);
-        const verdict =
-          share === 0
-            ? "Türkiye'den görülmez"
-            : share > 0.97
-              ? "Türkiye'den tamamı görülür"
-              : "Türkiye'den bir kısmı görülür";
+        const { share, aboveIntervals } = visibility(e, city);
+        const verdict = `Görünürlük (${city.name}): ${verdictOf(share)}`;
         const past = e.peak < now;
         const color = { penumbral: "bg-zinc-500/50", partial: "bg-zinc-300", total: "bg-red-700" };
 

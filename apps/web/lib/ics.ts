@@ -188,8 +188,9 @@ export async function buildCalendar(): Promise<string> {
 }
 
 /**
- * Tek bir tüm gün (ya da birkaç günlük) etkinlikten oluşan .ics dosyası. Araçlardaki
- * "Takvime ekle" düğmeleri kullanır. Günler "YYYYMMDD", bitiş günü dahil değildir.
+ * Tek bir etkinlikten oluşan .ics dosyası. Araçlardaki "Takvime ekle" düğmeleri kullanır.
+ * Tüm gün etkinliğinde günler "YYYYMMDD" (bitiş günü dahil değildir); saatli etkinlikte
+ * `icsTime` ile üretilen "YYYYMMDDTHHMMSSZ" verilir.
  */
 export function buildSingleEventIcs(e: { uid: string; summary: string; description: string; url: string; start: string; end: string }) {
   return [
@@ -199,9 +200,9 @@ export function buildSingleEventIcs(e: { uid: string; summary: string; descripti
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:${e.uid}@${new URL(siteConfig.url).hostname}`,
-    `DTSTAMP:${e.start}T000000Z`,
-    `DTSTART;VALUE=DATE:${e.start}`,
-    `DTEND;VALUE=DATE:${e.end}`,
+    `DTSTAMP:${e.start.includes("T") ? e.start : `${e.start}T000000Z`}`,
+    e.start.includes("T") ? `DTSTART:${e.start}` : `DTSTART;VALUE=DATE:${e.start}`,
+    e.end.includes("T") ? `DTEND:${e.end}` : `DTEND;VALUE=DATE:${e.end}`,
     fold(`SUMMARY:${escapeText(e.summary)}`),
     fold(`DESCRIPTION:${escapeText(`${e.description}\n\n${e.url}`)}`),
     fold(`URL:${e.url}`),
@@ -211,7 +212,10 @@ export function buildSingleEventIcs(e: { uid: string; summary: string; descripti
   ].join("\r\n");
 }
 
-/** Google Takvim'de etkinlik oluşturma bağlantısı (tüm gün; bitiş günü dahil değildir). */
+/** Saatli takvim etkinliği için evrensel zaman ("20281231T163000Z"). */
+export const icsTime = utcStamp;
+
+/** Google Takvim'de etkinlik oluşturma bağlantısı (tarih biçimleri `buildSingleEventIcs` ile aynı). */
 export function googleCalendarLink(e: { summary: string; description: string; url: string; start: string; end: string }) {
   const params = new URLSearchParams({
     action: "TEMPLATE",
