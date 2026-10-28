@@ -14,12 +14,15 @@ export {
 } from "./phase.ts";
 export {
   ASTRONOMICAL_TWILIGHT_DEG,
+  DAYTIME_MOON,
   getDarkNight,
+  getDaytimeMoon,
   getMoonAltitude,
   getMoonPosition,
   getMoonRiseSet,
   getNextMoonEvent,
   type DarkNight,
+  type DaytimeMoon,
   type MoonPosition,
   type MoonRiseSet,
 } from "./rise-set.ts";

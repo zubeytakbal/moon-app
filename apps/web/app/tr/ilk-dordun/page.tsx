@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { daytimeCity, DaytimeMoonFinder } from "@/components/DaytimeMoonFinder";
 import {
   ArticleFooter,
   NextPrincipal,
@@ -16,12 +18,13 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ilkDordun;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 
 export const metadata: Metadata = {
   title: `İlk Dördün Nedir? Ne Zaman, Nasıl Görülür? | ${siteConfig.name}`,
   description:
     "İlk dördün ne zaman? Önümüzdeki ilk dördün tarihleri. Yarım görünen aya neden dördün denir, neden öğleden sonra gündüz görülür, kraterleri izlemek için neden en iyi zamandır?",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -34,7 +37,7 @@ const DAY_PATH = [
   { time: "~00:00", text: "Batı ufkunda batar. Gecenin ikinci yarısında gökyüzünde ay yoktur." },
 ];
 
-export default function FirstQuarterPage() {
+export default function FirstQuarterPage({ searchParams }: PageProps<"/tr/ilk-dordun">) {
   return (
     <>
       <PhaseHero
@@ -44,6 +47,9 @@ export default function FirstQuarterPage() {
         lead="Ayın sağ yarısının aydınlık göründüğü an. Yeni aydan yaklaşık bir hafta sonra gelir; ay, döngüsünün dörtte birini tamamlamıştır."
         aside={<NextPrincipal phase="first-quarter" />}
       />
+      <Suspense fallback={<DaytimeMoonFinder slug={siteConfig.defaultLocation.slug} action={PAGE.path} />}>
+        <SelectedFinder searchParams={searchParams} />
+      </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <QuickFacts>
           <li>İlk dördünde ayın tam yarısı aydınlık görünür. Türkiye&apos;den bakınca aydınlık kısım sağdadır.</li>
@@ -91,6 +97,12 @@ export default function FirstQuarterPage() {
             Birçok kişi ayı yalnızca gece görülen bir gök cismi sanır. Oysa ilk dördün civarında ay öğle saatlerinde
             doğduğu için öğleden sonra mavi gökyüzünde rahatça görülür. Okuldan ya da işten dönerken doğu ve güneydoğu
             yönüne bakarsanız soluk bir yarım ay bulmanız çok olasıdır.
+          </p>
+          <p>
+            Sayfanın başındaki &quot;Gündüz ayı nerede?&quot; kutusu, ilinize göre ayın bugün ve önümüzdeki günlerde
+            saat kaçta, hangi yönde ve ne yükseklikte görülebileceğini gösterir. Ay Güneş&apos;e çok yakınken ya da
+            ufka çok alçakken gündüz parıltısında kaybolur; bu yüzden kutu, ayın en az 10 derece yükseklikte ve
+            Güneş&apos;ten en az 25 derece uzakta olduğu saatleri sayar.
           </p>
 
           <h2>Kraterleri izlemenin en iyi zamanı</h2>
@@ -142,4 +154,9 @@ export default function FirstQuarterPage() {
       </main>
     </>
   );
+}
+
+async function SelectedFinder({ searchParams }: Pick<PageProps<"/tr/ilk-dordun">, "searchParams">) {
+  const { il } = await searchParams;
+  return <DaytimeMoonFinder slug={daytimeCity(il).slug} action={PAGE.path} />;
 }

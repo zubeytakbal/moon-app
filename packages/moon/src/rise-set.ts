@@ -113,3 +113,61 @@ export function getDarkNight(date: Date, location: GeoLocation): DarkNight {
   const minutes = Math.round(dark.reduce((sum, d) => sum + (d.end.getTime() - d.start.getTime()), 0) / 60_000);
   return { dusk: dusk.date, dawn: dawn.date, dark, minutes };
 }
+
+/** Gündüz ayın rahatça görülmesi için eşikler (sayfada da açıklanır). */
+export const DAYTIME_MOON = { minAltitude: 10, minElongation: 25, minIllumination: 0.2 } as const;
+
+export interface DaytimeMoon {
+  /** Ayın gündüz gökyüzünde rahatça görülebildiği aralıklar (Güneş doğmuş, ay yeterince yüksek ve aydınlık). */
+  windows: { start: Date; end: Date }[];
+  /**
+   * En uzun aralığın ortasında ayın yeri: gözlemciye "ne zaman, nereye bakmalı" sorusunun tipik cevabı.
+   * (Ayın en yüksek olduğu an çoğu zaman gün doğumuna denk gelir, gökyüzü o sırada henüz aydınlanmamıştır.)
+   */
+  best: { date: Date; azimuth: number; altitude: number; illumination: number } | null;
+}
+
+/**
+ * Verilen anın düştüğü yerel günde, ayın gündüz gökyüzünde görülebildiği saatler. Güneş ufkun üzerinde,
+ * ay en az 10° yüksekte, Güneş'ten en az 25° uzakta ve en az %20 aydınlık olmalıdır. 5 dakikalık adımla bakılır.
+ */
+export function getDaytimeMoon(date: Date, location: GeoLocation): DaytimeMoon {
+  const { start, end } = localDayRange(date, location.timeZone);
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const sunrise = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, +1, start, 1);
+  const sunset = sunrise ? Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, -1, sunrise, 1) : null;
+  if (!sunrise || !sunset || sunset.date > end) return { windows: [], best: null };
+
+  const step = 5 * 60_000;
+  const windows: { start: Date; end: Date }[] = [];
+  let open: number | null = null;
+  for (let t = sunrise.date.getTime(); t <= sunset.date.getTime(); t += step) {
+    const d = new Date(t);
+    const eq = Astronomy.Equator(Astronomy.Body.Moon, d, observer, true, true);
+    const hor = Astronomy.Horizon(d, observer, eq.ra, eq.dec, "normal");
+    const ok =
+      hor.altitude >= DAYTIME_MOON.minAltitude &&
+      Astronomy.AngleFromSun(Astronomy.Body.Moon, d) >= DAYTIME_MOON.minElongation &&
+      Astronomy.Illumination(Astronomy.Body.Moon, d).phase_fraction >= DAYTIME_MOON.minIllumination;
+    if (ok) {
+      if (open === null) open = t;
+    } else if (open !== null) {
+      windows.push({ start: new Date(open), end: new Date(t - step) });
+      open = null;
+    }
+  }
+  if (open !== null) windows.push({ start: new Date(open), end: sunset.date });
+  if (!windows.length) return { windows, best: null };
+
+  const longest = windows.reduce((a, b) => (b.end.getTime() - b.start.getTime() > a.end.getTime() - a.start.getTime() ? b : a));
+  const mid = new Date(Math.round((longest.start.getTime() + longest.end.getTime()) / 2 / 60_000) * 60_000);
+  const eq = Astronomy.Equator(Astronomy.Body.Moon, mid, observer, true, true);
+  const hor = Astronomy.Horizon(mid, observer, eq.ra, eq.dec, "normal");
+  const best = {
+    date: mid,
+    azimuth: hor.azimuth,
+    altitude: hor.altitude,
+    illumination: Astronomy.Illumination(Astronomy.Body.Moon, mid).phase_fraction,
+  };
+  return { windows, best };
+}

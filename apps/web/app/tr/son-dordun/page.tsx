@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { daytimeCity, DaytimeMoonFinder } from "@/components/DaytimeMoonFinder";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import {
   ArticleFooter,
@@ -15,17 +17,18 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.sonDordun;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 
 export const metadata: Metadata = {
   title: `Son Dördün Nedir? Ne Zaman Doğar, Nasıl Görülür? | ${siteConfig.name}`,
   description:
     "Son dördün ne zaman? Önümüzdeki son dördün tarihleri. Gece yarısı doğan, sol yarısı aydınlık ay: ilk dördünden farkı, sabah gökyüzünde nerede görüldüğü.",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
 
-export default function LastQuarterPage() {
+export default function LastQuarterPage({ searchParams }: PageProps<"/tr/son-dordun">) {
   return (
     <>
       <PhaseHero
@@ -35,6 +38,9 @@ export default function LastQuarterPage() {
         lead="Ayın sol yarısının aydınlık göründüğü an. Gece yarısına doğru doğar, sabah gökyüzüne kalır. Döngünün son çeyreği başlar."
         aside={<NextPrincipal phase="last-quarter" />}
       />
+      <Suspense fallback={<DaytimeMoonFinder slug={siteConfig.defaultLocation.slug} action={PAGE.path} />}>
+        <SelectedFinder searchParams={searchParams} />
+      </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <QuickFacts>
           <li>Son dördünde ayın tam yarısı aydınlıktır. Türkiye&apos;den bakınca aydınlık kısım soldadır.</li>
@@ -81,6 +87,10 @@ export default function LastQuarterPage() {
             Gün doğduktan sonra da ay gökyüzünde kalır. Sabah saatlerinde güney ve güneybatı yönünde, mavi gökyüzünde
             soluk bir yarım ay olarak seçilir ve öğle saatlerinde batar. Son dördün, sabahları en kolay görülen ay
             evresidir.
+          </p>
+          <p>
+            Sabah ayı ne zaman ve nerede arayacağınızı sayfanın başındaki &quot;Gündüz ayı nerede?&quot; kutusu
+            gösterir: ilinizi seçin, bugünün ve önümüzdeki günlerin saatlerini, ayın yönünü ve yüksekliğini görün.
           </p>
 
           <h2>Bu adı nereden alıyor?</h2>
@@ -156,4 +166,9 @@ function Compare({
   ) : (
     <div className={`${cls} ring-2 ring-indigo-400`}>{content}</div>
   );
+}
+
+async function SelectedFinder({ searchParams }: Pick<PageProps<"/tr/son-dordun">, "searchParams">) {
+  const { il } = await searchParams;
+  return <DaytimeMoonFinder slug={daytimeCity(il).slug} action={PAGE.path} />;
 }

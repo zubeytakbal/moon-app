@@ -16,6 +16,7 @@ import {
   getMonthCalendar,
   getNextBlueMoon,
   getDarkNight,
+  getDaytimeMoon,
   getMoonAltitude,
   getMoonPosition,
   getNextMoonEvent,
@@ -397,5 +398,27 @@ describe("getDarkNight", () => {
         assert.ok(getMoonAltitude(mid, ISTANBUL) < 0.5, `gün ${d + 1}`);
       }
     }
+  });
+});
+
+describe("getDaytimeMoon", () => {
+  it("ilk dördünde (17 Kasım 2026, İstanbul) ay öğleden sonra güneydoğu-güney tarafında görülür", () => {
+    const d = getDaytimeMoon(new Date("2026-11-17T09:00:00Z"), ISTANBUL);
+    assert.ok(d.windows.length > 0 && d.best);
+    const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Istanbul", hour: "2-digit", hourCycle: "h23" }).format(d.best!.date));
+    assert.ok(hour >= 12, `en iyi saat ${hour}`);
+    assert.ok(d.best!.azimuth > 90 && d.best!.azimuth < 230, `azimut ${d.best!.azimuth}`);
+  });
+
+  it("son dördünde (1 Kasım 2026, İstanbul) ay sabah batı tarafında görülür", () => {
+    const d = getDaytimeMoon(new Date("2026-11-01T09:00:00Z"), ISTANBUL);
+    assert.ok(d.windows.length > 0 && d.best);
+    const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Istanbul", hour: "2-digit", hourCycle: "h23" }).format(d.windows[0].start));
+    assert.ok(hour < 11, `başlangıç saati ${hour}`);
+  });
+
+  it("yeni ayda (9 Kasım 2026) ay gündüz görülmez", () => {
+    const d = getDaytimeMoon(new Date("2026-11-09T09:00:00Z"), ISTANBUL);
+    assert.equal(d.windows.length, 0);
   });
 });
