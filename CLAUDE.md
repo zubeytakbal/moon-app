@@ -10,7 +10,7 @@ Ay konusunda uzmanlaşmış bir web sitesi, ileride de mobil uygulama.
 - **Amaç:** "Ay konusunda en iyi kaynak" olmak.
 - **Hedef:** Google'dan organik trafik almak, ileride AdSense.
 - **Dil:** Önce Türkçe. Sonra Almanca, İspanyolca gibi diller eklenecek.
-- **Marka ve domain:** Henüz belli değil. Geçici ad **"Moon App"**.
+- **Marka ve domain:** **Lunatlas**, `lunatlas.com` (28 Ekim 2026'da kararlaştırıldı, kullanıcı satın alıyor; önceki geçici ad "Moon App"). E-posta `iletisim@lunatlas.com` (Gmail'e yönlendirme kurulacak).
   - Site adı kodun içine sabit yazılmaz. Tek bir config dosyasından (`site.config.ts`) okunur.
   - Domain yayından **önce** kesinleşmeli. Yayından sonra domain değiştirmek SEO'ya pahalıya patlar.
 
