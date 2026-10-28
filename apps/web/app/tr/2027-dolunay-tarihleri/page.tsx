@@ -19,6 +19,7 @@ import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.dolunay2027;
 const YEAR = 2027;
@@ -124,6 +125,7 @@ export default function FullMoons2027Page() {
               görülür. Nedenini <Link href={PAGES.dolunay.path}>Dolunay</Link> sayfasında anlattık.
             </p>
           </Prose>
+          <CalendarSubscribe />
           <ArticleFooter
             page={PAGE}
             headline="2027 Dolunay Tarihleri ve Saatleri"

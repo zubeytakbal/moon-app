@@ -14,6 +14,7 @@ import { siteConfig } from "@/site.config";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 import { SolarEclipseDiagram } from "@/components/EclipseDiagrams";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.gunesTutulmasi;
 const UPDATED = "2026-10-27";
@@ -200,6 +201,7 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
               <Link href={PAGES.kanliAy.path}>Kanlı Ay</Link> sayfalarına bakabilirsiniz.
             </p>
           </Prose>
+          <CalendarSubscribe />
           <ArticleFooter
             page={PAGE}
             headline="Güneş Tutulması Ne Zaman? 2027 ve 2030 Güneş Tutulmaları Türkiye"

@@ -16,6 +16,7 @@ import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.yeniAy20262027;
 const YEARS = [2026, 2027];
@@ -138,6 +139,7 @@ export default function NewMoons20262027Page() {
               <Link href={PAGES.ayTakvimi.path}>Ay Takvimi</Link> sayfasına bakabilirsiniz.
             </p>
           </Prose>
+          <CalendarSubscribe />
           <ArticleFooter
             page={PAGE}
             headline="2026-2027 Yeni Ay Tarihleri ve Güneş Tutulmaları"

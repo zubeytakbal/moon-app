@@ -11,6 +11,7 @@ import { siteConfig } from "@/site.config";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 import { LunarEclipseDiagram } from "@/components/EclipseDiagrams";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.ayTutulmalari;
 const UPDATED = "2026-10-27";
@@ -202,6 +203,7 @@ export default function LunarEclipsesPage() {
               denir. Örneğin 31 Aralık 2028 tutulmasının bir benzeri, 18 yıl sonra, 2047 yılının ocak ayında yaşanacak.
             </p>
           </Prose>
+          <CalendarSubscribe />
           <ArticleFooter
             page={PAGE}
             headline="Ay Tutulmaları 2026-2029: Tarihleri, Saatleri ve Türkiye'den Görünüşü"

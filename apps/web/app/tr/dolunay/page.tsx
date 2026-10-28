@@ -10,6 +10,7 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.dolunay;
 const UPDATED = "2026-10-27";
@@ -121,6 +122,7 @@ export default function FullMoonPage() {
           </ul>
         </Prose>
 
+        <CalendarSubscribe />
         <PhaseNav current={PAGE} />
         <ArticleFooter
           page={PAGE}
