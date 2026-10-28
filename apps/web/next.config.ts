@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     agentFeedback: true,
   },
   cacheComponents: true,
+  // Görseller zaten doğru boyutta WebP olarak hazırlanıyor; Cloudflare'de ayrı görsel servisi gerekmesin.
+  images: { unoptimized: true },
   partialPrefetching: true,
   turbopack: {
     rules: {

@@ -1,32 +1,51 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { cacheLife } from "next/cache";
 import { ImageResponse } from "next/og";
-import type { NextRequest } from "next/server";
+import { ogSlug } from "@/lib/og";
 import { ALL_PAGES, GROUP_NAMES, HOME_PATH } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 /**
- * Sayfaların paylaşım görseli (Open Graph, 1200x630). `?p=/tr/dolunay` gibi sayfa yolunu alır;
- * başlık ve açıklama `lib/pages.ts` sayfa listesinden gelir.
+ * Sayfaların paylaşım görseli (Open Graph, 1200x630), örn. `/og/tr_dolunay`. Başlık ve açıklama
+ * `lib/pages.ts` sayfa listesinden gelir. Görseller derleme sırasında bir kez üretilir ve sabit dosya
+ * olarak sunulur; bu yüzden yazı tipleri diskten yalnızca derlemede okunur (Cloudflare'de disk yok).
  */
-const root = process.cwd();
-const [regular, bold, moon] = await Promise.all([
-  readFile(join(root, "assets/fonts/Geist-Regular.ttf")),
-  readFile(join(root, "assets/fonts/Geist-Bold.ttf")),
-  readFile(join(root, "public/moon/full-moon-og.jpg")),
-]);
-const moonSrc = `data:image/jpeg;base64,${moon.toString("base64")}`;
+export function generateStaticParams() {
+  return [HOME_PATH, ...ALL_PAGES.map((p) => p.path)].map((path) => ({ slug: ogSlug(path) }));
+}
 
-export function GET(request: NextRequest) {
-  const path = request.nextUrl.searchParams.get("p") ?? HOME_PATH;
-  const page = ALL_PAGES.find((p) => p.path === path);
+export async function GET(_request: Request, { params }: RouteContext<"/og/[slug]">) {
+  const { slug } = await params;
+  // Listede olmayan adresler için görsel üretilmez (çalışırken disk okunamaz).
+  if (slug !== ogSlug(HOME_PATH) && !ALL_PAGES.some((p) => ogSlug(p.path) === slug)) {
+    return new Response("Bulunamadı", { status: 404 });
+  }
+  return new Response(await renderImage(slug), {
+    headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=86400" },
+  });
+}
+
+/** Görseli üretir. Sonuç kalıcı önbelleğe alınır; derlemede bir kez çalışır, Cloudflare'de diske gerek kalmaz. */
+async function renderImage(slug: string): Promise<Uint8Array<ArrayBuffer>> {
+  "use cache";
+  cacheLife("max");
+
+  const root = process.cwd();
+  const [regular, bold, moon] = await Promise.all([
+    readFile(join(root, "assets/fonts/Geist-Regular.ttf")),
+    readFile(join(root, "assets/fonts/Geist-Bold.ttf")),
+    readFile(join(root, "public/moon/full-moon-og.jpg")),
+  ]);
+  const moonSrc = `data:image/jpeg;base64,${moon.toString("base64")}`;
+  const page = ALL_PAGES.find((p) => ogSlug(p.path) === slug);
   const eyebrow = page ? GROUP_NAMES[page.group] : "Ay rehberi";
   const title = page?.title ?? "Gökyüzündeki ay, bugün ve her gün";
   const description =
     page?.description ??
     "Ayın evresi, doğuş ve batış saatleri, dolunay tarihleri. Türkiye saatine göre, astronomik hesaplarla.";
 
-  return new ImageResponse(
+  const image = new ImageResponse(
     <div
       style={{
         width: "100%",
@@ -71,4 +90,5 @@ export function GET(request: NextRequest) {
       ],
     },
   );
+  return new Uint8Array(await image.arrayBuffer());
 }
