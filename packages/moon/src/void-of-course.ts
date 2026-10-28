@@ -40,10 +40,14 @@ function geoLongitude(body: Astronomy.Body, t: number): number {
   return ecl.elon;
 }
 
-/** Ay ile cisim arasındaki boylam farkının bir açıdan sapması, (-180, 180] aralığında. */
-function offset(body: Astronomy.Body, aspect: number, t: number): number {
-  const d = geoLongitude(Astronomy.Body.Moon, t) - geoLongitude(body, t) - aspect;
+/** Ay ile cismin boylamlarından, farkın bir açıdan sapması, (-180, 180] aralığında. */
+function wrap(moonLon: number, bodyLon: number, aspect: number): number {
+  const d = moonLon - bodyLon - aspect;
   return ((((d + 180) % 360) + 360) % 360) - 180;
+}
+
+function offset(body: Astronomy.Body, aspect: number, t: number): number {
+  return wrap(geoLongitude(Astronomy.Body.Moon, t), geoLongitude(body, t), aspect);
 }
 
 export interface LastAspect {
@@ -54,32 +58,47 @@ export interface LastAspect {
 
 /** `end` anından önceki `lookbackHours` saat içinde ayın yaptığı son tam açı. */
 export function findLastAspect(end: Date, lookbackHours = 72): LastAspect | null {
-  let best: LastAspect | null = null;
   const endT = end.getTime();
+  // Konum hesabı pahalıdır: saatlik konumlar her cisim için bir kez hesaplanır, bütün açılar bu tablodan bakılır.
+  const times = Array.from({ length: lookbackHours + 1 }, (_, i) => endT - i * HOUR_MS);
+  const moon = times.map((t) => geoLongitude(Astronomy.Body.Moon, t));
+
+  // Her cisim ve açı için geriye doğru saat saat bakıp ilk işaret değişimini (en son açıyı) bul; ay her
+  // cisimden hızlı olduğu için fark hep artar. Yalnızca en geç saatlik aralığa düşenler son açı olabilir.
+  let latest = -Infinity;
+  let candidates: { body: Astronomy.Body; aspect: number; lo: number; hi: number }[] = [];
   for (const body of BODIES) {
+    const lon = times.map((t) => geoLongitude(body, t));
     for (const aspect of ASPECTS) {
-      // Geriye doğru saat saat bakıp işaret değişimini ara; ay her cisimden hızlı olduğu için fark hep artar.
-      let hi = endT;
-      let fHi = offset(body, aspect, hi);
+      let fHi = wrap(moon[0], lon[0], aspect);
       for (let step = 1; step <= lookbackHours; step++) {
-        const lo = endT - step * HOUR_MS;
-        const fLo = offset(body, aspect, lo);
+        const fLo = wrap(moon[step], lon[step], aspect);
         if (fLo < 0 && fHi >= 0 && fHi - fLo < 30) {
-          let a = lo;
-          let b = hi;
-          while (b - a > 1000) {
-            const mid = (a + b) / 2;
-            if (offset(body, aspect, mid) < 0) a = mid;
-            else b = mid;
+          const hi = times[step - 1];
+          if (hi > latest) {
+            latest = hi;
+            candidates = [];
           }
-          if (!best || b > best.date.getTime())
-            best = { body: body as string, aspect: aspect > 180 ? 360 - aspect : aspect, date: new Date(b) };
+          if (hi === latest) candidates.push({ body, aspect, lo: times[step], hi });
           break;
         }
-        hi = lo;
         fHi = fLo;
       }
     }
+  }
+
+  // Aynı saatlik aralıktaki adayların tam anı saniye düzeyinde ikiye bölerek bulunur.
+  let best: LastAspect | null = null;
+  for (const { body, aspect, lo, hi } of candidates) {
+    let a = lo;
+    let b = hi;
+    while (b - a > 1000) {
+      const mid = (a + b) / 2;
+      if (offset(body, aspect, mid) < 0) a = mid;
+      else b = mid;
+    }
+    if (!best || b > best.date.getTime())
+      best = { body: body as string, aspect: aspect > 180 ? 360 - aspect : aspect, date: new Date(b) };
   }
   return best;
 }
