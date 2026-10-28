@@ -16,6 +16,8 @@ import {
   getMonthCalendar,
   getNextBlueMoon,
   getMoonAltitude,
+  getMoonPosition,
+  getNextMoonEvent,
   getLunation,
   getMoonPhase,
   getMoonRiseSet,
@@ -355,5 +357,18 @@ describe("getVoidOfCoursePeriods", () => {
     assert.equal(v.nextSign.name, "İkizler");
     const hours = (v.end.getTime() - v.start.getTime()) / 3_600_000;
     assert.ok(hours > 0.7 && hours < 1.3, `${hours.toFixed(2)} saat`);
+  });
+});
+
+describe("getMoonPosition", () => {
+  it("dolunay gecesi yarısında ay güneyde ve yüksekte, doğarken doğu tarafında", () => {
+    // 26 Ekim 2026 dolunayından sonraki gece (İstanbul 02:00); ay o sırada güneyden geçer.
+    const midnight = getMoonPosition(new Date("2026-10-26T23:00:00Z"), ISTANBUL);
+    assert.ok(midnight.azimuth > 150 && midnight.azimuth < 210, `azimut ${midnight.azimuth}`);
+    assert.ok(midnight.altitude > 30, `yükseklik ${midnight.altitude}`);
+    const rise = getNextMoonEvent(new Date("2026-10-27T12:00:00Z"), ISTANBUL, "rise")!;
+    const atRise = getMoonPosition(rise, ISTANBUL);
+    assert.ok(atRise.azimuth > 45 && atRise.azimuth < 135, `doğuş azimutu ${atRise.azimuth}`);
+    assert.ok(Math.abs(atRise.altitude) < 1);
   });
 });

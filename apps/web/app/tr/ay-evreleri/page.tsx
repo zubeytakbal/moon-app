@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { OrbitDiagram } from "@/components/OrbitDiagram";
+import { PhaseModel } from "@/components/PhaseModel";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { pageOpenGraph } from "@/lib/og";
@@ -108,6 +109,7 @@ export default function MoonPhasesPage() {
         </Prose>
 
         <OrbitDiagram />
+        <TodayPhaseModel />
 
         <Prose>
           <p>
@@ -262,6 +264,13 @@ function PhaseTable() {
 }
 
 /** Şu anki evre ve önümüzdeki ana evreler. Saatte bir yenilenir. */
+/** Etkileşimli model bugünün evresiyle açılır; saatte bir yenilenir. */
+async function TodayPhaseModel() {
+  "use cache";
+  cacheLife("hours");
+  return <PhaseModel todayAngle={getMoonPhase(new Date(), siteConfig.defaultLocation.timeZone).phaseAngle} />;
+}
+
 async function CurrentPhase() {
   "use cache";
   cacheLife("hours");

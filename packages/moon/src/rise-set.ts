@@ -34,3 +34,25 @@ export function getMoonAltitude(date: Date, location: GeoLocation): number {
   const eq = Astronomy.Equator(Astronomy.Body.Moon, date, observer, true, true);
   return Astronomy.Horizon(date, observer, eq.ra, eq.dec, "normal").altitude;
 }
+
+export interface MoonPosition {
+  /** Pusula yönü (derece): 0 kuzey, 90 doğu, 180 güney, 270 batı. */
+  azimuth: number;
+  /** Ufuktan yükseklik (derece, atmosferik kırılma dahil). Negatifse ay ufkun altındadır. */
+  altitude: number;
+}
+
+/** Verilen anda ayın gökyüzündeki yeri: yönü ve ufuktan yüksekliği. */
+export function getMoonPosition(date: Date, location: GeoLocation): MoonPosition {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const eq = Astronomy.Equator(Astronomy.Body.Moon, date, observer, true, true);
+  const hor = Astronomy.Horizon(date, observer, eq.ra, eq.dec, "normal");
+  return { azimuth: hor.azimuth, altitude: hor.altitude };
+}
+
+/** Verilen andan sonraki ilk ay doğuşu ya da batışı (gün sınırına bakmadan). */
+export function getNextMoonEvent(date: Date, location: GeoLocation, direction: "rise" | "set"): Date | null {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const time = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, direction === "rise" ? 1 : -1, date, 2);
+  return time ? time.date : null;
+}

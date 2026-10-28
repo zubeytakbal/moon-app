@@ -3,11 +3,19 @@ import { cacheLife } from "next/cache";
 import Form from "next/form";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getMoonPhase, getUpcomingPrincipalPhases, SYNODIC_MONTH_DAYS, zonedTimeToUtc } from "@moon-app/moon";
+import {
+  getFullMoonsOfYear,
+  getMoonPhase,
+  getUpcomingPrincipalPhases,
+  localDateParts,
+  SYNODIC_MONTH_DAYS,
+  zonedTimeToUtc,
+} from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
+import { nameFullMoons } from "@/lib/full-moon-names";
 import { QuickFacts } from "@/components/QuickFacts";
 import { ShareButton } from "@/components/ShareButton";
 import { pageOpenGraph } from "@/lib/og";
@@ -289,6 +297,9 @@ async function BirthResult({ year, month, day, hour, minute, hasTime }: BirthInp
     Math.abs(diffDays) < 0.5
       ? "Doğduğunuz gün dolunaydı."
       : `En yakın dolunay, doğumunuzdan ${Math.round(Math.abs(diffDays))} gün ${diffDays > 0 ? "sonraydı" : "önceydi"}.`;
+  // O dolunayın geleneksel adı (Hasat Ayı, Mavi Ay gibi kurallar yılın bütün dolunaylarına bakar).
+  const nearestYear = localDateParts(nearest.date, timeZone).year;
+  const nearestName = nameFullMoons(getFullMoonsOfYear(nearestYear), timeZone).get(nearest.date.getTime());
 
   const isPast = birth < now;
   const elapsedDays = (now.getTime() - birth.getTime()) / DAY_MS;
@@ -306,7 +317,7 @@ async function BirthResult({ year, month, day, hour, minute, hasTime }: BirthInp
     })
     .filter((m) => m !== null);
 
-  const shareText = `${short.format(birth)} günü ay: ${phase.name}, %${pct} aydınlık.`;
+  const shareText = `${short.format(birth)} günü ay: ${phase.name}, %${pct} aydınlık.${nearestName ? ` Doğum dolunayım: ${nearestName}.` : ""}`;
 
   return (
     <div className="mt-10 grid gap-8 md:grid-cols-[auto_1fr] md:items-center">
@@ -324,6 +335,15 @@ async function BirthResult({ year, month, day, hour, minute, hasTime }: BirthInp
           {phase.isWaxing ? "büyüyordu" : "küçülüyordu"}
         </p>
         <p className="mt-3 text-zinc-300">{nearestText}</p>
+        {nearestName && (
+          <p className="mt-3 inline-flex flex-wrap items-baseline gap-x-2 rounded-full border border-amber-300/30 bg-amber-400/10 px-4 py-1.5 text-amber-100">
+            <span className="text-sm text-amber-200/80">Doğum dolunayınızın adı:</span>
+            <Link href={PAGES.dolunayIsimleri.path} className="font-semibold hover:underline">
+              {nearestName}
+            </Link>
+            <span className="text-sm text-amber-200/80">({short.format(nearest.date)})</span>
+          </p>
+        )}
 
         {isPast && (
           <dl className="mt-6 grid grid-cols-2 gap-3 sm:max-w-md">

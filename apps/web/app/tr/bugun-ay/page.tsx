@@ -12,6 +12,7 @@ import {
 } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CitySelect } from "@/components/CitySelect";
+import { MoonCompass } from "@/components/MoonCompass";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { QuickFacts } from "@/components/QuickFacts";
@@ -253,6 +254,15 @@ async function CityMoonTimes({ slug }: { slug: string }) {
         <BigFact icon="↑" label="Ay doğuşu" value={rise ? fmt.time.format(rise) : "Doğmuyor"} />
         <BigFact icon="↓" label="Ay batışı" value={set ? fmt.time.format(set) : "Batmıyor"} />
       </dl>
+      <MoonCompass
+        city={{
+          name: city.name,
+          latitude: city.latitude,
+          longitude: city.longitude,
+          elevation: city.elevation,
+          timeZone: city.timeZone,
+        }}
+      />
     </section>
   );
 }

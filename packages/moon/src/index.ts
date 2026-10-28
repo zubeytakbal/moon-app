@@ -12,7 +12,7 @@ export {
   type PhaseKey,
   type PrincipalPhase,
 } from "./phase.ts";
-export { getMoonAltitude, getMoonRiseSet, type MoonRiseSet } from "./rise-set.ts";
+export { getMoonAltitude, getMoonPosition, getMoonRiseSet, getNextMoonEvent, type MoonPosition, type MoonRiseSet } from "./rise-set.ts";
 export { findProvince, TURKEY_PROVINCES, type Province } from "./provinces-tr.ts";
 export { getMonthCalendar, getNextBlueMoon, type CalendarDay } from "./calendar.ts";
 export { localDateParts, zonedTimeToUtc } from "./time.ts";
