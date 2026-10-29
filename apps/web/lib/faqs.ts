@@ -223,6 +223,20 @@ export const FAQS = {
       a: "Arka yüzden Dünya hiç görünmediği için araçlar Dünya'ya doğrudan sinyal gönderemez. Bu yüzden ayın arkasını gören bir yörüngeye aktarma uydusu yerleştirilir: Chang'e 4 ve Chang'e 6 görevleri, Çin'in Queqiao adlı aktarma uyduları sayesinde Dünya'yla haberleşti. Aynı sebeple Artemis II astronotları da ayın arkasından geçerken bir süre Dünya'yla bağlantısız kaldı.",
     },
   ],
+  ayUzaklik: [
+    {
+      q: "Ay ile Dünya arası kaç ışık yılı?",
+      a: "Bir ışık yılının çok küçük bir kesri: ortalama uzaklık yaklaşık 1,28 ışık saniyesidir. Işık yılı cinsinden yazılırsa yaklaşık 0,00000004 ışık yılı eder. Ay için ışık yılı yerine ışık saniyesi kullanmak çok daha anlaşılırdır; en yakın yıldız Proxima Centauri ise 4,2 ışık yılı uzaktadır.",
+    },
+    {
+      q: "Dünya ile ay arası bilimsel gösterimle nasıl yazılır?",
+      a: "Ortalama uzaklık 384.400 km'dir; bilimsel gösterimle 3,844 × 10⁵ km olarak yazılır. Metre cinsinden 3,844 × 10⁸ m, santimetre cinsinden 3,844 × 10¹⁰ cm eder. Bilimsel gösterimde virgülden önce tek basamak bırakılır ve 10'un kuvveti, virgülün kaç basamak kaydırıldığını gösterir.",
+    },
+    {
+      q: "Ay bir gün Dünya'dan kaçıp gidecek mi?",
+      a: "Hayır. Ay uzaklaşmaya devam edecek ama uzaklaşma giderek yavaşlayacak ve ay Dünya'nın çekiminden hiçbir zaman kurtulamayacak. Hesaplara göre Dünya ve ay, on milyarlarca yıl sonra birbirine karşı aynı yüzü gösteren bir dengeye ulaşırdı; ama Güneş, yaklaşık 5 milyar yıl sonra kızıl dev evresine geçeceği için bu son hiçbir zaman gelmeyecek.",
+    },
+  ],
   ayaYolculuk: [
     {
       q: "Aya ilk ayak basan Türk var mı?",

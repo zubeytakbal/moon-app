@@ -310,8 +310,8 @@ async function LiveDistance() {
           <dd className="font-medium">yaklaşık 3 günde</dd>
         </div>
       </dl>
-      <Link href={PAGES.superAy.path} className="mt-4 inline-block text-sm text-indigo-300 underline hover:text-indigo-200">
-        Ay neden bazen daha yakın?
+      <Link href={PAGES.ayUzaklik.path} className="mt-4 inline-block text-sm text-indigo-300 underline hover:text-indigo-200">
+        Ay ne kadar uzak? Arabayla kaç günde gidilir?
       </Link>
     </div>
   );
