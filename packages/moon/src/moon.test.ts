@@ -18,6 +18,8 @@ import {
   getNextBlueMoon,
   getDarkNight,
   getDaytimeMoon,
+  getFullMoonRise,
+  getSunRiseSet,
   getMoonAltitude,
   getMoonPosition,
   getNextMoonEvent,
@@ -433,5 +435,21 @@ describe("getUpcomingLunarApsides", () => {
       else assert.ok(a.km > 404_000 && a.km < 407_000, `uzakberi ${a.km}`);
       assert.ok(Math.abs(getMoonDistanceKm(a.date) - a.km) < 50);
     }
+  });
+});
+
+describe("getFullMoonRise", () => {
+  it("24 Kasım 2026 dolunayı İstanbul: gün batımına yakın, doğu-kuzeydoğuda doğar", () => {
+    const full = getNextFullMoon(new Date("2026-11-20T00:00:00Z"));
+    const r = getFullMoonRise(full, ISTANBUL);
+    assert.ok(Math.abs(r.rise.getTime() - full.getTime()) < 18 * 3_600_000);
+    assert.ok(r.sunset && Math.abs(r.rise.getTime() - r.sunset.getTime()) < 2 * 3_600_000, "gün batımına yakın");
+    // Kış dolunayı güneşin karşısında, kuzeydoğudan doğar.
+    assert.ok(r.azimuth > 45 && r.azimuth < 90, `azimut ${r.azimuth}`);
+  });
+
+  it("Güneş her gün doğar ve batar (İstanbul)", () => {
+    const s = getSunRiseSet(new Date("2026-10-29T09:00:00Z"), ISTANBUL);
+    assert.ok(s.rise && s.set && s.set > s.rise);
   });
 });

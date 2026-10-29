@@ -171,3 +171,33 @@ export function getDaytimeMoon(date: Date, location: GeoLocation): DaytimeMoon {
   };
   return { windows, best };
 }
+
+/** Verilen anın düştüğü yerel günde Güneş'in doğuş ve batış saatleri (kutup dışında her gün vardır). */
+export function getSunRiseSet(date: Date, location: GeoLocation): { rise: Date | null; set: Date | null } {
+  const { start, end } = localDayRange(date, location.timeZone);
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const find = (direction: 1 | -1): Date | null => {
+    const time = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, direction, start, daysBetween(start, end));
+    return time && time.date < end ? time.date : null;
+  };
+  return { rise: find(1), set: find(-1) };
+}
+
+/**
+ * Bir dolunayın "doğuşu": dolunay anına en yakın ay doğuşu, ayın o andaki pusula yönü ve aynı akşamın
+ * gün batımı. Dolunay doğuşunu izlemek ya da fotoğraflamak için.
+ */
+export function getFullMoonRise(fullMoon: Date, location: GeoLocation): { rise: Date; azimuth: number; sunset: Date | null } {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  let t = new Date(fullMoon.getTime() - 2 * 86_400_000);
+  let best: Date | null = null;
+  for (let i = 0; i < 4; i++) {
+    const rise = Astronomy.SearchRiseSet(Astronomy.Body.Moon, observer, +1, t, 2);
+    if (!rise) break;
+    if (!best || Math.abs(rise.date.getTime() - fullMoon.getTime()) < Math.abs(best.getTime() - fullMoon.getTime()))
+      best = rise.date;
+    t = new Date(rise.date.getTime() + 3_600_000);
+  }
+  if (!best) throw new Error("ay doğuşu bulunamadı");
+  return { rise: best, azimuth: getMoonPosition(best, location).azimuth, sunset: getSunRiseSet(best, location).set };
+}

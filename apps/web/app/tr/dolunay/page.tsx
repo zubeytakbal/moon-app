@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 import { getMoonAltitude, getUpcomingPrincipalPhases } from "@moon-app/moon";
 import { ArticleFooter, NextPrincipal, PhaseHero, PhaseNav } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
@@ -11,20 +12,22 @@ import { siteConfig } from "@/site.config";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
+import { fullMoonCity, FullMoonRiseFinder } from "./FullMoonRise";
 
 const PAGE = PAGES.dolunay;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
   title: `Dolunay Ne Zaman? Önümüzdeki Dolunay Tarihleri ve Saatleri | ${siteConfig.name}`,
   description:
-    "Bir sonraki dolunay ne zaman? Önümüzdeki 12 dolunayın tarihi ve saati (Türkiye saati), dolunayın İstanbul'da gece ne kadar yükseldiği. Dolunay neden kışın yüksekte, ufukta neden büyük görünür?",
+    "Bir sonraki dolunay ne zaman? Önümüzdeki 12 dolunayın tarihi ve saati (Türkiye saati), ilinizde dolunayın saat kaçta ve hangi yönden doğacağı, gece ne kadar yükseleceği. Dolunay neden kışın yüksekte, ufukta neden büyük görünür?",
+  // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
 
-export default function FullMoonPage() {
+export default function FullMoonPage({ searchParams }: PageProps<"/tr/dolunay">) {
   return (
     <>
       <PhaseHero
@@ -34,6 +37,9 @@ export default function FullMoonPage() {
         lead="Ayın Güneş'in tam karşısına geldiği, bize bakan yüzünün tamamen aydınlandığı an. Gün batımında doğar, bütün gece gökyüzünde kalır."
         aside={<NextPrincipal phase="full-moon" />}
       />
+      <Suspense fallback={<FullMoonRiseFinder slug={siteConfig.defaultLocation.slug} />}>
+        <SelectedFinder searchParams={searchParams} />
+      </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <QuickFacts>
           <li>
@@ -45,16 +51,19 @@ export default function FullMoonPage() {
 
         <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki dolunaylar</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Saat, ayın Güneş&apos;in tam karşısına geldiği andır (Türkiye saati). Son sütun, ayın o gece İstanbul&apos;da
+          Saat, ayın Güneş&apos;in tam karşısına geldiği andır (Türkiye saati). Son sütun, ayın o gece seçtiğiniz ilde
           ufuktan en fazla kaç derece yükseldiğini gösterir.
         </p>
-        <FullMoonTable />
+        <Suspense fallback={<FullMoonTable slug={siteConfig.defaultLocation.slug} />}>
+          <SelectedTable searchParams={searchParams} />
+        </Suspense>
 
         <Prose>
           <h2>Dolunay neden kışın yüksekte, yazın alçakta?</h2>
           <p>
-            Tablodaki son sütuna bakın: aralık dolunayı İstanbul&apos;da neredeyse tepemize, 70 derecenin üzerine çıkar.
-            Haziran dolunayı ise ufuktan ancak 20 derece kadar yükselir.
+            Tablodaki son sütuna bakın: aralık dolunayı neredeyse tepemize çıkar; İstanbul&apos;da 70 dereceyi geçer, güneydeki
+            illerde daha da yükselir. Haziran dolunayı ise ufuktan ancak 20 derece kadar yükselir. Doğuş yönü de buna
+            uyar: kış dolunayı kuzeydoğudan, yaz dolunayı güneydoğudan doğar.
           </p>
           <p>
             Nedeni basittir: dolunay, gökyüzünde her zaman Güneş&apos;in tam karşısındadır. Kışın Güneş öğle vakti bile
@@ -138,13 +147,23 @@ export default function FullMoonPage() {
   );
 }
 
-/** Önümüzdeki 12 dolunay ve her birinin o gece İstanbul'daki en yüksek konumu. Saatte bir yenilenir. */
-async function FullMoonTable() {
+async function SelectedFinder({ searchParams }: Pick<PageProps<"/tr/dolunay">, "searchParams">) {
+  const { il } = await searchParams;
+  return <FullMoonRiseFinder slug={fullMoonCity(il).slug} />;
+}
+
+async function SelectedTable({ searchParams }: Pick<PageProps<"/tr/dolunay">, "searchParams">) {
+  const { il } = await searchParams;
+  return <FullMoonTable slug={fullMoonCity(il).slug} />;
+}
+
+/** Önümüzdeki 12 dolunay ve her birinin o gece seçilen ildeki en yüksek konumu. Saatte bir yenilenir. */
+async function FullMoonTable({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
   const now = new Date();
-  const location = siteConfig.defaultLocation;
+  const location = fullMoonCity(slug);
   const timeZone = location.timeZone;
   const fullMoons = getUpcomingPrincipalPhases(now, 52)
     .filter((p) => p.key === "full-moon")
@@ -170,7 +189,7 @@ async function FullMoonTable() {
           <tr>
             <th className="px-4 py-3 font-medium sm:px-5">Tarih</th>
             <th className="px-4 py-3 font-medium sm:px-5">Saat</th>
-            <th className="px-4 py-3 font-medium sm:px-5">En yüksek (İstanbul)</th>
+            <th className="px-4 py-3 font-medium sm:px-5">En yüksek ({location.name})</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
