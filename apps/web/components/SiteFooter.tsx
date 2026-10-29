@@ -2,6 +2,7 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { GROUP_NAMES, HOME_PATH, PAGES, type PageGroup, type SitePage } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { CookieSettingsButton } from "./CookieConsent";
 import { Emblem } from "./Emblem";
 
 /**
@@ -103,6 +104,9 @@ export async function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <li>
+              <CookieSettingsButton className="cursor-pointer text-zinc-400 hover:text-white hover:underline" />
+            </li>
           </ul>
         </div>
       </div>

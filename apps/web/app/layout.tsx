@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Josefin_Sans } from "next/font/google";
 import "./globals.css";
+import { CookieConsent } from "@/components/CookieConsent";
 import { RelatedPages } from "@/components/RelatedPages";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <TableOfContents />
         <RelatedPages byPath={RELATED_BY_PATH} />
         <SiteFooter />
+        <CookieConsent />
       </body>
     </html>
   );

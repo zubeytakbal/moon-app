@@ -22,7 +22,7 @@ export default function PrivacyPage() {
   return (
     <CorporatePage
       page={PAGE}
-      updated="2026-10-28"
+      updated="2026-10-29"
       lead="Bu sayfada sitemizi kullanırken hangi bilgilerin işlendiğini, neden işlendiğini ve bu konudaki haklarınızı anlatıyoruz."
     >
       <QuickFacts>
@@ -54,8 +54,8 @@ export default function PrivacyPage() {
           Hangi sayfaların okunduğunu, ziyaretçilerin siteye nereden geldiğini ve hangi cihazları kullandığını görmek
           için Google Analytics kullanıyoruz. Google Analytics bunun için çerez kullanır ve sizi adınızla değil, rastgele
           bir kimlik numarasıyla tanır. Google&apos;ın açıklamasına göre Google Analytics 4 IP adreslerini kaydetmez.
-          Bu istatistikleri yalnızca siteyi geliştirmek için kullanırız. Google Analytics çerezleri, çerez izniniz
-          olmadan çalıştırılmaz.
+          Bu istatistikleri yalnızca siteyi geliştirmek için kullanırız. Google Analytics, çerez bildiriminde izin
+          vermezseniz hiç yüklenmez ve Google&apos;a ziyaretinizle ilgili bilgi gönderilmez.
         </p>
 
         <h3>Reklamlar (Google AdSense)</h3>

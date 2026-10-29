@@ -20,8 +20,8 @@ const COOKIES: { group: string; rows: { name: string; owner: string; purpose: st
     group: "Zorunlu çerezler",
     rows: [
       {
-        name: "Çerez tercihi",
-        owner: `${siteConfig.name} / Google`,
+        name: "lunatlas_cerez (çerez tercihi)",
+        owner: siteConfig.name,
         purpose: "Çerez bildiriminde yaptığınız seçimi hatırlar.",
         duration: "13 aya kadar",
       },
@@ -67,7 +67,7 @@ export default function CookiePage() {
   return (
     <CorporatePage
       page={PAGE}
-      updated="2026-10-28"
+      updated="2026-10-29"
       lead="Çerezler, bir siteyi ziyaret ettiğinizde tarayıcınıza kaydedilen küçük metin dosyalarıdır. Bu sayfada hangilerini, neden kullandığımızı anlatıyoruz."
     >
       <Prose>

@@ -14,6 +14,8 @@ export const siteConfig = {
   contactEmail: "iletisim@lunatlas.com",
   /** Arama motorlarına açık mı? false olursa robots.txt ve noindex tüm taramayı engeller. Yayında: 28 Ekim 2026. */
   allowIndexing: true,
+  /** Google Analytics 4 ölçüm kimliği (ayrı "Lunatlas" hesabı). Yalnız çerez izni verilince yüklenir. */
+  gaMeasurementId: "G-NWEWD8EVVL",
   locale: "tr-TR",
   /** Sitenin dilleri. Yeni dil, içeriği hazır olunca buraya eklenir (makine çevirisi yok, bkz. CLAUDE.md). */
   languages: [{ code: "tr", label: "Türkçe", home: "/tr" }],
