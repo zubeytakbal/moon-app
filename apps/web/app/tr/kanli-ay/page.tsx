@@ -12,6 +12,7 @@ import {
   type Province,
 } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
+import { MobileCollapse } from "@/components/MobileCollapse";
 import { FAQS } from "@/lib/faqs";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CitySelect } from "@/components/CitySelect";
@@ -34,6 +35,8 @@ const FROM = new Date(Date.UTC(2025, 0, 1));
 const UNTIL_YEAR = 2037;
 const timeZone = siteConfig.defaultLocation.timeZone;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+/** Telefonda listede ilk açık duran öğe sayısı (sıradakinden başlayarak). */
+const MOBILE_ITEMS = 3;
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
@@ -341,7 +344,10 @@ async function BloodMoonList({ slug }: { slug: string }) {
   const city = cityOf(slug);
   const now = new Date();
   const list = bloodMoons(city);
-  const nextIndex = list.findIndex((b) => b.eclipse.peak > now);
+  const nextIndex = Math.max(0, list.findIndex((b) => b.eclipse.peak > now));
+  // Telefonda yalnız sıradaki ve sonraki birkaç kanlı ay açık; geçmiştekiler ve gerisi "+ daha göster" arkasında.
+  const shown = (i: number) => i >= nextIndex && i < nextIndex + MOBILE_ITEMS;
+  const shownCount = list.filter((_, i) => shown(i)).length;
   const date = new Intl.DateTimeFormat(siteConfig.locale, {
     timeZone,
     day: "numeric",
@@ -352,7 +358,8 @@ async function BloodMoonList({ slug }: { slug: string }) {
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
 
   return (
-    <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <MobileCollapse hiddenCount={list.length - shownCount} noun="kanlı ay" variant="cards" className="mt-6">
+    <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       {list.map((b, i) => {
         const past = b.eclipse.peak < now;
         const verdict = `Görünürlük (${city.name}): ${verdictOf(b.visibleShare)}`;
@@ -360,6 +367,7 @@ async function BloodMoonList({ slug }: { slug: string }) {
         return (
           <li
             key={b.eclipse.peak.toISOString()}
+            data-extra={!shown(i) || undefined}
             className={`flex gap-4 rounded-2xl p-4 text-white ${visible ? "bg-[#1a0907]" : "bg-[#05070d]"} ${
               i === nextIndex ? "ring-2 ring-red-400" : ""
             } ${past ? "opacity-55" : ""}`}
@@ -391,5 +399,6 @@ async function BloodMoonList({ slug }: { slug: string }) {
         );
       })}
     </ol>
+    </MobileCollapse>
   );
 }

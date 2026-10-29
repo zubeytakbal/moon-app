@@ -69,3 +69,11 @@ body {
 #icerik h2 {
   scroll-margin-top: 8.5rem;
 }
+
+/* Telefonda uzun listeler kısaltılır: data-extra işaretli satırlar "+ daha göster"e kadar gizli (components/MobileCollapse.tsx).
+   Satırlar HTML'de kalır; arama motorları hepsini okur. Geniş ekranda her şey açık. */
+@media (width < 40rem) {
+  [data-collapsed] [data-extra] {
+    display: none;
+  }
+}

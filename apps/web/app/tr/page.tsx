@@ -16,6 +16,7 @@ import {
 } from "@moon-app/moon";
 import { CitySelect } from "@/components/CitySelect";
 import { JsonLd } from "@/components/JsonLd";
+import { MobileCollapse } from "@/components/MobileCollapse";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { PageVisual } from "@/components/PageVisual";
 import { SiteSearch } from "@/components/SiteSearch";
@@ -428,6 +429,9 @@ async function LunationTimeline() {
   );
 }
 
+/** Telefonda "Bütün sayfalar"da her bölümün ilk gösterilen kart sayısı. */
+const MOBILE_CARDS = 2;
+
 function Explore() {
   const groups = pagesByGroup().filter((g) => g.group !== "kurumsal");
   return (
@@ -439,9 +443,10 @@ function Explore() {
       {groups.map((g) => (
         <div key={g.group} className="mt-10">
           <h3 className="text-xl font-semibold">{g.name}</h3>
-          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {g.pages.map((page) => (
-              <li key={page.path}>
+          <MobileCollapse hiddenCount={g.pages.length - MOBILE_CARDS} noun="sayfa" variant="cards" className="mt-4">
+          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {g.pages.map((page, i) => (
+              <li key={page.path} data-extra={i >= MOBILE_CARDS || undefined}>
                 <Link
                   href={page.path}
                   className="group block h-full overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
@@ -455,6 +460,7 @@ function Explore() {
               </li>
             ))}
           </ul>
+          </MobileCollapse>
         </div>
       ))}
     </section>

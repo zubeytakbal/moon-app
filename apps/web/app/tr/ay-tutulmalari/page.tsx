@@ -11,6 +11,7 @@ import {
   type Province,
 } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
+import { MobileCollapse } from "@/components/MobileCollapse";
 import { FAQS } from "@/lib/faqs";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CitySelect } from "@/components/CitySelect";
@@ -32,6 +33,8 @@ const FROM = new Date(Date.UTC(2026, 0, 1));
 const COUNT = 9;
 const timeZone = siteConfig.defaultLocation.timeZone;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+/** Telefonda listede ilk açık duran öğe sayısı (sıradakinden başlayarak). */
+const MOBILE_ITEMS = 3;
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
@@ -341,10 +344,14 @@ async function EclipseList({ slug }: { slug: string }) {
     weekday: "long",
   });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
-  const nextIndex = eclipses.findIndex((e) => e.peak > now);
+  const nextIndex = Math.max(0, eclipses.findIndex((e) => e.peak > now));
+  // Telefonda yalnız sıradaki ve sonraki birkaç tutulma açık; geçmiştekiler ve gerisi "+ daha göster" arkasında.
+  const shown = (i: number) => i >= nextIndex && i < nextIndex + MOBILE_ITEMS;
+  const shownCount = eclipses.filter((_, i) => shown(i)).length;
 
   return (
-    <ol className="mt-6 space-y-4">
+    <MobileCollapse hiddenCount={eclipses.length - shownCount} noun="tutulma" variant="cards" className="mt-6">
+    <ol className="space-y-4">
       {eclipses.map((e, i) => {
         const phases = phasesOf(e);
         const outer = phases[0];
@@ -358,6 +365,7 @@ async function EclipseList({ slug }: { slug: string }) {
         return (
           <li
             key={e.peak.toISOString()}
+            data-extra={!shown(i) || undefined}
             className={`rounded-2xl bg-[#05070d] p-5 text-white ${i === nextIndex ? "ring-2 ring-indigo-400" : ""} ${
               past ? "opacity-60" : ""
             }`}
@@ -423,5 +431,6 @@ async function EclipseList({ slug }: { slug: string }) {
         );
       })}
     </ol>
+    </MobileCollapse>
   );
 }

@@ -18,6 +18,7 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 import { SolarEclipseDiagram } from "@/components/EclipseDiagrams";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
+import { MobileCollapse } from "@/components/MobileCollapse";
 
 const PAGE = PAGES.gunesTutulmasi;
 const UPDATED = "2026-10-29";
@@ -26,6 +27,8 @@ const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 /** 2 Ağustos 2027 tutulmasını yerel olarak aramaya başlanan an. */
 const AUG_2027_SEARCH = new Date(Date.UTC(2027, 6, 25));
+/** Telefonda 81 il tablosunun ilk gösterilen satır sayısı. */
+const MOBILE_ROWS = 10;
 
 export const metadata: Metadata = {
   title: `Güneş Tutulması Ne Zaman? 2027 ve 2030 Güneş Tutulmaları Türkiye | ${siteConfig.name}`,
@@ -368,7 +371,11 @@ async function ProvinceTable() {
         Güneş&apos;in en derin anda örtülecek kısmı ve tutulmanın saatleri (Türkiye saati), en çok örtülen ilden en aza
         doğru.
       </p>
-      <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <MobileCollapse
+        hiddenCount={rows.length - MOBILE_ROWS}
+        noun="il"
+        className="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+      >
         <table className="w-full text-left text-sm">
           <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
             <tr>
@@ -380,10 +387,10 @@ async function ProvinceTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {rows.map(({ p, e }) => {
+            {rows.map(({ p, e }, i) => {
               const pct = Math.round(e.obscuration * 100);
               return (
-                <tr key={p.slug}>
+                <tr key={p.slug} data-extra={i >= MOBILE_ROWS || undefined}>
                   <td className="px-4 py-2 font-medium">
                     <Link href={`${PAGE.path}?il=${p.slug}`} rel="nofollow" scroll={false} className="hover:underline">
                       {p.name}
@@ -405,7 +412,7 @@ async function ProvinceTable() {
             })}
           </tbody>
         </table>
-      </div>
+      </MobileCollapse>
     </section>
   );
 }
