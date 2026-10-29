@@ -6,6 +6,7 @@ import { findProvince, getLocalSolarEclipse, TURKEY_PROVINCES, type LocalSolarEc
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { EclipseDisc } from "@/components/EclipseDisc";
 import { CitySelect } from "@/components/CitySelect";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
@@ -231,33 +232,6 @@ function formatIso(iso: string) {
   }).format(new Date(Date.UTC(y, m - 1, d, 12)));
 }
 
-/**
- * Tutulmanın en derin anının çizimi: parlak Güneş diski ve önündeki Ay.
- * Ay'ın kayma yönü temsilidir; örtülme miktarı gerçek orana göredir.
- */
-function EclipseDisc({ separation, ratio, size }: { separation: number; ratio: number; size: number }) {
-  const r = 40;
-  const offset = separation * r;
-  const dx = offset * Math.SQRT1_2;
-  return (
-    <svg viewBox="-14 -14 148 148" width={size} height={size} aria-hidden="true">
-      <defs>
-        <radialGradient id="sun-glow">
-          <stop offset="60%" stopColor="#fde68a" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#fde68a" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="sun-disc">
-          <stop offset="0%" stopColor="#fffbeb" />
-          <stop offset="80%" stopColor="#fcd34d" />
-          <stop offset="100%" stopColor="#f59e0b" />
-        </radialGradient>
-      </defs>
-      <circle cx="60" cy="60" r="58" fill="url(#sun-glow)" />
-      <circle cx="60" cy="60" r={r} fill="url(#sun-disc)" />
-      <circle cx={60 + dx} cy={60 - dx} r={r * ratio} fill="#05070d" />
-    </svg>
-  );
-}
 
 /** Giriş: Türkiye'den görülecek bir sonraki güneş tutulması (İstanbul'a göre). */
 async function Hero() {

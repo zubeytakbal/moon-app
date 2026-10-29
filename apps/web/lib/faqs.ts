@@ -165,6 +165,24 @@ export const FAQS = {
       a: "Gelenekte domates, biber, patlıcan gibi ürünü toprak üstünde olan sebzelerin fideleri büyüyen ayda dikilir. Ama sıcak seven bu fideler ancak don tehlikesi geçince toprağa çıkarılabilir; bu da çoğu bölgede nisan ile mayıs arasıdır. Önce mevsimi, sonra ay takviminden günü seçmek gerekir.",
     },
   ],
+  turkiyeTutulmalari: [
+    {
+      q: "1999 güneş tutulması kaç dakika sürdü?",
+      a: "Ayın Güneş'i tamamen örttüğü tam evre, şeridin geçtiği il merkezlerinde 1 dakika 20 saniye ile 2 dakika 21 saniye arasında sürdü: en uzunu Kastamonu'da 2 dakika 21 saniye, Sivas'ta 2 dakika 9 saniyeydi. Parçalı evreler dahil bütün tutulma ise yaklaşık üç saat sürdü; Sivas'ta 13:06'da başlayıp 15:49'da bitti.",
+    },
+    {
+      q: "1999 güneş tutulması Türkiye'den görüldü mü?",
+      a: "Evet, Türkiye'nin her yerinden görüldü. Tam tutulma şeridi Bartın ve Kastamonu'dan girip Çorum, Amasya, Tokat, Sivas, Tunceli, Elazığ, Diyarbakır, Batman ve Siirt üzerinden Şırnak'a uzanan 12 il merkezini kapsadı. Şeridin dışında kalan illerde de Güneş'in en az %80'i örtüldü; en az örtülme Muğla'daydı (%82).",
+    },
+    {
+      q: "Türkiye'de bir sonraki tam güneş tutulması ne zaman?",
+      a: "30 Nisan 2060'ta. Tam tutulma Adana, Gaziantep, Şanlıurfa, Diyarbakır ve Van gibi Güneydoğu ve Doğu Anadolu'daki 21 il merkezinden görülecek. Ondan önce, 1 Haziran 2030'da İstanbul dahil 13 ilden halkalı tutulma izlenecek: Ay Güneş'in tam önüne geçecek ama kenarında parlak bir halka kalacak. İstanbul'dan tam tutulma için 3 Eylül 2081'i beklemek gerekiyor.",
+    },
+    {
+      q: "2006 güneş tutulması saat kaçta oldu?",
+      a: "29 Mart 2006'da tutulma Türkiye'de öğleden sonra yaşandı. Antalya'da 12:37'de başladı, tam evre 13:56 civarında 3 dakika 18 saniye sürdü ve tutulma 15:12'de bitti. İl merkezleri arasında en uzun tam tutulma Konya'da, 3 dakika 40 saniye sürdü.",
+    },
+  ],
   ayaYolculuk: [
     {
       q: "Aya ilk ayak basan Türk var mı?",

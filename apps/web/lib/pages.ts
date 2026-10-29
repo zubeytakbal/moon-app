@@ -293,6 +293,16 @@ export const PAGES = {
     description: "Doğum tarihinizi girin: o gün ay hangi evredeydi, ne kadar aydınlıktı, kaç günlüktü?",
     cardPhaseAngle: 160,
   },
+  turkiyeTutulmalari: {
+    path: "/tr/turkiye-gunes-tutulmalari",
+    title: "Türkiye'den Görülen Güneş Tutulmaları",
+    navLabel: "Türkiye'nin Tutulmaları",
+    group: "tutulmalar",
+    featured: true,
+    description:
+      "1999 ve 2006 tam tutulmaları, ilinizden hayatınız boyunca görülen ve görülecek tutulmalar, 2100'e kadar Türkiye'nin tam tutulmaları.",
+    cardPhaseAngle: 0,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -379,7 +389,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   ayHangiBurcta: ["ayBurcu", "aybosluk", "sacKesim"],
   ayBurcu: ["ayHangiBurcta", "dogdugumGun", "aybosluk"],
   kanliAy: ["ayTutulmalari", "superAy", "gunesTutulmasi"],
-  gunesTutulmasi: ["yeniayTarihleri", "ayTutulmalari", "kanliAy"],
+  gunesTutulmasi: ["turkiyeTutulmalari", "yeniayTarihleri", "ayTutulmalari"],
   sacKesim: ["ekimDikim", "ayHangiBurcta", "ayTakvimi"],
   aybosluk: ["ayHangiBurcta", "ayBurcu", "sacKesim"],
   ekimDikim: ["sacKesim", "ayTakvimi", "ayHangiBurcta"],
@@ -391,6 +401,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   dolunay: ["dolunayTarihleri", "kanliAy", "dolunayIsimleri"],
   kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
+  turkiyeTutulmalari: ["gunesTutulmasi", "ayTutulmalari", "yeniAy"],
   ayaYolculuk: ["ayEvreleri", "superAy", "gunesTutulmasi"],
   yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
   hakkimizda: [],

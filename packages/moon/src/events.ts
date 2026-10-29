@@ -100,6 +100,8 @@ export interface LocalSolarEclipse {
   peakSeparation: number;
   /** Ayın görünen yarıçapının Güneş'inkine oranı (1'den büyükse ay Güneş'i tamamen örtebilir). */
   moonToSunRadius: number;
+  /** Tam ya da halkalı evrenin bu yerde sürdüğü saniye; parçalı tutulmada 0. */
+  centralSeconds: number;
 }
 
 /**
@@ -126,6 +128,8 @@ export function getLocalSolarEclipse(date: Date, location: GeoLocation): LocalSo
     endSunAltitude: e.partial_end.altitude,
     peakSeparation: separation / sunRadius,
     moonToSunRadius: moonRadius / sunRadius,
+    centralSeconds:
+      e.total_begin && e.total_end ? (e.total_end.time.date.getTime() - e.total_begin.time.date.getTime()) / 1000 : 0,
   };
 }
 
