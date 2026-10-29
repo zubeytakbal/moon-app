@@ -15,8 +15,16 @@ function CalendarIcon() {
  * Ay olayları takvimine abonelik kutusu. Takvim uygulaması dosyayı günde bir yeniler;
  * tarihler kullanıcının takviminde kendiliğinden güncel kalır.
  */
-export function CalendarSubscribe() {
-  const https = new URL(CALENDAR_PATH, siteConfig.url);
+export function CalendarSubscribe({
+  path = CALENDAR_PATH,
+  title = "Ay olaylarını takviminize ekleyin",
+  text,
+}: {
+  path?: string;
+  title?: string;
+  text?: string;
+} = {}) {
+  const https = new URL(path, siteConfig.url);
   const webcal = `webcal://${https.host}${https.pathname}`;
   const google = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`;
   const button =
@@ -33,12 +41,16 @@ export function CalendarSubscribe() {
         </span>
         <div>
           <h2 id="takvime-ekle" className="text-xl font-semibold sm:text-2xl">
-            Ay olaylarını takviminize ekleyin
+            {title}
           </h2>
           <p className="mt-2 text-zinc-300">
-            Dolunay, yeni ay, ay tutulmaları ve Türkiye&apos;den görülecek güneş tutulmaları (görünürlük:{" "}
-            {siteConfig.defaultLocation.name}) telefonunuzun takviminde görünsün. Saatler Türkiye saatidir; takvim
-            kendiliğinden güncellenir.
+            {text ?? (
+              <>
+                Dolunay, yeni ay, ay tutulmaları ve Türkiye&apos;den görülecek güneş tutulmaları (görünürlük:{" "}
+                {siteConfig.defaultLocation.name}) telefonunuzun takviminde görünsün. Saatler Türkiye saatidir; takvim
+                kendiliğinden güncellenir.
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -49,7 +61,7 @@ export function CalendarSubscribe() {
         <a href={webcal} rel="nofollow" className={`${button} border border-white/25 hover:bg-white/10`}>
           iPhone / Mac / Outlook
         </a>
-        <a href={CALENDAR_PATH} download rel="nofollow" className={`${button} text-zinc-300 underline-offset-2 hover:underline`}>
+        <a href={path} download rel="nofollow" className={`${button} text-zinc-300 underline-offset-2 hover:underline`}>
           Dosyayı indir (.ics)
         </a>
       </div>

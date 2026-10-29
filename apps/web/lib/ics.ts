@@ -9,9 +9,13 @@ import {
   localDateParts,
 } from "@moon-app/moon";
 import { nameFullMoons } from "@/lib/full-moon-names";
+import { biyzNote, getUpcomingEyyamiBiyz } from "@/lib/hijri";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
+
+/** Eyyam-ı biyz takviminin adresi. */
+export const BIYZ_CALENDAR_PATH = "/takvim/eyyam-i-biyz.ics";
 
 /** Takvim dosyasının yayımlandığı adres. Abonelik bağlantıları buradan üretilir. */
 export const CALENDAR_PATH = "/takvim/ay-olaylari.ics";
@@ -224,4 +228,50 @@ export function googleCalendarLink(e: { summary: string; description: string; ur
     details: `${e.description}\n\n${e.url}`,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
+}
+
+/**
+ * Önümüzdeki 12 Hicri ayın eyyam-ı biyz günleri (her ay için üç günlük tek etkinlik), iCalendar
+ * biçiminde. Abonelik günde bir yenilenir.
+ */
+export async function buildBiyzCalendar(): Promise<string> {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const stamp = utcStamp(now);
+  const host = new URL(siteConfig.url).hostname;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    `PRODID:-//${siteConfig.name}//Eyyam-ı biyz//TR`,
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${escapeText(`Eyyam-ı biyz (${siteConfig.name})`)}`,
+    "X-WR-CALDESC:Hicri ayların 13\\, 14 ve 15. günleri. Hesaplı Hicri takvim\\; kesin tarih için Diyanet.",
+    "X-WR-TIMEZONE:Europe/Istanbul",
+    "REFRESH-INTERVAL;VALUE=DURATION:P1D",
+    "X-PUBLISHED-TTL:P1D",
+  ];
+  for (const m of getUpcomingEyyamiBiyz(now, 12, timeZone)) {
+    const first = m.days[0].date;
+    const last = m.days.at(-1)!.date;
+    const note = biyzNote(m);
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:eyyam-i-biyz-${m.hijriYear}-${localDay(first)}@${host}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${localDay(first)}`,
+      `DTEND;VALUE=DATE:${localDay(last, 1)}`,
+      "TRANSP:TRANSPARENT",
+      `SUMMARY:${escapeText(`Eyyam-ı biyz (${m.monthName} ${m.hijriYear})`)}`,
+      `DESCRIPTION:${escapeText(
+        `Hicri ${m.days.map((d) => d.hijriDay).join(", ")} ${m.monthName}. Hesaplı Hicri takvime göredir; kesin tarih için Diyanet takvimine bakın.${note ? ` ${note}` : ""}\n\nAyrıntı: ${abs(PAGES.eyyamiBiyz.path)}`,
+      )}`,
+      `URL:${abs(PAGES.eyyamiBiyz.path)}`,
+      "END:VEVENT",
+    );
+  }
+  lines.push("END:VCALENDAR");
+  return lines.map(fold).join("\r\n") + "\r\n";
 }

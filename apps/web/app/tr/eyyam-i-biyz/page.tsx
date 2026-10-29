@@ -5,13 +5,16 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
-import { getUpcomingEyyamiBiyz, type BiyzMonth } from "@/lib/hijri";
+import { AddToCalendar } from "@/components/AddToCalendar";
+import { CalendarSubscribe } from "@/components/CalendarSubscribe";
+import { biyzNote, getUpcomingEyyamiBiyz } from "@/lib/hijri";
+import { BIYZ_CALENDAR_PATH } from "@/lib/ics";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.eyyamiBiyz;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 
@@ -22,13 +25,6 @@ export const metadata: Metadata = {
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
-
-function noteFor(m: BiyzMonth): string | null {
-  if (m.monthName === "Ramazan") return "Ramazan ayı içinde: bu günler zaten oruçla geçer.";
-  if (m.monthName === "Zilhicce")
-    return "13 Zilhicce, Kurban Bayramı'nın dördüncü günüdür; bayram günlerinde oruç tutulmaz.";
-  return null;
-}
 
 export default function EyyamiBiyzPage() {
   return (
@@ -57,6 +53,11 @@ export default function EyyamiBiyzPage() {
           Her ayın 13, 14 ve 15. günlerinin Miladi tarihleri. Ay görselleri o günlerin akşamındaki gerçek görünümdür.
         </p>
         <BiyzList />
+        <CalendarSubscribe
+          path={BIYZ_CALENDAR_PATH}
+          title="Eyyam-ı biyz günlerini takviminize ekleyin"
+          text="Önümüzdeki 12 Hicri ayın 13, 14 ve 15. günleri telefonunuzun takviminde görünsün. Takvim kendiliğinden güncellenir; tarihler hesaplı Hicri takvime göredir, Diyanet takvimiyle bir gün fark olabilir."
+        />
 
         <div className="mx-auto max-w-3xl">
           <Prose>
@@ -166,6 +167,24 @@ async function NextBiyz() {
           {days} gün sonra
         </p>
       )}
+      <div className="mt-4">
+        <AddToCalendar
+          fileName={`eyyam-i-biyz-${first.toISOString().slice(0, 10)}.ics`}
+          event={{
+            uid: `eyyam-i-biyz-${next.hijriYear}-${next.monthName}`,
+            summary: `Eyyam-ı biyz (${next.monthName} ${next.hijriYear})`,
+            description: [
+              `Hicri ${next.days.map((d) => d.hijriDay).join(", ")} ${next.monthName}. Hesaplı Hicri takvime göredir; kesin tarih için Diyanet takvimine bakın.`,
+              biyzNote(next),
+            ]
+              .filter(Boolean)
+              .join(" "),
+            url: new URL(PAGE.path, siteConfig.url).toString(),
+            start: first.toISOString().slice(0, 10).replace(/-/g, ""),
+            end: new Date(last.getTime() + DAY_MS).toISOString().slice(0, 10).replace(/-/g, ""),
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -182,7 +201,7 @@ async function BiyzList() {
   return (
     <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
       {list.map((m, i) => {
-        const note = noteFor(m);
+        const note = biyzNote(m);
         return (
           <li
             key={`${m.hijriYear}-${m.monthName}`}

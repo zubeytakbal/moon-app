@@ -41,3 +41,11 @@ export function getUpcomingEyyamiBiyz(from: Date, count: number, timeZone: strin
   // Başında bugünden önce bitmiş bir ay kaldıysa çıkar.
   return result.filter((m) => m.days.at(-1)!.date.getTime() >= from.getTime() - DAY_MS).slice(0, count);
 }
+
+/** Bazı ayların eyyam-ı biyz günleri için açıklama (sayfa ve takvim aboneliği kullanır). */
+export function biyzNote(m: BiyzMonth): string | null {
+  if (m.monthName === "Ramazan") return "Ramazan ayı içinde: bu günler zaten oruçla geçer.";
+  if (m.monthName === "Zilhicce")
+    return "13 Zilhicce, Kurban Bayramı'nın dördüncü günüdür; bayram günlerinde oruç tutulmaz.";
+  return null;
+}
