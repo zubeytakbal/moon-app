@@ -64,3 +64,8 @@ body {
 .emblem-glow {
   box-shadow: 0 0 18px rgb(200 210 255 / 0.25);
 }
+
+/* İçindekiler bağlantısıyla gidilen başlık, yapışkan üst menünün altında kalmasın. */
+#icerik h2 {
+  scroll-margin-top: 8.5rem;
+}

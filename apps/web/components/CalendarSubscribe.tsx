@@ -40,7 +40,7 @@ export function CalendarSubscribe({
           <CalendarIcon />
         </span>
         <div>
-          <h2 id="takvime-ekle" className="text-xl font-semibold sm:text-2xl">
+          <h2 id="takvime-ekle" data-toc-skip className="text-xl font-semibold sm:text-2xl">
             {title}
           </h2>
           <p className="mt-2 text-zinc-300">

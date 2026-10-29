@@ -311,7 +311,7 @@ export function ArticleFooter({
         aria-labelledby="kaynaklar"
         className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
       >
-        <h2 id="kaynaklar" className="font-semibold text-zinc-900 dark:text-white">
+        <h2 id="kaynaklar" data-toc-skip className="font-semibold text-zinc-900 dark:text-white">
           Kaynaklar
         </h2>
         <ul className="mt-2 list-disc space-y-1 pl-5">

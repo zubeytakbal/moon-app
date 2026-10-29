@@ -334,7 +334,11 @@ async function CityEclipses({ slug }: { slug: string }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">İlinizden görülecek tutulmalar</p>
-          <h2 id="ilden" className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2
+            id="ilden"
+            data-toc-label="İlinizden görülecek tutulmalar"
+            className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+          >
             {city.name}
           </h2>
         </div>
