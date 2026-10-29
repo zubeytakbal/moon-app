@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
+import Form from "next/form";
 import Link from "next/link";
-import { getFullMoonsOfYear } from "@moon-app/moon";
+import { Suspense } from "react";
+import { getFullMoonsOfYear, zonedTimeToUtc } from "@moon-app/moon";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
-import { nameFullMoons } from "@/lib/full-moon-names";
+import { ShareButton } from "@/components/ShareButton";
+import { nameFullMoons, nearestNamedFullMoon } from "@/lib/full-moon-names";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.dolunayIsimleri;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 
 export const metadata: Metadata = {
   title: `Dolunay İsimleri ve Anlamları: Kurt Ayı, Çilek Ayı, Hasat Ayı | ${siteConfig.name}`,
   description:
     "Her ayın dolunayının geleneksel adı ve anlamı: Kurt Ayı, Kar Ayı, Solucan Ayı, Pembe Ay, Çiçek Ayı, Çilek Ayı, Hasat Ayı, Avcı Ayı, Soğuk Ay ve diğerleri. İsimlerin kökeni ve bir sonraki tarihleri.",
+  // Girilen doğum tarihi (?tarih=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -108,7 +112,7 @@ const SPECIAL: { name: string; meaning: string; href?: string }[] = [
   },
 ];
 
-export default function FullMoonNamesPage() {
+export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolunay-isimleri">) {
   return (
     <>
       <PhaseHero
@@ -118,6 +122,21 @@ export default function FullMoonNamesPage() {
         lead="Her ayın dolunayının bir adı vardır: Kurt Ayı, Çilek Ayı, Hasat Ayı... Bu adlar nereden geliyor, ne anlama geliyor ve bir sonraki ne zaman?"
         aside={<NextPrincipal phase="full-moon" />}
       />
+      <section className="bg-[#05070d] text-white" aria-labelledby="dogum-dolunayi">
+        <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-2">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
+            <h2 id="dogum-dolunayi" className="text-xl font-semibold">
+              Doğum dolunayınızın adı ne?
+            </h2>
+            <p className="mt-1 text-sm text-zinc-400">
+              Doğum tarihinizi girin; doğumunuza en yakın dolunayın geleneksel adını ve anlamını görün.
+            </p>
+            <Suspense fallback={<BirthMoonForm />}>
+              <BirthMoonTool searchParams={searchParams} />
+            </Suspense>
+          </div>
+        </div>
+      </section>
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
           <QuickFacts>
@@ -195,6 +214,14 @@ export default function FullMoonNamesPage() {
               birkaç akşam üst üste gün batımından hemen sonra doğar ve akşamlar alacakaranlıktan geceye kesintisiz
               aydınlık kalır. Elektriğin olmadığı zamanlarda bu, hasadı tamamlamak için paha biçilmez bir ışıktı.
             </p>
+
+            <h2>Doğum dolunayı nasıl bulunuyor?</h2>
+            <p>
+              Sayfanın başındaki araç, doğum tarihinize en yakın dolunayı bulur; bu dolunay doğumunuzdan birkaç gün önce
+              ya da sonra olabilir. Adı, o yılın bütün dolunaylarına bakılarak verilir: eylül ekinoksuna en yakın dolunay
+              Hasat Ayı, ondan sonraki Avcı Ayı, aynı takvim ayına düşen ikinci dolunay Mavi Ay olur. Bu yüzden aynı gün
+              doğan iki kişinin doğum yılı farklıysa dolunaylarının adı da farklı olabilir.
+            </p>
           </Prose>
           <ArticleFooter
             page={PAGE}
@@ -257,5 +284,101 @@ async function NameCards() {
         );
       })}
     </ol>
+  );
+}
+
+/* ---------- Araç: doğum dolunayının adı ---------- */
+
+function parseBirthDate(tarih: unknown): { year: number; month: number; day: number } | null {
+  if (typeof tarih !== "string") return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(tarih);
+  if (!m) return null;
+  const [year, month, day] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  if (year < 1900 || year > 2100 || month < 1 || month > 12) return null;
+  if (day < 1 || day > new Date(Date.UTC(year, month, 0)).getUTCDate()) return null;
+  return { year, month, day };
+}
+
+async function BirthMoonTool({ searchParams }: Pick<PageProps<"/tr/dolunay-isimleri">, "searchParams">) {
+  const { tarih } = await searchParams;
+  const input = parseBirthDate(tarih);
+  const invalid = typeof tarih === "string" && tarih !== "" && !input;
+  return (
+    <>
+      <BirthMoonForm value={input ? (tarih as string) : ""} />
+      {invalid && (
+        <p className="mt-4 text-amber-300">Bu tarih anlaşılamadı. Lütfen 1900 ile 2100 arasında bir tarih seçin.</p>
+      )}
+      {input && <BirthMoonResult {...input} />}
+    </>
+  );
+}
+
+function BirthMoonForm({ value = "" }: { value?: string }) {
+  return (
+    <Form action={PAGE.path} scroll={false} className="mt-5 flex flex-wrap items-end gap-3">
+      <label className="flex min-w-44 flex-1 flex-col gap-1 text-sm text-zinc-300 sm:max-w-xs">
+        Doğum tarihi
+        <input
+          type="date"
+          name="tarih"
+          required
+          min="1900-01-01"
+          max="2100-12-31"
+          defaultValue={value}
+          key={value}
+          className="rounded-xl border border-white/15 bg-[#0d111c] px-3 py-2.5 text-base text-white [color-scheme:dark]"
+        />
+      </label>
+      <button
+        type="submit"
+        className="rounded-xl bg-indigo-500 px-6 py-3 font-semibold text-white transition hover:bg-indigo-400"
+      >
+        Dolunayımı bul
+      </button>
+    </Form>
+  );
+}
+
+/** Doğum tarihine en yakın dolunay ve adı. Sonuç tarihe bağlıdır, önbellekte uzun tutulur. */
+async function BirthMoonResult({ year, month, day }: { year: number; month: number; day: number }) {
+  "use cache";
+  cacheLife("weeks");
+
+  const birth = zonedTimeToUtc(year, month, day, 12, timeZone);
+  const moon = nearestNamedFullMoon(birth, timeZone);
+  const info = [...NAMES, ...SPECIAL].find((n) => n.name === moon.name);
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+  const days = Math.round(Math.abs(moon.diffDays));
+  const when =
+    days === 0
+      ? "Doğduğunuz gün dolunaydı."
+      : `Doğumunuzdan ${days} gün ${moon.diffDays > 0 ? "sonra" : "önce"}, ${date.format(moon.date)} tarihindeki dolunay.`;
+
+  return (
+    <div className="mt-6 flex flex-col gap-5 rounded-2xl border border-amber-300/25 bg-amber-300/[0.06] p-5 sm:flex-row sm:items-center">
+      <div className="shrink-0 self-center">
+        <MoonPhaseIcon phaseAngle={180} size={96} glow title={moon.name ?? "Dolunay"} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm text-amber-200/80">Doğum dolunayınız</p>
+        <p className="mt-1 text-3xl font-bold tracking-tight">{moon.name ?? "Dolunay"}</p>
+        <p className="mt-1 text-sm text-zinc-400">{when}</p>
+        {info && <p className="mt-3 text-zinc-200">{info.meaning}</p>}
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <ShareButton
+            title={PAGE.title}
+            text={`Doğum dolunayım: ${moon.name ?? "Dolunay"} (${date.format(moon.date)}).`}
+          />
+          <Link
+            href={`${PAGES.dogdugumGun.path}?tarih=${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`}
+            rel="nofollow"
+            className="text-sm text-indigo-300 underline hover:text-indigo-200"
+          >
+            Doğduğunuz gün ay nasıldı?
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }

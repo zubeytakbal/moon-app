@@ -3,19 +3,12 @@ import { cacheLife } from "next/cache";
 import Form from "next/form";
 import Link from "next/link";
 import { Suspense } from "react";
-import {
-  getFullMoonsOfYear,
-  getMoonPhase,
-  getUpcomingPrincipalPhases,
-  localDateParts,
-  SYNODIC_MONTH_DAYS,
-  zonedTimeToUtc,
-} from "@moon-app/moon";
+import { getMoonPhase, SYNODIC_MONTH_DAYS, zonedTimeToUtc } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
-import { nameFullMoons } from "@/lib/full-moon-names";
+import { nearestNamedFullMoon } from "@/lib/full-moon-names";
 import { QuickFacts } from "@/components/QuickFacts";
 import { ShareButton } from "@/components/ShareButton";
 import { pageOpenGraph } from "@/lib/og";
@@ -285,21 +278,14 @@ async function BirthResult({ year, month, day, hour, minute, hasTime }: BirthInp
   });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
 
-  // En yakın dolunay (önce ya da sonra).
-  const around = getUpcomingPrincipalPhases(new Date(birth.getTime() - 20 * DAY_MS), 8).filter(
-    (p) => p.key === "full-moon",
-  );
-  const nearest = around.reduce((a, b) =>
-    Math.abs(a.date.getTime() - birth.getTime()) < Math.abs(b.date.getTime() - birth.getTime()) ? a : b,
-  );
-  const diffDays = (nearest.date.getTime() - birth.getTime()) / DAY_MS;
+  // En yakın dolunay (önce ya da sonra) ve geleneksel adı.
+  const nearest = nearestNamedFullMoon(birth, timeZone);
+  const { diffDays } = nearest;
   const nearestText =
     Math.abs(diffDays) < 0.5
       ? "Doğduğunuz gün dolunaydı."
       : `En yakın dolunay, doğumunuzdan ${Math.round(Math.abs(diffDays))} gün ${diffDays > 0 ? "sonraydı" : "önceydi"}.`;
-  // O dolunayın geleneksel adı (Hasat Ayı, Mavi Ay gibi kurallar yılın bütün dolunaylarına bakar).
-  const nearestYear = localDateParts(nearest.date, timeZone).year;
-  const nearestName = nameFullMoons(getFullMoonsOfYear(nearestYear), timeZone).get(nearest.date.getTime());
+  const nearestName = nearest.name;
 
   const isPast = birth < now;
   const elapsedDays = (now.getTime() - birth.getTime()) / DAY_MS;

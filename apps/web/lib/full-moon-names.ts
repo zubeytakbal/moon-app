@@ -1,4 +1,10 @@
-import { getSeasons, localDateParts, type PrincipalPhase } from "@moon-app/moon";
+import {
+  getFullMoonsOfYear,
+  getSeasons,
+  getUpcomingPrincipalPhases,
+  localDateParts,
+  type PrincipalPhase,
+} from "@moon-app/moon";
 
 /**
  * Dolunayların geleneksel adları. Kuzey Amerika kökenlidir (Old Farmer's Almanac geleneği),
@@ -49,4 +55,23 @@ export function nameFullMoons(fullMoons: PrincipalPhase[], timeZone: string): Ma
     });
   }
   return names;
+}
+
+/**
+ * Bir ana en yakın dolunay (önce ya da sonra), geleneksel adı ve aradaki gün farkı.
+ * Doğum dolunayı için kullanılır; Hasat Ayı ve Mavi Ay gibi kurallar o yılın bütün dolunaylarına bakar.
+ */
+export function nearestNamedFullMoon(date: Date, timeZone: string): { date: Date; name: string | undefined; diffDays: number } {
+  const around = getUpcomingPrincipalPhases(new Date(date.getTime() - 20 * 86_400_000), 8).filter(
+    (p) => p.key === "full-moon",
+  );
+  const nearest = around.reduce((a, b) =>
+    Math.abs(a.date.getTime() - date.getTime()) < Math.abs(b.date.getTime() - date.getTime()) ? a : b,
+  );
+  const year = localDateParts(nearest.date, timeZone).year;
+  return {
+    date: nearest.date,
+    name: nameFullMoons(getFullMoonsOfYear(year), timeZone).get(nearest.date.getTime()),
+    diffDays: (nearest.date.getTime() - date.getTime()) / 86_400_000,
+  };
 }
