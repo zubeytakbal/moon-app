@@ -3,6 +3,8 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getMonthCalendar, getMoonPhase, getMoonSign, getMoonSignIngresses, zonedTimeToUtc } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MonthLink } from "@/components/MonthLink";
@@ -26,7 +28,7 @@ import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.sacKesim;
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Gelenekte saç kesimi için en çok önerilen burç. */
 const FAVORED_SIGN = "Aslan";
@@ -157,13 +159,14 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
           </p>
         </Prose>
 
+        <Faq items={FAQS.sacKesim} />
         <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
           <p>
             Ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanmıştır. Ay o gün burç değiştiriyorsa
             geçiş saati ayrıca gösterilir.
           </p>
           <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>28 Ekim 2026</time>
+            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
           </p>
         </section>
       </main>

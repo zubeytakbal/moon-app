@@ -10,6 +10,8 @@ import {
   localDateParts,
   zonedTimeToUtc,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MonthLink } from "@/components/MonthLink";
@@ -33,7 +35,7 @@ import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ekimDikim;
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const WEEKDAYS_LONG = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 
@@ -247,6 +249,7 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
           </p>
         </Prose>
 
+        <Faq items={FAQS.ekimDikim} />
         <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
           <p>
             Ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanmıştır. Kaynak: Batı Akdeniz
@@ -262,7 +265,7 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
             .
           </p>
           <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>28 Ekim 2026</time>
+            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
           </p>
         </section>
       </main>

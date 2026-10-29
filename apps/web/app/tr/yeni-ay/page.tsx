@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { findProvince, TURKEY_PROVINCES } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { CitySelect } from "@/components/CitySelect";
 import {
   ArticleFooter,
@@ -20,7 +22,7 @@ import { OrbitTiltDiagram } from "@/components/EclipseDiagrams";
 import { DarkNights } from "./DarkNights";
 
 const PAGE = PAGES.yeniAy;
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-10-29";
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 
 export const metadata: Metadata = {
@@ -146,6 +148,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
         </Prose>
 
         <PhaseNav current={PAGE} />
+        <Faq items={FAQS.yeniAy} />
         <ArticleFooter
           page={PAGE}
           headline="Yeni Ay Nedir, Ne Zaman? Neden Görünmez?"

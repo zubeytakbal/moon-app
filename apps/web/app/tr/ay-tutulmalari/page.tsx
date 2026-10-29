@@ -10,6 +10,8 @@ import {
   type LunarEclipse,
   type Province,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CitySelect } from "@/components/CitySelect";
 import { icsTime } from "@/lib/ics";
@@ -25,7 +27,7 @@ import { LunarEclipseDiagram } from "@/components/EclipseDiagrams";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.ayTutulmalari;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const FROM = new Date(Date.UTC(2026, 0, 1));
 const COUNT = 9;
 const timeZone = siteConfig.defaultLocation.timeZone;
@@ -203,6 +205,7 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
             </p>
           </Prose>
           <CalendarSubscribe />
+          <Faq items={FAQS.ayTutulmalari} />
           <ArticleFooter
             page={PAGE}
             headline="Ay Tutulmaları 2026-2029: Tarihleri, Saatleri ve Türkiye'den Görünüşü"

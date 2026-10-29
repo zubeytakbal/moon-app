@@ -8,6 +8,8 @@ import {
   getCrescentEvenings,
   getUpcomingPrincipalPhases,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
@@ -18,7 +20,7 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hicriTakvim;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Hilal tahmini Türkiye'nin ortasına yakın bir noktadan, Ankara'dan yapılır. */
 const OBSERVER = findProvince("ankara")!;
@@ -156,6 +158,7 @@ export default function HijriCalendarPage() {
               <Link href={PAGES.ayTakvimi.path}>Ay Takvimi</Link> sayfasında görebilirsiniz.
             </p>
           </Prose>
+          <Faq items={FAQS.hicriTakvim} />
           <ArticleFooter
             page={PAGE}
             headline="Hicri Takvim Nedir? Hicri Aylar ve Ay Başları"

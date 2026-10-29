@@ -4,6 +4,8 @@ import Form from "next/form";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getMoonPhase, getMoonSign, getMoonSignIngresses, getSunSign, zonedTimeToUtc } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
@@ -16,7 +18,7 @@ import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ayBurcu;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 
 export const metadata: Metadata = {
@@ -107,13 +109,14 @@ export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/
           </p>
         </Prose>
 
+        <Faq items={FAQS.ayBurcu} />
         <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
           <p>
             Hesaplar Astronomy Engine ile, tarihin gerçek ekinoksuna göre (tropikal burçlar) yapılmıştır. Girdiğiniz
             tarih kaydedilmez.
           </p>
           <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
+            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
           </p>
         </section>
       </main>

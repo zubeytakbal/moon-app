@@ -11,6 +11,8 @@ import {
   type LunarEclipse,
   type Province,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CitySelect } from "@/components/CitySelect";
 import { icsTime } from "@/lib/ics";
@@ -27,7 +29,7 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.kanliAy;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const FROM = new Date(Date.UTC(2025, 0, 1));
 const UNTIL_YEAR = 2037;
 const timeZone = siteConfig.defaultLocation.timeZone;
@@ -216,6 +218,7 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
               </li>
             </ul>
           </Prose>
+          <Faq items={FAQS.kanliAy} />
           <ArticleFooter
             page={PAGE}
             headline="Kanlı Ay Ne Zaman? Bir Sonraki Kanlı Ay ve Türkiye'den Görünüşü"

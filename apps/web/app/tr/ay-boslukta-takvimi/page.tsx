@@ -11,6 +11,8 @@ import {
   zonedTimeToUtc,
   type VoidOfCourse,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { Prose } from "@/components/Prose";
@@ -21,7 +23,7 @@ import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.aybosluk;
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const HOUR_MS = 3_600_000;
 const DAY_MS = 86_400_000;
@@ -150,13 +152,14 @@ export default function VoidOfCoursePage({ searchParams }: PageProps<"/tr/ay-bos
           </p>
         </Prose>
 
+        <Faq items={FAQS.aybosluk} />
         <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
           <p>
             Konumlar Astronomy Engine ile yer merkezli olarak hesaplanmıştır. Açı anları saniye düzeyinde bulunur,
             dakikaya yuvarlanarak gösterilir.
           </p>
           <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
+            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
           </p>
         </section>
       </main>

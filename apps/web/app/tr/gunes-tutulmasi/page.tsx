@@ -3,6 +3,8 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import { findProvince, getLocalSolarEclipse, TURKEY_PROVINCES, type LocalSolarEclipse } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CitySelect } from "@/components/CitySelect";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
@@ -17,7 +19,7 @@ import { SolarEclipseDiagram } from "@/components/EclipseDiagrams";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.gunesTutulmasi;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
@@ -202,6 +204,7 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
             </p>
           </Prose>
           <CalendarSubscribe />
+          <Faq items={FAQS.gunesTutulmasi} />
           <ArticleFooter
             page={PAGE}
             headline="Güneş Tutulması Ne Zaman? 2027 ve 2030 Güneş Tutulmaları Türkiye"

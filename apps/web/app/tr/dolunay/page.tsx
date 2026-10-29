@@ -3,6 +3,8 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getMoonAltitude, getUpcomingPrincipalPhases } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { ArticleFooter, NextPrincipal, PhaseHero, PhaseNav } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
@@ -133,6 +135,7 @@ export default function FullMoonPage({ searchParams }: PageProps<"/tr/dolunay">)
 
         <CalendarSubscribe />
         <PhaseNav current={PAGE} />
+        <Faq items={FAQS.dolunay} />
         <ArticleFooter
           page={PAGE}
           headline="Dolunay Ne Zaman? Önümüzdeki Dolunay Tarihleri ve Saatleri"

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import { getMoonPhase, getUpcomingPrincipalPhases, PHASE_NAMES_TR, type PhaseKey } from "@moon-app/moon";
 import Link from "next/link";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
@@ -17,7 +19,7 @@ import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ayEvreleri;
 /** İçerik son kez elle güncellendiğinde değiştirilir. */
-const CONTENT_UPDATED = "2026-10-27";
+const CONTENT_UPDATED = "2026-10-29";
 
 export const metadata: Metadata = {
   title: `Ay Evreleri Nedir? 8 Evrenin Adı, Sırası ve Anlamı | ${siteConfig.name}`,
@@ -185,7 +187,11 @@ export default function MoonPhasesPage() {
             <Link href={PAGES.bugunAy.path}>Bugün Ay Nasıl?</Link> sayfasına bakabilirsiniz.
           </p>
 
-          <h2>Kaynaklar</h2>
+        </Prose>
+        <Faq items={FAQS.ayEvreleri} />
+        <Prose>
+          {/* Her sayfada bulunduğu için içindekilere alınmaz. */}
+          <h2 data-toc-skip>Kaynaklar</h2>
           <ul>
             <li>
               NASA Science,{" "}
@@ -204,7 +210,7 @@ export default function MoonPhasesPage() {
         </Prose>
 
         <p className="mt-10 text-sm text-zinc-500">
-          Son güncelleme: <time dateTime={CONTENT_UPDATED}>27 Ekim 2026</time>
+          Son güncelleme: <time dateTime={CONTENT_UPDATED}>29 Ekim 2026</time>
         </p>
         <JsonLd
           data={{
