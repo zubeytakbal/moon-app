@@ -5,9 +5,11 @@ import {
   getLocalSolarEclipse,
   getNextFullMoon,
   getNextNewMoon,
+  getShowerPeak,
   getUpcomingLunarEclipses,
   getUpcomingSolarEclipses,
   getVoidOfCoursePeriods,
+  METEOR_SHOWERS,
 } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
@@ -20,7 +22,7 @@ import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.yontem;
-const UPDATED = "2026-10-28";
+const UPDATED = "2026-10-29";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const NF = new Intl.NumberFormat("tr-TR");
 
@@ -38,6 +40,7 @@ const SOURCES = {
   nasaSolar: { label: "NASA Eclipse Web Site, güneş tutulmaları", href: "https://eclipse.gsfc.nasa.gov/solar.html" },
   diyanet: { label: "Diyanet, Dinî Günler", href: "https://vakithesaplama.diyanet.gov.tr/dini_gunler.php" },
   voc: { label: "Authority Astrology, Void of Course Moon", href: "https://www.authorityastrology.com/void-of-course-moon/" },
+  imo: { label: "IMO, 2026 Meteor Shower Calendar", href: "https://www.imo.net/the-2026-meteor-shower-calendar-is-here/" },
 } as const;
 
 interface Check {
@@ -169,6 +172,27 @@ function buildChecks(): Check[] {
     ok: Math.abs(vocHours - 31.7) < 0.2,
     usedOn: { href: PAGES.aybosluk.path, label: "Ay Boşlukta Takvimi" },
   });
+
+  // Meteor yağmuru doruğu: IMO saatleri 5-10 dakikaya yuvarlayarak verir; 15 dakikaya kadar uyumlu sayılır.
+  const meteor = { href: PAGES.meteorYagmurlari.path, label: "Meteor Yağmurları" };
+  for (const [code, name, iso] of [
+    ["LYR", "Lirid meteor yağmuru doruğu", "2026-04-22T19:40:00Z"],
+    ["LEO", "Leonid meteor yağmuru doruğu", "2026-11-17T23:45:00Z"],
+  ] as const) {
+    const shower = METEOR_SHOWERS.find((m) => m.code === code)!;
+    const ours = getShowerPeak(shower, 2026);
+    const ref = new Date(iso);
+    const minutes = minutesApart(ref, ours);
+    checks.push({
+      topic: name,
+      source: "imo",
+      reference: dt.format(ref),
+      ours: dt.format(ours),
+      result: `${timeResult(minutes)} (IMO saati yuvarlak verir)`,
+      ok: minutes <= 15,
+      usedOn: meteor,
+    });
+  }
 
   return checks;
 }

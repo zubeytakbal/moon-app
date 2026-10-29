@@ -45,3 +45,17 @@ export { getLocalSolarEclipse, getUpcomingSolarEclipses, type LocalSolarEclipse,
 export { CRESCENT_MIN_ALTITUDE, CRESCENT_MIN_ELONGATION, getCrescentEvenings, type CrescentEvening } from "./crescent.ts";
 export { getCurrentSignIngress, getMoonConstellation, getMoonEclipticLongitude, getMoonSign, getMoonSignIngresses, getSunSign, ZODIAC_SIGNS_TR, type MoonSign, type SignIngress, type ZodiacSign } from "./zodiac.ts";
 export { BODY_NAMES_TR, findLastAspect, getVoidOfCoursePeriods, type LastAspect, type VoidOfCourse } from "./void-of-course.ts";
+export {
+  expectedHourlyRate,
+  getMeteorNight,
+  getShowerPeak,
+  getUpcomingMeteorShowers,
+  METEOR_SHOWERS,
+  SKY_LIMITING_MAGNITUDE,
+  sunLongitudeJ2000,
+  type MeteorNight,
+  type MeteorNightSample,
+  type MeteorShower,
+  type ShowerPeak,
+  type SkyKind,
+} from "./meteors.ts";

@@ -183,6 +183,28 @@ export const FAQS = {
       a: "29 Mart 2006'da tutulma Türkiye'de öğleden sonra yaşandı. Antalya'da 12:37'de başladı, tam evre 13:56 civarında 3 dakika 18 saniye sürdü ve tutulma 15:12'de bitti. İl merkezleri arasında en uzun tam tutulma Konya'da, 3 dakika 40 saniye sürdü.",
     },
   ],
+  meteorYagmurlari: [
+    {
+      q: "Meteor yağmuru tehlikeli mi, Dünya'ya zarar verir mi?",
+      a: "Hayır. Meteor yağmurundaki parçacıkların çoğu kum tanesi, hatta toz boyutundadır. Saniyede 20-70 kilometre hızla atmosfere girer ve 70-100 kilometre yükseklikte yanıp tükenirler; gördüğümüz parlak iz, bu yanmanın ışığıdır. Yağmurlardan yere ulaşan bir parça neredeyse hiç görülmemiştir. İzlemek tamamen güvenlidir.",
+    },
+    {
+      q: "Göktaşı yağmuru ile meteor yağmuru aynı şey mi?",
+      a: "Günlük dilde evet, ikisi aynı olayı anlatır. Bilimsel olarak gökyüzünde gördüğümüz ışık izine meteor (halk arasında yıldız kayması), uzayda dolaşan parçacığa meteoroit, atmosferde yanıp bitmeyip yere düşen taşa ise göktaşı ya da meteorit denir. Meteor yağmurlarındaki parçacıklar yere ulaşamayacak kadar küçük olduğu için 'meteor yağmuru' daha doğru bir addır.",
+    },
+    {
+      q: "Meteor yağmuru neden olmadı, neden hiç göremedim?",
+      a: "Genellikle beş sebepten biri vardır: şehir ışıkları sönük meteorları siler; ay ufkun üzerindeyse gökyüzünü aydınlatır; akşam erken saatlerde yağmurun geldiği nokta henüz alçaktadır; gözler karanlığa alışmadan (en az 20 dakika) ve telefona bakılırken sönük meteorlar görülmez; bir de bulutlar. Haberlerde geçen 'saatte 100 meteor', kusursuz karanlık bir gökyüzü içindir. Yukarıdaki hesaplayıcı, sizin koşullarınızda gerçekçi sayıyı gösterir.",
+    },
+    {
+      q: "Meteor yağmurunu izlerken hangi yöne bakmalıyım?",
+      a: "Belirli bir yöne bakmak gerekmez; meteorlar gökyüzünün her yerinde görünür. En iyisi, ufku açık bir yerde sırt üstü uzanıp gökyüzünün en karanlık ve en yüksek kısmına bakmaktır. Meteorların geldiği noktadan (radyant) yaklaşık 40-60 derece uzağa bakmak, uzun izli meteorları görme şansını artırır.",
+    },
+    {
+      q: "Meteor yağmuru teleskopla ya da dürbünle izlenir mi?",
+      a: "Hayır, en iyisi çıplak gözdür. Meteorlar gökyüzünün herhangi bir yerinde bir saniyeden kısa sürede belirip kaybolur. Teleskop ve dürbün gökyüzünün çok küçük bir parçasını gösterdiği için meteorların çoğu görüş alanının dışında kalır.",
+    },
+  ],
   ayaYolculuk: [
     {
       q: "Aya ilk ayak basan Türk var mı?",

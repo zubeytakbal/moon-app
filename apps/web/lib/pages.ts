@@ -303,6 +303,16 @@ export const PAGES = {
       "1999 ve 2006 tam tutulmaları, ilinizden hayatınız boyunca görülen ve görülecek tutulmalar, 2100'e kadar Türkiye'nin tam tutulmaları.",
     cardPhaseAngle: 0,
   },
+  meteorYagmurlari: {
+    path: "/tr/meteor-yagmurlari",
+    title: "Meteor Yağmurları",
+    navLabel: "Meteor Yağmurları",
+    group: "takvim",
+    featured: true,
+    description:
+      "Sıradaki meteor yağmuru ne zaman? İlinizden en iyi saat, ay ışığı engelleyecek mi, saatte kaç meteor görürsünüz?",
+    cardPhaseAngle: 30,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -394,7 +404,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   aybosluk: ["ayHangiBurcta", "ayBurcu", "sacKesim"],
   ekimDikim: ["sacKesim", "ayTakvimi", "ayHangiBurcta"],
   eyyamiBiyz: ["hicriTakvim", "dolunay", "hilalGozlemi"],
-  yeniAy: ["yeniayTarihleri", "gunesTutulmasi", "hilalGozlemi"],
+  yeniAy: ["yeniayTarihleri", "meteorYagmurlari", "gunesTutulmasi"],
   hilal: ["hilalGozlemi", "hicriTakvim", "ayEvreleri"],
   ilkDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   buyuyenSiskinAy: ["dolunay", "bugunAy", "ayTakvimi"],
@@ -402,6 +412,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   turkiyeTutulmalari: ["gunesTutulmasi", "ayTutulmalari", "yeniAy"],
+  meteorYagmurlari: ["yeniAy", "bugunAy", "dolunayTarihleri"],
   ayaYolculuk: ["ayEvreleri", "superAy", "gunesTutulmasi"],
   yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
   hakkimizda: [],

@@ -63,6 +63,25 @@ function Sprout() {
   );
 }
 
+/** Kart görseli: radyanttan saçılan meteor izleri ve köşede ince ay. */
+function Meteors() {
+  return (
+    <svg viewBox="0 0 120 96" className="h-24 w-32" aria-hidden="true">
+      {[
+        [30, 20, 70, 52],
+        [52, 12, 96, 40],
+        [20, 38, 58, 74],
+        [70, 28, 110, 62],
+      ].map(([x1, y1, x2, y2], i) => (
+        <g key={i} strokeLinecap="round">
+          <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c7d2fe" strokeOpacity={0.25} strokeWidth={1.2} />
+          <line x1={(x1 + 2 * x2) / 3} y1={(y1 + 2 * y2) / 3} x2={x2} y2={y2} stroke="#fff" strokeWidth={i === 1 ? 2 : 1.5} />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function SolarEclipse() {
   return (
     <svg viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">
@@ -134,6 +153,7 @@ export function PageVisual({ page }: { page: SitePage }) {
         </span>
       </div>
     );
+  else if (path === PAGES.meteorYagmurlari.path) visual = <Meteors />;
   else if (path === PAGES.superAy.path) visual = <MoonPhaseIcon phaseAngle={180} size={112} glow title="" />;
   else visual = <MoonPhaseIcon phaseAngle={page.cardPhaseAngle} size={96} title="" />;
 

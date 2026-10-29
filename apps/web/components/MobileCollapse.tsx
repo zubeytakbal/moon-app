@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
  * Telefonda uzun bir tabloyu ya da listeyi ilk satırlarıyla gösterir; altında "+ N ... daha göster" düğmesi olur.
@@ -25,6 +25,24 @@ export function MobileCollapse({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Sayfa içi bağlantı (#çapa) gizli bir satırı gösteriyorsa kutuyu açıp oraya git.
+  useEffect(() => {
+    function reveal() {
+      const id = decodeURIComponent(location.hash.slice(1));
+      const target = id ? document.getElementById(id) : null;
+      const root = ref.current;
+      if (!target || !root || !root.contains(target) || !target.closest("[data-extra]")) return;
+      setOpen(true);
+      requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+    }
+    const first = requestAnimationFrame(reveal);
+    window.addEventListener("hashchange", reveal);
+    return () => {
+      cancelAnimationFrame(first);
+      window.removeEventListener("hashchange", reveal);
+    };
+  }, []);
 
   function toggle() {
     if (open) {

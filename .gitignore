@@ -31,3 +31,6 @@ next-env.d.ts
 
 # Vercel
 .vercel
+
+# Arama aracının çalışma kaydı
+research/sonuclar/*.log
