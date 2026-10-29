@@ -5,6 +5,10 @@
 	"name": "moon-app",
 	"compatibility_date": "2026-10-01",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	// Site yalnız kendi alan adında açılır; workers.dev kopyası ve önizleme adresleri kapalı (kopya içerik olmasın)
+	"workers_dev": false,
+	"preview_urls": false,
+	"routes": [{ "pattern": "lunatlas.com", "custom_domain": true }],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
