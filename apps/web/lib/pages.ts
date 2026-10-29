@@ -22,7 +22,7 @@ export const GROUP_NAMES: Record<PageGroup, string> = {
   tutulmalar: "Tutulmalar",
   hicri: "Hicri",
   "gelenek-burclar": "Gelenek ve Burçlar",
-  bilgi: "Bilgi",
+  bilgi: "Ay Bilgisi",
   kurumsal: "Kurumsal",
 };
 
@@ -293,6 +293,15 @@ export const PAGES = {
     description: "Doğum tarihinizi girin: o gün ay hangi evredeydi, ne kadar aydınlıktı, kaç günlüktü?",
     cardPhaseAngle: 160,
   },
+  ayaYolculuk: {
+    path: "/tr/aya-yolculuk",
+    title: "Aya Yolculuk",
+    navLabel: "Aya Yolculuk",
+    group: "bilgi",
+    featured: true,
+    description: "Aya insan gitti mi? Apollo inişleri, aya iniş yapan ülkeler, Artemis ve Türkiye'nin ay aracı.",
+    cardPhaseAngle: 150,
+  },
   yontem: {
     path: "/tr/yontem-ve-dogruluk",
     title: "Yöntem ve Doğruluk",
@@ -382,6 +391,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   dolunay: ["dolunayTarihleri", "kanliAy", "dolunayIsimleri"],
   kuculenSiskinAy: ["sonDordun", "bugunAy", "ayTakvimi"],
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
+  ayaYolculuk: ["ayEvreleri", "superAy", "gunesTutulmasi"],
   yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
   hakkimizda: [],
   iletisim: [],

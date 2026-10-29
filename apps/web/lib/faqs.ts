@@ -165,6 +165,28 @@ export const FAQS = {
       a: "Gelenekte domates, biber, patlıcan gibi ürünü toprak üstünde olan sebzelerin fideleri büyüyen ayda dikilir. Ama sıcak seven bu fideler ancak don tehlikesi geçince toprağa çıkarılabilir; bu da çoğu bölgede nisan ile mayıs arasıdır. Önce mevsimi, sonra ay takviminden günü seçmek gerekir.",
     },
   ],
+  ayaYolculuk: [
+    {
+      q: "Aya ilk ayak basan Türk var mı?",
+      a: "Henüz yok. Aya bugüne kadar yalnızca Apollo programındaki 12 Amerikalı astronot ayak bastı. Türkiye'nin ilk astronotu Alper Gezeravcı Ocak 2024'te Uluslararası Uzay İstasyonu'na gitti; Tuva Cihangir Atasever ise Haziran 2024'te uzayın sınırına kısa bir uçuş yaptı. Türkiye'nin aya ilk teması, insansız ay aracıyla olacak.",
+    },
+    {
+      q: "Aya hayvan gitti mi? Aya ilk giden canlı hangisi?",
+      a: "Aya hiçbir hayvan ayak basmadı. Ayın çevresini dolaşıp Dünya'ya canlı dönen ilk canlılar, Eylül 1968'de Sovyet Zond 5 aracıyla gönderilen iki kaplumbağaydı; araçta böcekler ve tohumlar da vardı. Üç ay sonra Apollo 8 astronotları ayın çevresinde dolaşan ilk insanlar oldu.",
+    },
+    {
+      q: "Aydaki bayraklar hâlâ duruyor mu?",
+      a: "Ay yörüngesindeki LRO uydusunun fotoğraflarında Apollo 12, 16 ve 17'nin bayraklarının gölgeleri görülüyor; yani bu bayraklar hâlâ dikili. Apollo 11'in bayrağı ise Aldrin'in anlattığına göre iniş aracı kalkarken motorun püskürttüğü gazla devrildi. Havasız ortamda yıllarca güneş ışığı alan bayrakların renklerinin solduğu düşünülüyor.",
+    },
+    {
+      q: "Aydaki bayrak ya da iniş aracı teleskopla görülür mü?",
+      a: "Hayır, hiçbir teleskopla görülemez. Hubble Uzay Teleskobu bile ay yüzeyinde ancak 90 metre kadar büyük ayrıntıları seçebilir; iniş araçlarının ayda kalan alt kısmı ise 4 metre kadardır, bayraklar daha da küçüktür. İniş yerleri ancak ayın çevresinde, 50 kilometre yükseklikte dönen LRO uydusunun kameralarıyla fotoğraflanabildi. Ama iniş yerlerinin bulunduğu denizleri çıplak gözle bile görebilirsiniz: sayfanın başındaki haritada hangisinin şu an güneş aldığı yazıyor.",
+    },
+    {
+      q: "Aya en son ne zaman gidildi?",
+      a: "Ay yüzeyine en son Aralık 1972'de Apollo 17 astronotları indi; Eugene Cernan, 14 Aralık 1972'de aydan ayrılan son insandı. Nisan 2026'da Artemis II'nin dört astronotu ayın çevresinden dolaştı ama iniş yapmadı. Bir sonraki insanlı inişin 2028'de olması hedefleniyor.",
+    },
+  ],
   aybosluk: [
     {
       q: "Ay boşluktayken saç kesilir mi, alışveriş yapılır mı?",

@@ -28,6 +28,16 @@ export const IMAGES = {
     credit: "NASA",
     sourceUrl: library("art002e021278"),
   },
+  apollo11: {
+    src: "/images/nasa/apollo-11-aldrin.webp",
+    width: 1200,
+    height: 1171,
+    alt: "Ay yüzeyinde yürüyen, uzay giysili astronot ve ayak izleri",
+    caption:
+      "Apollo 11, 20 Temmuz 1969: Buzz Aldrin, Kartal iniş aracının yanında ay yüzeyinde. Fotoğrafı Neil Armstrong çekti; Aldrin'in kaskının camında Armstrong ve iniş aracı görünüyor.",
+    credit: "NASA",
+    sourceUrl: library("as11-40-5903"),
+  },
   earthrise: {
     src: "/images/nasa/earthrise-apollo-8.webp",
     width: 1200,
