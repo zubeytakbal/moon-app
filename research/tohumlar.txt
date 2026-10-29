@@ -1,0 +1,38 @@
+# --hepsi ile taranan konular. Her satır bir konu; # ile başlayan satırlar atlanır.
+# Mevcut sayfalarımızın konuları
+ay evreleri
+bugün ay
+ay takvimi
+dolunay
+yeni ay
+hilal
+ilk dördün
+son dördün
+şişkin ay
+dolunay tarihleri
+süper ay
+ay tutulması
+kanlı ay
+güneş tutulması
+dolunay isimleri
+hicri takvim
+hilal gözlemi
+eyyam-ı biyz
+ay burcu
+ay hangi burçta
+ay boşlukta
+saç kesimi ay takvimi
+ekim dikim ay takvimi
+doğduğum gün ay
+aya yolculuk
+aya insan
+# Aradan sonraki aday konular (CLAUDE.md)
+ay kraterleri
+teleskopla ay
+ay fotoğrafı
+meteor yağmuru
+ışık kirliliği
+ayın karanlık yüzü
+gelgit
+ay doğuşu
+ay batışı
