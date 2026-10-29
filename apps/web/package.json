@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@moon-app/moon": "^0.1.0",
-    "@opennextjs/cloudflare": "^1.20.13",
+    "@opennextjs/cloudflare": "^1.20.14",
     "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0"
