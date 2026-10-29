@@ -12,6 +12,7 @@ import {
   getUpcomingSolarEclipses,
   getFullMoonsOfYear,
   getMoonDistanceKm,
+  getUpcomingLunarApsides,
   getUpcomingLunarEclipses,
   getMonthCalendar,
   getNextBlueMoon,
@@ -420,5 +421,17 @@ describe("getDaytimeMoon", () => {
   it("yeni ayda (9 Kasım 2026) ay gündüz görülmez", () => {
     const d = getDaytimeMoon(new Date("2026-11-09T09:00:00Z"), ISTANBUL);
     assert.equal(d.windows.length, 0);
+  });
+});
+
+describe("getUpcomingLunarApsides", () => {
+  it("yakınberi ve uzakberi sırayla gelir, uzaklıklar bilinen aralıklarda", () => {
+    const list = getUpcomingLunarApsides(new Date("2026-01-01T00:00:00Z"), 26);
+    for (let i = 1; i < list.length; i++) assert.notEqual(list[i].kind, list[i - 1].kind);
+    for (const a of list) {
+      if (a.kind === "perigee") assert.ok(a.km > 355_000 && a.km < 371_000, `yakınberi ${a.km}`);
+      else assert.ok(a.km > 404_000 && a.km < 407_000, `uzakberi ${a.km}`);
+      assert.ok(Math.abs(getMoonDistanceKm(a.date) - a.km) < 50);
+    }
   });
 });

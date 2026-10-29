@@ -29,7 +29,16 @@ export {
 export { findProvince, TURKEY_PROVINCES, type Province } from "./provinces-tr.ts";
 export { getMonthCalendar, getNextBlueMoon, type CalendarDay } from "./calendar.ts";
 export { localDateParts, zonedTimeToUtc } from "./time.ts";
-export { getFullMoonsOfYear, getMoonDistanceKm, getSeasons, getUpcomingLunarEclipses, type LunarEclipse, type LunarEclipseKind } from "./events.ts";
+export {
+  getFullMoonsOfYear,
+  getMoonDistanceKm,
+  getSeasons,
+  getUpcomingLunarApsides,
+  getUpcomingLunarEclipses,
+  type LunarApsis,
+  type LunarEclipse,
+  type LunarEclipseKind,
+} from "./events.ts";
 export { getLocalSolarEclipse, getUpcomingSolarEclipses, type LocalSolarEclipse, type SolarEclipse, type SolarEclipseKind } from "./events.ts";
 export { CRESCENT_MIN_ALTITUDE, CRESCENT_MIN_ELONGATION, getCrescentEvenings, type CrescentEvening } from "./crescent.ts";
 export { getCurrentSignIngress, getMoonConstellation, getMoonEclipticLongitude, getMoonSign, getMoonSignIngresses, getSunSign, ZODIAC_SIGNS_TR, type MoonSign, type SignIngress, type ZodiacSign } from "./zodiac.ts";

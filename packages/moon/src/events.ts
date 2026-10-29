@@ -128,3 +128,25 @@ export function getLocalSolarEclipse(date: Date, location: GeoLocation): LocalSo
     moonToSunRadius: moonRadius / sunRadius,
   };
 }
+
+export interface LunarApsis {
+  /** Yakınberi (Dünya'ya en yakın) ya da uzakberi (en uzak). */
+  kind: "perigee" | "apogee";
+  date: Date;
+  km: number;
+}
+
+/** `from` anından sonraki `count` yakınberi ve uzakberi, sırasıyla (birbirini izler). */
+export function getUpcomingLunarApsides(from: Date, count: number): LunarApsis[] {
+  const result: LunarApsis[] = [];
+  let apsis = Astronomy.SearchLunarApsis(from);
+  for (let i = 0; i < count; i++) {
+    result.push({
+      kind: apsis.kind === Astronomy.ApsisKind.Pericenter ? "perigee" : "apogee",
+      date: apsis.time.date,
+      km: apsis.dist_km,
+    });
+    apsis = Astronomy.NextLunarApsis(apsis);
+  }
+  return result;
+}

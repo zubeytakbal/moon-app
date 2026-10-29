@@ -12,9 +12,10 @@ import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
+import { LiveSize } from "./LiveSize";
 
 const PAGE = PAGES.superAy;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-10-29";
 const FIRST_YEAR = 2026;
 const LAST_YEAR = 2030;
 const timeZone = siteConfig.defaultLocation.timeZone;
@@ -51,6 +52,7 @@ export default function SupermoonPage() {
         lead="Dolunay, ayın Dünya'ya en çok yaklaştığı zamana denk geldiğinde ay biraz daha büyük ve parlak görünür. Bu sayfada farkın gerçekte ne kadar olduğunu ve önümüzdeki süper ayları bulabilirsiniz."
         aside={<NextSupermoon />}
       />
+      <LiveSize />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
           <QuickFacts>
