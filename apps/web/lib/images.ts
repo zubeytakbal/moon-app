@@ -19,6 +19,26 @@ export interface SiteImage {
 const library = (id: string) => `https://images.nasa.gov/details/${id}`;
 
 export const IMAGES = {
+  farSide: {
+    src: "/images/nasa/far-side-svs.webp",
+    width: 1600,
+    height: 900,
+    alt: "Ayın arka yüzü tamamen aydınlık; arkasında küçük, uzak Dünya",
+    caption:
+      "Ayın arka yüzü, Lunar Reconnaissance Orbiter verileriyle oluşturulmuş görüntü. Ön yüzdeki büyük karanlık lekeler (denizler) burada neredeyse yok; yüzey kraterlerle kaplı.",
+    credit: "NASA Scientific Visualization Studio",
+    sourceUrl: "https://svs.gsfc.nasa.gov/11747",
+  },
+  artemisFarSide: {
+    src: "/images/nasa/artemis-2-far-side.webp",
+    width: 1600,
+    height: 1067,
+    alt: "Hilal halindeki ay ufku ve uzakta ince bir hilal halinde Dünya",
+    caption:
+      "Artemis II astronotları ayın arka yüzünü hilal halinde gördü; yukarıda ince bir hilal gibi Dünya parlıyor (6 Nisan 2026). Arka yüzün de gecesi ve gündüzü vardır.",
+    credit: "NASA",
+    sourceUrl: library("art002e015231"),
+  },
   earthset: {
     src: "/images/nasa/earthset-artemis-2.webp",
     width: 1600,

@@ -205,6 +205,24 @@ export const FAQS = {
       a: "Hayır, en iyisi çıplak gözdür. Meteorlar gökyüzünün herhangi bir yerinde bir saniyeden kısa sürede belirip kaybolur. Teleskop ve dürbün gökyüzünün çok küçük bir parçasını gösterdiği için meteorların çoğu görüş alanının dışında kalır.",
     },
   ],
+  ayinKaranlikYuzu: [
+    {
+      q: "Ayın karanlık yüzü kaç derece, ne kadar soğuk?",
+      a: "Arka yüz de ön yüz gibi yaklaşık iki hafta gündüz, iki hafta gece yaşar. Havası olmadığı için sıcaklık farkı çok büyüktür: gündüz ekvator bölgesinde 120 °C'ye kadar çıkar, gece −170 °C'nin altına iner. Yani 'karanlık yüz' sürekli soğuk değildir; sıcaklığı, o sırada orada gündüz mü gece mi olduğuna bağlıdır.",
+    },
+    {
+      q: "Ayın karanlık yüzü hangi renktedir?",
+      a: "Ön yüz gibi gridir; hatta biraz daha açık görünür. Ön yüzdeki koyu lekeler, eski lav akıntılarının doldurduğu ovalardır (ay denizleri). Arka yüzde bu ovalar çok azdır; yüzeyin çoğu açık renkli, kraterlerle kaplı dağlık arazidir.",
+    },
+    {
+      q: "Ayın karanlık yüzünde yaşayan var mı?",
+      a: "Hayır. Ayın havası, sıvı suyu ve manyetik kalkanı yoktur; arka yüz de ön yüz kadar canlılık için elverişsizdir. Arka yüzdeki tek 'sakinler', Çin'in 2019'da indirdiği Chang'e 4 aracı ve Yutu-2 adlı gezginidir.",
+    },
+    {
+      q: "Ayın arka yüzündeki araçlarla nasıl haberleşiliyor?",
+      a: "Arka yüzden Dünya hiç görünmediği için araçlar Dünya'ya doğrudan sinyal gönderemez. Bu yüzden ayın arkasını gören bir yörüngeye aktarma uydusu yerleştirilir: Chang'e 4 ve Chang'e 6 görevleri, Çin'in Queqiao adlı aktarma uyduları sayesinde Dünya'yla haberleşti. Aynı sebeple Artemis II astronotları da ayın arkasından geçerken bir süre Dünya'yla bağlantısız kaldı.",
+    },
+  ],
   ayaYolculuk: [
     {
       q: "Aya ilk ayak basan Türk var mı?",

@@ -322,6 +322,16 @@ export const PAGES = {
     description: "Aya insan gitti mi? Apollo inişleri, aya iniş yapan ülkeler, Artemis ve Türkiye'nin ay aracı.",
     cardPhaseAngle: 150,
   },
+  ayinKaranlikYuzu: {
+    path: "/tr/ayin-karanlik-yuzu",
+    title: "Ayın Karanlık Yüzü",
+    navLabel: "Ayın Karanlık Yüzü",
+    group: "bilgi",
+    featured: true,
+    description:
+      "Ayın arka yüzü gerçekten karanlık mı? Şu an yüzde kaçı aydınlık, neden hiç göremiyoruz, orada ne var?",
+    cardPhaseAngle: 0,
+  },
   yontem: {
     path: "/tr/yontem-ve-dogruluk",
     title: "Yöntem ve Doğruluk",
@@ -413,6 +423,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   turkiyeTutulmalari: ["gunesTutulmasi", "ayTutulmalari", "yeniAy"],
   meteorYagmurlari: ["yeniAy", "bugunAy", "dolunayTarihleri"],
+  ayinKaranlikYuzu: ["ayEvreleri", "yeniAy", "ayaYolculuk"],
   ayaYolculuk: ["ayEvreleri", "superAy", "gunesTutulmasi"],
   yontem: ["hicriTakvim", "gunesTutulmasi", "bugunAy"],
   hakkimizda: [],

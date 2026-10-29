@@ -9,6 +9,12 @@ interface MoonPhaseIconProps {
   title: string;
   /** Büyük görsellerde ayın etrafına hafif bir ışık halesi ekler. */
   glow?: boolean;
+  /**
+   * "far": ayın arka yüzü (NASA SVS 11747), arkadan bakılmış gibi. `phaseAngle` yine Dünya'dan görülen evredir;
+   * arka yüzün evresi 180° fazlasıdır (yeni ayda arka yüz "dolunay"dır). Arkadan bakıldığında Güneş öbür
+   * yanda kaldığı için aynı gölge formülü doğru yöne düşer.
+   */
+  side?: "near" | "far";
 }
 
 /**
@@ -19,12 +25,20 @@ interface MoonPhaseIconProps {
  * ayıran sınır (terminatör). Terminatör, genişliği evre açısının kosinüsüyle değişen bir
  * elipsin yarısıdır. Gerçekte terminatör keskin değildir, bu yüzden hafifçe yumuşatılır.
  */
-export function MoonPhaseIcon({ phaseAngle, size = 200, southern = false, title, glow = false }: MoonPhaseIconProps) {
+export function MoonPhaseIcon({
+  phaseAngle,
+  size = 200,
+  southern = false,
+  title,
+  glow = false,
+  side = "near",
+}: MoonPhaseIconProps) {
   const r = 50;
   const c = 50;
-  const k = Math.cos((phaseAngle * Math.PI) / 180);
+  const angle = side === "far" ? (phaseAngle + 180) % 360 : phaseAngle;
+  const k = Math.cos((angle * Math.PI) / 180);
   const rx = Math.abs(k) * r;
-  const waxing = phaseAngle < 180;
+  const waxing = angle < 180;
 
   // Kuzey yarımkürede büyüyen ayın sol tarafı karanlıktır.
   const darkSweep = waxing ? 0 : 1;
@@ -41,7 +55,15 @@ export function MoonPhaseIcon({ phaseAngle, size = 200, southern = false, title,
   // geçerse tarayıcı ilkini kullanır; ilki gizli bir menüdeyse ikon hiç görünmez.
   const id = `moon-${useId().replace(/:/g, "")}`;
   const src =
-    size <= 80 ? "/moon/full-moon-160.webp" : size <= 500 ? "/moon/full-moon.webp" : "/moon/full-moon-2000.webp";
+    side === "far"
+      ? size <= 80
+        ? "/moon/far-side-160.webp"
+        : "/moon/far-side.webp"
+      : size <= 80
+        ? "/moon/full-moon-160.webp"
+        : size <= 500
+          ? "/moon/full-moon.webp"
+          : "/moon/full-moon-2000.webp";
   const blur = size <= 80 ? 0.6 : size <= 500 ? 1.1 : 0.8;
   const pad = glow ? 12 : 0;
 
