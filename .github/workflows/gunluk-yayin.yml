@@ -1,0 +1,26 @@
+# Her gece 00.05'te (Türkiye saati, UTC+3) boş bir commit gönderir; Cloudflare Workers Builds main'e her
+# push'ta siteyi yeniden derleyip yayınlar. Böylece önceden üretilen sayfalar ("bugün", ay evresi, kalan günler)
+# her gün tazelenir. Neden gerekli: Workers'ta süresi dolan sayfanın sunucuda yeniden üretimi takılıyor
+# (Error 1101, 31 Ekim 2026; bkz. next.config.ts cacheLife notu). Cache Components kapatılınca kaldırılacak.
+# Elle de çalıştırılabilir: GitHub > Actions > Günlük yeniden yayın > Run workflow.
+name: Günlük yeniden yayın
+
+on:
+  schedule:
+    - cron: "5 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  yayin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Boş commit gönder
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "Günlük yeniden yayın ($(TZ=Europe/Istanbul date +%Y-%m-%d))"
+          git push
