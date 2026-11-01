@@ -4,7 +4,9 @@ import Link from "next/link";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 import { biyzNote, getUpcomingEyyamiBiyz } from "@/lib/hijri";
@@ -14,7 +16,8 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.eyyamiBiyz;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("diyanet2027");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 
@@ -35,20 +38,23 @@ export default function EyyamiBiyzPage() {
         eyebrow="Hicri"
         lead="Hicri ayların 13, 14 ve 15. günlerine eyyam-ı biyz, yani “beyaz günler” denir. Adını, ayın dolunaya yaklaşıp geceleri ışıl ışıl aydınlattığı bu günlerden alır."
         aside={<NextBiyz />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#liste", label: "Önümüzdeki günler" },
+          { href: "#ne-demek", label: "Ne demek?" },
+          { href: "#oruc", label: "Eyyam-ı biyz orucu" },
+          { href: "#hesap", label: "Tarihler nasıl hesaplanıyor?" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Eyyam-ı biyz, her Hicri ayın 13, 14 ve 15. günleridir; her ay tekrar eder.</li>
-            <li>Bu günlerde oruç tutmak, İslam geleneğinde tavsiye edilen (sünnet) bir ibadettir.</li>
-            <li>
-              Tarihler hesaplı Hicri takvime göredir.{" "}
-              <strong>Kesin dinî tarihler için Diyanet takvimini esas alın.</strong>
-            </li>
-          </QuickFacts>
+          <BiyzAnswer />
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">Önümüzdeki eyyam-ı biyz günleri</h2>
+        <h2 id="liste" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">Önümüzdeki eyyam-ı biyz günleri</h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
           Her ayın 13, 14 ve 15. günlerinin Miladi tarihleri. Ay görselleri o günlerin akşamındaki gerçek görünümdür.
         </p>
@@ -61,7 +67,7 @@ export default function EyyamiBiyzPage() {
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Eyyam-ı biyz ne demek?</h2>
+            <h2 id="ne-demek">Eyyam-ı biyz ne demek?</h2>
             <p>
               &quot;Eyyam&quot; Arapçada &quot;günler&quot;, &quot;biyz&quot; ise &quot;beyazlar&quot; demektir. Eyyam-ı
               biyz, &quot;beyaz günler&quot; anlamına gelir. Hicri aylar ince bir{" "}
@@ -74,7 +80,7 @@ export default function EyyamiBiyzPage() {
               parlak, en yuvarlak halindedir.
             </p>
 
-            <h2>Eyyam-ı biyz orucu</h2>
+            <h2 id="oruc">Eyyam-ı biyz orucu</h2>
             <p>
               Hz. Peygamber&apos;in her ay bu üç gün oruç tuttuğu ve bunu tavsiye ettiği rivayet edilir. Bu yüzden
               eyyam-ı biyz orucu, İslam geleneğinde nafile (gönüllü) oruçların en bilinenlerinden biridir. Orucun nasıl
@@ -101,11 +107,12 @@ export default function EyyamiBiyzPage() {
               üzerinde aydınlıktır.
             </p>
 
-            <h2>Tarihler nasıl hesaplanıyor?</h2>
+            <h2 id="hesap">Tarihler nasıl hesaplanıyor?</h2>
             <p>
               Hicri tarihler, Suudi Arabistan&apos;ın resmî hesaplı takvimi olan Ümmülkurâ takvimine göre
               belirlenmiştir. Bu takvimi Diyanet&apos;in 2027 yılı dinî günleriyle (Ramazan başlangıcı, bayramlar,
-              kandiller, Hicri yılbaşı, Aşure) karşılaştırdık ve hepsinin aynı güne denk geldiğini gördük. Yine de iki
+              kandiller, Hicri yılbaşı, Aşure) karşılaştırdık ve hepsinin aynı güne denk geldiğini gördük.
+              {src.ref("diyanet2027")} Yine de iki
               takvim farklı ölçütlere dayandığı için nadiren bir gün fark çıkabilir; kesin tarih için Diyanet takvimine
               bakın. Hicri takvimin nasıl işlediğini <Link href={PAGES.hicriTakvim.path}>Hicri Takvim</Link> sayfasında
               anlattık.
@@ -115,16 +122,7 @@ export default function EyyamiBiyzPage() {
             page={PAGE}
             headline="Eyyam-ı Biyz Orucu Ne Zaman? Eyyam-ı Biyz Günleri"
             updated={UPDATED}
-            sources={[
-              {
-                label: "Diyanet İşleri Başkanlığı, Dinî Günler",
-                href: "https://vakithesaplama.diyanet.gov.tr/dini_gunler.php",
-              },
-              {
-                label: "Diyanet İşleri Başkanlığı, 2027 Dinî Günler Listesi",
-                href: "https://vakithesaplama.diyanet.gov.tr/icerik.php?icerik=154",
-              },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -236,5 +234,39 @@ async function BiyzList() {
         );
       })}
     </ol>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): sıradaki eyyam-ı biyz günleri. Saatte bir yenilenir. */
+async function BiyzAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const [next, after] = getUpcomingEyyamiBiyz(now, 2, timeZone);
+  const f = fmt();
+  const daysText = (m: typeof next) =>
+    m.days.map((d) => `${f.short.format(d.date)} ${f.weekday.format(d.date)}`).join(", ");
+  const first = next.days[0].date;
+  const ongoing = first.getTime() - 12 * 3_600_000 <= now.getTime();
+  const note = biyzNote(next);
+
+  return (
+    <AnswerBox
+      question="Eyyam-ı biyz orucu ne zaman?"
+      answer={`${ongoing ? "Şu an eyyam-ı biyz günlerindeyiz" : "Bir sonraki eyyam-ı biyz"}: ${daysText(next)} (${next.monthName} ${next.hijriYear}).`}
+      rows={[
+        { label: "Hicri günler", value: `${next.days.map((d) => d.hijriDay).join(", ")} ${next.monthName}` },
+        ...(note ? [{ label: "Not", value: note }] : []),
+        { label: "Ondan sonraki", value: `${daysText(after)} (${after.monthName} ${after.hijriYear})` },
+        { label: "Hicri gün ne zaman başlar?", value: "Akşam, gün batımında. Oruç, listedeki Miladi günlerin gündüzünde tutulur." },
+      ]}
+      note={
+        <>
+          Hicri tarihler Ümmülkurâ takvimine göredir; 2027 için Diyanet&apos;in ilan ettiği günlerle aynı.{src.ref("diyanet2027")}{" "}
+          <strong>Kesin dinî tarihler için Diyanet takvimini esas alın.</strong>
+        </>
+      }
+    />
   );
 }

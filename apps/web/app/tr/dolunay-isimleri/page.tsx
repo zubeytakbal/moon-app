@@ -3,11 +3,13 @@ import { cacheLife } from "next/cache";
 import Form from "next/form";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getFullMoonsOfYear, zonedTimeToUtc } from "@moon-app/moon";
+import { getFullMoonsOfYear, getUpcomingPrincipalPhases, zonedTimeToUtc } from "@moon-app/moon";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { ShareButton } from "@/components/ShareButton";
 import { nameFullMoons, nearestNamedFullMoon } from "@/lib/full-moon-names";
 import { pageOpenGraph } from "@/lib/og";
@@ -15,7 +17,8 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.dolunayIsimleri;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("almanacFullMoonNames");
 const timeZone = siteConfig.defaultLocation.timeZone;
 
 export const metadata: Metadata = {
@@ -121,11 +124,22 @@ export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolun
         eyebrow="Takvim"
         lead="Her ayın dolunayının bir adı vardır: Kurt Ayı, Çilek Ayı, Hasat Ayı... Bu adlar nereden geliyor, ne anlama geliyor ve bir sonraki ne zaman?"
         aside={<NextPrincipal phase="full-moon" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bu dolunayın adı ne?" },
+          { href: "#dogum-dolunayi", label: "Doğum dolunayınız" },
+          { href: "#on-iki", label: "12 ayın dolunayı" },
+          { href: "#ozel", label: "Özel isimler" },
+          { href: "#koken", label: "İsimler nereden geliyor?" },
+          { href: "#hasat", label: "Hasat Ayı" },
+        ]}
       />
       <section className="bg-[#05070d] text-white" aria-labelledby="dogum-dolunayi">
         <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-2">
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-            <h2 id="dogum-dolunayi" className="text-xl font-semibold">
+            <h2 id="dogum-dolunayi" className="scroll-mt-32 text-xl font-semibold">
               Doğum dolunayınızın adı ne?
             </h2>
             <p className="mt-1 text-sm text-zinc-400">
@@ -139,20 +153,16 @@ export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolun
       </section>
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Bugün yaygın kullanılan dolunay isimleri Kuzey Amerika kökenlidir; Türk geleneğinden gelmez.</li>
-            <li>İsimler gökbilimsel değil, mevsimseldir: o dönemde doğada olan bir şeyi anlatır.</li>
-            <li>Hasat Ayı ve Mavi Ay gibi bazı isimler takvim ayına değil, belirli bir kurala bağlıdır.</li>
-          </QuickFacts>
+          <NamesAnswer />
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">On iki ayın dolunayı</h2>
+        <h2 id="on-iki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">On iki ayın dolunayı</h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
           Her kartta, o adı taşıyan bir sonraki dolunayın tarihi yer alıyor (Türkiye saati).
         </p>
         <NameCards />
 
-        <h2 className="mt-14 text-2xl font-semibold tracking-tight sm:text-3xl">Özel dolunay isimleri</h2>
+        <h2 id="ozel" className="mt-14 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">Özel dolunay isimleri</h2>
         <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {SPECIAL.map((s) => (
             <li
@@ -175,12 +185,12 @@ export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolun
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Bu isimler nereden geliyor?</h2>
+            <h2 id="koken">Bu isimler nereden geliyor?</h2>
             <p>
               Bugün haberlerde ve sosyal medyada duyduğumuz dolunay isimleri, büyük ölçüde Kuzey Amerika&apos;da
               1792&apos;den beri yayımlanan çiftçi almanağı <em>The Old Farmer&apos;s Almanac</em> aracılığıyla
               yaygınlaştı. Almanak bu isimleri Kuzey Amerika yerli halklarının, Avrupalı göçmenlerin ve eski Avrupa
-              geleneklerinin adlarından derledi.
+              geleneklerinin adlarından derledi.{src.ref("almanacFullMoonNames")}
             </p>
             <p>
               Yerli halklar ay döngülerini mevsimleri izlemek için kullanırdı. Her dolunay, o dönemde doğada olan önemli
@@ -207,7 +217,7 @@ export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolun
               <Link href={PAGES.dolunayTarihleri.path}>2027 Dolunay Tarihleri</Link> sayfasına bakabilirsiniz.
             </p>
 
-            <h2>Hasat Ayı neden özel?</h2>
+            <h2 id="hasat">Hasat Ayı neden özel?</h2>
             <p>
               Ay her gün ortalama 50 dakika geç doğar. Ama eylül ekinoksu civarında, akşam saatlerinde ayın gökyüzündeki
               yolu ufka çok yatık olduğu için bu gecikme kuzey yarımkürede birkaç gün boyunca 20-30 dakikaya iner. Ay
@@ -227,10 +237,7 @@ export default function FullMoonNamesPage({ searchParams }: PageProps<"/tr/dolun
             page={PAGE}
             headline="Dolunay İsimleri ve Anlamları"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-              { label: "The Old Farmer's Almanac, Full Moon Names", href: "https://www.almanac.com/full-moon-names" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -380,5 +387,50 @@ async function BirthMoonResult({ year, month, day }: { year: number; month: numb
         </div>
       </div>
     </div>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): bir sonraki dolunayın adı ve anlamı. Saatte bir yenilenir. */
+async function NamesAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const [next, after] = getUpcomingPrincipalPhases(now, 9).filter((p) => p.key === "full-moon");
+  const nextName = nearestNamedFullMoon(next.date, timeZone).name ?? "";
+  const afterName = nearestNamedFullMoon(after.date, timeZone).name ?? "";
+  const meaning = NAMES.find((n) => n.name === nextName)?.meaning;
+  const day = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+
+  return (
+    <AnswerBox
+      question="Bu dolunayın adı ne?"
+      answer={`Bir sonraki dolunay ${day.format(next.date)}: ${nextName}.`}
+      rows={[
+        ...(meaning ? [{ label: "Anlamı", value: meaning }] : []),
+        { label: "Ondan sonraki dolunay", value: `${day.format(after.date)}: ${afterName}` },
+        {
+          label: "İsimler nereden geliyor?",
+          value: "Kuzey Amerika kökenlidir; Türk geleneğinden gelmez. Gökbilimsel değil, mevsimseldir.",
+        },
+        { label: "Kurala bağlı isimler", value: "Hasat Ayı (eylül ekinoksuna en yakın), Avcı Ayı (ondan sonraki), Mavi Ay (aynı aydaki ikinci dolunay)" },
+      ]}
+      note={
+        <>
+          Adlar The Old Farmer&apos;s Almanac&apos;ın derlediği Kuzey Amerika geleneğine göredir.{src.ref("almanacFullMoonNames")} Kendi doğum
+          dolunayınızın adı için{" "}
+          <a href="#dogum-dolunayi" className="underline underline-offset-2">
+            yukarıdaki araca
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }

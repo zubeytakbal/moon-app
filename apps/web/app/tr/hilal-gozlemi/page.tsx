@@ -15,13 +15,16 @@ import { CitySelect } from "@/components/CitySelect";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hilalGozlemi;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases", "nasaEclipseSafety");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
@@ -51,16 +54,21 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
             </p>
           </div>
         }
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman, nerede?" },
+          { href: "#aksamlar", label: "İlinize göre akşamlar" },
+          { href: "#ne-zaman", label: "Ne zaman bakmalı?" },
+          { href: "#nereye", label: "Nereye bakmalı?" },
+          { href: "#guvenlik", label: "Dürbün ve güvenlik" },
+          { href: "#hicri", label: "Hicri takvim" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Yeni hilal yalnızca akşam, gün batımından kısa süre sonra ve batı ufkunda görülür.</li>
-            <li>
-              Yeni aydan sonraki ilk akşam hilal genellikle görülemez; ikinci ya da üçüncü akşam çok daha kolaydır.
-            </li>
-            <li>Güneş tamamen batmadan dürbünle batı ufkuna bakmayın; gözlere kalıcı zarar verebilir.</li>
-          </QuickFacts>
+          <CrescentAnswer />
         </div>
 
         <Suspense fallback={<Evenings slug={siteConfig.defaultLocation.slug} />}>
@@ -69,7 +77,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Ne zaman bakmalı?</h2>
+            <h2 id="ne-zaman">Ne zaman bakmalı?</h2>
             <p>
               Hilal, Güneş&apos;e çok yakın ve çok soluk olduğu için gün batımında gökyüzü hâlâ fazla aydınlıktır. En
               iyi zaman, Güneş battıktan <strong>15-30 dakika sonrasıdır</strong>: gökyüzü yeterince kararmış, ama hilal
@@ -77,7 +85,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
               pencereniz yer alıyor. Ay, gün batımından kısa süre sonra batıyorsa pencere çok dardır.
             </p>
 
-            <h2>Nereye bakmalı?</h2>
+            <h2 id="nereye">Nereye bakmalı?</h2>
             <p>
               Önce Güneş&apos;in battığı noktayı not edin. Yeni hilal bu noktanın biraz yukarısında ve genellikle biraz
               solunda (güneyinde) durur. Kartlarda, hilalin gün batımı noktasına göre konumu derece olarak verildi.
@@ -108,12 +116,12 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
               </li>
             </ul>
 
-            <h2>Dürbün kullanımı ve güvenlik</h2>
+            <h2 id="guvenlik">Dürbün kullanımı ve güvenlik</h2>
             <p>
               Dürbün, çok ince bir hilali bulmayı büyük ölçüde kolaylaştırır. Hilali önce dürbünle bulup sonra çıplak
               gözle aramak iyi bir yöntemdir. Ama bir kural kesindir:{" "}
               <strong>Güneş tamamen batmadan dürbünü ya da teleskopu batı ufkuna çevirmeyin.</strong> Güneş&apos;in
-              görüş alanına girmesi bir saniyede bile kalıcı göz hasarına yol açabilir.
+              görüş alanına girmesi bir saniyede bile kalıcı göz hasarına yol açabilir.{src.ref("nasaEclipseSafety")}
             </p>
 
             <h2>Neden bazı aylar daha zor?</h2>
@@ -132,7 +140,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
               fotoğraflanabilmektedir.
             </p>
 
-            <h2>Hilal gözlemi ve Hicri takvim</h2>
+            <h2 id="hicri">Hilal gözlemi ve Hicri takvim</h2>
             <p>
               Hilal gözlemi, Hicri ayların başlangıcını belirlemek için yüzyıllardır yapılır. Türkiye&apos;de ise Hicri
               ay başları astronomik hesaplarla belirlenir. Ay başlarının nasıl hesaplandığını ve önümüzdeki ayların
@@ -143,13 +151,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
             page={PAGE}
             headline="Hilal Gözlemi Nasıl Yapılır? Yeni Hilal Ne Zaman, Nerede Görülür?"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-              {
-                label: "NASA Science, Eclipse Safety (Güneş'e bakma güvenliği)",
-                href: "https://science.nasa.gov/eclipses/safety/",
-              },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -212,7 +214,7 @@ async function Evenings({ slug }: { slug: string }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Önümüzdeki hilal akşamları</p>
-          <h2 id="aksamlar" className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2 id="aksamlar" className="scroll-mt-32 mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
             {city.name} için
           </h2>
           <p className="mt-1 text-zinc-600 dark:text-zinc-400">
@@ -274,5 +276,67 @@ async function Evenings({ slug }: { slug: string }) {
         Hava, ufuk ve gözlemcinin deneyimi sonucu büyük ölçüde değiştirir.
       </p>
     </section>
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): İstanbul'dan hilalin görülebileceği ilk akşam,
+ * gün batımı, gözlem penceresi ve nereye bakılacağı. Saatte bir yenilenir.
+ */
+async function CrescentAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const city = siteConfig.defaultLocation;
+  const now = new Date();
+  const newMoon = getUpcomingPrincipalPhases(new Date(now.getTime() - 4 * DAY_MS), 6).find((p) => p.key === "new-moon")!;
+  const evenings = getCrescentEvenings(newMoon.date, city);
+  const first = evenings.find((e) => e.sunset > now && e.meetsCriteria && e.moonSetsAfterSun && e.moonAltitude > 0);
+  const day = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
+
+  if (!first) {
+    return (
+      <AnswerBox
+        question="Yeni hilal ne zaman, nerede görülür?"
+        answer={`Yeni ay ${day.format(newMoon.date)}. Hilal, ondan sonraki akşamlarda gün batımından sonra batı ufkunda aranır.`}
+        rows={[{ label: "Ne zaman bakmalı?", value: "Güneş battıktan 15-30 dakika sonra" }]}
+      />
+    );
+  }
+  const offset = first.moonAzimuth - first.sunAzimuth;
+  const windowMin = first.moonSet ? Math.round((first.moonSet.getTime() - first.sunset.getTime()) / 60_000) : 0;
+
+  return (
+    <AnswerBox
+      question="Yeni hilal ne zaman, nerede görülür?"
+      answer={`İstanbul'dan bir sonraki yeni hilal ${day.format(first.sunset)} akşamı, gün batımından sonra batı ufkunda aranabilir.`}
+      rows={[
+        { label: "Yeni ay", value: `${day.format(newMoon.date)}, ${time.format(newMoon.date)}` },
+        {
+          label: "Gün batımı / ay batışı",
+          value: `${time.format(first.sunset)} / ${first.moonSet ? time.format(first.moonSet) : "-"}${windowMin > 0 ? ` (gözlem penceresi ${windowMin} dakika)` : ""}`,
+        },
+        {
+          label: "Nereye bakmalı?",
+          value: `Gün batımı noktasının ${nf.format(Math.abs(offset))}° ${offset < 0 ? "solunda" : "sağında"}, ufuktan ${nf.format(first.moonAltitude)}° yukarıda`,
+        },
+        { label: "Ne zaman bakmalı?", value: "Güneş battıktan 15-30 dakika sonra" },
+        {
+          label: "Dürbün kullanılır mı?",
+          value: "Evet, ama yalnızca Güneş tamamen battıktan sonra; Güneş'e dürbünle bakmak kalıcı göz hasarı yapar.",
+        },
+      ]}
+      note={
+        <>
+          İstanbul&apos;a göre; iliniz için{" "}
+          <a href="#aksamlar" className="underline underline-offset-2">
+            aşağıdan il seçin
+          </a>
+          . Yumruğunuzu kolunuz uzanmışken gökyüzüne tutarsanız genişliği yaklaşık 10 derecedir.
+        </>
+      }
+    />
   );
 }

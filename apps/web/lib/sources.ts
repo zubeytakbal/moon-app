@@ -159,6 +159,14 @@ export const SOURCES = {
     note: "Eski çalışmaların çoğunun ay ile deprem sıklığı arasında anlamlı ilişki bulmaması; bazı yeni çalışmalarda yüksek gelgitlerde sığ bindirme faylarında küçük bir etki görülmesi; buna karşın belirli bir yerde ve yılda deprem olasılığının zaten çok düşük (yüzde birin kesirleri) kalması.",
     group: "yer",
   },
+  almanacFullMoonNames: {
+    no: 17,
+    title: "Full Moon Names",
+    publisher: "The Old Farmer's Almanac (1792'den beri yayımlanan Kuzey Amerika çiftçi almanağı)",
+    url: "https://www.almanac.com/full-moon-names",
+    note: "Dolunayların geleneksel adları ve anlamları; adların Kuzey Amerika yerli halkları, sömürge dönemi Amerikası ve diğer Kuzey Amerika geleneklerinden derlenmesi.",
+    group: "gelenek",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;
