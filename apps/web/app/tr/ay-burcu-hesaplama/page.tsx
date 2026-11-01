@@ -7,10 +7,14 @@ import { getMoonPhase, getMoonSign, getMoonSignIngresses, getSunSign, zonedTimeT
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Byline } from "@/components/Byline";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { ShareButton } from "@/components/ShareButton";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
@@ -18,7 +22,8 @@ import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ayBurcu;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonFactSheet", "nasaConstellations");
 const timeZone = siteConfig.defaultLocation.timeZone;
 
 export const metadata: Metadata = {
@@ -46,21 +51,106 @@ export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/
           <p className="mt-4 max-w-xl text-lg text-zinc-300">
             Doğum tarihinizi ve saatinizi girin; doğduğunuz anda ayın hangi burçta olduğunu öğrenin.
           </p>
+          <Byline updated={UPDATED} />
           <Suspense fallback={<SignForm />}>
             <FormAndResult searchParams={searchParams} />
           </Suspense>
         </div>
       </section>
 
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Nasıl hesaplanır?" },
+          { href: "#karsilastirma", label: "Güneş, ay ve yükselen" },
+          { href: "#ne-demek", label: "Ay burcu nedir?" },
+          { href: "#saat", label: "Doğum saati" },
+          { href: "#yer", label: "Doğum yeri" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Ay her 2-2,5 günde bir burç değiştirir; bu yüzden ay burcu için doğum saati önemlidir.</li>
-          <li>Saatinizi bilmiyorsanız, ay o gün burç değiştirdiyse geçiş saatini gösteririz.</li>
-          <li>Ay burcu, Türkiye içinde doğum yerine göre değişmez; yalnızca doğum anına bağlıdır.</li>
-        </QuickFacts>
+        <AnswerBox
+          question="Ay burcum ne?"
+          answer="Doğum tarihinizi ve biliyorsanız saatinizi yukarıdaki kutuya girin: doğduğunuz anda ayın hangi burçta olduğunu hesaplıyoruz."
+          rows={[
+            {
+              label: "Saati bilmiyorsanız",
+              value:
+                "Ay o gün burç değiştirmediyse sonuç yine kesindir. Değiştirdiyse iki olası burcu ve geçiş saatini gösteririz.",
+            },
+            {
+              label: "Doğum yeri gerekir mi?",
+              value:
+                "Hayır. Ay burcu doğum yerine göre değişmez; yalnız doğum anına bağlıdır. Yurt dışında doğduysanız saati Türkiye saatine çevirip girin.",
+            },
+            {
+              label: "Hangi saate göre?",
+              value: "Türkiye saatine göre; 2016'ya kadarki yaz ve kış saati farkları da hesaba katılır.",
+            },
+            {
+              label: "Ay ne sıklıkla burç değiştirir?",
+              value: (
+                <>
+                  Yaklaşık 2-2,5 günde bir; burçların tamamını 27,3 günde dolaşır.{src.ref("nasaMoonFactSheet")}
+                </>
+              ),
+            },
+            {
+              label: "Sonuçta neler var?",
+              value: "Ay burcunuz, derecesi ve elementi; güneş burcunuz; doğduğunuz anda ayın evresi",
+            },
+            { label: "Hangi tarihler?", value: "1900 ile 2100 arasındaki bütün tarihler" },
+            {
+              label: "Tarihim kaydediliyor mu?",
+              value: (
+                <>
+                  Hayır; tarih yalnız sayfanın adresinde durur (
+                  <Link href={PAGES.gizlilik.path} className="underline underline-offset-2">
+                    Gizlilik Politikası
+                  </Link>
+                  ).
+                </>
+              ),
+            },
+          ]}
+          note={
+            <>
+              Ay burcu bu sitede <strong>geleneksel takvim</strong> olarak hesaplanır; ayın konumu kesin bulunur, ama
+              burcunun kişilik üzerinde etkisi olduğuna dair bilimsel kanıt yoktur.{src.ref("nasaConstellations")}
+            </>
+          }
+        />
+
+        <h2 id="karsilastirma" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">
+          Güneş burcu, ay burcu ve yükselen burç
+        </h2>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+          Üçü sık karıştırılır. Aradaki fark, gökyüzünde neyin ne kadar hızlı hareket ettiğinden gelir.
+        </p>
+        <DataTable
+          columns={["", "Güneş burcu", "Ay burcu", "Yükselen burç"]}
+          rows={[
+            {
+              key: "nedir",
+              cells: ["Neye bakılır?", "Güneş'in burcu", "Ayın burcu", "Doğu ufkunda yükselen burç"],
+            },
+            {
+              key: "sure",
+              cells: ["Bir burçta kalma süresi", "Yaklaşık 30 gün", "2-2,7 gün", "Ortalama 2 saat"],
+            },
+            {
+              key: "gerekli",
+              cells: ["Ne gerekir?", "Doğum tarihi", "Doğum tarihi ve mümkünse saati", "Doğum tarihi, saati ve yeri"],
+            },
+            {
+              key: "site",
+              cells: ["Bu sitede", "Sonuçta gösterilir", "Hesaplanır", "Kapsam dışı"],
+            },
+          ]}
+        />
 
         <Prose>
-          <h2>Ay burcu nedir?</h2>
+          <h2 id="ne-demek">Ay burcu nedir?</h2>
           <p>
             Astrolojide &quot;burcunuz&quot; denildiğinde genellikle güneş burcu kastedilir: doğduğunuz gün
             Güneş&apos;in gökyüzünde bulunduğu burç. Ay burcu ise doğduğunuz anda ayın bulunduğu burçtur. Astroloji
@@ -72,7 +162,7 @@ export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/
             hatta birkaç gün arayla doğan iki kişinin güneş burcu aynı, ay burcu farklı olabilir.
           </p>
 
-          <h2>Doğum saati neden önemli?</h2>
+          <h2 id="saat">Doğum saati neden önemli?</h2>
           <p>
             Ay gökyüzünde saatte yaklaşık yarım derece, yani günde 12-15 derece ilerler. Bir burç 30 derece olduğu için
             ay her 2-2,5 günde bir burç değiştirir. Doğduğunuz gün ay burç değiştirmediyse saat bilmeden de ay burcunuzu
@@ -80,7 +170,7 @@ export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/
             gerekir. Hesaplayıcı bu durumda geçiş saatini gösterir.
           </p>
 
-          <h2>Doğum yeri neden sorulmuyor?</h2>
+          <h2 id="yer">Doğum yeri neden sorulmuyor?</h2>
           <p>
             Ay burcu, ayın Dünya&apos;nın merkezinden görülen konumuna göre hesaplanır ve doğum yerine göre değişmez.
             Önemli olan yalnızca doğum anıdır. Türkiye&apos;nin tamamı aynı saat dilimini kullandığı için ilinizi
@@ -104,21 +194,18 @@ export default function MoonSignCalculatorPage({ searchParams }: PageProps<"/tr/
           <h2>Bilimsel bir not</h2>
           <p>
             Ayın doğum anındaki konumu astronomik olarak kesin hesaplanabilir. Ama ayın burcunun kişilik ya da kader
-            üzerinde etkisi olduğuna dair bilimsel bir kanıt yoktur. Bu hesaplayıcıyı, yüzyıllardır süren bir takvim
+            üzerinde etkisi olduğuna dair bilimsel bir kanıt yoktur.{src.ref("nasaConstellations")} Bu hesaplayıcıyı, yüzyıllardır süren bir takvim
             geleneğinin parçası olarak sunuyoruz.
           </p>
         </Prose>
 
         <Faq items={FAQS.ayBurcu} />
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Hesaplar Astronomy Engine ile, tarihin gerçek ekinoksuna göre (tropikal burçlar) yapılmıştır. Girdiğiniz
-            tarih kaydedilmez.
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter
+          page={PAGE}
+          headline="Ay Burcu Hesaplama: Doğduğunuzda Ay Hangi Burçtaydı?"
+          updated={UPDATED}
+          src={src}
+        />
       </main>
       <JsonLd
         data={{
