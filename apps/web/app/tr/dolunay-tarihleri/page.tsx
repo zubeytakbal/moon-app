@@ -13,7 +13,9 @@ import {
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { nameFullMoons } from "@/lib/full-moon-names";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
@@ -23,7 +25,8 @@ import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.dolunayTarihleri;
 const YEAR = 2027;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaLunarCatalog", "nasaSupermoons", "nolleSupermoon");
 const location = siteConfig.defaultLocation;
 const timeZone = location.timeZone;
 const DAY_MS = 86_400_000;
@@ -45,21 +48,26 @@ export default function FullMoons2027Page() {
         eyebrow="Takvim"
         lead="2027'de 12 dolunay var. Her birinin tarihi, saati, Dünya'ya uzaklığı ve o yıla özgü notları bu sayfada."
         aside={<NextPrincipal phase="full-moon" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: `${YEAR} dolunayları` },
+          { href: "#liste", label: "Ayrıntılı liste" },
+          { href: "#en-buyuk", label: "En büyük ve en küçük" },
+          { href: "#tutulmalar", label: "Ay tutulmaları" },
+          { href: "#hasat", label: "Hasat Ayı" },
+          { href: "#mavi-ay", label: "Mavi ay var mı?" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>
-              2027&apos;nin en büyük dolunayı 22 Ocak&apos;taki süper ay, en küçüğü 18 Temmuz&apos;daki mikro aydır.
-            </li>
-            <li>Yıl içinde üç yarı gölge ay tutulması dolunaya denk gelir: 21 Şubat, 18 Temmuz ve 17 Ağustos.</li>
-            <li>Eylül ekinoksuna en yakın dolunay, yani 2027&apos;nin Hasat Ayı, 16 Eylül&apos;dedir.</li>
-          </QuickFacts>
+          <YearAnswer />
         </div>
 
         <RemainingThisYear />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">2027 dolunayları</h2>
+        <h2 id="liste" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">2027 dolunayları</h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
           Saat, ayın Güneş&apos;in tam karşısına geldiği andır. Doğuş, ayın o gün İstanbul&apos;da ufuktan yükseldiği
           saattir. Bütün saatler Türkiye saatidir.
@@ -68,10 +76,10 @@ export default function FullMoons2027Page() {
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Yılın en büyük ve en küçük dolunayı</h2>
+            <h2 id="en-buyuk">Yılın en büyük ve en küçük dolunayı</h2>
             <p>
               Ayın Dünya etrafındaki yörüngesi tam bir daire değildir; ay her ay bir kez Dünya&apos;ya en çok yaklaşır,
-              bir kez de en çok uzaklaşır. Dolunay yörüngenin yakın noktasına denk geldiğinde ay biraz daha büyük ve
+              bir kez de en çok uzaklaşır.{src.ref("nasaSupermoons")} Dolunay yörüngenin yakın noktasına denk geldiğinde ay biraz daha büyük ve
               parlak görünür.
             </p>
             <p>
@@ -83,13 +91,14 @@ export default function FullMoons2027Page() {
             <p>
               &quot;Süper ay&quot; için herkesin kabul ettiği resmî bir tanım yoktur. Bu sitede, dolunay anında
               Dünya&apos;ya {new Intl.NumberFormat(siteConfig.locale).format(SUPERMOON_KM)} km&apos;den yakın olan
-              dolunaylara süper ay diyoruz. Bu eşik, terimi ilk kullanan astrolog Richard Nolle&apos;un tanımına
-              yakındır. Bu tanıma göre 2027&apos;de tek süper ay vardır: 22 Ocak.
+              dolunaylara süper ay diyoruz. Bu eşik, terimi 1979&apos;da ilk kullanan astrolog Richard Nolle&apos;un
+              tanımına yakındır.{src.ref("nolleSupermoon")} Bu tanıma göre 2027&apos;de tek süper ay vardır: 22 Ocak.
             </p>
 
-            <h2>2027&apos;nin ay tutulmaları</h2>
+            <h2 id="tutulmalar">2027&apos;nin ay tutulmaları</h2>
             <p>
-              2027&apos;de üç ay tutulması yaşanır ve üçü de <strong>yarı gölge tutulmasıdır</strong>. Bu tür tutulmada
+              2027&apos;de üç ay tutulması yaşanır ve üçü de <strong>yarı gölge tutulmasıdır</strong>.
+              {src.ref("nasaLunarCatalog")} Bu tür tutulmada
               ay, Dünya&apos;nın gölgesinin yalnızca soluk dış kısmından geçer. Ay kararmaz ya da kızarmaz, sadece bir
               kenarı hafifçe matlaşır. Dikkatli bakmayan biri tutulmayı hiç fark etmeyebilir.
             </p>
@@ -98,7 +107,7 @@ export default function FullMoons2027Page() {
               tutulmanın en derin anında ayın İstanbul&apos;dan görülüp görülmediğini gösteriyor.
             </p>
 
-            <h2>Hasat Ayı ve Avcı Ayı</h2>
+            <h2 id="hasat">Hasat Ayı ve Avcı Ayı</h2>
             <p>
               Eylül ekinoksuna en yakın dolunaya <strong>Hasat Ayı</strong> denir. 2027&apos;de ekinoks 23
               Eylül&apos;de, Hasat Ayı ise ondan bir hafta önce, 16 Eylül&apos;dedir. Bu dönemde ay birkaç akşam üst
@@ -110,7 +119,7 @@ export default function FullMoons2027Page() {
               Türkçeleridir. Gökbilimsel bir anlamları yoktur ama dolunayları ayırt etmenin keyifli bir yoludur.
             </p>
 
-            <h2>2027&apos;de mavi ay var mı?</h2>
+            <h2 id="mavi-ay">2027&apos;de mavi ay var mı?</h2>
             <p>
               Hayır. Bir takvim ayına iki dolunayın sığması anlamına gelen mavi ay, 2027&apos;de yaşanmaz. Türkiye
               saatine göre bir sonraki mavi ay 31 Aralık 2028&apos;dedir. Bunu{" "}
@@ -130,10 +139,7 @@ export default function FullMoons2027Page() {
             page={PAGE}
             headline="2027 Dolunay Tarihleri ve Saatleri"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-              { label: "NASA Science, Eclipses", href: "https://science.nasa.gov/eclipses/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -205,7 +211,7 @@ async function RemainingThisYear() {
 
   return (
     <section className="mt-12" aria-labelledby="kalan">
-      <h2 id="kalan" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="kalan" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         {thisYear}&apos;nın kalan dolunayları
       </h2>
       <MoonRows rows={rows} highlight={0} />
@@ -263,5 +269,52 @@ function MoonRows({ rows, highlight }: { rows: FullMoonRow[]; highlight: number 
         </li>
       ))}
     </ol>
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): yılın 12 dolunayı tek bakışta, adları ve saatleriyle.
+ * Ayrıntılı kartlar aşağıda. Saatte bir yenilenir.
+ */
+async function YearAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const rows = buildRows(
+    getFullMoonsOfYear(YEAR),
+    getUpcomingLunarEclipses(new Date(Date.UTC(YEAR, 0, 1) - 2 * DAY_MS), 6),
+  );
+  const day = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const month = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, month: "long" });
+  const biggest = rows.find((r) => r.notes.some((n) => n.includes("yılın en büyüğü")));
+  const smallest = rows.find((r) => r.notes.some((n) => n.includes("yılın en küçüğü")));
+  const eclipseCount = rows.filter((r) => r.notes.some((n) => n.includes("ay tutulması"))).length;
+
+  return (
+    <AnswerBox
+      question={`${YEAR} dolunayları ne zaman?`}
+      answer={`${YEAR} yılında ${rows.length} dolunay var.${biggest ? ` En büyüğü ${day.format(biggest.phase.date)} (süper ay)` : ""}${
+        smallest ? `, en küçüğü ${day.format(smallest.phase.date)} (mikro ay)` : ""
+      }.${eclipseCount ? ` ${eclipseCount} dolunayda ay tutulması olur.` : ""}`}
+      rows={rows.map((r) => ({
+        label: `${month.format(r.phase.date)} · ${r.name}`,
+        value: (
+          <>
+            {day.format(r.phase.date)}, {time.format(r.phase.date)}
+            {r.notes.length > 0 && <span className="block text-sm text-zinc-500">{r.notes.join(" · ")}</span>}
+          </>
+        ),
+      }))}
+      note={
+        <>
+          Saatler Türkiye saatidir. Doğuş saatleri ve uzaklıklar için{" "}
+          <a href="#liste" className="underline underline-offset-2">
+            ayrıntılı listeye
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }

@@ -10,7 +10,10 @@ import { EclipseDisc } from "@/components/EclipseDisc";
 import { CitySelect } from "@/components/CitySelect";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -21,7 +24,8 @@ import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 import { MobileCollapse } from "@/components/MobileCollapse";
 
 const PAGE = PAGES.gunesTutulmasi;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaSolarCatalog", "nasaSolarCatalog1900", "nasaEclipseSafety", "nasaEclipseTypes");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
@@ -81,19 +85,20 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bir sonraki ne zaman?" },
+          { href: "#ilden", label: "İlinizden" },
+          { href: "#iller", label: "81 il tablosu" },
+          { href: "#merkezi", label: "Tam ve halkalı tutulmalar" },
+          { href: "#nasil-olur", label: "Nasıl olur?" },
+          { href: "#guvenli", label: "Güvenli izleme" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>2 Ağustos 2027&apos;deki güneş tutulması bütün Türkiye&apos;den parçalı olarak görülecek.</li>
-            <li>
-              1 Haziran 2030&apos;da İstanbul ve Marmara&apos;dan halkalı tutulma, yani &quot;ateş halkası&quot;
-              görülecek.
-            </li>
-            <li>
-              Güneş&apos;e tutulma sırasında da asla korumasız bakılmamalıdır; yalnızca sertifikalı tutulma gözlüğü
-              güvenlidir.
-            </li>
-          </QuickFacts>
+          <SolarAnswer />
         </div>
 
         <Suspense fallback={<CityEclipses slug={siteConfig.defaultLocation.slug} />}>
@@ -103,12 +108,13 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
         <ProvinceTable />
 
         <section aria-labelledby="merkezi" className="mt-14">
-          <h2 id="merkezi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2 id="merkezi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
             Türkiye&apos;den görülecek tam ve halkalı tutulmalar
           </h2>
           <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
             Ay&apos;ın Güneş&apos;i tamamen ya da halka bırakarak örttüğü tutulmalar yalnızca dar bir şeritten görülür.
-            2100&apos;e kadar Türkiye&apos;de bir il merkezinden görülecek olanlar:
+            2100&apos;e kadar Türkiye&apos;de bir il merkezinden görülecek olanlar (81 il merkezi için tek tek
+            hesapladık):
           </p>
           <ol className="mt-6 space-y-3">
             {CENTRAL_ECLIPSES.map((c) => (
@@ -130,10 +136,10 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Güneş tutulması nasıl olur?</h2>
+            <h2 id="nasil-olur">Güneş tutulması nasıl olur?</h2>
             <p>
               Güneş tutulması, <Link href={PAGES.yeniAy.path}>yeni ayda</Link> Ay&apos;ın Dünya ile Güneş arasına girip
-              Güneş&apos;i örtmesidir. Güneş, Ay&apos;dan yaklaşık 400 kat büyüktür ama yaklaşık 400 kat da uzaktadır.
+              Güneş&apos;i örtmesidir.{src.ref("nasaEclipseTypes")} Güneş, Ay&apos;dan yaklaşık 400 kat büyüktür ama yaklaşık 400 kat da uzaktadır.
               Bu tesadüf sayesinde ikisi gökyüzünde neredeyse aynı büyüklükte görünür ve Ay, Güneş&apos;i tam olarak
               örtebilir.
             </p>
@@ -156,13 +162,13 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
             <p>
               Ay&apos;ın gölgesi Dünya&apos;da yalnızca birkaç yüz kilometre genişliğinde bir şerit çizer. Bu yüzden tam
               tutulma, belirli bir yerden ortalama birkaç yüz yılda bir görülür. Türkiye son olarak 11 Ağustos
-              1999&apos;da (Amasya, Tokat, Sivas, Elazığ ve çevresi) ve 29 Mart 2006&apos;da (Antalya ve çevresi) tam
-              tutulmaya tanıklık etti.
+              1999&apos;da (Amasya, Tokat, Sivas, Elazığ ve çevresi){src.ref("nasaSolarCatalog1900")} ve 29 Mart
+              2006&apos;da (Antalya ve çevresi){src.ref("nasaSolarCatalog")} tam tutulmaya tanıklık etti.
             </p>
 
             <NasaFigure images={[IMAGES.solarCorona, IMAGES.solarDiamondRing]} />
 
-            <h2>Güneş tutulması güvenli nasıl izlenir?</h2>
+            <h2 id="guvenli">Güneş tutulması güvenli nasıl izlenir?</h2>
             <p>
               <strong>Güneş&apos;e tutulma sırasında da korumasız bakmak gözlere kalıcı zarar verebilir.</strong>{" "}
               Güneş&apos;in %90&apos;ı örtülse bile kalan ince hilal, retinayı yakacak kadar parlaktır. Üstelik bu hasar
@@ -171,7 +177,7 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
             <ul>
               <li>
                 <strong>Yalnızca ISO 12312-2 standardına uygun tutulma gözlüğü kullanın.</strong> Gözlüğün çizik ya da
-                delik olmadığını kontrol edin.
+                delik olmadığını kontrol edin.{src.ref("nasaEclipseSafety")}
               </li>
               <li>
                 <strong>Güneş gözlüğü, film negatifi, isli cam, röntgen filmi güvenli değildir.</strong> Ne kadar koyu
@@ -213,10 +219,7 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
             page={PAGE}
             headline="Güneş Tutulması Ne Zaman? 2027 ve 2030 Güneş Tutulmaları Türkiye"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Eclipse Safety", href: "https://science.nasa.gov/eclipses/safety/" },
-              { label: "NASA Science, Eclipse Types", href: "https://science.nasa.gov/eclipses/types/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -258,6 +261,7 @@ async function Hero() {
             Ay, Güneş&apos;in önünden geçtiğinde gündüz kararır. Bir sonraki güneş tutulması ne zaman, ilinizden ne
             kadarı görülecek?
           </p>
+          <Byline updated={UPDATED} />
           <div className="mt-8 max-w-md rounded-2xl border border-amber-300/30 bg-amber-400/10 p-5">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">
               Türkiye&apos;den görülecek bir sonraki tutulma
@@ -317,7 +321,7 @@ async function CityEclipses({ slug }: { slug: string }) {
           <h2
             id="ilden"
             data-toc-label="İlinizden görülecek tutulmalar"
-            className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
+            className="scroll-mt-32 mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
           >
             {city.name}
           </h2>
@@ -364,7 +368,7 @@ async function ProvinceTable() {
 
   return (
     <section className="mt-14" aria-labelledby="iller">
-      <h2 id="iller" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="iller" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         2 Ağustos 2027 güneş tutulması: 81 il
       </h2>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -414,5 +418,73 @@ async function ProvinceTable() {
         </table>
       </MobileCollapse>
     </section>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni). İstanbul'a göre; saatte bir yenilenir. */
+async function SolarAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const city = siteConfig.defaultLocation;
+  const next = getLocalSolarEclipse(now, city);
+  const date = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const days = Math.ceil((next.peak.getTime() - now.getTime()) / DAY_MS);
+  const percent = Math.round(next.obscuration * 100);
+  const nextCentral = CENTRAL_ECLIPSES.find((c) => Date.parse(c.date) > now.getTime());
+  const kindText =
+    next.kind === "partial" || next.centralSeconds === 0 ? "parçalı" : next.kind === "annular" ? "halkalı" : "tam";
+
+  return (
+    <AnswerBox
+      question="Bir sonraki güneş tutulması ne zaman?"
+      answer={`${date.format(next.peak)}. Türkiye'den ${kindText} görülecek; Güneş'in örtülen kısmı (${city.name}): %${percent}.`}
+      rows={[
+        {
+          label: `Saatler (${city.name})`,
+          value: `Başlangıç ${time.format(next.begin)}, en derin an ${time.format(next.peak)}, bitiş ${time.format(next.end)}`,
+        },
+        { label: "Kaç gün kaldı?", value: `${days} gün` },
+        ...(nextCentral
+          ? [
+              {
+                label: `Türkiye'den görülecek ilk ${KIND_TR[nextCentral.kind].toLocaleLowerCase("tr-TR")} tutulma`,
+                value: `${formatIso(nextCentral.date)}`,
+              },
+            ]
+          : []),
+        { label: "Türkiye'deki son tam tutulma", value: "29 Mart 2006 (Antalya ve çevresi)" },
+        {
+          label: "Gözlük gerekir mi?",
+          value: (
+            <>
+              Evet. Yalnızca ISO 12312-2 standardına uygun tutulma gözlüğüyle bakılır; güneş gözlüğü güvenli değildir.
+              {src.ref("nasaEclipseSafety")}
+            </>
+          ),
+        },
+      ]}
+      note={
+        <>
+          Tarihler NASA tutulma kataloğuyla karşılaştırılmıştır.{src.ref("nasaSolarCatalog")} İliniz için{" "}
+          <a href="#ilden" className="underline underline-offset-2">
+            aşağıdan il seçin
+          </a>{" "}
+          ya da{" "}
+          <a href="#iller" className="underline underline-offset-2">
+            81 il tablosuna
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }

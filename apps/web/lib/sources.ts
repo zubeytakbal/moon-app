@@ -110,6 +110,46 @@ export const SOURCES = {
     note: "2027'nin resmî dinî günleri: 1 Ramazan 1448 = 8 Şubat 2027, Ramazan Bayramı 1. günü (1 Şevval) = 9 Mart 2027 ve diğerleri. Ümmülkurâ takvimiyle karşılaştırdık; Ramazan, bayramlar ve kandiller aynı günlere düşüyor.",
     group: "takvim",
   },
+  nasaSolarCatalog: {
+    no: 11,
+    title: "Five Millennium Catalog of Solar Eclipses: 2001 to 2100",
+    publisher: "Fred Espenak, NASA Goddard Uzay Uçuş Merkezi",
+    url: "https://eclipse.gsfc.nasa.gov/SEcat5/SE2001-2100.html",
+    note: "Güneş tutulmalarının tarihleri ve türleri: 29 Mart 2006 tam, 2 Ağustos 2027 tam, 1 Haziran 2030 halkalı tutulma. Türkiye'den görünüşlerini kendi hesabımızla buluyoruz.",
+    group: "tutulma",
+  },
+  nasaSolarCatalog1900: {
+    no: 12,
+    title: "Five Millennium Catalog of Solar Eclipses: 1901 to 2000",
+    publisher: "Fred Espenak, NASA Goddard Uzay Uçuş Merkezi",
+    url: "https://eclipse.gsfc.nasa.gov/SEcat5/SE1901-2000.html",
+    note: "20. yüzyılın güneş tutulmaları; Türkiye'den görülen 11 Ağustos 1999 tam tutulması.",
+    group: "tutulma",
+  },
+  nasaEclipseSafety: {
+    no: 13,
+    title: "Eclipse Safety",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/eclipses/safety/",
+    note: "Güneş'e yalnızca ISO 12312-2 standardına uygun tutulma gözlüğüyle bakılması, çizik ya da hasarlı gözlüğün atılması, iğne deliği yöntemiyle güvenli izleme.",
+    group: "tutulma",
+  },
+  nasaSupermoons: {
+    no: 14,
+    title: "Supermoons",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/moon/supermoons/",
+    note: "Süper ayın, dolunayın ayın Dünya'ya en yakın noktasına (yakınberi) denk gelmesi olarak tanımlanması; yakınberinin yaklaşık 363.300 km, uzakberinin yaklaşık 405.500 km olması.",
+    group: "ay",
+  },
+  nolleSupermoon: {
+    no: 15,
+    title: "SuperMoon",
+    publisher: "Richard Nolle (astrolog), astropro.com",
+    url: "http://www.astropro.com/features/articles/supermoon/",
+    note: "\"Süper ay\" teriminin ilk kez 1979'da Nolle tarafından bir astroloji dergisinde kullanılması ve özgün tanımı (ayın yörüngedeki en yakın noktasının %90'ı içinde olması). Yalnız terimin kökeni için kaynak gösteriyoruz.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;
