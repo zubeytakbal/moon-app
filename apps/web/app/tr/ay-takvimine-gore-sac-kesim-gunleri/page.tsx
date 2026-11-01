@@ -6,11 +6,13 @@ import { getMonthCalendar, getMoonPhase, getMoonSign, getMoonSignIngresses, zone
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
+import { Byline } from "@/components/Byline";
+import { AnswerBox } from "@/components/InfoTables";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
+import { QuickLinks } from "@/components/QuickLinks";
 import { MonthLink } from "@/components/MonthLink";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
 import { buildSingleEventIcs, googleCalendarLink } from "@/lib/ics";
 import {
   adjacentMonths,
@@ -28,7 +30,7 @@ import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.sacKesim;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Gelenekte saç kesimi için en çok önerilen burç. */
 const FAVORED_SIGN = "Aslan";
@@ -83,20 +85,23 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
       <Suspense fallback={<HairFinder goal="uzatma" weekend={false} />}>
         <SelectedFinder searchParams={searchParams} />
       </Suspense>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bugün uygun mu?" },
+          { href: "#uygun-gun", label: "Size uygun gün" },
+          { href: "#sac-takvim", label: "Aylık takvim" },
+          { href: "#kurallar", label: "Kurallar" },
+          { href: "#bilim", label: "Bilim ne diyor?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
+      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        <HairAnswer />
+      </div>
       <Suspense fallback={<CurrentMonth />}>
         <SelectedMonth searchParams={searchParams} />
       </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>
-            Geleneğe göre büyüyen ayda kesilen saç daha hızlı uzar, küçülen ayda kesilen saç şeklini daha uzun korur.
-          </li>
-          <li>Ay {FAVORED_SIGN} burcundayken ve büyürken yapılan kesim, gelenekte en çok önerilen kesimdir.</li>
-          <li>
-            Bu bir halk geleneğidir; saçın uzama hızının ayın evresine bağlı olduğuna dair bilimsel bir kanıt yoktur.
-          </li>
-        </QuickFacts>
-
         <Prose>
           <h2>Ay takvimine göre saç kesimi nedir?</h2>
           <p>
@@ -106,7 +111,7 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
             bulunduğu burç da eklenmiştir.
           </p>
 
-          <h2>Gelenekteki kurallar</h2>
+          <h2 id="kurallar">Gelenekteki kurallar</h2>
           <p>Kaynaklar arasında farklılıklar olsa da en yaygın kurallar şunlardır:</p>
           <ul>
             <li>
@@ -139,7 +144,7 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
             takvimine tek dokunuşla ekleyebilirsiniz.
           </p>
 
-          <h2>Bilim ne diyor?</h2>
+          <h2 id="bilim">Bilim ne diyor?</h2>
           <p>
             Saç, ayda ortalama 1 santimetre kadar uzar. Uzama hızını genetik yapı, yaş, hormonlar, beslenme ve genel
             sağlık belirler. Saç kökleri derinin altındadır ve kesimin zamanından etkilenmez. Ayın evresinin ya da
@@ -160,26 +165,8 @@ export default function HairCutDaysPage({ searchParams }: PageProps<"/tr/ay-takv
         </Prose>
 
         <Faq items={FAQS.sacKesim} />
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanmıştır. Ay o gün burç değiştiriyorsa
-            geçiş saati ayrıca gösterilir.
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter page={PAGE} headline={PAGE.title} updated={UPDATED} />
       </main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: PAGE.title,
-          url: new URL(PAGE.path, siteConfig.url).toString(),
-          inLanguage: "tr-TR",
-          dateModified: UPDATED,
-        }}
-      />
     </>
   );
 }
@@ -298,6 +285,7 @@ async function HairFinder({ goal, weekend, ay }: { goal: Goal; weekend: boolean;
         <h1 id="sac-baslik" className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
           Ay Takvimine Göre Saç Kesim Günleri
         </h1>
+        <Byline updated={UPDATED} />
 
         <p className="mt-5 flex items-center gap-3 text-zinc-200">
           <MoonPhaseIcon phaseAngle={today.phaseAngle} size={36} title="" />
@@ -309,7 +297,7 @@ async function HairFinder({ goal, weekend, ay }: { goal: Goal; weekend: boolean;
         </p>
 
         <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-          <h2 className="text-xl font-semibold">Size uygun günü bulun</h2>
+          <h2 id="uygun-gun" className="scroll-mt-32 text-xl font-semibold">Size uygun günü bulun</h2>
           <p className="mt-1 text-sm text-zinc-400">Saçınız için ne istiyorsunuz?</p>
           <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Amaç">
             {(Object.keys(GOALS) as Goal[]).map((g) => (
@@ -542,7 +530,7 @@ async function HairCalendar({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-medium uppercase tracking-wider text-zinc-400">Aylık saç kesim takvimi</p>
-            <h2 id="sac-takvim" className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 id="sac-takvim" className="mt-1 scroll-mt-32 text-3xl font-bold tracking-tight sm:text-4xl">
               {monthName} {year}
             </h2>
           </div>
@@ -675,5 +663,74 @@ async function HairCalendar({
         </ol>
       </div>
     </section>
+  );
+}
+
+/* ---------- En üstteki cevap kutusu ---------- */
+
+/** "10-22 Kasım" / "28 Kasım - 3 Aralık" */
+function rangeText(first: DayInfo, last: DayInfo): string {
+  if (first.key === last.key) return longDate(first);
+  return first.month === last.month
+    ? `${first.day}-${last.day} ${MONTH_NAMES[first.month - 1]}`
+    : `${shortDate(first)} - ${shortDate(last)}`;
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): bugün ne için uygun, sıradaki dönemler. Saatte bir yenilenir. */
+async function HairAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  const base = { year: parts[0], month: parts[1], day: parts[2] };
+  const days = Array.from({ length: 45 }, (_, i) => dayInfo(base, i));
+  const today = days[0];
+
+  /** Amaca uyan ilk kesintisiz dönem; "en-iyi" yılda birkaç kez olduğu için bir yıl ileriye bakılır. */
+  const runText = (goal: Goal) => {
+    const horizon = goal === "en-iyi" ? 400 : days.length;
+    const at = (i: number) => days[i] ?? dayInfo(base, i);
+    let i = 0;
+    while (i < horizon && !matches(goal, at(i))) i++;
+    if (i >= horizon) return goal === "en-iyi" ? "Önümüzdeki bir yılda yok." : "Önümüzdeki 45 günde yok.";
+    let j = i;
+    while (j + 1 < horizon && matches(goal, at(j + 1))) j++;
+    const [first, last] = [at(i), at(j)];
+    return i === 0 ? `Bugünden ${longDate(last)} gününe kadar` : rangeText(first, last);
+  };
+
+  const favored = matches("en-iyi", today);
+  const answer = today.waxing
+    ? `Bugün (${longDate(today)}) büyüyen ay: gelenekte saçın hızlı uzaması için uygun gün.${favored ? " Ay Aslan burcunda: geleneğin en çok önerdiği gün ★" : ""}`
+    : `Bugün (${longDate(today)}) küçülen ay: gelenekte saçın şeklini uzun süre koruması için uygun gün.`;
+
+  return (
+    <AnswerBox
+      question="Bugün saç kesmek için uygun mu?"
+      answer={answer}
+      rows={[
+        { label: "Ayın burcu bugün", value: today.signName },
+        { label: "Hızlı uzasın (büyüyen ay)", value: runText("uzatma") },
+        { label: "Şeklini korusun (küçülen ay)", value: runText("koruma") },
+        { label: `En çok önerilen ★ (büyüyen ay, ${FAVORED_SIGN})`, value: runText("en-iyi") },
+      ]}
+      note={
+        <>
+          Halk geleneğindeki kurallara göre; ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanır.
+          Ayın saç üzerinde bir etkisi bilimsel olarak gösterilmemiştir (
+          <a href="#bilim" className="underline underline-offset-2">
+            bilim ne diyor?
+          </a>
+          ). Hafta sonu seçeneği ve takvime ekleme için{" "}
+          <a href="#uygun-gun" className="underline underline-offset-2">
+            yukarıdaki araca
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }
