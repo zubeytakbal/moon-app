@@ -18,7 +18,9 @@ import { CitySelect } from "@/components/CitySelect";
 import { icsTime } from "@/lib/ics";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -28,7 +30,9 @@ import { LunarEclipseDiagram } from "@/components/EclipseDiagrams";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.ayTutulmalari;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const ISTANBUL = siteConfig.defaultLocation;
+const src = pageSources("nasaLunarCatalog", "nasaEclipseTypes", "nasaDanjon", "nasaMoonFactSheet", "nasaSaros");
 const FROM = new Date(Date.UTC(2026, 0, 1));
 const COUNT = 9;
 const timeZone = siteConfig.defaultLocation.timeZone;
@@ -113,14 +117,22 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
             <SelectedNext searchParams={searchParams} />
           </Suspense>
         }
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bir sonraki ne zaman?" },
+          { href: "#tutulma-listesi", label: "Bütün tutulmalar" },
+          { href: "#nasil-olur", label: "Nasıl olur?" },
+          { href: "#turler", label: "Türleri" },
+          { href: "#2028", label: "31 Aralık 2028" },
+          { href: "#nasil-izlenir", label: "Nasıl izlenir?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Ay tutulması yalnızca dolunayda olur ve ayın görüldüğü her yerden aynı anda izlenir.</li>
-            <li>31 Aralık 2028 yılbaşı gecesi tam ay tutulması Türkiye&apos;den baştan sona görülecek.</li>
-            <li>Ay tutulmasını çıplak gözle izlemek güvenlidir; özel gözlük gerekmez.</li>
-          </QuickFacts>
+          <EclipseAnswer />
         </div>
 
         <Suspense fallback={<EclipseSection slug={siteConfig.defaultLocation.slug} />}>
@@ -129,24 +141,24 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Ay tutulması nasıl olur?</h2>
+            <h2 id="nasil-olur">Ay tutulması nasıl olur?</h2>
             <p>
               Dünya, Güneş ışığını engelleyerek uzaya doğru uzun bir gölge bırakır. Bu gölgenin iki kısmı vardır: tam
               karanlık iç kısım (tam gölge) ve onu çevreleyen, Güneş&apos;in yalnızca bir kısmının örtüldüğü soluk dış
               kısım (yarı gölge). <Link href={PAGES.dolunay.path}>Dolunayda</Link> ay, Dünya&apos;nın tam arkasına
-              gelir. Ay bu sırada gölgenin içinden geçerse ay tutulması olur.
+              gelir. Ay bu sırada gölgenin içinden geçerse ay tutulması olur.{src.ref("nasaEclipseTypes")}
             </p>
 
             <LunarEclipseDiagram />
             <p>
-              Ayın yörüngesi Dünya&apos;nın yörüngesine göre yaklaşık 5 derece eğik olduğu için ay çoğu dolunayda
+              Ayın yörüngesi Dünya&apos;nın yörüngesine göre yaklaşık 5 derece eğik olduğu için{src.ref("nasaMoonFactSheet")} ay çoğu dolunayda
               gölgenin biraz üstünden ya da altından geçer. Tutulma, yılda birkaç kez, dolunay iki yörüngenin kesiştiği
               noktaya yakın bir zamana denk geldiğinde yaşanır.
             </p>
 
             <NasaFigure images={[IMAGES.lunarEclipseSequence]} />
 
-            <h2>Tutulma türleri</h2>
+            <h2 id="turler">Tutulma türleri</h2>
             <ul>
               <li>
                 <strong>Yarı gölge tutulması:</strong> Ay yalnızca soluk yarı gölgeden geçer. Ayın bir kenarı hafifçe
@@ -168,19 +180,19 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
               kırarak gölgenin içine doğru büker. Bu ışık atmosferden geçerken mavi kısmı saçılır, geriye kırmızı ve
               turuncu kalır. Yani tutulma sırasında ayı aydınlatan ışık, o anda Dünya&apos;nın çevresinde yaşanan bütün
               gün doğumları ve gün batımlarının ışığıdır. Atmosferde toz ya da yanardağ külü fazlaysa ay çok daha koyu
-              görünür.
+              görünür.{src.ref("nasaDanjon")}
             </p>
 
-            <h2>31 Aralık 2028: yılbaşında tam ay tutulması</h2>
+            <h2 id="2028">31 Aralık 2028: yılbaşında tam ay tutulması</h2>
             <p>
               Önümüzdeki yıllarda Türkiye&apos;den izlenebilecek en güzel ay tutulması, 2028&apos;in son gecesindedir.
               Ay akşam saatlerinde doğu ufkundan yükselirken tutulma başlar. Saat 19:15 civarında ayın tamamı gölgeye
               girer, yaklaşık 19:51&apos;de tutulma en derin noktasına ulaşır ve kırmızı ay bir saati aşkın süre
-              gökyüzünde kalır. Bu dolunay aynı zamanda o ayın ikinci dolunayıdır, yani bir{" "}
+              gökyüzünde kalır.{src.ref("nasaLunarCatalog")} Bu dolunay aynı zamanda o ayın ikinci dolunayıdır, yani bir{" "}
               <Link href={PAGES.ayTakvimi.path}>mavi aydır</Link>.
             </p>
 
-            <h2>Ay tutulması nasıl izlenir?</h2>
+            <h2 id="nasil-izlenir">Ay tutulması nasıl izlenir?</h2>
             <ul>
               <li>
                 <strong>Gözlük gerekmez.</strong> Ay tutulmasını çıplak gözle, dürbünle ya da teleskopla gönül
@@ -203,8 +215,8 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
             <h2>18 yılda bir tekrar eden düzen</h2>
             <p>
               Tutulmalar rastgele değildir. Yaklaşık 18 yıl 11 günde bir, Güneş, Dünya ve ay hemen hemen aynı düzene
-              geri döner ve benzer bir tutulma yaşanır. Babilliler zamanından beri bilinen bu döngüye Saros döngüsü
-              denir. Örneğin 31 Aralık 2028 tutulmasının bir benzeri, 18 yıl sonra, 2047 yılının ocak ayında yaşanacak.
+              geri döner ve benzer bir tutulma yaşanır. Babil gökbilimcilerinden beri bilinen bu döngüye Saros döngüsü
+              denir.{src.ref("nasaSaros")} Örneğin 31 Aralık 2028 tutulmasının bir benzeri, 18 yıl sonra, 2047 yılının ocak ayında yaşanacak.
             </p>
           </Prose>
           <CalendarSubscribe />
@@ -213,10 +225,7 @@ export default function LunarEclipsesPage({ searchParams }: PageProps<"/tr/ay-tu
             page={PAGE}
             headline="Ay Tutulmaları 2026-2029: Tarihleri, Saatleri ve Türkiye'den Görünüşü"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Eclipses", href: "https://science.nasa.gov/eclipses/" },
-              { label: "NASA Science, Lunar Eclipses", href: "https://science.nasa.gov/eclipses/types/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -291,7 +300,7 @@ function EclipseSection({ slug }: { slug: string }) {
   return (
     <section aria-labelledby="tutulma-listesi" className="mt-12">
       <div id="il-sec" className="flex scroll-mt-32 flex-wrap items-end justify-between gap-3">
-        <h2 id="tutulma-listesi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="tutulma-listesi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           2026-2029 ay tutulmaları
         </h2>
         <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
@@ -432,5 +441,74 @@ async function EclipseList({ slug }: { slug: string }) {
       })}
     </ol>
     </MobileCollapse>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni). Görünürlük İstanbul'a göre; saatte bir yenilenir. */
+async function EclipseAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const upcoming = getUpcomingLunarEclipses(now, 12);
+  const next = upcoming[0];
+  const nextVis = visibility(next, ISTANBUL);
+  const firstVisible = upcoming.find((e) => visibility(e, ISTANBUL).share > 0);
+  const nextTotal = upcoming.find((e) => e.kind === "total");
+  const day = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const days = Math.ceil((next.peak.getTime() - now.getTime()) / 86_400_000);
+
+  return (
+    <AnswerBox
+      question="Bir sonraki ay tutulması ne zaman?"
+      answer={`${day.format(next.peak)}: ${KIND_TR[next.kind].toLocaleLowerCase("tr-TR")} ay tutulması. Türkiye'den ${verdictOf(nextVis.share)}.${
+        next.kind === "penumbral" ? " Yarı gölge tutulması gözle zor fark edilir; ay kızarmaz." : ""
+      }`}
+      rows={[
+        { label: "En derin an (Türkiye saati)", value: time.format(next.peak) },
+        { label: "Kaç gün kaldı?", value: `${days} gün` },
+        ...(firstVisible && firstVisible !== next
+          ? [
+              {
+                label: "Türkiye'den görülecek ilk tutulma",
+                value: `${day.format(firstVisible.peak)} (${KIND_TR[firstVisible.kind].toLocaleLowerCase("tr-TR")})`,
+              },
+            ]
+          : []),
+        ...(nextTotal
+          ? [
+              {
+                label: "Sıradaki tam tutulma (kanlı ay)",
+                value: (
+                  <>
+                    {day.format(nextTotal.peak)}.{" "}
+                    <Link href={PAGES.kanliAy.path} className="underline underline-offset-2">
+                      Kanlı Ay
+                    </Link>
+                  </>
+                ),
+              },
+            ]
+          : []),
+        { label: "İzlemek güvenli mi?", value: "Evet. Gözlük gerekmez; çıplak gözle, dürbünle ya da teleskopla izlenir." },
+      ]}
+      note={
+        <>
+          Tarihler NASA tutulma kataloğuyla karşılaştırılmıştır.{src.ref("nasaLunarCatalog")} Görünürlük İstanbul&apos;a
+          göredir; iliniz için{" "}
+          <a href="#tutulma-listesi" className="underline underline-offset-2">
+            listeden il seçin
+          </a>
+          .
+        </>
+      }
+    />
   );
 }

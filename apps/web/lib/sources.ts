@@ -94,6 +94,14 @@ export const SOURCES = {
     note: "Kuzey Karolina'da 1997-2001 arasındaki 564.039 doğumda, ayın 8 evresi arasında doğum sayısı, doğum şekli ve komplikasyonlar bakımından anlamlı bir fark bulunmaması.",
     group: "ay",
   },
+  nasaSaros: {
+    no: 9,
+    title: "Eclipses and the Saros",
+    publisher: "Fred Espenak, NASA Goddard Uzay Uçuş Merkezi",
+    url: "https://eclipse.gsfc.nasa.gov/SEsaros/SEsaros.html",
+    note: "Saros döngüsünün yaklaşık 6.585,3 gün (18 yıl 11 gün 8 saat) sürmesi, Keldani (Babil) gökbilimcilerince bilinmesi ve bir Saros arayla gelen tutulmaların birbirine çok benzemesi.",
+    group: "tutulma",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

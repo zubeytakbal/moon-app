@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { getUpcomingPrincipalPhases, PHASE_NAMES_TR } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Byline } from "@/components/Byline";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { AllSourcesLink, SourceList, type PageSources } from "@/components/Sources";
@@ -56,6 +57,7 @@ export function PhaseHero({
   lead,
   aside,
   photo,
+  updated,
 }: {
   page: SitePage;
   angle: number;
@@ -63,6 +65,8 @@ export function PhaseHero({
   lead: string;
   aside: ReactNode;
   photo?: SiteImage;
+  /** İçeriğin son güncellenme tarihi: başlığın altında yazar imzasıyla gösterilir. */
+  updated?: string;
 }) {
   return (
     <section className="starfield relative overflow-hidden bg-[#05070d] text-white">
@@ -97,6 +101,7 @@ export function PhaseHero({
         <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">{eyebrow}</p>
         <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl">{page.title}</h1>
         <p className="mt-5 max-w-xl text-lg text-zinc-200 md:text-xl">{lead}</p>
+        {updated && <Byline updated={updated} />}
         <div className="mt-8 max-w-md">{aside}</div>
       </div>
     </section>
