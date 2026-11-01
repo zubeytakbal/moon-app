@@ -3,14 +3,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { daytimeCity, DaytimeMoonFinder } from "@/components/DaytimeMoonFinder";
 import {
-  ArticleFooter,
+  ArticleFooter, PhaseAnswer,
   NextPrincipal,
   PhaseHero,
   PhaseNav,
   UpcomingPrincipalTable,
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -18,7 +19,8 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ilkDordun;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases");
 
 export const metadata: Metadata = {
   title: `İlk Dördün Nedir? Ne Zaman, Nasıl Görülür? | ${siteConfig.name}`,
@@ -46,19 +48,33 @@ export default function FirstQuarterPage({ searchParams }: PageProps<"/tr/ilk-do
         eyebrow="Ay evreleri · 3"
         lead="Ayın sağ yarısının aydınlık göründüğü an. Yeni aydan yaklaşık bir hafta sonra gelir; ay, döngüsünün dörtte birini tamamlamıştır."
         aside={<NextPrincipal phase="first-quarter" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#gunduz-ay", label: "Gündüz ayı nerede?" },
+          { href: "#neden-dordun", label: "Neden dördün?" },
+          { href: "#onumuzdeki", label: "Önümüzdeki tarihler" },
+          { href: "#kraterler", label: "Kraterleri izleme" },
+        ]}
       />
       <Suspense fallback={<DaytimeMoonFinder slug={siteConfig.defaultLocation.slug} action={PAGE.path} />}>
         <SelectedFinder searchParams={searchParams} />
       </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>İlk dördünde ayın tam yarısı aydınlık görünür. Türkiye&apos;den bakınca aydınlık kısım sağdadır.</li>
-          <li>Ay öğle saatlerinde doğar, gece yarısına doğru batar. Öğleden sonra gündüz gökyüzünde de görülür.</li>
-          <li>Ay yaşı yaklaşık 7,4 gündür.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="İlk dördün ne zaman?"
+          principal="first-quarter"
+          facts={[
+            { label: "Nasıl görünür?", value: "Ayın tam yarısı aydınlık; Türkiye'den bakınca sağ yarısı." },
+            { label: "Ne zaman görülür?", value: "Öğle saatlerinde doğar, gece yarısına doğru batar; öğleden sonra gündüz de görülür." },
+            { label: "Ay yaşı", value: "Yaklaşık 7,4 gün" },
+          ]}
+        />
 
         <Prose>
-          <h2>Yarım görünüyorsa neden &quot;dördün&quot;?</h2>
+          <h2 id="neden-dordun">Yarım görünüyorsa neden &quot;dördün&quot;?</h2>
           <p>
             Bu evrede gördüğümüz şekil yarım bir dairedir, ama adı &quot;dörtte bir&quot; anlamına gelir. Ad, ayın
             görünüşünden değil, yolculuğundan gelir: ay, bir yeni aydan ötekine uzanan döngüsünün{" "}
@@ -88,7 +104,7 @@ export default function FirstQuarterPage({ searchParams }: PageProps<"/tr/ilk-do
           </Link>
         </p>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki ilk dördün tarihleri</h2>
+        <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki ilk dördün tarihleri</h2>
         <UpcomingPrincipalTable phase="first-quarter" count={6} />
 
         <Prose>
@@ -105,7 +121,7 @@ export default function FirstQuarterPage({ searchParams }: PageProps<"/tr/ilk-do
             Güneş&apos;ten en az 25 derece uzakta olduğu saatleri sayar.
           </p>
 
-          <h2>Kraterleri izlemenin en iyi zamanı</h2>
+          <h2 id="kraterler">Kraterleri izlemenin en iyi zamanı</h2>
           <p>
             Çoğu kişi ayı izlemek için dolunayı bekler, ama gözlemciler için en verimli zaman ilk dördün civarıdır.
             Bunun nedeni, aydınlık ile karanlığın birleştiği çizgidir (terminatör). Bu çizginin üzerinde Güneş ayın
@@ -146,10 +162,7 @@ export default function FirstQuarterPage({ searchParams }: PageProps<"/tr/ilk-do
           page={PAGE}
           headline="İlk Dördün Nedir? Ne Zaman, Nasıl Görülür?"
           updated={UPDATED}
-          sources={[
-            { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-            { label: "NASA Science, Earth's Moon", href: "https://science.nasa.gov/moon/" },
-          ]}
+          src={src}
         />
       </main>
     </>

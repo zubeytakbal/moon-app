@@ -3,15 +3,17 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { getMoonPhase, getUpcomingPrincipalPhases } from "@moon-app/moon";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
-import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
+import { ArticleFooter, PhaseAnswer, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.buyuyenSiskinAy;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases");
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {
@@ -31,13 +33,27 @@ export default function WaxingGibbousPage() {
         eyebrow="Ay evreleri · 4"
         lead="İlk dördünden sonra ayın yarıdan fazlası aydınlanır ama henüz tam yuvarlak değildir. Dolunaya giden son haftadır."
         aside={<NextPeriod from="first-quarter" to="full-moon" label="büyüyen şişkin ay dönemi" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#ayirt", label: "Dolunaydan farkı" },
+          { href: "#gun-gun", label: "Dolunaya gün gün" },
+          { href: "#ne-zaman", label: "Nerede görülür?" },
+          { href: "#onumuzdeki", label: "Önümüzdeki dönemler" },
+        ]}
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Büyüyen şişkin ay, ilk dördün ile dolunay arasındaki yaklaşık bir haftalık dönemdir.</li>
-          <li>Ayın %51 ile %99 arası aydınlıktır. Sol kenarı hâlâ biraz eksiktir.</li>
-          <li>Öğleden sonra doğar, akşam ve gecenin büyük kısmında gökyüzündedir.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="Büyüyen şişkin ay ne zaman?"
+          periods={[{ from: "first-quarter", to: "full-moon", label: "büyüyen şişkin ay dönemi", rowLabel: "Büyüyen şişkin ay" }]}
+          facts={[
+            { label: "Nedir?", value: "İlk dördün ile dolunay arasındaki yaklaşık bir haftalık dönem." },
+            { label: "Nasıl görünür?", value: "%51-99 aydınlık; sol kenarı hâlâ biraz eksik." },
+            { label: "Ne zaman görülür?", value: "Öğleden sonra doğar; akşam ve gecenin büyük kısmında gökyüzündedir." },
+          ]}
+        />
 
         <Prose>
           <h2>&quot;Şişkin&quot; ne demek?</h2>
@@ -48,7 +64,7 @@ export default function WaxingGibbousPage() {
             kelimesinden türemiştir.
           </p>
 
-          <h2>Dolunaydan nasıl ayırt edilir?</h2>
+          <h2 id="ayirt">Dolunaydan nasıl ayırt edilir?</h2>
           <p>
             Dolunaydan bir iki gün önce ay çıplak gözle neredeyse yuvarlak görünür ve sık sık dolunay sanılır. Ayırt
             etmenin üç kolay yolu var:
@@ -69,7 +85,7 @@ export default function WaxingGibbousPage() {
           </ul>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Dolunaya doğru gün gün</h2>
+        <h2 id="gun-gun" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Dolunaya doğru gün gün</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Bir sonraki büyüyen şişkin ay döneminde, her akşam saat 21:00&apos;de ayın aydınlık oranı:
         </p>
@@ -88,7 +104,7 @@ export default function WaxingGibbousPage() {
             ayın parlaklığı son birkaç günde çok hızlı artar. Dolunay gecesinin bu kadar aydınlık olmasının sırrı budur.
           </p>
 
-          <h2>Ne zaman ve nerede görülür?</h2>
+          <h2 id="ne-zaman">Ne zaman ve nerede görülür?</h2>
           <p>
             Büyüyen şişkin ay her gün yaklaşık 50 dakika daha geç doğar. Dönemin başında öğle saatlerinden sonra,
             sonunda ise gün batımından hemen önce doğar. Akşam saatlerinde güneydoğu ve güney gökyüzünde, gecenin büyük
@@ -102,7 +118,7 @@ export default function WaxingGibbousPage() {
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki büyüyen şişkin ay dönemleri</h2>
+        <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki büyüyen şişkin ay dönemleri</h2>
         <UpcomingPeriodTable from="first-quarter" to="full-moon" count={4} />
 
         <PhaseNav current={PAGE} />
@@ -110,7 +126,7 @@ export default function WaxingGibbousPage() {
           page={PAGE}
           headline="Büyüyen Şişkin Ay Nedir? Dolunaydan Nasıl Ayırt Edilir?"
           updated={UPDATED}
-          sources={[{ label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" }]}
+          src={src}
         />
       </main>
     </>

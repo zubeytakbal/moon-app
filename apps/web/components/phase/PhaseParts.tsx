@@ -7,7 +7,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { Byline } from "@/components/Byline";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
-import { AllSourcesLink, SourceList, type PageSources } from "@/components/Sources";
+import { AllSourcesLink, pageSources, SourceList, type PageSources } from "@/components/Sources";
+import { AnswerBox } from "@/components/InfoTables";
 import { HeroCredit } from "@/components/NasaFigure";
 import type { SiteImage } from "@/lib/images";
 import { PAGES, type SitePage } from "@/lib/pages";
@@ -371,5 +372,81 @@ export function ArticleFooter({
         }}
       />
     </>
+  );
+}
+
+/**
+ * Evre sayfalarının en üstteki cevap kutusu (timeanddate düzeni). Ana evrelerde (`principal`) bir sonraki anı,
+ * ara evrelerde (`periods`) bir sonraki dönemi verir; altında sayfanın kısa bilgileri (`facts`) satır olarak durur.
+ * Kalan süre giriş kutusuyla aynı biçimdedir (`countdown`). Saatte bir yenilenir.
+ */
+export async function PhaseAnswer({
+  question,
+  principal,
+  periods = [],
+  facts,
+}: {
+  question: string;
+  principal?: PrincipalKey;
+  /** İlki cevap cümlesi olur, diğerleri satır (`rowLabel`). */
+  periods?: { from: PrincipalKey; to: PrincipalKey; label: string; rowLabel: string }[];
+  facts: { label: string; value: string }[];
+}) {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const f = fmt();
+  const full = (d: Date) => `${f.date.format(d)} ${f.weekday.format(d)}`;
+  const rows: { label: string; value: string }[] = [];
+  let answer = "";
+
+  if (principal) {
+    const [next, ...later] = getUpcomingPrincipalPhases(now, 16)
+      .filter((p) => p.key === principal)
+      .slice(0, 3);
+    answer = `Bir sonraki ${PHASE_NAMES_TR[principal].toLocaleLowerCase("tr-TR")} ${full(next.date)}, saat ${f.time.format(next.date)} (Türkiye saati).`;
+    rows.push({ label: "Kaç gün kaldı?", value: countdown(next.date.getTime() - now.getTime()) });
+    later.forEach((p, i) =>
+      rows.push({ label: i === 0 ? "Sonraki tarihler" : "", value: `${full(p.date)}, ${f.time.format(p.date)}` }),
+    );
+  }
+
+  // Dönemler en yakından başlayarak sıralanır: şu an süren ya da ilk başlayacak olan cevap cümlesi olur.
+  const shownPeriods = periods
+    .map((per) => {
+      const list = getPeriods(now, per.from, per.to, 2);
+      const current = list.find((p) => p.start <= now && now < p.end);
+      return { per, current, shown: current ?? list.find((p) => p.start > now)! };
+    })
+    .sort((a, b) => a.shown.start.getTime() - b.shown.start.getTime());
+  shownPeriods.forEach(({ per, current, shown }, i) => {
+    const range = `${f.short.format(shown.start)} – ${f.short.format(shown.end)}`;
+    if (i === 0 && !answer) {
+      answer = current
+        ? `Şu an ${per.label}: ${range} arası, ${countdown(shown.end.getTime() - now.getTime())} daha sürecek.`
+        : `Bir sonraki ${per.label} ${range} arası; ${countdown(shown.start.getTime() - now.getTime())} sonra başlıyor.`;
+    } else {
+      rows.push({ label: per.rowLabel, value: current ? `Şu an sürüyor (${range})` : range });
+    }
+  });
+
+  rows.push(...facts);
+  const moonPhasesRef = pageSources("nasaMoonPhases").ref("nasaMoonPhases");
+
+  return (
+    <AnswerBox
+      question={question}
+      answer={answer}
+      rows={rows}
+      note={
+        <>
+          Saatler Türkiye saatidir. Evrelerin nasıl oluştuğu: NASA.{moonPhasesRef}{" "}
+          <Link href={PAGES.ayEvreleri.path} className="underline underline-offset-2">
+            Bütün evreler
+          </Link>
+        </>
+      }
+    />
   );
 }

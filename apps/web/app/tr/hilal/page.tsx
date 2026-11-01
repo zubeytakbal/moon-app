@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
+import { ArticleFooter, PhaseAnswer, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hilal;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases");
 
 export const metadata: Metadata = {
   title: `Hilal Nedir? Büyüyen ve Küçülen Hilal Ne Zaman Görülür? | ${siteConfig.name}`,
@@ -28,13 +30,30 @@ export default function CrescentPage() {
         eyebrow="Ay evreleri · 2 ve 8"
         lead="Ayın yarısından azının aydınlık göründüğü ince yay. Ay döngüsünde iki kez yaşanır: yeni aydan sonra büyüyen hilal, yeni aydan önce küçülen hilal."
         aside={<NextPeriod from="new-moon" to="first-quarter" label="büyüyen hilal dönemi" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman görülür?" },
+          { href: "#aksam-sabah", label: "Akşam mı, sabah mı?" },
+          { href: "#buyuyen-hilal", label: "Büyüyen hilal" },
+          { href: "#kuculen-hilal", label: "Küçülen hilal" },
+          { href: "#hicri", label: "Hilal ve Hicri takvim" },
+        ]}
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Büyüyen hilal akşamları, gün batımından sonra batı ufkunda görülür. Sağ tarafı aydınlıktır.</li>
-          <li>Küçülen hilal sabaha karşı, gün doğmadan önce doğu ufkunda görülür. Sol tarafı aydınlıktır.</li>
-          <li>Hilal evresinde ayın aydınlık oranı %50&apos;nin altındadır.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="Hilal ne zaman görülür?"
+          periods={[
+            { from: "new-moon", to: "first-quarter", label: "büyüyen hilal dönemi", rowLabel: "Büyüyen hilal" },
+            { from: "last-quarter", to: "new-moon", label: "küçülen hilal dönemi", rowLabel: "Küçülen hilal" },
+          ]}
+          facts={[
+            { label: "Büyüyen hilal nerede?", value: "Akşamları, gün batımından sonra batı ufkunda. Sağ tarafı aydınlıktır." },
+            { label: "Küçülen hilal nerede?", value: "Sabaha karşı, gün doğmadan önce doğu ufkunda. Sol tarafı aydınlıktır." },
+            { label: "Aydınlık oranı", value: "%50'nin altında" },
+          ]}
+        />
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <CrescentCard
@@ -54,7 +73,7 @@ export default function CrescentPage() {
         </div>
 
         <Prose>
-          <h2>Akşam hilali, sabah hilali</h2>
+          <h2 id="aksam-sabah">Akşam hilali, sabah hilali</h2>
           <p>
             Hilal, ay Güneş&apos;e gökyüzünde yakınken görülür. Bu yüzden onu gecenin ortasında aramak boşunadır. Ya
             Güneş battıktan hemen sonra ya da Güneş doğmadan hemen önce, ufka yakın bir yerde durur.
@@ -129,7 +148,7 @@ export default function CrescentPage() {
             ülkelerde ise hilal hemen her zaman yatık, kayık gibi görünür.
           </p>
 
-          <h2>Hilal ve Hicri takvim</h2>
+          <h2 id="hicri">Hilal ve Hicri takvim</h2>
           <p>
             Hicri takvimde her ay, <Link href={PAGES.yeniAy.path}>yeni aydan</Link> sonra ilk hilalin görülebildiği
             akşam başlar. Bu yüzden hilalin ilk kez görüldüğü an yüzyıllardır özenle gözlenir. Çok ince bir hilali
@@ -153,7 +172,7 @@ export default function CrescentPage() {
           page={PAGE}
           headline="Hilal Nedir? Büyüyen ve Küçülen Hilal Ne Zaman Görülür?"
           updated={UPDATED}
-          sources={[{ label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" }]}
+          src={src}
         />
       </main>
     </>

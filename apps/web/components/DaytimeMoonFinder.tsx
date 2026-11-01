@@ -30,7 +30,7 @@ export function DaytimeMoonFinder({ slug, action }: { slug: string; action: stri
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h2 id="gunduz-ay" className="text-xl font-semibold">
+              <h2 id="gunduz-ay" className="scroll-mt-32 text-xl font-semibold">
                 Gündüz ayı nerede?
               </h2>
               <p className="mt-1 max-w-xl text-sm text-zinc-400">

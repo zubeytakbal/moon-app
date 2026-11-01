@@ -4,20 +4,22 @@ import { Suspense } from "react";
 import { daytimeCity, DaytimeMoonFinder } from "@/components/DaytimeMoonFinder";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import {
-  ArticleFooter,
+  ArticleFooter, PhaseAnswer,
   NextPrincipal,
   PhaseHero,
   PhaseNav,
   UpcomingPrincipalTable,
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.sonDordun;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases");
 
 export const metadata: Metadata = {
   title: `Son Dördün Nedir? Ne Zaman Doğar, Nasıl Görülür? | ${siteConfig.name}`,
@@ -37,18 +39,32 @@ export default function LastQuarterPage({ searchParams }: PageProps<"/tr/son-dor
         eyebrow="Ay evreleri · 7"
         lead="Ayın sol yarısının aydınlık göründüğü an. Gece yarısına doğru doğar, sabah gökyüzüne kalır. Döngünün son çeyreği başlar."
         aside={<NextPrincipal phase="last-quarter" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#gunduz-ay", label: "Gündüz ayı nerede?" },
+          { href: "#ilk-son", label: "İlk dördünle farkı" },
+          { href: "#onumuzdeki", label: "Önümüzdeki tarihler" },
+          { href: "#adi", label: "Adı nereden gelir?" },
+        ]}
       />
       <Suspense fallback={<DaytimeMoonFinder slug={siteConfig.defaultLocation.slug} action={PAGE.path} />}>
         <SelectedFinder searchParams={searchParams} />
       </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Son dördünde ayın tam yarısı aydınlıktır. Türkiye&apos;den bakınca aydınlık kısım soldadır.</li>
-          <li>Ay gece yarısı civarında doğar, sabah güneyde en yüksek noktasına çıkar, öğle saatlerinde batar.</li>
-          <li>Ay yaşı yaklaşık 22 gündür. Bazı kaynaklarda &quot;üçüncü dördün&quot; olarak da geçer.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="Son dördün ne zaman?"
+          principal="last-quarter"
+          facts={[
+            { label: "Nasıl görünür?", value: "Ayın tam yarısı aydınlık; Türkiye'den bakınca sol yarısı." },
+            { label: "Ne zaman görülür?", value: "Gece yarısı civarında doğar, sabah güneyde en yükseğe çıkar, öğle saatlerinde batar." },
+            { label: "Ay yaşı", value: "Yaklaşık 22 gün. Bazı kaynaklarda \"üçüncü dördün\" olarak geçer." },
+          ]}
+        />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">İlk dördün ile son dördün</h2>
+        <h2 id="ilk-son" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">İlk dördün ile son dördün</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           İkisi de yarım ay, ama gökyüzünde neredeyse hiç karşılaşmazlar.
         </p>
@@ -93,7 +109,7 @@ export default function LastQuarterPage({ searchParams }: PageProps<"/tr/son-dor
             gösterir: ilinizi seçin, bugünün ve önümüzdeki günlerin saatlerini, ayın yönünü ve yüksekliğini görün.
           </p>
 
-          <h2>Bu adı nereden alıyor?</h2>
+          <h2 id="adi">Bu adı nereden alıyor?</h2>
           <p>
             Tıpkı <Link href={PAGES.ilkDordun.path}>ilk dördünde</Link> olduğu gibi, &quot;dördün&quot; ayın görünüşünü
             değil, yolculuğunu anlatır. Ay, yeni aydan bu yana döngüsünün dörtte üçünü tamamlamıştır; geriye son çeyrek
@@ -116,7 +132,7 @@ export default function LastQuarterPage({ searchParams }: PageProps<"/tr/son-dor
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki son dördün tarihleri</h2>
+        <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki son dördün tarihleri</h2>
         <UpcomingPrincipalTable phase="last-quarter" count={6} />
 
         <PhaseNav current={PAGE} />
@@ -124,7 +140,7 @@ export default function LastQuarterPage({ searchParams }: PageProps<"/tr/son-dor
           page={PAGE}
           headline="Son Dördün Nedir? Ne Zaman Doğar, Nasıl Görülür?"
           updated={UPDATED}
-          sources={[{ label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" }]}
+          src={src}
         />
       </main>
     </>

@@ -6,14 +6,15 @@ import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { CitySelect } from "@/components/CitySelect";
 import {
-  ArticleFooter,
+  ArticleFooter, PhaseAnswer,
   NextPrincipal,
   PhaseHero,
   PhaseNav,
   UpcomingPrincipalTable,
 } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { IMAGES } from "@/lib/images";
 import { PAGES } from "@/lib/pages";
@@ -22,7 +23,8 @@ import { OrbitTiltDiagram } from "@/components/EclipseDiagrams";
 import { DarkNights } from "./DarkNights";
 
 const PAGE = PAGES.yeniAy;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases", "nasaEclipseTypes");
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 
 export const metadata: Metadata = {
@@ -44,6 +46,17 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
         lead="Ay ile Güneş'in gökyüzünde aynı yönde buluştuğu an. Döngünün başlangıcıdır ama ayın görünmediği tek evredir."
         aside={<NextPrincipal phase="new-moon" />}
         photo={IMAGES.earthset}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#neden-gorunmez", label: "Neden görünmez?" },
+          { href: "#onumuzdeki", label: "Önümüzdeki tarihler" },
+          { href: "#karanlik-geceler", label: "Karanlık geceler" },
+          { href: "#hicri", label: "Hicri ay başı" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
       />
       <section className="bg-[#05070d] text-white" aria-labelledby="karanlik-geceler">
         <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-2">
@@ -55,14 +68,17 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
         </div>
       </section>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Yeni ayda ay, Güneş ile Dünya arasındadır. Aydınlık yüzü bize ters bakar.</li>
-          <li>Ay bu sırada Güneş&apos;le birlikte doğar ve batar, Güneş&apos;in parlaklığı içinde kaybolur.</li>
-          <li>Ay döngüsü yeni ayla başlar. Ay yaşı sıfırdır, aydınlık oranı %0&apos;a yakındır.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="Yeni ay ne zaman, neden görünmez?"
+          principal="new-moon"
+          facts={[
+            { label: "Neden görünmez?", value: "Ay, Güneş ile Dünya arasındadır; aydınlık yüzü bize ters bakar ve Güneş'in parlaklığında kaybolur." },
+            { label: "Ay yaşı", value: "0 gün: ay döngüsü yeni ayla başlar, aydınlık oranı %0'a yakındır." },
+          ]}
+        />
 
         <Prose>
-          <h2>Yeni ay neden görünmez?</h2>
+          <h2 id="neden-gorunmez">Yeni ay neden görünmez?</h2>
           <p>
             Ayın her zaman Güneş&apos;e bakan yarısı aydınlıktır. Yeni ayda ay, Dünya ile Güneş arasına girdiği için bu
             aydınlık yarı tam olarak bize ters düşer. Bize dönük olan yüz, ayın gece yaşayan tarafıdır.
@@ -74,14 +90,14 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki yeni ay tarihleri</h2>
+        <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki yeni ay tarihleri</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Saatler, ayın Güneş ile aynı boylama geldiği andır (Türkiye saati).
         </p>
         <UpcomingPrincipalTable phase="new-moon" count={6} />
 
         <Prose>
-          <h2>Yeni ay ile Hicri ayın başı aynı şey mi?</h2>
+          <h2 id="hicri">Yeni ay ile Hicri ayın başı aynı şey mi?</h2>
           <p>
             Hayır, ve karıştırılması çok yaygındır. Astronomide <strong>yeni ay</strong>, ayın Güneş ile aynı boylama
             geldiği andır ve bu an gözle görülemez. Hicri takvimde ise ay, yeni aydan sonra ilk ince{" "}
@@ -153,10 +169,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
           page={PAGE}
           headline="Yeni Ay Nedir, Ne Zaman? Neden Görünmez?"
           updated={UPDATED}
-          sources={[
-            { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-            { label: "NASA Science, Eclipses", href: "https://science.nasa.gov/eclipses/" },
-          ]}
+          src={src}
         />
       </main>
     </>
@@ -175,7 +188,7 @@ function DarkSkyPlanner({ slug }: { slug: string }) {
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id="karanlik-geceler" className="text-xl font-semibold">
+          <h2 id="karanlik-geceler" className="scroll-mt-32 text-xl font-semibold">
             Yıldız gözlemi için karanlık geceler
           </h2>
           <p className="mt-1 max-w-xl text-sm text-zinc-400">

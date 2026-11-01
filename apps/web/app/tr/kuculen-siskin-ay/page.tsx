@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArticleFooter, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
+import { ArticleFooter, PhaseAnswer, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.kuculenSiskinAy;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases");
 
 export const metadata: Metadata = {
   title: `Küçülen Şişkin Ay Nedir? Ne Zaman Doğar, Nerede Görülür? | ${siteConfig.name}`,
@@ -35,16 +37,30 @@ export default function WaningGibbousPage() {
         eyebrow="Ay evreleri · 6"
         lead="Dolunay geçti, ay eksilmeye başladı. Her gece biraz daha geç doğar ve günün ilk saatlerinde batı gökyüzünde kalır."
         aside={<NextPeriod from="full-moon" to="last-quarter" label="küçülen şişkin ay dönemi" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#hangi-taraf", label: "Hangi taraftan eksilir?" },
+          { href: "#gec-dogar", label: "Her gece daha geç doğar" },
+          { href: "#sabah", label: "Sabah gökyüzünde" },
+          { href: "#onumuzdeki", label: "Önümüzdeki dönemler" },
+        ]}
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Küçülen şişkin ay, dolunay ile son dördün arasındaki yaklaşık bir haftalık dönemdir.</li>
-          <li>Ayın %99 ile %51 arası aydınlıktır. Türkiye&apos;den bakınca sağ kenarından eksilir.</li>
-          <li>Akşam geç doğar, sabah gökyüzünde batıda görülür.</li>
-        </QuickFacts>
+        <PhaseAnswer
+          question="Küçülen şişkin ay ne zaman?"
+          periods={[{ from: "full-moon", to: "last-quarter", label: "küçülen şişkin ay dönemi", rowLabel: "Küçülen şişkin ay" }]}
+          facts={[
+            { label: "Nedir?", value: "Dolunay ile son dördün arasındaki yaklaşık bir haftalık dönem." },
+            { label: "Nasıl görünür?", value: "%99-51 aydınlık; Türkiye'den bakınca sağ kenarından eksilir." },
+            { label: "Ne zaman görülür?", value: "Akşam geç doğar; sabah batı gökyüzünde görülür." },
+          ]}
+        />
 
         <Prose>
-          <h2>Ay hangi taraftan eksilir?</h2>
+          <h2 id="hangi-taraf">Ay hangi taraftan eksilir?</h2>
           <p>
             Ay dolarken de eksilirken de değişim sağ taraftan başlar. Büyüyen ayda sağ kenar ilk aydınlanan yerdi.
             Dolunaydan sonra karanlık da aynı yerden, sağ kenardan girer. Böylece küçülen şişkin ayın aydınlık kısmı
@@ -57,7 +73,7 @@ export default function WaningGibbousPage() {
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Ay her gece daha geç doğar</h2>
+        <h2 id="gec-dogar" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Ay her gece daha geç doğar</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Dolunaydan sonra doğuş saati her gün ortalama 50 dakika gecikir:
         </p>
@@ -81,7 +97,7 @@ export default function WaningGibbousPage() {
         </p>
 
         <Prose>
-          <h2>Sabah gökyüzündeki ay</h2>
+          <h2 id="sabah">Sabah gökyüzündeki ay</h2>
           <p>
             Küçülen şişkin ay, gün doğduğunda hâlâ gökyüzündedir ve sabah saatlerinde batı yönünde, mavi gökyüzünün
             üzerinde soluk bir disk olarak görülür. Sabah işe ya da okula giderken batıya bakan birçok kişi ayı bu
@@ -111,7 +127,7 @@ export default function WaningGibbousPage() {
           </p>
         </Prose>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Önümüzdeki küçülen şişkin ay dönemleri</h2>
+        <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki küçülen şişkin ay dönemleri</h2>
         <UpcomingPeriodTable from="full-moon" to="last-quarter" count={4} />
 
         <PhaseNav current={PAGE} />
@@ -119,7 +135,7 @@ export default function WaningGibbousPage() {
           page={PAGE}
           headline="Küçülen Şişkin Ay Nedir? Ne Zaman Doğar, Nerede Görülür?"
           updated={UPDATED}
-          sources={[{ label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" }]}
+          src={src}
         />
       </main>
     </>
