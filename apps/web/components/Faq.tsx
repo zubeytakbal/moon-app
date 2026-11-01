@@ -9,7 +9,7 @@ import { JsonLd } from "./JsonLd";
 export function Faq({ items }: { items: readonly FaqItem[] }) {
   return (
     <section aria-labelledby="sss" className="mt-14">
-      <h2 id="sss" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="sss" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         Sık sorulan sorular
       </h2>
       <div className="mt-5 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">

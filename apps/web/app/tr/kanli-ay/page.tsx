@@ -24,6 +24,7 @@ import { Prose } from "@/components/Prose";
 import { AnswerBox, DataTable, FactTable } from "@/components/InfoTables";
 import { Byline } from "@/components/Byline";
 import { pageSources } from "@/components/Sources";
+import { QuickLinks } from "@/components/QuickLinks";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
@@ -134,6 +135,17 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
       <Suspense fallback={<Hero slug={siteConfig.defaultLocation.slug} />}>
         <SelectedHero searchParams={searchParams} />
       </Suspense>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#kanli-ay-listesi", label: "Bütün kanlı aylar" },
+          { href: "#siradaki", label: "Saatler" },
+          { href: "#yillar", label: "Hangi yıl?" },
+          { href: "#neden-kirmizi", label: "Neden kırmızı?" },
+          { href: "#nasil-izlenir", label: "Nasıl izlenir?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
           <BloodMoonAnswer />
@@ -147,7 +159,7 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
           <NextBloodMoonDetails />
           <YearsTable />
           <Prose>
-            <h2>Ay neden kırmızıya döner?</h2>
+            <h2 id="neden-kirmizi">Ay neden kırmızıya döner?</h2>
             <p>
               Tam tutulmada ay, Dünya&apos;nın gölgesinin tam ortasındadır ve doğrudan Güneş ışığı almaz.
               {src.ref("nasaEclipseTypes")} Yine de kaybolmaz, çünkü Dünya&apos;nın atmosferi Güneş ışığının bir
@@ -220,7 +232,7 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
               olaylarından biridir.
             </p>
 
-            <h2>Kanlı ay nasıl izlenir?</h2>
+            <h2 id="nasil-izlenir">Kanlı ay nasıl izlenir?</h2>
             <ul>
               <li>
                 <strong>Gözlük gerekmez.</strong> Güneş tutulmasının aksine kanlı ayı çıplak gözle, dürbünle ya da
@@ -339,7 +351,7 @@ function BloodMoonSection({ slug }: { slug: string }) {
   return (
     <section aria-labelledby="kanli-ay-listesi" className="mt-12">
       <div id="il-sec" className="flex scroll-mt-32 flex-wrap items-end justify-between gap-3">
-        <h2 id="kanli-ay-listesi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="kanli-ay-listesi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           2025-{UNTIL_YEAR} kanlı ayları
         </h2>
         <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
@@ -537,7 +549,7 @@ async function NextBloodMoonDetails() {
 
   return (
     <section aria-labelledby="siradaki" className="mt-14">
-      <h2 id="siradaki" data-toc-label="Sıradaki kanlı ay" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="siradaki" data-toc-label="Sıradaki kanlı ay" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         Sıradaki kanlı ay: {fullDate.format(peak)}
       </h2>
       <p className="mt-3 text-zinc-700 dark:text-zinc-300">
@@ -610,7 +622,7 @@ async function YearsTable() {
 
   return (
     <section aria-labelledby="yillar" className="mt-14">
-      <h2 id="yillar" data-toc-label="Hangi yıl kanlı ay var?" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="yillar" data-toc-label="Hangi yıl kanlı ay var?" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         {thisYear}-{thisYear + 3} arası hangi yıl kanlı ay var?
       </h2>
       <p className="mt-3 text-zinc-700 dark:text-zinc-300">

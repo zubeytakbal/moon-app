@@ -51,7 +51,7 @@ export default function SourcesPage() {
           </h2>
           <ol className="mt-4 space-y-5">
             {items.map((s) => (
-              <li key={s.no} id={`kaynak-${s.no}`} className="flex scroll-mt-28 gap-3">
+              <li key={s.no} id={`kaynak-${s.no}`} className="flex scroll-mt-32 gap-3">
                 <span className="w-10 shrink-0 font-semibold tabular-nums text-zinc-500">[{s.no}]</span>
                 <span>
                   <a

@@ -35,7 +35,7 @@ export function AnswerBox({
       >
         <div className="border-b border-zinc-200 px-5 py-4 sm:px-6 dark:border-zinc-800">
           {/* Her sayfada aynı işi gördüğü için içindekilere alınmaz. */}
-          <h2 id="cevap" data-toc-skip className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+          <h2 id="cevap" data-toc-skip className="scroll-mt-32 text-sm font-semibold text-zinc-500 dark:text-zinc-400">
             {question}
           </h2>
           <p className="mt-1 text-xl font-semibold leading-snug text-zinc-950 sm:text-2xl dark:text-white">{answer}</p>

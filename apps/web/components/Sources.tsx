@@ -43,7 +43,7 @@ export function SourceList({ src }: { src: PageSources }) {
         .map((id) => {
           const s = SOURCES[id];
           return (
-            <li key={id} id={`kaynak-${s.no}`} className="flex scroll-mt-28 gap-3">
+            <li key={id} id={`kaynak-${s.no}`} className="flex scroll-mt-32 gap-3">
               <span className="w-8 shrink-0 tabular-nums text-zinc-500">[{s.no}]</span>
               <span>
                 <a href={s.url} target="_blank" rel="noopener" className="font-medium text-zinc-900 underline underline-offset-2 dark:text-white">

@@ -6,7 +6,7 @@ export function Prose({ children }: { children: ReactNode }) {
     <div
       className={[
         "text-[1.0625rem] leading-relaxed text-zinc-800 dark:text-zinc-200",
-        "[&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-zinc-950 dark:[&_h2]:text-white",
+        "[&_h2]:mt-12 [&_h2]:scroll-mt-32 [&_h3]:scroll-mt-32 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-zinc-950 dark:[&_h2]:text-white",
         "[&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-zinc-950 dark:[&_h3]:text-white",
         "[&_p]:mt-4 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6",
         "[&_a]:underline [&_a]:underline-offset-2 [&_strong]:font-semibold",
