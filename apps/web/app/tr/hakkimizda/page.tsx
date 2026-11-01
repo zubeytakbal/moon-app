@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <CorporatePage
       page={PAGE}
-      updated="2026-10-28"
+      updated="2026-11-01"
       lead={`${siteConfig.name}, ayla ilgili her soruya tek bir yerden, doğru ve anlaşılır bir cevap vermek için hazırlanan bağımsız bir sitedir.`}
     >
       <Prose>
@@ -67,7 +67,8 @@ export default function AboutPage() {
 
         <h2>Kimiz?</h2>
         <p>
-          {siteConfig.name}, gökyüzüne ve özellikle aya meraklı küçük bir ekip tarafından hazırlanıyor. Herhangi bir
+          {siteConfig.name}&apos;ı {siteConfig.author.name} hazırlıyor (
+          <Link href={PAGES.yazar.path}>yazar hakkında</Link>). Herhangi bir
           kurum, şirket ya da devlet kuruluşuyla bağımız yoktur; NASA ve Diyanet gibi kaynaklara yalnızca bilgi kaynağı
           olarak başvururuz.
         </p>

@@ -12,6 +12,8 @@ export const siteConfig = {
   url: "https://lunatlas.com",
   /** İletişim adresi. Domain alınınca Gmail'e yönlendirme kurulacak. */
   contactEmail: "iletisim@lunatlas.com",
+  /** İçerik sayfalarının imzası ("… tarafından") ve yazar sayfası. İsim yalnız burada yazılır (1 Kasım 2026, kullanıcı kararı). */
+  author: { name: "Zübeyt Akbal", initials: "ZA", role: "Kurucu ve Editör" },
   /** Arama motorlarına açık mı? false olursa robots.txt ve noindex tüm taramayı engeller. Yayında: 28 Ekim 2026. */
   allowIndexing: true,
   /** Google Analytics 4 ölçüm kimliği (ayrı "Lunatlas" hesabı). Yalnız çerez izni verilince yüklenir. */

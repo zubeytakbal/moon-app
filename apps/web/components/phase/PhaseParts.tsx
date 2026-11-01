@@ -6,6 +6,7 @@ import { getUpcomingPrincipalPhases, PHASE_NAMES_TR } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { AllSourcesLink, SourceList, type PageSources } from "@/components/Sources";
 import { HeroCredit } from "@/components/NasaFigure";
 import type { SiteImage } from "@/lib/images";
 import { PAGES, type SitePage } from "@/lib/pages";
@@ -293,12 +294,16 @@ export function ArticleFooter({
   page,
   headline,
   updated,
-  sources,
+  sources = [],
+  src,
 }: {
   page: SitePage;
   headline: string;
   updated: string;
-  sources: { label: string; href: string }[];
+  /** Eski düz kaynak listesi (numarasız). Sayfalar numaralı sisteme (`src`) geçtikçe kalkacak. */
+  sources?: { label: string; href: string }[];
+  /** Numaralı kaynaklar (`pageSources`); metindeki [n] işaretleri buraya bağlanır. */
+  src?: PageSources;
 }) {
   const updatedText = new Intl.DateTimeFormat(siteConfig.locale, {
     day: "numeric",
@@ -314,7 +319,8 @@ export function ArticleFooter({
         <h2 id="kaynaklar" data-toc-skip className="font-semibold text-zinc-900 dark:text-white">
           Kaynaklar
         </h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
+        {src && <SourceList src={src} />}
+        <ul className={`list-disc space-y-1 pl-5 ${src ? "mt-4" : "mt-2"}`}>
           {sources.map((s) => (
             <li key={s.href}>
               <a href={s.href} rel="noopener" target="_blank" className="underline underline-offset-2">
@@ -338,6 +344,7 @@ export function ArticleFooter({
           </li>
           <li>Ay görseli: NASA Scientific Visualization Studio.</li>
         </ul>
+        {src && <AllSourcesLink />}
         <p className="mt-4">
           Son güncelleme: <time dateTime={updated}>{updatedText}</time>
         </p>
@@ -349,6 +356,11 @@ export function ArticleFooter({
           headline,
           inLanguage: "tr-TR",
           dateModified: updated,
+          author: {
+            "@type": "Person",
+            name: siteConfig.author.name,
+            url: new URL(PAGES.yazar.path, siteConfig.url).toString(),
+          },
           mainEntityOfPage: new URL(page.path, siteConfig.url).toString(),
         }}
       />

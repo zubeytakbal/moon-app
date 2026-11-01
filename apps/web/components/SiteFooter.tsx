@@ -18,7 +18,7 @@ const FOOTER_SECTIONS: { group: PageGroup; pages: SitePage[] }[] = [
 ];
 
 /** Her sayfanın en altında, hep aynı yerde duran kurumsal bağlantılar. */
-const CORPORATE = [PAGES.hakkimizda, PAGES.iletisim, PAGES.gizlilik, PAGES.cerez, PAGES.yontem];
+const CORPORATE = [PAGES.hakkimizda, PAGES.yazar, PAGES.iletisim, PAGES.yontem, PAGES.kaynaklar, PAGES.gizlilik, PAGES.cerez];
 
 /** Üç katlı alt bilgi: marka ve seçili sayfalar, görsel künyesi, telif ve kurumsal bağlantılar. */
 export async function SiteFooter() {
