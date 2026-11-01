@@ -10,17 +10,20 @@ import {
 } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
-import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
+import { fromHijri, HIJRI_MONTHS, toHijri } from "@/lib/hijri-calendar";
 import { HijriConverter } from "@/components/HijriConverter";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hicriTakvim;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("diyanet2027");
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Hilal tahmini Türkiye'nin ortasına yakın bir noktadan, Ankara'dan yapılır. */
 const OBSERVER = findProvince("ankara")!;
@@ -53,10 +56,6 @@ const MONTHS = [
 const hijri = (opts: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat("tr-TR-u-ca-islamic-umalqura", { timeZone, ...opts });
 
-function hijriMonthIndex(date: Date): number {
-  const name = hijri({ month: "long" }).format(date);
-  return MONTHS.indexOf(name);
-}
 
 export default function HijriCalendarPage() {
   return (
@@ -67,43 +66,48 @@ export default function HijriCalendarPage() {
         eyebrow="Hicri"
         lead="Hicri takvim bir ay takvimidir: her ay, yeni aydan sonra hilalin görülmesiyle başlar. Bu sayfada takvimin nasıl işlediğini ve önümüzdeki ay başlarının astronomik tahminini bulabilirsiniz."
         aside={<TodayHijri />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bugün Hicri tarih" },
+          { href: "#cevirici", label: "Tarih çevirici" },
+          { href: "#ay-baslari", label: "Önümüzdeki ay başları" },
+          { href: "#aylar", label: "Hicri aylar" },
+          { href: "#ay-basi", label: "Ay başı nasıl belirlenir?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Hicri yıl 12 aydır ve 354 ya da 355 gün sürer; Miladi yıldan yaklaşık 11 gün kısadır.</li>
-            <li>
-              Bu yüzden Ramazan ve bayramlar her yıl yaklaşık 11 gün öne gelir, 33 yılda bütün mevsimleri dolaşır.
-            </li>
-            <li>
-              Çevirici Ümmülkurâ takvimini, ay başı tablosu astronomik tahmini kullanır.{" "}
-              <strong>Resmî dinî günler için Diyanet takvimi esastır.</strong>
-            </li>
-          </QuickFacts>
+          <HijriAnswer />
         </div>
 
-        <div className="mx-auto max-w-3xl">
+        <div id="cevirici" className="mx-auto max-w-3xl scroll-mt-32">
           <HijriConverter />
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">Hicri aylar</h2>
-        <MonthList />
+        <div className="mx-auto max-w-3xl">
+          <h2 id="ay-baslari" className="mt-14 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Önümüzdeki Hicri ay başları
+          </h2>
+          <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            İkinci sütun, Ümmülkurâ takvimine göre ayın ilk günüdür; Diyanet&apos;in 2027 dinî günleriyle karşılaştırdık,
+            Ramazan, bayramlar ve kandiller aynı günlere düşüyor.{src.ref("diyanet2027")} Üçüncü sütun kendi astronomik
+            tahminimizdir: Ankara&apos;da gün batımında ayın ufuktan en az {CRESCENT_MIN_ALTITUDE}° yüksekte ve
+            Güneş&apos;ten en az {CRESCENT_MIN_ELONGATION}° uzakta olduğu ilk akşamı izleyen gün. Hicri gün akşamla
+            başlar; ayın ilk gecesi, ilk günden önceki akşamdır.
+          </p>
+          <MonthStarts />
+          <p className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+            Bu tablo resmî bir takvim değildir. Türkiye&apos;de Ramazan, bayramlar ve kandiller gibi dinî günler Diyanet
+            İşleri Başkanlığı&apos;nın takvimine göre belirlenir. Diyanet hilalin dünyanın herhangi bir yerinden
+            görülebilmesine baktığı için resmî ay başı çoğu zaman Ankara tahmininden bir gün öncedir.
+          </p>
+        </div>
 
-        <h2 className="mt-14 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Önümüzdeki ay başları (astronomik tahmin)
-        </h2>
-        <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-          Her yeni ay için, Ankara&apos;da gün batımında ayın ufuktan en az {CRESCENT_MIN_ALTITUDE}° yüksekte ve
-          Güneş&apos;ten en az {CRESCENT_MIN_ELONGATION}° uzakta olduğu ilk akşam. Bu, hilalin görülmesinin astronomik
-          olarak mümkün olduğu sınırdır; çok genç hilal çıplak gözle genellikle ertesi akşam görülür. Hicri gün akşamla
-          başladığı için yeni ay, bu akşamı izleyen gündür.
-        </p>
-        <MonthStarts />
-        <p className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
-          Bu tablo resmî bir takvim değildir. Türkiye&apos;de Ramazan, bayramlar ve kandiller gibi dinî günler Diyanet
-          İşleri Başkanlığı&apos;nın takvimine göre belirlenir. Diyanet hilalin dünyanın herhangi bir yerinden
-          görülebilmesine baktığı için resmî ay başı çoğu zaman bu tahminden bir gün öncedir.
-        </p>
+        <h2 id="aylar" className="mt-14 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">Hicri aylar</h2>
+        <MonthList />
 
         <div className="mx-auto max-w-3xl">
           <Prose>
@@ -125,7 +129,7 @@ export default function HijriCalendarPage() {
               gününden önceki akşamdır. Kandil gecelerinin, kandil gününden önceki akşama denk gelmesinin nedeni budur.
             </p>
 
-            <h2>Ay başı nasıl belirlenir?</h2>
+            <h2 id="ay-basi">Ay başı nasıl belirlenir?</h2>
             <p>
               Astronomik <Link href={PAGES.yeniAy.path}>yeni ay</Link>, ayın Güneş ile aynı boylama geldiği andır ve
               gözle görülmez. Hicri ay ise yeni aydan sonra ince <Link href={PAGES.hilal.path}>hilalin</Link>{" "}
@@ -150,7 +154,11 @@ export default function HijriCalendarPage() {
               </li>
               <li>
                 Yükseklik en az {CRESCENT_MIN_ALTITUDE}°, açı en az {CRESCENT_MIN_ELONGATION}° olan ilk akşam, tabloda
-                gösterilir. Ay adları, Suudi Arabistan&apos;ın kullandığı Ümmülkurâ takviminden alınmıştır.
+                &quot;Ankara&apos;dan hilal tahmini&quot; sütununda gösterilir.
+              </li>
+              <li>
+                Ayın ilk günü ve bayram tarihleri Suudi Arabistan&apos;ın kullandığı Ümmülkurâ takviminden alınır. Bu
+                takvim de astronomik hesaba dayanır ve 2027 için Diyanet&apos;in ilan ettiği günlerle örtüşür.
               </li>
             </ul>
             <p>
@@ -163,13 +171,7 @@ export default function HijriCalendarPage() {
             page={PAGE}
             headline="Hicri Takvim Nedir? Hicri Aylar ve Ay Başları"
             updated={UPDATED}
-            sources={[
-              {
-                label: "Diyanet İşleri Başkanlığı, Dinî Günler",
-                href: "https://vakithesaplama.diyanet.gov.tr/dini_gunler.php",
-              },
-              { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -199,7 +201,7 @@ async function MonthList() {
   "use cache";
   cacheLife("hours");
 
-  const current = hijriMonthIndex(new Date());
+  const current = toHijri(new Date(), timeZone).month - 1;
   return (
     <ol className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
       {MONTHS.map((m, i) => (
@@ -221,60 +223,140 @@ async function MonthList() {
   );
 }
 
-/** Önümüzdeki 6 yeni ay için hilal ölçütünün karşılandığı ilk akşam. Saatte bir yenilenir. */
+/** Hicri tarihin Miladi karşılığı ("8 Şubat 2027 Pazartesi"). `fromHijri` günün ortasını (UTC) döndürür. */
+const miladi = new Intl.DateTimeFormat(siteConfig.locale, {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  weekday: "long",
+});
+
+/** Bugünden sonraki ilk (ay, gün) Hicri tarihi: bu yıl geçtiyse gelecek yıl. */
+function nextHijri(month: number, day: number, now: Date): { year: number; date: Date | null } {
+  const t = toHijri(now, timeZone);
+  const passed = t.month > month || (t.month === month && t.day >= day);
+  const year = passed ? t.year + 1 : t.year;
+  return { year, date: fromHijri(year, month, day) };
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): bugünün Hicri tarihi ve önemli günler. Saatte bir yenilenir. */
+async function HijriAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const t = toHijri(now, timeZone);
+  const today = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+  const fmt = (x: { year: number; date: Date | null }, label: string) =>
+    x.date ? `${miladi.format(x.date)} (${label} ${x.year})` : "Hesaplanamadı";
+  const nextMonth = t.month === 12 ? { year: t.year + 1, month: 1 } : { year: t.year, month: t.month + 1 };
+  const nextStart = fromHijri(nextMonth.year, nextMonth.month, 1);
+  const inRamadan = t.month === 9;
+
+  return (
+    <AnswerBox
+      question="Bugün Hicri takvime göre ayın kaçı?"
+      answer={`Bugün (${today.format(now)}) Hicri takvime göre ${t.day} ${t.monthName} ${t.year}.`}
+      rows={[
+        {
+          label: `${HIJRI_MONTHS[nextMonth.month - 1]} ayının başı`,
+          value: nextStart ? miladi.format(nextStart) : "Hesaplanamadı",
+        },
+        {
+          label: "Ramazan başlangıcı",
+          value: inRamadan ? `Şu an Ramazan ayındayız (${t.day}. gün).` : fmt(nextHijri(9, 1, now), "1 Ramazan"),
+        },
+        { label: "Ramazan Bayramı (1. gün)", value: fmt(nextHijri(10, 1, now), "1 Şevval") },
+        { label: "Kurban Bayramı (1. gün)", value: fmt(nextHijri(12, 10, now), "10 Zilhicce") },
+        { label: "Hicri yılbaşı", value: fmt(nextHijri(1, 1, now), "1 Muharrem") },
+      ]}
+      note={
+        <>
+          Ümmülkurâ takvimine göre; 2027 için Diyanet&apos;in ilan ettiği günlerle aynı.{src.ref("diyanet2027")} Hicri gün
+          akşam başlar. <strong>Resmî dinî günler için Diyanet İşleri Başkanlığı&apos;nın takvimi esastır.</strong>
+        </>
+      }
+    />
+  );
+}
+
+/** "Ramazan başlangıcı", "Kurban Bayramı 1. gün: …" gibi kısa notlar. */
+function monthNote(year: number, month: number): string {
+  if (month === 1) return "Hicri yılbaşı";
+  if (month === 9) return "Ramazan başlangıcı";
+  if (month === 10) return "Ramazan Bayramı 1. gün";
+  if (month === 12) {
+    const kurban = fromHijri(year, 12, 10);
+    return kurban ? `Kurban Bayramı 1. gün: ${miladi.format(kurban)}` : "";
+  }
+  return "";
+}
+
+/** Gün numarası (karşılaştırma için): Türkiye tarihine göre. */
+function dayNumber(date: Date, zone: string): number {
+  const [y, m, d] = new Intl.DateTimeFormat("en-CA", { timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit" })
+    .format(date)
+    .split("-")
+    .map(Number);
+  return Date.UTC(y, m - 1, d) / DAY_MS;
+}
+
+/**
+ * Önümüzdeki 6 Hicri ayın başı (timeanddate tablo düzeni): Ümmülkurâ'ya göre ilk gün ve Ankara'dan hilal tahmini.
+ * Saatte bir yenilenir.
+ */
 async function MonthStarts() {
   "use cache";
   cacheLife("hours");
 
   const now = new Date();
-  const newMoons = getUpcomingPrincipalPhases(new Date(now.getTime() - 3 * DAY_MS), 28)
-    .filter((p) => p.key === "new-moon")
-    .slice(0, 6);
+  const t = toHijri(now, timeZone);
   const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
-  const weekday = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, weekday: "long" });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
-  const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 1 });
+
+  const rows = Array.from({ length: 6 }, (_, i) => {
+    const index = t.month - 1 + i + 1;
+    const year = t.year + Math.floor(index / 12);
+    const month = (index % 12) + 1;
+    const start = fromHijri(year, month, 1);
+    let estimate: Date | null = null;
+    if (start) {
+      const newMoon = getUpcomingPrincipalPhases(new Date(start.getTime() - 6 * DAY_MS), 8)
+        .filter((p) => p.key === "new-moon" && p.date.getTime() < start.getTime() + DAY_MS)
+        .pop();
+      const first = newMoon ? getCrescentEvenings(newMoon.date, OBSERVER).find((e) => e.meetsCriteria) : undefined;
+      estimate = first ? new Date(first.sunset.getTime() + 12 * 3_600_000) : null;
+    }
+    const diff = start && estimate ? dayNumber(estimate, timeZone) - dayNumber(start, "UTC") : null;
+    return { key: `${year}-${month}`, year, month, start, estimate, diff };
+  });
 
   return (
-    <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {newMoons.map((nm) => {
-        const evenings = getCrescentEvenings(nm.date, OBSERVER);
-        const first = evenings.find((e) => e.meetsCriteria);
-        const firstDay = first ? new Date(first.sunset.getTime() + 12 * 3_600_000) : null;
-        const monthIndex = hijriMonthIndex(firstDay ?? new Date(nm.date.getTime() + 2 * DAY_MS));
-        return (
-          <li key={nm.date.toISOString()} className="flex gap-4 rounded-2xl bg-[#05070d] p-5 text-white">
-            <span className="shrink-0">
-              <MoonPhaseIcon phaseAngle={25} size={56} title="Hilal" />
-            </span>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">
-                {MONTHS[monthIndex] ?? ""} ayının başlangıcı
-              </p>
-              {firstDay ? (
-                <>
-                  <p className="mt-0.5 text-lg font-semibold">{date.format(firstDay)}</p>
-                  <p className="text-sm text-zinc-300">
-                    {weekday.format(firstDay)} (hilal ölçütü önceki akşam, {time.format(first!.sunset)})
-                  </p>
-                </>
-              ) : (
-                <p className="mt-0.5 text-lg font-semibold">Hesaplanamadı</p>
-              )}
-              <p className="mt-2 text-xs text-zinc-400">
-                Yeni ay: {date.format(nm.date)} {time.format(nm.date)}
-                {first && (
-                  <>
-                    {" "}
-                    · Ay yaşı {Math.round(first.ageHours)} saat · yükseklik {nf.format(first.moonAltitude)}° · açı{" "}
-                    {nf.format(first.elongation)}°
-                  </>
-                )}
-              </p>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+    <DataTable
+      columns={["Hicri ay", "1. günü (Ümmülkurâ)", "Ankara'dan hilal tahmini", "Not"]}
+      highlight={rows.find((r) => r.month === 9)?.key}
+      rows={rows.map((r) => ({
+        key: r.key,
+        cells: [
+          <span key="a" className="whitespace-nowrap">
+            {HIJRI_MONTHS[r.month - 1]} {r.year}
+          </span>,
+          <span key="u" className="font-medium">
+            {r.start ? miladi.format(r.start) : "-"}
+          </span>,
+          <span key="e">
+            {r.estimate ? date.format(r.estimate) : "-"}
+            {r.diff !== null && (
+              <span className="block text-sm text-zinc-500">
+                {r.diff === 0 ? "aynı gün" : r.diff > 0 ? `${r.diff} gün sonra` : `${-r.diff} gün önce`}
+              </span>
+            )}
+          </span>,
+          <span key="n" className="text-zinc-600 dark:text-zinc-400">
+            {monthNote(r.year, r.month)}
+          </span>,
+        ],
+      }))}
+    />
   );
 }

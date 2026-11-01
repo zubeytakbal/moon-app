@@ -102,6 +102,14 @@ export const SOURCES = {
     note: "Saros döngüsünün yaklaşık 6.585,3 gün (18 yıl 11 gün 8 saat) sürmesi, Keldani (Babil) gökbilimcilerince bilinmesi ve bir Saros arayla gelen tutulmaların birbirine çok benzemesi.",
     group: "tutulma",
   },
+  diyanet2027: {
+    no: 10,
+    title: "2027 Dinî Günler Listesi",
+    publisher: "Diyanet İşleri Başkanlığı, Vakit Hesaplama",
+    url: "https://vakithesaplama.diyanet.gov.tr/icerik.php?icerik=154",
+    note: "2027'nin resmî dinî günleri: 1 Ramazan 1448 = 8 Şubat 2027, Ramazan Bayramı 1. günü (1 Şevval) = 9 Mart 2027 ve diğerleri. Ümmülkurâ takvimiyle karşılaştırdık; Ramazan, bayramlar ve kandiller aynı günlere düşüyor.",
+    group: "takvim",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;
