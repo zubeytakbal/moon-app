@@ -3,19 +3,28 @@ import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import {
   findProvince,
+  getMonthCalendar,
   getMoonPhase,
+  getMoonPosition,
   getMoonRiseSet,
   getNextFullMoon,
   getNextNewMoon,
   isSouthernHemisphere,
   TURKEY_PROVINCES,
+  zonedTimeToUtc,
 } from "@moon-app/moon";
+import Link from "next/link";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CitySelect } from "@/components/CitySelect";
 import { MoonCompass } from "@/components/MoonCompass";
 import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { MobileCollapse } from "@/components/MobileCollapse";
+import { QuickLinks } from "@/components/QuickLinks";
+import { AllSourcesLink, pageSources, SourceList } from "@/components/Sources";
+import { currentMonth, MONTH_NAMES, WEEKDAYS_SHORT } from "@/lib/months";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -24,6 +33,7 @@ import { Explainer } from "./Explainer";
 const PAGE = PAGES.bugunAy;
 const PATH = PAGE.path;
 const DAY_MS = 86_400_000;
+const src = pageSources("usnoMoonPhases", "nasaMoonFactSheet");
 
 export const metadata: Metadata = {
   title: `Bugün Ay Nasıl? Ayın Evresi ve Doğuş-Batış Saatleri | ${siteConfig.name}`,
@@ -40,6 +50,15 @@ export default function TodayMoonPage({ searchParams }: PageProps<"/tr/bugun-ay"
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bugün ay nasıl?" },
+          { href: "#dogus-batis", label: "Doğuş ve batış" },
+          { href: "#aylik-dogus-batis", label: "Bu ayın doğuş-batış saatleri" },
+          { href: "#siradaki-evreler", label: "Sıradaki dolunay" },
+          { href: "#ne-zaman-gorulur", label: "Ayı ne zaman görürüm?" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <Summary />
         {/* Seçili il isteğe göre değişir. Beklerken (ve Google için) varsayılan il gösterilir. */}
@@ -47,7 +66,8 @@ export default function TodayMoonPage({ searchParams }: PageProps<"/tr/bugun-ay"
           <SelectedCityMoonTimes searchParams={searchParams} />
         </Suspense>
         <NextPhases />
-        <Explainer />
+        <Explainer src={src} />
+        <TodayFooter />
       </main>
     </>
   );
@@ -123,6 +143,7 @@ async function Hero() {
           <p className="mt-1 text-sm text-zinc-400">
             <time dateTime={now.toISOString()}>{fmt.date.format(now)}</time> · Türkiye saati {fmt.time.format(now)}
           </p>
+          <Byline updated={isoDate(now)} />
 
           <p className="mt-4 text-[clamp(4.5rem,16vw,9rem)] font-extralight leading-none tracking-tighter tabular-nums">
             %{illumination}
@@ -197,19 +218,32 @@ async function Summary() {
   const nextFull = getNextFullMoon(now);
   const fmt = formatters();
 
+  const nextNew = getNextNewMoon(now);
+  const ill = fmt.percent.format(phase.illumination);
+
   return (
     <>
-      <QuickFacts>
-        {/* Saat, yüzde ve il adlarına gelen ekler (18:33'te / 09:00'da) değiştiği için ek kullanılmıyor. */}
-        <li>
-          Ayın bugünkü evresi: <strong>{phase.name}</strong> ({fmt.percent.format(phase.illumination)} aydınlık).
-        </li>
-        <li>
-          {location.name}: ay doğuşu {rise ? fmt.time.format(rise) : "yok"}, ay batışı{" "}
-          {set ? fmt.time.format(set) : "yok"}.
-        </li>
-        <li>Bir sonraki dolunay: {fmt.date.format(nextFull)}.</li>
-      </QuickFacts>
+      {/* Saat, yüzde ve il adlarına gelen ekler (18:33'te / 09:00'da) değiştiği için ek kullanılmıyor. */}
+      <AnswerBox
+        question="Bugün ay nasıl?"
+        answer={`Bugün ay ${phase.name.toLocaleLowerCase("tr-TR")} evresinde: ${ill} aydınlık ve ${phase.isWaxing ? "büyüyor" : "küçülüyor"}.`}
+        rows={[
+          { label: "Ay yaşı", value: `${fmt.decimal.format(phase.ageDays)} gün (son yeni aydan bu yana)` },
+          { label: `Ay doğuşu (${location.name})`, value: rise ? fmt.time.format(rise) : "Bugün doğmuyor" },
+          { label: `Ay batışı (${location.name})`, value: set ? fmt.time.format(set) : "Bugün batmıyor" },
+          { label: "Bir sonraki dolunay", value: `${fmt.date.format(nextFull)}, ${fmt.time.format(nextFull)}` },
+          { label: "Bir sonraki yeni ay", value: `${fmt.date.format(nextNew)}, ${fmt.time.format(nextNew)}` },
+        ]}
+        note={
+          <>
+            Evre ve aydınlık oranı Türkiye&apos;nin her yerinde aynıdır; doğuş ve batış saatleri ile göre değişir (
+            <a href="#dogus-batis" className="underline underline-offset-2">
+              ilinizi seçin
+            </a>
+            ). Evre saatleri ABD Deniz Gözlemevi tablolarıyla karşılaştırılmıştır.{src.ref("usnoMoonPhases")}
+          </>
+        }
+      />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -218,6 +252,11 @@ async function Summary() {
           url: new URL(PATH, siteConfig.url).toString(),
           inLanguage: "tr-TR",
           dateModified: now.toISOString(),
+          author: {
+            "@type": "Person",
+            name: siteConfig.author.name,
+            url: new URL(PAGES.yazar.path, siteConfig.url).toString(),
+          },
         }}
       />
     </>
@@ -244,7 +283,7 @@ async function CityMoonTimes({ slug }: { slug: string }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Doğuş ve batış</p>
-          <h2 id="dogus-batis" className="mt-1 text-2xl font-semibold tracking-tight">
+          <h2 id="dogus-batis" className="mt-1 scroll-mt-32 text-2xl font-semibold tracking-tight">
             {city.name} için bugün
           </h2>
         </div>
@@ -263,6 +302,7 @@ async function CityMoonTimes({ slug }: { slug: string }) {
           timeZone: city.timeZone,
         }}
       />
+      <MonthRiseSet city={city} />
     </section>
   );
 }
@@ -279,17 +319,13 @@ async function NextPhases() {
   return (
     <section className="mt-12" aria-labelledby="siradaki-evreler">
       <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Sıradaki</p>
-      <h2 id="siradaki-evreler" className="mt-1 text-2xl font-semibold tracking-tight">
+      <h2 id="siradaki-evreler" className="mt-1 scroll-mt-32 text-2xl font-semibold tracking-tight">
         Dolunay ve yeni ay
       </h2>
       <dl className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         <PhaseFact angle={180} label="Bir sonraki dolunay" date={full} fmt={fmt} />
         <PhaseFact angle={0} label="Bir sonraki yeni ay" date={fresh} fmt={fmt} />
       </dl>
-      <p className="mt-8 text-sm text-zinc-500">
-        Son güncelleme: <time dateTime={now.toISOString()}>{fmt.dateTime.format(now)}</time> (Türkiye saati). Ay
-        görseli: NASA Scientific Visualization Studio.
-      </p>
     </section>
   );
 }
@@ -330,5 +366,148 @@ function PhaseFact({
         <dd className="text-sm text-zinc-600 dark:text-zinc-400">Saat {fmt.time.format(date)}</dd>
       </div>
     </div>
+  );
+}
+
+/** "2026-11-01" (Türkiye tarihi) */
+function isoDate(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: location.timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+}
+
+const DIRECTIONS = ["Kuzey", "Kuzeydoğu", "Doğu", "Güneydoğu", "Güney", "Güneybatı", "Batı", "Kuzeybatı"];
+
+/** Pusula yönü, kelimeyle: 72° → "Doğu". */
+function directionName(azimuth: number): string {
+  return DIRECTIONS[Math.round((((azimuth % 360) + 360) % 360) / 45) % 8];
+}
+
+/**
+ * Bu ayın gün gün doğuş-batış tablosu (timeanddate "Moonrise, Moonset" tablosu gibi), seçilen il için.
+ * Telefonda bugünden itibaren bir hafta açık, gerisi "daha göster" arkasında. Saatte bir yenilenir.
+ */
+async function MonthRiseSet({ city }: { city: { slug: string; name: string } }) {
+  "use cache";
+  cacheLife("hours");
+
+  const place = findProvince(city.slug) ?? location;
+  const tz = place.timeZone;
+  const now = new Date();
+  const { year, month } = currentMonth(tz);
+  const today = Number(new Intl.DateTimeFormat("en-US", { timeZone: tz, day: "numeric" }).format(now));
+  const fmt = formatters();
+  const days = getMonthCalendar(year, month, tz).map((d) => {
+    const { rise, set } = getMoonRiseSet(zonedTimeToUtc(year, month, d.day, 12, tz), place);
+    return {
+      key: String(d.day),
+      day: d.day,
+      weekday: d.weekday,
+      principal: d.principal?.name,
+      illumination: d.phase.illumination,
+      rise,
+      riseDir: rise ? directionName(getMoonPosition(rise, place).azimuth) : "",
+      set,
+      setDir: set ? directionName(getMoonPosition(set, place).azimuth) : "",
+    };
+  });
+  const shown = (day: number) => day >= today && day < today + 7;
+  const monthName = MONTH_NAMES[month - 1];
+
+  return (
+    <div className="mt-12">
+      <h2 id="aylik-dogus-batis" className="scroll-mt-32 text-2xl font-semibold tracking-tight">
+        {place.name}: {monthName} {year} ay doğuş ve batış saatleri
+      </h2>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Ayın her gün doğduğu ve battığı saat, ufukta hangi yönde göründüğüyle birlikte (Türkiye saati). Bir gün
+        &quot;doğmuyor&quot; ya da &quot;batmıyor&quot; yazması hata değildir; nedeni aşağıda anlatılıyor. İl seçimi
+        yukarıdaki kutudan değişir.
+      </p>
+      <MobileCollapse
+        hiddenCount={days.filter((d) => !shown(d.day)).length}
+        noun="gün"
+        className="mt-4"
+      >
+        <DataTable
+          columns={["Gün", "Ay doğuşu", "Ay batışı", "Aydınlık"]}
+          highlight={String(today)}
+          dim={(key) => Number(key) < today}
+          extra={(key) => !shown(Number(key))}
+          rows={days.map((d) => ({
+            key: d.key,
+            cells: [
+              <span key="g" className="whitespace-nowrap">
+                <span className="tabular-nums">
+                  {d.day} {monthName.slice(0, 3)}
+                </span>{" "}
+                <span className="text-zinc-500">{WEEKDAYS_SHORT[d.weekday]}</span>
+                {d.day === today && <span className="ml-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300">Bugün</span>}
+                {d.principal && <span className="block text-xs font-semibold text-indigo-700 dark:text-indigo-300">{d.principal}</span>}
+              </span>,
+              d.rise ? (
+                <span key="r" className="whitespace-nowrap">
+                  <span className="font-medium tabular-nums">{fmt.time.format(d.rise)}</span>{" "}
+                  <span className="text-zinc-500">{d.riseDir}</span>
+                </span>
+              ) : (
+                <span key="r" className="text-zinc-500">Doğmuyor</span>
+              ),
+              d.set ? (
+                <span key="s" className="whitespace-nowrap">
+                  <span className="font-medium tabular-nums">{fmt.time.format(d.set)}</span>{" "}
+                  <span className="text-zinc-500">{d.setDir}</span>
+                </span>
+              ) : (
+                <span key="s" className="text-zinc-500">Batmıyor</span>
+              ),
+              <span key="a" className="tabular-nums">
+                %{Math.round(d.illumination * 100)}
+              </span>,
+            ],
+          }))}
+        />
+      </MobileCollapse>
+      <p className="mt-3 text-sm text-zinc-500">
+        Saatler il merkezi ve açık bir ufuk içindir; aydınlık oranı akşam 21:00 içindir. Ay her gün ortalama 50 dakika geç
+        doğar.{" "}
+        <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+          Hesap ne kadar doğru?
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+/** Sayfa sonu: numaralı kaynaklar ve son hesap zamanı. Saatte bir yenilenir. */
+async function TodayFooter() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const fmt = formatters();
+  return (
+    <section
+      aria-labelledby="kaynaklar"
+      className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+    >
+      <h2 id="kaynaklar" data-toc-skip className="font-semibold text-zinc-900 dark:text-white">
+        Kaynaklar
+      </h2>
+      <SourceList src={src} />
+      <ul className="mt-4 list-disc space-y-1 pl-5">
+        <li>
+          Tarih ve saatler: Astronomy Engine ile Türkiye saatine göre hesaplanmıştır (
+          <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+            nasıl doğruladık?
+          </Link>
+          ).
+        </li>
+        <li>Ay görseli: NASA Scientific Visualization Studio.</li>
+      </ul>
+      <AllSourcesLink />
+      <p className="mt-4">
+        Son hesap: <time dateTime={now.toISOString()}>{fmt.dateTime.format(now)}</time> (Türkiye saati). Sayfa saatte
+        bir kendiliğinden yenilenir.
+      </p>
+    </section>
   );
 }

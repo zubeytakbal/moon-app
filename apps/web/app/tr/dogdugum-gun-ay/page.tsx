@@ -6,17 +6,22 @@ import { Suspense } from "react";
 import { getMoonPhase, SYNODIC_MONTH_DAYS, zonedTimeToUtc } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
+import { AnswerBox } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { nearestNamedFullMoon } from "@/lib/full-moon-names";
-import { QuickFacts } from "@/components/QuickFacts";
 import { ShareButton } from "@/components/ShareButton";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.dogdugumGun;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonFactSheet", "arliss2005");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 /** Ayın Dünya etrafındaki bir turu (yıldızlara göre), gün. */
@@ -49,20 +54,47 @@ export default function BirthMoonPage({ searchParams }: PageProps<"/tr/dogdugum-
           <p className="mt-4 max-w-xl text-lg text-zinc-300">
             Doğum tarihinizi girin; o gece gökyüzündeki ayı, evresini ve aydınlık oranını görün.
           </p>
+          <Byline updated={UPDATED} />
           <Suspense fallback={<BirthForm />}>
             <FormAndResult searchParams={searchParams} />
           </Suspense>
         </div>
       </section>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Nasıl öğrenilir?" },
+          { href: "#ornekler", label: "Örnek tarihler" },
+          { href: "#neden-ilginc", label: "19 yılda bir aynı ay" },
+          { href: "#dolunayda-doganlar", label: "Dolunayda doğanlar" },
+          { href: "#hesap", label: "Hesap nasıl yapılıyor?" },
+        ]}
+      />
 
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Ay evresi, doğduğunuz gün ve saatte ayın ne kadarının aydınlık göründüğünü anlatır.</li>
-          <li>Saat girmezseniz öğle 12:00 kabul edilir. Evrenin adı gün boyunca genellikle değişmez.</li>
-          <li>Hesap Türkiye saatine göredir; geçmişteki yaz saati uygulamaları da hesaba katılır.</li>
-        </QuickFacts>
+        <AnswerBox
+          question="Doğduğum gün ay nasıldı?"
+          answer="Doğum tarihinizi yukarıdaki kutuya girin: o gün ayın hangi evrede olduğunu, yüzde kaçının aydınlık olduğunu ve kaç günlük olduğunu hesaplıyoruz."
+          rows={[
+            { label: "Saati bilmiyorsanız", value: "Öğle 12:00 kabul edilir. Evrenin adı gün içinde genellikle değişmez." },
+            { label: "Hangi saate göre?", value: "Türkiye saatine göre; 2016'ya kadarki yaz ve kış saati farkları da hesaba katılır." },
+            { label: "Hangi tarihler?", value: "1900 ile 2100 arasındaki bütün tarihler." },
+            { label: "Ay ne zaman yine aynı görünür?", value: "19., 38. ve 57. yaş günlerinizde (19 yıllık Meton döngüsü)." },
+            {
+              label: "Tarihim kaydediliyor mu?",
+              value: (
+                <>
+                  Hayır, bir hesapta ya da veritabanında tutulmaz; tarih yalnız sayfanın adresinde durur (
+                  <Link href={PAGES.gizlilik.path} className="underline underline-offset-2">
+                    Gizlilik Politikası
+                  </Link>
+                  ).
+                </>
+              ),
+            },
+          ]}
+        />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Örnek tarihler</h2>
+        <h2 id="ornekler" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Örnek tarihler</h2>
         <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {EXAMPLES.map((e) => (
             <li key={e.date}>
@@ -81,9 +113,9 @@ export default function BirthMoonPage({ searchParams }: PageProps<"/tr/dogdugum-
         </ul>
 
         <Prose>
-          <h2>Doğum günündeki ay neden ilginç?</h2>
+          <h2 id="neden-ilginc">Doğum günündeki ay neden ilginç?</h2>
           <p>
-            Ay evresi, her ay yeniden başlayan 29,5 günlük bir döngüdür. Doğum günümüz ise her yıl aynı tarihte gelir.
+            Ay evresi, her ay yeniden başlayan 29,5 günlük bir döngüdür.{src.ref("nasaMoonFactSheet")} Doğum günümüz ise her yıl aynı tarihte gelir.
             Bu iki takvim birbirine uymadığı için doğum gününüzdeki ay her yıl farklıdır: bir yıl dolunay, ertesi yıl
             yaklaşık 11 gün geride, ince bir hilal olabilir.
           </p>
@@ -94,14 +126,16 @@ export default function BirthMoonPage({ searchParams }: PageProps<"/tr/dogdugum-
             günlerinizdeki ayı da görebilirsiniz.
           </p>
 
-          <h2>&quot;Dolunayda doğanlar&quot; hakkında</h2>
+          <h2 id="dolunayda-doganlar">&quot;Dolunayda doğanlar&quot; hakkında</h2>
           <p>
-            Dolunay gecelerinde daha çok doğum olduğu sık duyulan bir inanıştır. Milyonlarca doğum kaydını inceleyen
-            araştırmalar ise ay evresi ile doğum sayısı arasında anlamlı bir ilişki bulamamıştır. Doğduğunuz günün ayı,
+            Dolunay gecelerinde daha çok doğum olduğu sık duyulan bir inanıştır. Araştırmalar bunu doğrulamıyor:
+            ABD&apos;nin Kuzey Karolina eyaletinde beş yılda gerçekleşen 564.039 doğumu inceleyen bir çalışma, ayın sekiz
+            evresi arasında doğum sayısı ya da doğum komplikasyonları bakımından anlamlı bir fark bulmadı.
+            {src.ref("arliss2005")} Doğduğunuz günün ayı,
             sizin hakkınızda bir şey söylemez; ama o geceye bakmanın güzel bir yoludur.
           </p>
 
-          <h2>Hesap nasıl yapılıyor?</h2>
+          <h2 id="hesap">Hesap nasıl yapılıyor?</h2>
           <ul>
             <li>
               Girdiğiniz tarih ve saat, o tarihte Türkiye&apos;de geçerli olan saat dilimine göre evrensel zamana
@@ -116,15 +150,7 @@ export default function BirthMoonPage({ searchParams }: PageProps<"/tr/dogdugum-
           </ul>
         </Prose>
 
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Hesaplar Astronomy Engine ile yapılmıştır. Ay görseli: NASA Scientific Visualization Studio. Girdiğiniz
-            tarih kaydedilmez.
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter page={PAGE} headline={PAGE.title} updated={UPDATED} src={src} />
       </main>
       <JsonLd
         data={{

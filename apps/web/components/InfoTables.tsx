@@ -99,6 +99,7 @@ export function DataTable({
   rows,
   highlight,
   dim,
+  extra,
 }: {
   columns: string[];
   rows: { key: string; cells: ReactNode[] }[];
@@ -106,6 +107,8 @@ export function DataTable({
   highlight?: string;
   /** Soluk gösterilecek satırlar (ör. geçmişte kalanlar). */
   dim?: (key: string) => boolean;
+  /** Telefonda "daha göster"e kadar gizlenecek satırlar (`MobileCollapse` içinde kullanılır). */
+  extra?: (key: string) => boolean;
 }) {
   return (
     <div className={TABLE_WRAP}>
@@ -121,6 +124,7 @@ export function DataTable({
           {rows.map((r) => (
             <tr
               key={r.key}
+              data-extra={extra?.(r.key) || undefined}
               className={`border-t border-zinc-200 dark:border-zinc-800 ${
                 r.key === highlight
                   ? "bg-indigo-50 dark:bg-indigo-950/40"

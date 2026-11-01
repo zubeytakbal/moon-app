@@ -1,11 +1,12 @@
 import { Prose } from "@/components/Prose";
+import type { PageSources } from "@/components/Sources";
 
 /**
  * "Bugün Ay Nasıl?" sayfasının açıklama metni.
  * Odak: ekrandaki bilgileri okumak ve ayı ne zaman görebileceğini bilmek.
  * Evrelerin genel anlatımı "Ay evreleri nedir" sayfasının konusu, burada tekrar edilmez.
  */
-export function Explainer() {
+export function Explainer({ src }: { src: PageSources }) {
   return (
     <article className="mt-14 border-t border-zinc-200 pt-2 dark:border-zinc-800">
       <Prose>
@@ -35,7 +36,7 @@ export function Explainer() {
           </li>
         </ul>
 
-        <h2>Ayı bugün ne zaman görebilirim?</h2>
+        <h2 id="ne-zaman-gorulur">Ayı bugün ne zaman görebilirim?</h2>
         <p>
           Ayın gökyüzünde ne zaman bulunacağı evresine bağlıdır. Ay, evresine göre günün farklı saatlerinde doğar. Doğuş
           ve batış saatlerine bakarak ayı ne zaman arayacağınızı kabaca tahmin edebilirsiniz:
@@ -86,9 +87,9 @@ export function Explainer() {
           da güney yönüne bakmanız yeterli.
         </p>
 
-        <h2>Ay neden her gün daha geç doğuyor?</h2>
+        <h2 id="gec-dogar">Ay neden her gün daha geç doğuyor?</h2>
         <p>
-          Ay, Dünya&apos;nın etrafında bir turunu yaklaşık 27,3 günde tamamlar. Bu yüzden her gün gökyüzünde yaklaşık 13
+          Ay, Dünya&apos;nın etrafında bir turunu yaklaşık 27,3 günde tamamlar.{src.ref("nasaMoonFactSheet")} Bu yüzden her gün gökyüzünde yaklaşık 13
           derece doğuya kayar. Dünya kendi etrafında bir tur döndüğünde ay aynı yere gelmemiş olur. Dünya&apos;nın ayı
           yakalamak için biraz daha dönmesi gerekir. Bu fark, ayın her gün ortalama 50 dakika kadar geç doğmasına yol
           açar.
@@ -125,8 +126,8 @@ export function Explainer() {
           <a href="https://github.com/cosinekitty/astronomy" rel="noopener" target="_blank">
             Astronomy Engine
           </a>{" "}
-          kütüphanesini kullanıyoruz. Sonuçlarını NASA&apos;nın yayımladığı ay evresi tablolarıyla karşılaştırdık.
-          Dolunay ve yeni ay anlarında dakika düzeyinde uyum var.
+          kütüphanesini kullanıyoruz. Sonuçlarını ABD Deniz Gözlemevi&apos;nin ay evresi
+          tablolarıyla karşılaştırdık; dolunay ve yeni ay anlarında fark en fazla bir dakikadır.{src.ref("usnoMoonPhases")}
         </p>
         <ul>
           <li>Saatler Türkiye saatiyle (UTC+3) verilir.</li>

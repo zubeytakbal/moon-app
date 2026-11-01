@@ -5,12 +5,15 @@ import Link from "next/link";
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { OrbitDiagram } from "@/components/OrbitDiagram";
 import { PhaseModel } from "@/components/PhaseModel";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -19,7 +22,8 @@ import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.ayEvreleri;
 /** İçerik son kez elle güncellendiğinde değiştirilir. */
-const CONTENT_UPDATED = "2026-10-29";
+const CONTENT_UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonPhases", "nasaPhaseCatalog", "nasaMoonFactSheet");
 
 export const metadata: Metadata = {
   title: `Ay Evreleri Nedir? 8 Evrenin Adı, Sırası ve Anlamı | ${siteConfig.name}`,
@@ -64,6 +68,7 @@ export default function MoonPhasesPage() {
             Ay her gece biraz farklı görünür: ince bir hilalden yarım daireye, oradan dolunaya ve tekrar geriye. Bu
             sayfada bu değişimin nedenini, sekiz evrenin adını ve sırasını anlatıyoruz.
           </p>
+          <Byline updated={CONTENT_UPDATED} />
           <ol className="mt-10 grid grid-cols-4 gap-x-2 gap-y-6 sm:grid-cols-8" aria-label="Ayın 8 evresi">
             {PHASE_ROWS.map((row) => (
               <li key={row.key}>
@@ -81,24 +86,23 @@ export default function MoonPhasesPage() {
           </ol>
         </div>
       </section>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Ay şu an hangi evrede?" },
+          { href: "#nasil-olusur", label: "Nasıl oluşur?" },
+          { href: "#sekiz-evre", label: "8 evre tablosu" },
+          { href: "#kac-gun", label: "Kaç gün sürer?" },
+          { href: "#hangi-taraf", label: "Hangi taraftan dolar?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <div>
-          <QuickFacts>
-            <li>Ayın kendi ışığı yoktur. Her zaman Güneş&apos;e bakan yarısı aydınlıktır.</li>
-            <li>
-              Ay Dünya&apos;nın etrafında dönerken bu aydınlık yarıyı farklı açılardan görürüz. Ay evreleri bu yüzden
-              oluşur.
-            </li>
-            <li>Yeni aydan bir sonraki yeni aya kadar ortalama 29,5 gün geçer ve bu sürede 8 evre yaşanır.</li>
-          </QuickFacts>
-        </div>
-
-        <CurrentPhase />
+        <PhasesAnswer />
 
         <Prose>
-          <h2>Ay evreleri nasıl oluşur?</h2>
+          <h2 id="nasil-olusur">Ay evreleri nasıl oluşur?</h2>
           <p>
-            Güneş, ayın her zaman bir yarısını aydınlatır. Tıpkı Dünya&apos;da olduğu gibi ayda da bir gündüz yarısı ve
+            Güneş, ayın her zaman bir yarısını aydınlatır.{src.ref("nasaMoonPhases")} Tıpkı Dünya&apos;da olduğu gibi ayda da bir gündüz yarısı ve
             bir gece yarısı vardır. Ay Dünya&apos;nın etrafında dönerken biz bu gündüz yarısının bazen tamamını, bazen
             bir kısmını, bazen de hiçbir yerini göremeyiz.
           </p>
@@ -122,7 +126,7 @@ export default function MoonPhasesPage() {
 
           <NasaFigure images={[IMAGES.earthrise]} />
 
-          <h2>Ayın 8 evresi</h2>
+          <h2 id="sekiz-evre">Ayın 8 evresi</h2>
           <p>
             Bir ay döngüsünde dört <strong>ana evre</strong> ve aralarında dört <strong>ara evre</strong> bulunur.
             Aşağıdaki tabloda evreler sırasıyla yer alıyor. Ay yaşı, son yeni aydan bu yana geçen gün sayısıdır.
@@ -144,20 +148,20 @@ export default function MoonPhasesPage() {
             andır.
           </p>
 
-          <h2>Bir ay döngüsü kaç gün sürer?</h2>
+          <h2 id="kac-gun">Bir ay döngüsü kaç gün sürer?</h2>
           <p>
-            İki yeni ay arasında ortalama <strong>29 gün 12 saat 44 dakika</strong> (29,53 gün) geçer. Buna sinodik ay
-            denir. Ancak her döngü aynı uzunlukta değildir. Ayın Dünya etrafındaki yörüngesi tam bir daire değil, hafif
+            İki yeni ay arasında ortalama <strong>29 gün 12 saat 44 dakika</strong> (29,53 gün) geçer.{src.ref("nasaPhaseCatalog")} Buna
+            sinodik ay denir. Ancak her döngü aynı uzunlukta değildir. Ayın Dünya etrafındaki yörüngesi tam bir daire değil, hafif
             bir elips olduğu için hızı değişir. 2000-2100 yılları arasındaki bütün döngüleri hesapladık: en kısası 29,27
             gün, en uzunu 29,82 gün sürüyor.
           </p>
           <p>
-            Ay, Dünya&apos;nın etrafındaki asıl turunu aslında daha kısa sürede, yaklaşık 27,3 günde tamamlar. Fakat bu
+            Ay, Dünya&apos;nın etrafındaki asıl turunu aslında daha kısa sürede, yaklaşık 27,3 günde tamamlar.{src.ref("nasaMoonFactSheet")} Fakat bu
             sürede Dünya da Güneş&apos;in etrafında ilerlediği için ayın Güneş&apos;e göre aynı konuma gelmesi iki gün
             kadar daha sürer. Evreleri belirleyen de Güneş&apos;e göre konumdur.
           </p>
 
-          <h2>Türkiye&apos;den bakınca ay hangi taraftan dolar?</h2>
+          <h2 id="hangi-taraf">Türkiye&apos;den bakınca ay hangi taraftan dolar?</h2>
           <p>
             Türkiye kuzey yarımkürededir. Buradan bakıldığında ay <strong>sağ taraftan dolmaya başlar</strong>: büyüyen
             hilalin ve ilk dördünün sağ tarafı aydınlıktır. Dolunaydan sonra yine <strong>sağ taraftan eksilir</strong>:
@@ -189,38 +193,11 @@ export default function MoonPhasesPage() {
 
         </Prose>
         <Faq items={FAQS.ayEvreleri} />
-        <Prose>
-          {/* Her sayfada bulunduğu için içindekilere alınmaz. */}
-          <h2 data-toc-skip>Kaynaklar</h2>
-          <ul>
-            <li>
-              NASA Science,{" "}
-              <a href="https://science.nasa.gov/moon/moon-phases/" rel="noopener" target="_blank">
-                Moon Phases
-              </a>
-            </li>
-            <li>
-              Evre tarihleri ve döngü süreleri:{" "}
-              <a href="https://github.com/cosinekitty/astronomy" rel="noopener" target="_blank">
-                Astronomy Engine
-              </a>{" "}
-              ile hesaplanmıştır.
-            </li>
-          </ul>
-        </Prose>
-
-        <p className="mt-10 text-sm text-zinc-500">
-          Son güncelleme: <time dateTime={CONTENT_UPDATED}>29 Ekim 2026</time>
-        </p>
-        <JsonLd
-          data={{
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: "Ay Evreleri Nedir? 8 Evrenin Adı, Sırası ve Anlamı",
-            inLanguage: "tr-TR",
-            dateModified: CONTENT_UPDATED,
-            mainEntityOfPage: new URL(PAGE.path, siteConfig.url).toString(),
-          }}
+        <ArticleFooter
+          page={PAGE}
+          headline="Ay Evreleri Nedir? 8 Evrenin Adı, Sırası ve Anlamı"
+          updated={CONTENT_UPDATED}
+          src={src}
         />
       </main>
     </>
@@ -239,33 +216,27 @@ const PHASE_PAGE: Record<PhaseKey, string> = {
   "waning-crescent": PAGES.hilal.path,
 };
 
+/** 8 evre tablosu (timeanddate düzeni): sıra, evre (sayfasına bağlantı), ay yaşı, aydınlık oranı, görünüşü. */
 function PhaseTable() {
   return (
-    <ol className="mt-6 divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white shadow-sm dark:bg-zinc-900 dark:divide-zinc-800 dark:border-zinc-800">
-      {PHASE_ROWS.map((row, i) => (
-        <li key={row.key}>
-          <Link
-            href={PHASE_PAGE[row.key]}
-            className="group flex items-center gap-4 p-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-          >
-            <span className="w-5 shrink-0 text-right text-sm text-zinc-400">{i + 1}</span>
-            <span className="shrink-0 rounded-full bg-[#05070d] p-1.5">
-              <MoonPhaseIcon phaseAngle={row.angle} size={44} title={PHASE_NAMES_TR[row.key]} />
+    <DataTable
+      columns={["Sıra", "Evre", "Ay yaşı (gün)", "Aydınlık", "Türkiye'den görünüşü"]}
+      rows={PHASE_ROWS.map((row, i) => ({
+        key: row.key,
+        cells: [
+          <span key="i" className="tabular-nums">{i + 1}</span>,
+          <Link key="e" href={PHASE_PAGE[row.key]} className="flex items-center gap-2.5 font-semibold underline-offset-2 hover:underline">
+            <span className="shrink-0 rounded-full bg-[#05070d] p-1">
+              <MoonPhaseIcon phaseAngle={row.angle} size={30} title="" />
             </span>
-            <div className="min-w-0">
-              <p className="font-semibold">{PHASE_NAMES_TR[row.key]}</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">{row.look}</p>
-              <p className="mt-1 text-xs text-zinc-500">
-                Ay yaşı: {row.age} gün · Aydınlık: {row.lit}
-              </p>
-            </div>
-            <span aria-hidden="true" className="ml-auto text-zinc-400 transition group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ol>
+            <span className="whitespace-nowrap">{PHASE_NAMES_TR[row.key]}</span>
+          </Link>,
+          <span key="y" className="whitespace-nowrap tabular-nums">{row.age}</span>,
+          <span key="a" className="whitespace-nowrap tabular-nums">{row.lit}</span>,
+          <span key="g" className="text-zinc-600 dark:text-zinc-400">{row.look}</span>,
+        ],
+      }))}
+    />
   );
 }
 
@@ -277,7 +248,8 @@ async function TodayPhaseModel() {
   return <PhaseModel todayAngle={getMoonPhase(new Date(), siteConfig.defaultLocation.timeZone).phaseAngle} />;
 }
 
-async function CurrentPhase() {
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): tanım, şu anki evre, önümüzdeki ana evreler. Saatte bir yenilenir. */
+async function PhasesAnswer() {
   "use cache";
   cacheLife("hours");
 
@@ -295,29 +267,33 @@ async function CurrentPhase() {
   });
 
   return (
-    <section
-      aria-labelledby="simdiki-evre"
-      className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-    >
-      <h2 id="simdiki-evre" className="text-lg font-semibold">
-        Ay şu anda: {phase.name}
-      </h2>
-      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Önümüzdeki ana evreler (Türkiye saati):</p>
-      <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {upcoming.map((p) => (
-          <li key={p.date.toISOString()} className="flex items-center gap-3">
-            <span className="shrink-0 rounded-full bg-[#05070d] p-1">
-              <MoonPhaseIcon phaseAngle={PHASE_ROWS.find((r) => r.key === p.key)!.angle} size={28} title={p.name} />
-            </span>
-            <span>
-              <span className="font-medium">{p.name}</span>
-              <span className="block text-sm text-zinc-600 dark:text-zinc-400">
-                <time dateTime={p.date.toISOString()}>{fmt.format(p.date)}</time>
-              </span>
-            </span>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <AnswerBox
+      question="Ay evreleri nedir?"
+      answer={
+        <>
+          Ay evreleri, ayın Güneş&apos;le aydınlanan yarısını ay Dünya&apos;nın etrafında dönerken farklı açılardan
+          görmemizle oluşan 8 görünüştür. Ay şu an <Link href={PHASE_PAGE[phase.key]} className="underline underline-offset-4">{phase.name}</Link>{" "}
+          evresinde.
+        </>
+      }
+      rows={[
+        { label: "Şu an", value: `${phase.name}, %${Math.round(phase.illumination * 100)} aydınlık` },
+        ...upcoming.map((p) => ({
+          label: p.name,
+          value: <time dateTime={p.date.toISOString()}>{fmt.format(p.date)}</time>,
+        })),
+        { label: "Bir döngü", value: "Ortalama 29 gün 12 saat 44 dakika (yeni aydan yeni aya)" },
+        {
+          label: "Sırası",
+          value: "Yeni ay, büyüyen hilal, ilk dördün, büyüyen şişkin ay, dolunay, küçülen şişkin ay, son dördün, küçülen hilal",
+        },
+      ]}
+      note={
+        <>
+          Saatler Türkiye saatidir. Günlük ayrıntı için <Link href={PAGES.bugunAy.path} className="underline underline-offset-2">Bugün Ay</Link>,
+          ay ay bütün evreler için <Link href={PAGES.ayTakvimi.path} className="underline underline-offset-2">Ay Takvimi</Link>.
+        </>
+      }
+    />
   );
 }

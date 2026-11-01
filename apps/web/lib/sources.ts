@@ -78,6 +78,22 @@ export const SOURCES = {
     note: "Ayın temel sayıları: evre döngüsü (sinodik dönem) 29,53 gün, yörünge dönemi 27,32 gün, ortalama uzaklık 384.400 km, yörünge eğikliği 5,145°.",
     group: "ay",
   },
+  nasaMoonPhases: {
+    no: 7,
+    title: "Moon Phases",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/moon/moon-phases/",
+    note: "Güneş'in ayın her zaman yarısını aydınlatması; evrelerin bu aydınlık yarıyı farklı açılardan görmemizden doğması; sekiz evrenin adları ve döngünün yaklaşık 29,5 gün sürmesi.",
+    group: "ay",
+  },
+  arliss2005: {
+    no: 8,
+    title: "The effect of the lunar cycle on frequency of births and birth complications",
+    publisher: "Arliss, Kaplan ve Galvin; American Journal of Obstetrics and Gynecology, 2005 (PubMed)",
+    url: "https://pubmed.ncbi.nlm.nih.gov/15902138/",
+    note: "Kuzey Karolina'da 1997-2001 arasındaki 564.039 doğumda, ayın 8 evresi arasında doğum sayısı, doğum şekli ve komplikasyonlar bakımından anlamlı bir fark bulunmaması.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;
