@@ -13,11 +13,13 @@ import {
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
 import { MonthLink } from "@/components/MonthLink";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
+import { QuickLinks } from "@/components/QuickLinks";
 import { buildSingleEventIcs, googleCalendarLink } from "@/lib/ics";
 import {
   adjacentMonths,
@@ -35,7 +37,7 @@ import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ekimDikim;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const WEEKDAYS_LONG = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 
@@ -154,21 +156,24 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
       <Suspense fallback={<PlantFinder weekend={false} />}>
         <SelectedFinder searchParams={searchParams} />
       </Suspense>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bugün uygun mu?" },
+          { href: "#ne-ekeceksiniz", label: "Bitkinize göre gün bulun" },
+          { href: "#ekim-takvim", label: "Aylık takvim" },
+          { href: "#kurallar", label: "Kurallar" },
+          { href: "#biyodinamik", label: "Kök, yaprak, çiçek, meyve günleri" },
+          { href: "#bilim", label: "Bilim ne diyor?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
+      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        <PlantingAnswer />
+      </div>
       <Suspense fallback={<CurrentMonth />}>
         <SelectedMonth searchParams={searchParams} />
       </Suspense>
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Geleneğe göre büyüyen ayda toprak üstünde ürün veren, küçülen ayda kökü yenen bitkiler ekilir.</li>
-          <li>
-            Yeni ay ve dolunay günleri ile bunlara bitişik günler, gelenekte ekim dikim için &quot;dinlenme&quot;
-            sayılır.
-          </li>
-          <li>
-            Bu kuralların ekim verimini artırdığı bilimsel olarak gösterilmemiştir; takvim geleneği doğru tarihlerle
-            sunar.
-          </li>
-        </QuickFacts>
 
         <Prose>
           <h2>Ay takvimine göre ekim nedir?</h2>
@@ -178,7 +183,7 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
             ve meyveye; ay küçülürken aşağıya, köklere çekildiğine inanılır.
           </p>
 
-          <h2>Gelenekteki kurallar</h2>
+          <h2 id="kurallar">Gelenekteki kurallar</h2>
           <ul>
             <li>
               <strong>Büyüyen ay (yeni aydan dolunaya):</strong> Ürünü toprağın üstünde olan bitkiler ekilir: marul,
@@ -201,7 +206,7 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
             ekmeyi önerir. Takvimde yalnızca en yaygın kurallar uygulanmıştır.
           </p>
 
-          <h2>Biyodinamik takvim: kök, yaprak, çiçek, meyve günleri</h2>
+          <h2 id="biyodinamik">Biyodinamik takvim: kök, yaprak, çiçek, meyve günleri</h2>
           <p>
             Avrupa&apos;da yaygın olan biyodinamik tarım geleneği, 20. yüzyılda Alman araştırmacı Maria Thun&apos;un
             takvimiyle tanınmıştır. Bu gelenekte ayın bulunduğu burcun elementine göre günler dörde ayrılır: toprak
@@ -225,17 +230,11 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
             gün seçmenize yardımcı olur.
           </p>
 
-          <h2>Bilim ne diyor?</h2>
+          <h2 id="bilim">Bilim ne diyor?</h2>
           <p>
             Ayın evrelerinin ekim verimine etkisini gösteren güçlü bir bilimsel kanıt yoktur. Bitkinin büyümesini asıl
             belirleyenler toprak, su, sıcaklık, gün ışığı süresi ve ekim mevsimidir. Ayın çekiminin bitkideki özsuyu
             hareket ettirecek kadar güçlü olmadığı kabul edilir.
-          </p>
-          <p>
-            Yine de konu araştırılmaya devam ediyor. Antalya&apos;daki Batı Akdeniz Ormancılık Araştırma Enstitüsü,
-            2012&apos;de başlattığı bir projede ayın dört ana evresinde kesilen kızılçam ağaçlarını incelemiş; ön
-            bulgularda dolunay ve yeni ayda kesilen tomruklarda zararlı böceklerin arttığı gözlenmiştir. Bu çalışma ağaç
-            kesimiyle ilgilidir, 40 ağaç üzerinde yapılmıştır ve ekim verimi hakkında bir sonuç içermez.
           </p>
           <p>
             Takvimi, yüzyıllardır süren bir tarım geleneğini doğru tarihlerle izlemek isteyenler için hazırladık. Ekim
@@ -250,35 +249,8 @@ export default function PlantingCalendarPage({ searchParams }: PageProps<"/tr/ay
         </Prose>
 
         <Faq items={FAQS.ekimDikim} />
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanmıştır. Kaynak: Batı Akdeniz
-            Ormancılık Araştırma Enstitüsü çalışmasına ilişkin{" "}
-            <a
-              href="https://www.cnnturk.com/turkiye/anadoludaki-kadim-inanis-bilimsel-olarak-dogrulandi-578602"
-              rel="noopener"
-              target="_blank"
-              className="underline"
-            >
-              CNN Türk haberi (2016)
-            </a>
-            .
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter page={PAGE} headline={PAGE.title} updated={UPDATED} />
       </main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: PAGE.title,
-          url: new URL(PAGE.path, siteConfig.url).toString(),
-          inLanguage: "tr-TR",
-          dateModified: UPDATED,
-        }}
-      />
     </>
   );
 }
@@ -407,6 +379,7 @@ async function PlantFinder({ plant, weekend, ay }: { plant?: string; weekend: bo
         <h1 id="ekim-baslik" className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
           Ay Takvimine Göre Ekim Dikim Takvimi
         </h1>
+        <Byline updated={UPDATED} />
 
         <p className="mt-5 flex items-center gap-3 text-zinc-200">
           <MoonPhaseIcon phaseAngle={today.phaseAngle} size={36} title="" />
@@ -417,7 +390,7 @@ async function PlantFinder({ plant, weekend, ay }: { plant?: string; weekend: bo
         </p>
 
         <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-          <h2 className="text-xl font-semibold">Ne ekeceksiniz?</h2>
+          <h2 id="ne-ekeceksiniz" className="scroll-mt-32 text-xl font-semibold">Ne ekeceksiniz?</h2>
           <p className="mt-1 text-sm text-zinc-400">Bir bitki ya da iş seçin, önümüzdeki uygun günleri gösterelim.</p>
           <div className="mt-4 space-y-3">
             {PLANT_GROUPS.map((g) => (
@@ -667,7 +640,7 @@ async function PlantingCalendar({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-medium uppercase tracking-wider text-zinc-400">Aylık ekim dikim takvimi</p>
-            <h2 id="ekim-takvim" className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 id="ekim-takvim" className="mt-1 scroll-mt-32 text-3xl font-bold tracking-tight sm:text-4xl">
               {monthName} {year}
             </h2>
           </div>
@@ -764,5 +737,72 @@ async function PlantingCalendar({
         </ol>
       </div>
     </section>
+  );
+}
+
+/* ---------- En üstteki cevap kutusu ---------- */
+
+/** "10-22 Kasım" / "28 Kasım - 3 Aralık" */
+function rangeText(first: DayInfo, last: DayInfo): string {
+  if (first.key === last.key) return longDate(first);
+  return first.month === last.month
+    ? `${first.day}-${last.day} ${MONTH_NAMES[first.month - 1]}`
+    : `${shortDate(first)} - ${shortDate(last)}`;
+}
+
+/** Bugünden itibaren verilen iş türünün ilk kesintisiz dönemi. */
+function nextRun(days: DayInfo[], work: Work): { first: DayInfo; last: DayInfo } | null {
+  const i = days.findIndex((d) => d.work === work);
+  if (i < 0) return null;
+  let j = i;
+  while (j + 1 < days.length && days[j + 1].work === work) j++;
+  return { first: days[i], last: days[j] };
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): bugün ne için uygun, sıradaki dönemler. Saatte bir yenilenir. */
+async function PlantingAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const days = upcomingDays(45);
+  const today = days[0];
+  const answer =
+    today.work === "dinlenme"
+      ? `Bugün (${longDate(today)}) dinlenme günü: yeni ay ya da dolunay çevresi, gelenekte ekim dikim yapılmaz.`
+      : today.work === "ust"
+        ? `Bugün (${longDate(today)}) büyüyen ay: toprak üstünde ürün veren bitkileri ekme ve aşılama günü.`
+        : `Bugün (${longDate(today)}) küçülen ay: kök bitkileri ekme, budama ve hasat günü.`;
+
+  const runText = (work: Work) => {
+    const r = nextRun(days, work);
+    if (!r) return "Önümüzdeki 45 günde yok.";
+    return r.first.key === today.key ? `Bugünden ${longDate(r.last)} gününe kadar` : rangeText(r.first, r.last);
+  };
+
+  return (
+    <AnswerBox
+      question="Bugün ekim dikim için uygun mu?"
+      answer={answer}
+      rows={[
+        { label: "Biyodinamik takvimde bugün", value: `${today.bio} günü` },
+        { label: "Toprak üstü ürünler, aşılama", value: runText("ust") },
+        { label: "Kök bitkileri, budama, hasat", value: runText("kok") },
+        { label: "Dinlenme (ekim yapılmaz)", value: runText("dinlenme") },
+      ]}
+      note={
+        <>
+          Halk takvimindeki kurallara göre; ayın evresi ve burcu her gün öğle saatine (Türkiye saati) göre hesaplanır.
+          Bu kuralların verime etkisi bilimsel olarak gösterilmemiştir (
+          <a href="#bilim" className="underline underline-offset-2">
+            bilim ne diyor?
+          </a>
+          ). Bitkinize özel günler için{" "}
+          <a href="#ne-ekeceksiniz" className="underline underline-offset-2">
+            yukarıdaki araca
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }

@@ -2,15 +2,25 @@ import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getMonthCalendar, getNextBlueMoon, getUpcomingPrincipalPhases, type CalendarDay } from "@moon-app/moon";
+import {
+  getMonthCalendar,
+  getMoonPhase,
+  getNextBlueMoon,
+  getUpcomingPrincipalPhases,
+  type CalendarDay,
+  type PrincipalPhase,
+} from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
 import { MonthLink } from "@/components/MonthLink";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
+import { Byline } from "@/components/Byline";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import {
   adjacentMonths,
   currentMonth,
@@ -26,8 +36,9 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ayTakvimi;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
 const timeZone = siteConfig.defaultLocation.timeZone;
+const src = pageSources("usnoMoonPhases", "nasaPhaseCatalog", "nasaMoonFactSheet");
 
 export const metadata: Metadata = {
   title: `Ay Takvimi: Aylık Ay Evreleri, Dolunay ve Yeni Ay Günleri | ${siteConfig.name}`,
@@ -45,36 +56,28 @@ export default function MoonCalendarPage({ searchParams }: PageProps<"/tr/ay-tak
       <Suspense fallback={<CurrentMonth />}>
         <SelectedMonth searchParams={searchParams} />
       </Suspense>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bu ayın evreleri" },
+          { href: "#yillik", label: "Yıllık evre tablosu" },
+          { href: "#nasil-okunur", label: "Nasıl okunur?" },
+          { href: "#mavi-ay", label: "Mavi ay" },
+          { href: "#hicri", label: "Hicri takvimle farkı" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Takvimde her günün kutusu, ayın o akşam saat 21:00&apos;deki görünüşünü ve aydınlık oranını gösterir.</li>
-          <li>
-            Dolunay, yeni ay ve dördünler tek bir andır. Takvimde o anın düştüğü gün, saatiyle birlikte vurgulanır.
-          </li>
-          <li>Bütün saatler Türkiye saatiyle (UTC+3) verilmiştir.</li>
-        </QuickFacts>
+        <MonthAnswer />
+        <YearTables />
         <Explainer />
         <Faq items={FAQS.ayTakvimi} />
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Evre anları Astronomy Engine ile hesaplanmış ve NASA ay evresi tablolarıyla karşılaştırılmıştır. Ay görseli:
-            NASA Scientific Visualization Studio.
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter
+          page={PAGE}
+          headline="Ay Takvimi: Aylık Ay Evreleri, Dolunay ve Yeni Ay Günleri"
+          updated={UPDATED}
+          src={src}
+        />
       </main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: "Ay Takvimi",
-          url: new URL(PAGE.path, siteConfig.url).toString(),
-          inLanguage: "tr-TR",
-          dateModified: UPDATED,
-        }}
-      />
     </>
   );
 }
@@ -121,6 +124,7 @@ async function MonthCalendar({ year, month }: { year: number; month: number }) {
             <h1 id="takvim-baslik" className="mt-2 text-4xl font-bold tracking-tight sm:text-6xl">
               {MONTHS[month - 1]} {year}
             </h1>
+            <Byline updated={UPDATED} />
           </div>
           <nav aria-label="Ay değiştir" className="flex items-center gap-2">
             {prev.year >= MIN_YEAR && (
@@ -249,7 +253,7 @@ async function Explainer() {
 
   return (
     <Prose>
-      <h2>Ay takvimi nasıl okunur?</h2>
+      <h2 id="nasil-okunur">Ay takvimi nasıl okunur?</h2>
       <p>
         Takvimdeki her kutu, ayın o günün akşamı saat 21:00&apos;de nasıl göründüğünü gösterir. Yüzde değeri, ay
         diskinin ne kadarının aydınlık olduğudur. Vurgulu kutular ana evrelerin günleridir:{" "}
@@ -264,7 +268,7 @@ async function Explainer() {
 
       <h2>Evreler neden her ay farklı günlere düşer?</h2>
       <p>
-        Takvim aylarımız 28 ile 31 gün arasında sürer, ay döngüsü ise ortalama 29,5 gündür. Bu küçük fark birikir: bir
+        Takvim aylarımız 28 ile 31 gün arasında sürer, ay döngüsü ise ortalama 29,5 gündür.{src.ref("nasaMoonFactSheet")} Bu küçük fark birikir: bir
         ay 15&apos;inde olan dolunay, ertesi ay genellikle bir gün kadar daha erkene kayar. Bir yılda 12 tam ay döngüsü
         354 gün eder. Bu yüzden ay evreleri her yıl yaklaşık 11 gün geriye kayar. Hicri takvimdeki ayların her yıl 11
         gün öne gelmesinin nedeni de budur.
@@ -277,7 +281,7 @@ async function Explainer() {
         sonraki karşılığının tarihi ise {date.format(repeat.date)}.
       </p>
 
-      <h2>Mavi ay nedir?</h2>
+      <h2 id="mavi-ay">Mavi ay nedir?</h2>
       <p>
         Bazen bir takvim ayına iki dolunay sığar. Bu durumda ikinci dolunaya <strong>mavi ay</strong> denir. Adı
         renginden değil, İngilizcedeki &quot;once in a blue moon&quot; (çok nadiren) deyiminden gelir; ay o gece de her
@@ -291,7 +295,7 @@ async function Explainer() {
         </p>
       )}
 
-      <h2>Ay takvimi ile Hicri takvim aynı şey mi?</h2>
+      <h2 id="hicri">Ay takvimi ile Hicri takvim aynı şey mi?</h2>
       <p>
         Değil. Bu sayfadaki takvim, bildiğimiz Miladi takvimin günleri üzerine ayın evrelerini yerleştirir. Hicri takvim
         ise başlı başına bir ay takvimidir: her ayı, <Link href={PAGES.yeniAy.path}>yeni aydan</Link> sonra ilk{" "}
@@ -299,5 +303,180 @@ async function Explainer() {
         da 355 gündür. Resmî dinî günler için Diyanet&apos;in takvimine bakmak gerekir.
       </p>
     </Prose>
+  );
+}
+
+const dayMonthWeekday = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
+const dayMonthShort = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "short" });
+const fullDate = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+const hm = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+
+function yearOf(d: Date): number {
+  return Number(new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric" }).format(d));
+}
+
+/** Sayfanın sorusunun cevabı, en üstte: içinde bulunulan ayın ana evreleri ve bugünün ayı. Saatte bir yenilenir. */
+async function MonthAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const { year, month } = currentMonth(timeZone);
+  const principals = getMonthCalendar(year, month, timeZone).flatMap((d) => (d.principal ? [d.principal] : []));
+  const today = getMoonPhase(now, timeZone);
+  const name = `${MONTHS[month - 1]} ${year}`;
+  const newMoon = principals.find((p) => p.key === "new-moon");
+  const fullMoons = principals.filter((p) => p.key === "full-moon");
+  const blue = fullMoons.length >= 2 ? null : getNextBlueMoon(now, timeZone);
+
+  const parts = [
+    newMoon && `yeni ay ${dayMonthWeekday.format(newMoon.date)}`,
+    fullMoons[0] && `dolunay ${dayMonthWeekday.format(fullMoons[0].date)}`,
+  ].filter(Boolean);
+
+  return (
+    <AnswerBox
+      question={`${name} ay takvimi`}
+      answer={`${name} ayında ${parts.join(", ")} günü.`}
+      rows={[
+        { label: "Bugünkü ay", value: `${today.name}, %${Math.round(today.illumination * 100)} aydınlık` },
+        ...principals.map((p) => ({
+          label: p.name,
+          value: `${dayMonthWeekday.format(p.date)}, ${hm.format(p.date)}`,
+        })),
+        {
+          label: "Bu ay mavi ay var mı?",
+          value:
+            fullMoons.length >= 2
+              ? `Evet: ${dayMonthWeekday.format(fullMoons[1].date)} dolunayı, ayın ikinci dolunayı.`
+              : blue
+                ? `Hayır. Sıradaki mavi ay ${fullDate.format(blue.date)}.`
+                : "Hayır.",
+        },
+      ]}
+      note={
+        <>
+          Saatler Türkiye saatidir (UTC+3) ve ABD Deniz Gözlemevi tablolarıyla karşılaştırılmıştır.{src.ref("usnoMoonPhases")}{" "}
+          Takvimdeki her kutu, ayın o akşam saat 21:00&apos;deki görünüşünü gösterir.
+        </>
+      }
+    />
+  );
+}
+
+interface LunationRow {
+  key: string;
+  newMoon?: PrincipalPhase;
+  firstQuarter?: PrincipalPhase;
+  fullMoon?: PrincipalPhase;
+  lastQuarter?: PrincipalPhase;
+  /** Döngünün süresi (bu yeni aydan bir sonrakine), milisaniye. */
+  length?: number;
+}
+
+/** Bir yılın ay döngüleri: her satır bir yeni ayla başlar (timeanddate "Moon Phases" tablosu gibi). */
+function yearLunations(year: number): LunationRow[] {
+  // Yılın başından biraz önce başlayıp yılın sonundan sonraki ilk yeni aya kadar.
+  const all = getUpcomingPrincipalPhases(new Date(Date.UTC(year - 1, 11, 31, 21)), 4 * 14);
+  const rows: LunationRow[] = [];
+  for (const p of all) {
+    if (yearOf(p.date) !== year) continue;
+    if (p.key === "new-moon" || rows.length === 0) rows.push({ key: p.date.toISOString() });
+    const row = rows[rows.length - 1];
+    if (p.key === "new-moon") row.newMoon = p;
+    else if (p.key === "first-quarter") row.firstQuarter = p;
+    else if (p.key === "full-moon") row.fullMoon = p;
+    else if (p.key === "last-quarter") row.lastQuarter = p;
+  }
+  const newMoons = all.filter((p) => p.key === "new-moon");
+  for (const row of rows) {
+    if (!row.newMoon) continue;
+    const next = newMoons.find((n) => n.date > row.newMoon!.date);
+    if (next) row.length = next.date.getTime() - row.newMoon.date.getTime();
+  }
+  return rows;
+}
+
+function formatLength(ms: number): string {
+  const totalMinutes = Math.round(ms / 60_000);
+  const d = Math.floor(totalMinutes / 1440);
+  const h = Math.floor((totalMinutes % 1440) / 60);
+  const m = totalMinutes % 60;
+  return `${d} gün ${h} sa ${m} dk`;
+}
+
+function PhaseCell({ p }: { p?: PrincipalPhase }) {
+  if (!p) return <span className="text-zinc-400">-</span>;
+  return (
+    <span className="whitespace-nowrap tabular-nums">
+      {dayMonthShort.format(p.date)} <span className="text-zinc-500">{hm.format(p.date)}</span>
+    </span>
+  );
+}
+
+/** Yıllık evre tablosu: bu yıl; Ekim'den itibaren gelecek yıl da (aramalar o yıla döner). Günde bir yenilenir. */
+async function YearTables() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const { year, month } = currentMonth(timeZone);
+  const years = month >= 10 ? [year, year + 1] : [year];
+
+  return (
+    <section aria-labelledby="yillik" className="mt-14">
+      <h2 id="yillik" data-toc-label="Yıllık evre tablosu" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        {years.join(" ve ")} ay evreleri takvimi
+      </h2>
+      <p className="mt-3 text-zinc-700 dark:text-zinc-300">
+        Yılın bütün ana evreleri, Türkiye saatiyle. Her satır bir yeni ayla başlar ve bir ay döngüsünü gösterir; içinde
+        bulunduğumuz döngü vurgulanmıştır.
+      </p>
+      {years.map((y) => {
+        const rows = yearLunations(y);
+        const current = rows.find(
+          (r) => r.newMoon && r.length && r.newMoon.date <= now && now.getTime() < r.newMoon.date.getTime() + r.length,
+        );
+        return (
+          <div key={y} className="mt-8">
+            {years.length > 1 && <h3 className="text-lg font-semibold">{y}</h3>}
+            <DataTable
+              columns={["Yeni ay", "İlk dördün", "Dolunay", "Son dördün", "Döngü süresi"]}
+              highlight={current?.key}
+              dim={(key) => {
+                const r = rows.find((x) => x.key === key);
+                const last = r?.lastQuarter ?? r?.fullMoon ?? r?.firstQuarter ?? r?.newMoon;
+                return !!last && last.date < now && r !== current;
+              }}
+              rows={rows.map((r) => ({
+                key: r.key,
+                cells: [
+                  <PhaseCell key="n" p={r.newMoon} />,
+                  <PhaseCell key="f" p={r.firstQuarter} />,
+                  <PhaseCell key="d" p={r.fullMoon} />,
+                  <PhaseCell key="l" p={r.lastQuarter} />,
+                  r.length ? (
+                    <span key="s" className="whitespace-nowrap tabular-nums">
+                      {formatLength(r.length)}
+                    </span>
+                  ) : (
+                    <span key="s" className="text-zinc-400">-</span>
+                  ),
+                ],
+              }))}
+            />
+          </div>
+        );
+      })}
+      <p className="mt-3 text-sm text-zinc-500">
+        Döngü süresi, iki yeni ay arasındaki zamandır. Ortalaması 29 gün 12 saat 44 dakikadır, ama Güneş&apos;in
+        çekimi yüzünden her döngü farklıdır: en kısası yaklaşık 29 gün 6 saat, en uzunu 29 gün 19 saat sürer.
+        {src.ref("nasaPhaseCatalog")} Saatler kendi hesabımızdır; ABD Deniz Gözlemevi tablolarıyla en fazla bir dakika
+        farkla örtüşür (fark saniyeleri yuvarlamaktan gelir).{src.ref("usnoMoonPhases")}{" "}
+        <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+          Hesap ne kadar doğru?
+        </Link>
+      </p>
+    </section>
   );
 }

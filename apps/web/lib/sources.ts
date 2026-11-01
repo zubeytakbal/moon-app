@@ -54,6 +54,30 @@ export const SOURCES = {
     note: "Danjon ölçeğinin beş basamağı (L0-L4); atmosferin Güneş ışığını gölgeye kırması; büyük yanardağ patlamalarından sonra tutulmaların birkaç yıl çok karanlık geçmesi.",
     group: "tutulma",
   },
+  usnoMoonPhases: {
+    no: 4,
+    title: "Dates of Primary Phases of the Moon",
+    publisher: "ABD Deniz Gözlemevi (USNO), Astronomical Applications Department",
+    url: "https://aa.usno.navy.mil/data/MoonPhases",
+    note: "Yeni ay, ilk dördün, dolunay ve son dördün anları (dünya saati, 1700-2100). Evre saatlerimizi bu tabloyla karşılaştırıyoruz.",
+    group: "ay",
+  },
+  nasaPhaseCatalog: {
+    no: 5,
+    title: "Six Millennium Catalog of Phases of the Moon",
+    publisher: "Fred Espenak, NASA Goddard Uzay Uçuş Merkezi",
+    url: "https://eclipse.gsfc.nasa.gov/phase/phasecat.html",
+    note: "İki yeni ay arasının ortalama 29,530588 gün sürmesi ve tek tek döngülerin, Güneş'in çekimi yüzünden 29,26 ile 29,80 gün arasında değişmesi.",
+    group: "ay",
+  },
+  nasaMoonFactSheet: {
+    no: 6,
+    title: "Moon Fact Sheet",
+    publisher: "NASA Uzay Bilimi Veri Koordineli Arşivi (NSSDCA)",
+    url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+    note: "Ayın temel sayıları: evre döngüsü (sinodik dönem) 29,53 gün, yörünge dönemi 27,32 gün, ortalama uzaklık 384.400 km, yörünge eğikliği 5,145°.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;
