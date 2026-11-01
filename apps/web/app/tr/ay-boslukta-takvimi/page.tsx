@@ -14,16 +14,20 @@ import {
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
+import { Byline } from "@/components/Byline";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
+import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.aybosluk;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-02";
+const src = pageSources("nasaConstellations");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const HOUR_MS = 3_600_000;
 const DAY_MS = 86_400_000;
@@ -74,7 +78,7 @@ export default function VoidOfCoursePage({ searchParams }: PageProps<"/tr/ay-bos
       <section className="bg-[#05070d] text-white" aria-labelledby="tarih-kontrol">
         <div className="mx-auto w-full max-w-5xl px-4 pb-14">
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-            <h2 id="tarih-kontrol" className="text-xl font-semibold">
+            <h2 id="tarih-kontrol" className="scroll-mt-32 text-xl font-semibold">
               Planladığınız gün boşlukta mı?
             </h2>
             <p className="mt-1 text-sm text-zinc-400">
@@ -87,24 +91,38 @@ export default function VoidOfCoursePage({ searchParams }: PageProps<"/tr/ay-bos
           </div>
         </div>
       </section>
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Şu an boşlukta mı?" },
+          { href: "#tarih-kontrol", label: "Tarihinizi kontrol edin" },
+          { href: "#donemler", label: "Önümüzdeki dönemler" },
+          { href: "#ne-demek", label: "Ne demek?" },
+          { href: "#farkli-saatler", label: "Saatler neden farklı?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>
-            Ay, bulunduğu burçta son açısını yaptıktan sonra bir sonraki burca girene kadar &quot;boşlukta&quot;
-            sayılır.
-          </li>
-          <li>Bu dönemler birkaç dakikadan iki güne kadar sürebilir ve her 2-3 günde bir yaşanır.</li>
-          <li>Geleneksel takvimde bir inanıştır; ayın konumu ve açılar astronomik olarak hesaplanır.</li>
-        </QuickFacts>
+        <VoidAnswer />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">Önümüzdeki boşluktaki ay dönemleri</h2>
+        <h2 id="donemler" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+          Önümüzdeki boşluktaki ay dönemleri
+        </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Başlangıç: ayın son açısı. Bitiş: ayın yeni burca girişi. Bütün saatler Türkiye saatidir.
+          Başlangıç: ayın bulunduğu burçtaki son açısı. Bitiş: ayın yeni burca girişi. Bütün saatler Türkiye saatidir;
+          vurgulu satır şu an süren boşluktur.
         </p>
         <PeriodList />
+        <p className="mt-3 text-sm text-zinc-500">
+          Konumlar yer merkezli hesaplanır; açı anları saniye düzeyinde bulunup dakikaya yuvarlanır. Yayımlanmış modern
+          takvimlerle karşılaştırması{" "}
+          <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+            Yöntem ve Doğruluk
+          </Link>{" "}
+          sayfasında.
+        </p>
 
         <Prose>
-          <h2>&quot;Ay boşlukta&quot; ne demek?</h2>
+          <h2 id="ne-demek">&quot;Ay boşlukta&quot; ne demek?</h2>
           <p>
             Ay, burçlar kuşağında ilerlerken Güneş&apos;le ve gezegenlerle belirli açılar yapar. Astrolojide en çok
             bakılan açılar kavuşum (0°), altmışlık (60°), kare (90°), üçgen (120°) ve karşıttır (180°). Ay bulunduğu
@@ -128,7 +146,7 @@ export default function VoidOfCoursePage({ searchParams }: PageProps<"/tr/ay-bos
             inanılır. Rutin işler, dinlenme ve önceden başlanmış işleri bitirmek için ise sakıncalı sayılmaz.
           </p>
 
-          <h2>Neden kaynaklar farklı saatler veriyor?</h2>
+          <h2 id="farkli-saatler">Neden kaynaklar farklı saatler veriyor?</h2>
           <p>
             Boşluktaki ayın başlangıcı, hangi gök cisimlerinin hesaba katıldığına göre değişir. Geleneksel astroloji
             yalnızca Güneş&apos;e, Merkür&apos;e, Venüs&apos;e, Mars&apos;a, Jüpiter&apos;e ve Satürn&apos;e bakar.
@@ -148,31 +166,18 @@ export default function VoidOfCoursePage({ searchParams }: PageProps<"/tr/ay-bos
           <p>
             Ayın ve gezegenlerin gökyüzündeki konumları ve aralarındaki açılar astronomik olarak kesin hesaplanabilir.
             Ancak bu açıların ya da boşluktaki ayın insanlar ve olaylar üzerinde bir etkisi olduğuna dair bilimsel bir
-            kanıt yoktur. Bu takvimi, yaygın bir geleneğin doğru saatlerle hesaplanmış hali olarak sunuyoruz.
+            kanıt yoktur.{src.ref("nasaConstellations")} Bu takvimi, yaygın bir geleneğin doğru saatlerle hesaplanmış hali olarak sunuyoruz.
           </p>
         </Prose>
 
         <Faq items={FAQS.aybosluk} />
-        <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-          <p>
-            Konumlar Astronomy Engine ile yer merkezli olarak hesaplanmıştır. Açı anları saniye düzeyinde bulunur,
-            dakikaya yuvarlanarak gösterilir.
-          </p>
-          <p className="mt-2">
-            Son güncelleme: <time dateTime={UPDATED}>29 Ekim 2026</time>
-          </p>
-        </section>
+        <ArticleFooter
+          page={PAGE}
+          headline="Ay Boşlukta mı? Boşluktaki Ay Takvimi"
+          updated={UPDATED}
+          src={src}
+        />
       </main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: PAGE.title,
-          url: new URL(PAGE.path, siteConfig.url).toString(),
-          inLanguage: "tr-TR",
-          dateModified: UPDATED,
-        }}
-      />
     </>
   );
 }
@@ -219,6 +224,7 @@ async function Hero() {
             ? `Boşluk ${f.dateTime.format(first.start)} başladı, ay ${first.nextSign.name} burcuna geçince ${f.dateTime.format(first.end)} bitecek.`
             : `Ay şu an boşlukta değil. Bir sonraki boşluk ${f.dateTime.format(first.start)} başlayacak.`}
         </p>
+        <Byline updated={UPDATED} />
         <div className="mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4">
             <p className="text-xs uppercase tracking-wider text-zinc-400">{active ? "Kalan süre" : "Başlamasına"}</p>
@@ -240,7 +246,7 @@ async function Hero() {
   );
 }
 
-/** Önümüzdeki boşluk dönemleri. Saatte bir yenilenir. */
+/** Önümüzdeki boşluk dönemleri, sütunlu tablo (süren boşluk vurgulu). Saatte bir yenilenir. */
 async function PeriodList() {
   "use cache";
   cacheLife("hours");
@@ -248,50 +254,94 @@ async function PeriodList() {
   const now = new Date();
   const list = await upcoming();
   const f = fmt();
+  const active = list.find((v) => v.start <= now);
+  const at = (d: Date) => (
+    <time dateTime={d.toISOString()} className="whitespace-nowrap">
+      {f.day.format(d)} {f.time.format(d)}
+    </time>
+  );
 
   return (
-    <ol className="mt-6 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-      {list.map((v) => {
-        const active = v.start <= now;
-        const ms = v.end.getTime() - v.start.getTime();
-        return (
-          <li
-            key={v.end.toISOString()}
-            className={`flex items-start gap-4 px-4 py-3 sm:px-5 ${active ? "bg-amber-50 dark:bg-amber-950/30" : ""}`}
-          >
-            <span
-              aria-hidden="true"
-              className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b1236] text-xl text-amber-200"
-            >
+    <DataTable
+      columns={["Başlangıç", "Bitiş", "Süre", "Son açı", "Gireceği burç"]}
+      highlight={active?.end.toISOString()}
+      rows={list.map((v) => ({
+        key: v.end.toISOString(),
+        cells: [
+          <span key="b">
+            {at(v.start)}
+            {v === active && (
+              <span className="ml-2 rounded bg-amber-500 px-1.5 py-0.5 text-xs font-semibold text-white">Şu an</span>
+            )}
+          </span>,
+          at(v.end),
+          <span key="s" className="whitespace-nowrap tabular-nums">
+            {durationText(v.end.getTime() - v.start.getTime())}
+          </span>,
+          aspectText(v),
+          <span key="z" className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span aria-hidden="true" className="text-violet-700 dark:text-amber-200">
               {ZODIAC_SYMBOLS[v.nextSign.index]}
             </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold">
-                <time dateTime={v.start.toISOString()}>
-                  {f.day.format(v.start)} {f.time.format(v.start)}
-                </time>
-                {" → "}
-                <time dateTime={v.end.toISOString()}>
-                  {f.day.format(v.end)} {f.time.format(v.end)}
-                </time>
-                {active && (
-                  <span className="ml-2 rounded bg-amber-500 px-1.5 py-0.5 text-xs font-semibold text-white">
-                    Şu an
-                  </span>
-                )}
-              </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {v.lastAspect
-                  ? `Son açı: ${BODY_NAMES_TR[v.lastAspect.body]} ile ${ASPECT_TR[v.lastAspect.aspect]}`
-                  : "Son açı bulunamadı"}{" "}
-                · {v.nextSign.name} burcuna geçiş
-              </p>
-            </div>
-            <span className="shrink-0 text-sm tabular-nums text-zinc-500">{durationText(ms)}</span>
-          </li>
-        );
-      })}
-    </ol>
+            {v.nextSign.name}
+          </span>,
+        ],
+      }))}
+    />
+  );
+}
+
+const aspectText = (v: VoidOfCourse) =>
+  v.lastAspect ? `${BODY_NAMES_TR[v.lastAspect.body]} ile ${ASPECT_TR[v.lastAspect.aspect]}` : "Bulunamadı";
+const spanMs = (v: VoidOfCourse) => v.end.getTime() - v.start.getTime();
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): ay şu an boşlukta mı, ne zaman bitiyor ya da
+ * başlıyor; önümüzdeki dört haftanın en uzun boşluğu. Giriş alanıyla aynı önbellekli listeyi kullanır.
+ */
+async function VoidAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const list = await upcoming();
+  const [first, second] = list;
+  const active = first.start <= now;
+  const longest = list.reduce((a, b) => (spanMs(b) > spanMs(a) ? b : a));
+  const f = fmt();
+  const span = (v: VoidOfCourse) =>
+    `${f.day.format(v.start)} ${f.time.format(v.start)} - ${f.day.format(v.end)} ${f.time.format(v.end)} (${durationText(spanMs(v))})`;
+
+  return (
+    <AnswerBox
+      question="Ay şu an boşlukta mı?"
+      answer={
+        active
+          ? `Evet. Boşluk, ay ${f.dateTime.format(first.end)} saatinde ${first.nextSign.name} burcuna geçince bitecek.`
+          : `Hayır. Bir sonraki boşluk ${f.dateTime.format(first.start)} saatinde başlayacak.`
+      }
+      rows={[
+        active
+          ? { label: "Kalan süre", value: durationText(first.end.getTime() - now.getTime()) }
+          : { label: "Başlamasına", value: durationText(first.start.getTime() - now.getTime()) },
+        { label: active ? "Bu boşluk" : "Sıradaki boşluk", value: span(first) },
+        { label: "Son açı", value: aspectText(first) },
+        { label: "Ardından gireceği burç", value: first.nextSign.name },
+        ...(active ? [{ label: "Ondan sonraki boşluk", value: span(second) }] : []),
+        { label: "Önümüzdeki 4 haftanın en uzunu", value: span(longest) },
+        { label: "Hangi gök cisimleri?", value: "Güneş'ten Plüton'a 9 cisim (modern astroloji)" },
+      ]}
+      note={
+        <>
+          Boşluktaki ay <strong>geleneksel takvim</strong> olarak verilir; açılar astronomik olarak kesin hesaplanır,
+          ama etkisine dair bilimsel kanıt yoktur.{src.ref("nasaConstellations")} Kendi tarihiniz için{" "}
+          <a href="#tarih-kontrol" className="underline underline-offset-2">
+            yukarıdaki araca
+          </a>{" "}
+          bakın.
+        </>
+      }
+    />
   );
 }
 
