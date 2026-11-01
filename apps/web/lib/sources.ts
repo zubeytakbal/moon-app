@@ -183,6 +183,38 @@ export const SOURCES = {
     note: "Astrolojinin astronomiyle aynı şey olmadığı; astronominin kanıt ve veriye dayanan bir bilim olduğu, astrolojinin iddialarının ise bilimsel kanıta dayanmadığı.",
     group: "gelenek",
   },
+  imoCalendar2026: {
+    no: 20,
+    title: "Meteor Shower Calendar 2026",
+    publisher: "Uluslararası Meteor Örgütü (IMO), Jürgen Rendtel",
+    url: "https://www.imo.net/files/meteor-shower/cal2026.pdf",
+    note: "Meteor yağmurlarının etkinlik dönemleri, doruk anlarının Güneş boylamı, radyant konumları, hızları, nüfus indeksleri ve saatlik zenit sayıları (Tablo 5); ZHR'nin tanımı (radyant tepedeyken, +6,5 kadirlik kusursuz gökyüzünde bir gözlemcinin saatte göreceği meteor sayısı).",
+    group: "ay",
+  },
+  imoCalendar2027: {
+    no: 21,
+    title: "Meteor Shower Calendar 2027",
+    publisher: "Uluslararası Meteor Örgütü (IMO)",
+    url: "https://www.imo.net/meteor-shower-calendar-2027/",
+    note: "2027 meteor yağmuru takvimi; hesapladığımız 2027 doruk saatlerinin karşılaştırıldığı kaynak.",
+    group: "ay",
+  },
+  nasaMeteors: {
+    no: 22,
+    title: "Meteors and Meteorites",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/solar-system/meteors-meteorites/",
+    note: "Meteor yağmurlarının, Dünya bir kuyruklu yıldızın bıraktığı toz şeridinden geçerken her yıl görülmesi; atmosfere giren parçacıkların yanması; Perseidlerin Swift-Tuttle kuyruklu yıldızından gelmesi.",
+    group: "ay",
+  },
+  nasaGeminids: {
+    no: 23,
+    title: "Geminids",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/solar-system/meteors-meteorites/geminids/",
+    note: "İkizler yağmurunun kuyruklu yıldızdan değil, 3200 Phaethon asteroidinden gelmesi; izlemek için şehir ışıklarından uzak bir yer seçilmesi.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

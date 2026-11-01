@@ -15,13 +15,16 @@ import {
 } from "@moon-app/moon";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Byline } from "@/components/Byline";
+import { AnswerBox } from "@/components/InfoTables";
 import { CitySelect } from "@/components/CitySelect";
 import { Faq } from "@/components/Faq";
 import { MobileCollapse } from "@/components/MobileCollapse";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { FAQS } from "@/lib/faqs";
 import { icsTime } from "@/lib/ics";
 import { pageOpenGraph } from "@/lib/og";
@@ -30,7 +33,8 @@ import { siteConfig } from "@/site.config";
 import { MeteorSimulator } from "./MeteorSimulator";
 
 const PAGE = PAGES.meteorYagmurlari;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-02";
+const src = pageSources("imoCalendar2026", "imoCalendar2027", "nasaMeteors", "nasaGeminids");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
 const DAY_MS = 86_400_000;
@@ -119,22 +123,20 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Sıradaki" },
+          { href: "#il-sec", label: "İlinizden saatler" },
+          { href: "#takvim", label: "Takvim" },
+          { href: "#yagmurlar", label: "Büyük yağmurlar" },
+          { href: "#zhr", label: "Saatte kaç meteor?" },
+          { href: "#izleme", label: "Nasıl izlenir?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>
-              Meteor yağmuru, Dünya bir kuyruklu yıldızın (ya da asteroidin) yörüngesinde bıraktığı toz şeridinden
-              geçerken görülür; bu yüzden her yıl aynı tarihlere denk gelir.
-            </li>
-            <li>
-              Yılın en güçlü yağmurları Aralık&apos;taki İkizler ve Ağustos&apos;taki Perseidlerdir. İkisi de
-              Türkiye&apos;nin her yerinden görülür.
-            </li>
-            <li>
-              Kaç meteor göreceğiniz en çok gökyüzünün karanlığına ve aya bağlıdır: şehir merkezinden saatte birkaç,
-              karanlık bir yerden onlarca meteor görülebilir.
-            </li>
-          </QuickFacts>
+          <MeteorAnswer />
         </div>
 
         <Suspense fallback={<CitySection slug={siteConfig.defaultLocation.slug} />}>
@@ -147,12 +149,13 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Meteor yağmuru nasıl oluşur?</h2>
+            <h2 id="olusum">Meteor yağmuru nasıl oluşur?</h2>
             <p>
               Kuyruklu yıldızlar Güneş&apos;e yaklaştıkça ısınır ve yüzeylerinden toz ve küçük taş parçaları koparır.
               Bu parçacıklar kuyruklu yıldızın yörüngesi boyunca dağılarak uzayda ince, uzun bir toz şeridi oluşturur.
               Dünya her yıl yörüngesinin aynı noktasında bu şeritlerden birinin içinden geçer. O günlerde atmosfere
               normalden çok daha fazla parçacık girer ve gökyüzünde peş peşe ışık izleri görülür.
+              {src.ref("nasaMeteors")}
             </p>
           </Prose>
           <StreamDiagram />
@@ -167,11 +170,11 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
               gelir.
             </p>
 
-            <h2>&quot;Saatte 100 meteor&quot; ne demek?</h2>
+            <h2 id="zhr">&quot;Saatte 100 meteor&quot; ne demek?</h2>
             <p>
               Haberlerde geçen sayı, gökbilimcilerin <strong>saatlik zenit sayısı (ZHR)</strong> dediği bir ölçüdür:
               radyant tam tepedeyken, kusursuz karanlık bir gökyüzünde, bir gözlemcinin bir saatte göreceği meteor
-              sayısı. Gerçekte bu koşullar neredeyse hiç bir araya gelmez. Radyant alçaktaysa meteorların bir kısmı
+              sayısı.{src.ref("imoCalendar2026")} Gerçekte bu koşullar neredeyse hiç bir araya gelmez. Radyant alçaktaysa meteorların bir kısmı
               ufkun altında kalır; şehir ışıkları ve ay ise sönük meteorları siler. Bu yüzden &quot;saatte 150&quot;
               denen İkizler yağmurunu bir şehir merkezinden izleyen biri saatte ancak 10-15 meteor görebilir.
             </p>
@@ -182,10 +185,10 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
               seçilebilen en sönük yıldızla ölçüyoruz: şehir merkezinde 4. kadir, kırsalda 6. kadir civarı.
             </p>
 
-            <h2>Meteor yağmuru nasıl izlenir?</h2>
+            <h2 id="izleme">Meteor yağmuru nasıl izlenir?</h2>
             <ul>
               <li>
-                <strong>Işıklardan uzaklaşın.</strong> En büyük fark buradan gelir. Şehirden 20-30 kilometre
+                <strong>Işıklardan uzaklaşın.</strong>{src.ref("nasaGeminids")} En büyük fark buradan gelir. Şehirden 20-30 kilometre
                 uzaklaşmak, görülen meteor sayısını üç-dört katına çıkarabilir.
               </li>
               <li>
@@ -218,17 +221,7 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
             page={PAGE}
             headline="Meteor Yağmurları: Ne Zaman, Saat Kaçta, Nereden İzlenir?"
             updated={UPDATED}
-            sources={[
-              {
-                label: "International Meteor Organization, 2026 Meteor Shower Calendar",
-                href: "https://www.imo.net/the-2026-meteor-shower-calendar-is-here/",
-              },
-              {
-                label: "International Meteor Organization, 2027 Meteor Shower Calendar",
-                href: "https://www.imo.net/meteor-shower-calendar-2027/",
-              },
-              { label: "NASA Science, Meteors and Meteorites", href: "https://science.nasa.gov/solar-system/meteors-meteorites/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -254,6 +247,7 @@ async function Hero() {
         <Breadcrumb page={PAGE} tone="dark" />
         <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">Gökyüzü takvimi</p>
         <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl">{PAGE.title}</h1>
+        <Byline updated={UPDATED} />
         <p className="mt-5 max-w-xl text-lg text-zinc-200">
           Sıradaki meteor yağmuru ne zaman, saat kaçta en iyi görülür, ay ışığı engelleyecek mi? İlinizi seçin, kaç
           meteor göreceğinizi hesaplayın.
@@ -472,7 +466,7 @@ async function YearList() {
 
   return (
     <section aria-labelledby="takvim" className="mt-14">
-      <h2 id="takvim" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="takvim" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         {y}-{y + 1} meteor yağmurları takvimi
       </h2>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -609,7 +603,7 @@ function ShowerNotes() {
   return (
     <section aria-labelledby="yagmurlar" className="mt-14">
       <div className="mx-auto max-w-3xl">
-        <h2 id="yagmurlar" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="yagmurlar" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           Yılın büyük meteor yağmurları
         </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
@@ -687,5 +681,66 @@ function StreamDiagram() {
         gelir. Ölçekli değildir.
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): sıradaki büyük yağmur, İstanbul'dan en iyi saatler,
+ * gökyüzüne göre saatte kaç meteor ve ayın etkisi. Giriş alanıyla aynı hesabı kullanır. Saatte bir yenilenir.
+ */
+async function MeteorAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const next = nextMajor(new Date(now.getTime() - DAY_MS));
+  const city = siteConfig.defaultLocation;
+  const night = getMeteorNight(next.shower, next.peak, city);
+  const days = Math.max(0, Math.ceil((night.dusk.getTime() - now.getTime()) / DAY_MS));
+  const after = nextMajor(new Date(next.peak.getTime() + 2 * DAY_MS));
+  const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
+  const best = night.best;
+
+  return (
+    <AnswerBox
+      question="Sıradaki meteor yağmuru ne zaman?"
+      answer={`${next.shower.name}: ${nightLabel(night)} (${days === 0 ? "bu gece" : `${days} gün sonra`}). ${moonVerdict(night).text}.`}
+      rows={[
+        { label: "Doruk", value: `${dateFmt.format(next.peak)}, ${timeFmt.format(next.peak)} (Türkiye saati)` },
+        {
+          label: `En iyi saatler (${city.name})`,
+          value: best ? `${timeFmt.format(best.start)} - ${timeFmt.format(best.end)}` : "Radyant bu gece ufkun üzerine çıkmıyor",
+        },
+        ...(best
+          ? [
+              {
+                label: "Saatte kaç meteor?",
+                value: `Şehir merkezi ${nf.format(best.rate.sehir)}, şehir kenarı ${nf.format(best.rate.kenar)}, köy ${nf.format(best.rate.koy)}, çok karanlık yer ${nf.format(best.rate.karanlik)}`,
+              },
+            ]
+          : []),
+        { label: "Ay", value: moonNote(night) },
+        {
+          label: "Kusursuz koşullarda (ZHR)",
+          value: (
+            <>
+              Saatte {next.shower.zhr} meteor{src.ref("imoCalendar2026")}
+            </>
+          ),
+        },
+        { label: "Toz şeridini bırakan", value: next.shower.parent },
+        { label: "Ondan sonraki büyük yağmur", value: `${after.shower.name}, ${dateFmt.format(after.peak)}` },
+      ]}
+      note={
+        <>
+          İstanbul&apos;a göre; iliniz için{" "}
+          <a href="#il-sec" className="underline underline-offset-2">
+            aşağıdan il seçin
+          </a>
+          . Sayılar, gökyüzünün karanlığına, radyantın yüksekliğine ve aya göre tahmindir; meteorlar kümeler halinde
+          gelir, bir saatte daha az ya da daha çok görebilirsiniz.
+        </>
+      }
+    />
   );
 }
