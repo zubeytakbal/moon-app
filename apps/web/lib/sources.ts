@@ -167,6 +167,22 @@ export const SOURCES = {
     note: "Dolunayların geleneksel adları ve anlamları; adların Kuzey Amerika yerli halkları, sömürge dönemi Amerikası ve diğer Kuzey Amerika geleneklerinden derlenmesi.",
     group: "gelenek",
   },
+  iauConstellations: {
+    no: 18,
+    title: "The Constellations",
+    publisher: "Uluslararası Astronomi Birliği (IAU)",
+    url: "https://www.iau.org/IAU/IAU/Astronomy-FAQs/Constellations.aspx",
+    note: "Gökyüzünün 88 resmî takımyıldıza bölünmesi (1922); takımyıldız sınırlarının Eugène Delporte tarafından sağ açıklık ve dik açıklık çizgileri boyunca çizilmesi, 1928'de onaylanıp 1930'da yayımlanması.",
+    group: "ay",
+  },
+  nasaConstellations: {
+    no: 19,
+    title: "What Are Constellations?",
+    publisher: "NASA Space Place",
+    url: "https://spaceplace.nasa.gov/starfinder2/en/",
+    note: "Astrolojinin astronomiyle aynı şey olmadığı; astronominin kanıt ve veriye dayanan bir bilim olduğu, astrolojinin iddialarının ise bilimsel kanıta dayanmadığı.",
+    group: "gelenek",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

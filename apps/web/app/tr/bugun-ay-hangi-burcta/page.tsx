@@ -7,19 +7,24 @@ import {
   getMoonPhase,
   getMoonSign,
   getMoonSignIngresses,
+  zonedTimeToUtc,
 } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { JsonLd } from "@/components/JsonLd";
+import { Byline } from "@/components/Byline";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { ArticleFooter, countdown } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { constellationTr, elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.ayHangiBurcta;
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaMoonFactSheet", "iauConstellations", "nasaConstellations");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const HOUR_MS = 3_600_000;
 
@@ -35,31 +40,40 @@ export default function MoonSignTodayPage() {
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Bugün hangi burçta?" },
+          { href: "#gecisler", label: "Önümüzdeki günler" },
+          { href: "#gokyuzu", label: "Gökyüzünde nerede?" },
+          { href: "#ne-demek", label: "Ay burcu nedir?" },
+          { href: "#takimyildiz", label: "Burç ve takımyıldız" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Ay, burçlar kuşağını yaklaşık 27,3 günde dolaşır ve her burçta ortalama 2,3 gün kalır.</li>
-            <li>Burç geçiş saatleri, ayın gökyüzündeki gerçek konumundan dakika hassasiyetiyle hesaplanır.</li>
-            <li>
-              Burçlar astrolojik bir gelenektir; bu sayfa onları <strong>geleneksel takvim</strong> olarak sunar,
-              bilimsel bir etki iddia etmez.
-            </li>
-          </QuickFacts>
+          <SignAnswer />
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="gecisler" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           Önümüzdeki günlerde ay hangi burçta?
         </h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-          Ayın her burca giriş saati (Türkiye saati). Ay, bir sonraki satırdaki saate kadar o burçta kalır.
+          Ayın her burca giriş ve çıkış saati (Türkiye saati). Vurgulu satır, ayın şu an bulunduğu burçtur.
         </p>
         <Ingresses />
+        <p className="mt-3 text-sm text-zinc-500">
+          Saatler ayın gökyüzündeki gerçek konumundan hesaplanır; yayımlanmış astroloji takvimleriyle birkaç dakika fark
+          çıkabilir.{" "}
+          <Link href={PAGES.yontem.path} className="underline underline-offset-2">
+            Hesap ne kadar doğru?
+          </Link>
+        </p>
 
         <SkyVsSign />
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Ayın burcu ne demek?</h2>
+            <h2 id="ne-demek">Ayın burcu ne demek?</h2>
             <p>
               Astrolojide burçlar, Güneş&apos;in bir yıl boyunca gökyüzünde izlediği yolu (ekliptik) 30&apos;ar
               derecelik 12 eşit parçaya böler. Güneş bu yolu bir yılda, ay ise yaklaşık bir ayda dolaşır. &quot;Ay Boğa
@@ -71,15 +85,15 @@ export default function MoonSignTodayPage() {
               örneğin bahçe işleri ya da saç kesimi gibi işler için gün seçerken kullanılır.
             </p>
 
-            <h2>Ay neden bu kadar sık burç değiştirir?</h2>
+            <h2 id="neden-sik">Ay neden bu kadar sık burç değiştirir?</h2>
             <p>
               Güneş bir burçta yaklaşık bir ay kalırken ay, Dünya etrafındaki hızlı yolculuğu yüzünden burçlar kuşağını
-              27,3 günde tamamlar. 360 dereceyi 12 burca bölünce ay her burçta ortalama 2,3 gün kalır. Ayın hızı
+              27,3 günde tamamlar.{src.ref("nasaMoonFactSheet")} 360 dereceyi 12 burca bölünce ay her burçta ortalama 2,3 gün kalır. Ayın hızı
               yörüngesindeki konuma göre değiştiği için bu süre 2 ile 2,7 gün arasında değişir; yukarıdaki tabloda
               sürelerin farklı olmasının nedeni budur.
             </p>
 
-            <h2>Burç ile takımyıldız neden farklı?</h2>
+            <h2 id="takimyildiz">Burç ile takımyıldız neden farklı?</h2>
             <p>
               Burçlar adlarını takımyıldızlardan alır, ama bugün aynı yerde değildirler. Burçların sınırları yaklaşık
               2.000 yıl önce, ilkbahar ekinoksu Koç takımyıldızındayken belirlenmiştir. O zamandan beri Dünya&apos;nın
@@ -90,40 +104,25 @@ export default function MoonSignTodayPage() {
             <p>
               Ayrıca takımyıldızlar eşit büyüklükte değildir ve ayın yolu, burçlar listesinde olmayan Yılancı
               (Ophiuchus) gibi takımyıldızlardan da geçer. Batı astrolojisi bu yüzden takımyıldızları değil, eşit 30
-              derecelik burçları kullanır.
+              derecelik burçları kullanır. Gökbilimde ise gökyüzü 88 resmî takımyıldıza bölünmüştür; sınırları
+              1928&apos;de Uluslararası Astronomi Birliği (IAU) onaylamıştır. Yukarıdaki &quot;gökyüzünde ay aslında
+              nerede?&quot; kutusu bu resmî sınırları kullanır.{src.ref("iauConstellations")}
             </p>
 
             <h2>Bu sayfa neden &quot;geleneksel takvim&quot; olarak etiketli?</h2>
             <p>
               Ayın gökyüzündeki konumu ve burç geçiş saatleri astronomik hesaplarla, kesin olarak bulunur. Ama ayın
               burcunun insanlar, işler ya da olaylar üzerinde bir etkisi olduğuna dair bilimsel bir kanıt yoktur.
+              {src.ref("nasaConstellations")}
               Burçları, yüzyıllardır yaşayan bir takvim geleneği olarak sunuyoruz; yorum yapmıyoruz. Ayın gerçek
               evresini ve gökyüzündeki görünüşünü <Link href={PAGES.bugunAy.path}>Bugün Ay Nasıl?</Link> sayfasında
               bulabilirsiniz.
             </p>
           </Prose>
 
-          <section className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
-            <p>
-              Ay konumları Astronomy Engine ile, tarihin gerçek ekinoksuna göre (tropikal burçlar) hesaplanmıştır.
-              Takımyıldız sınırları Uluslararası Astronomi Birliği&apos;nin (IAU) resmî sınırlarıdır.
-            </p>
-            <p className="mt-2">
-              Son güncelleme: <time dateTime={UPDATED}>27 Ekim 2026</time>
-            </p>
-          </section>
+          <ArticleFooter page={PAGE} headline="Bugün Ay Hangi Burçta? Ay Burç Takvimi" updated={UPDATED} src={src} />
         </div>
       </main>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: PAGE.title,
-          url: new URL(PAGE.path, siteConfig.url).toString(),
-          inLanguage: "tr-TR",
-          dateModified: UPDATED,
-        }}
-      />
     </>
   );
 }
@@ -164,6 +163,7 @@ async function Hero() {
           <span className="text-sm text-zinc-400">Burç konumu astronomik hesapla bulunur</span>
         </div>
         <h1 className="mt-4 text-lg font-medium text-zinc-300">{PAGE.title}</h1>
+        <Byline updated={UPDATED} />
 
         <div className="mt-4 grid items-center gap-8 md:grid-cols-[1fr_auto]">
           <div>
@@ -203,7 +203,7 @@ async function Hero() {
   );
 }
 
-/** Önümüzdeki burç geçişleri. Saatte bir yenilenir. */
+/** Önümüzdeki burç geçişleri, sütunlu tablo (şu anki burç vurgulu). Saatte bir yenilenir. */
 async function Ingresses() {
   "use cache";
   cacheLife("hours");
@@ -213,48 +213,96 @@ async function Ingresses() {
   const list = [current, ...getMoonSignIngresses(now, 10)];
   const f = fmt();
   const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
+  const at = (d: Date) => (
+    <time dateTime={d.toISOString()} className="whitespace-nowrap">
+      {f.day.format(d)} {f.time.format(d)}
+    </time>
+  );
 
   return (
-    <ol className="mt-6 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-      {list.slice(0, -1).map((ing, i) => {
+    <DataTable
+      columns={["Burç", "Giriş", "Çıkış", "Süre"]}
+      highlight={current.date.toISOString()}
+      rows={list.slice(0, -1).map((ing, i) => {
         const end = list[i + 1].date;
         const hours = (end.getTime() - ing.date.getTime()) / HOUR_MS;
-        const isNow = i === 0;
-        return (
-          <li
-            key={ing.date.toISOString()}
-            className={`flex items-center gap-4 px-4 py-3 sm:px-5 ${isNow ? "bg-violet-50 dark:bg-violet-950/30" : ""}`}
-          >
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1b1236] text-xl text-amber-200"
-            >
-              {ZODIAC_SYMBOLS[ing.sign.index]}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold">
-                {ing.sign.name}
-                {isNow && (
-                  <span className="ml-2 rounded bg-violet-600 px-1.5 py-0.5 text-xs font-semibold text-white">
-                    Şu an
-                  </span>
-                )}
-              </p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                <time dateTime={ing.date.toISOString()}>
-                  {f.day.format(ing.date)} {f.time.format(ing.date)}
-                </time>
-                {" → "}
-                <time dateTime={end.toISOString()}>
-                  {f.day.format(end)} {f.time.format(end)}
-                </time>
-              </p>
-            </div>
-            <span className="shrink-0 text-sm tabular-nums text-zinc-500">{nf.format(hours)} saat</span>
-          </li>
-        );
+        return {
+          key: ing.date.toISOString(),
+          cells: [
+            <span key="s" className="inline-flex items-center gap-2">
+              <span aria-hidden="true" className="text-lg text-violet-700 dark:text-amber-200">
+                {ZODIAC_SYMBOLS[ing.sign.index]}
+              </span>
+              {ing.sign.name}
+              {i === 0 && (
+                <span className="rounded bg-violet-600 px-1.5 py-0.5 text-xs font-semibold text-white">Şu an</span>
+              )}
+            </span>,
+            at(ing.date),
+            at(end),
+            <span key="h" className="tabular-nums">{nf.format(hours)} saat</span>,
+          ],
+        };
       })}
-    </ol>
+    />
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): ayın şu anki burcu, ne zaman değişeceği ve bugün
+ * (Türkiye günü) hangi burçlarda bulunduğu. Saatte bir yenilenir.
+ */
+async function SignAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const sign = getMoonSign(now);
+  const since = getCurrentSignIngress(now);
+  const [next] = getMoonSignIngresses(now, 1);
+  const constellation = constellationTr(getMoonConstellation(now));
+  const f = fmt();
+
+  // Türkiye'de bugünün başı ve sonu; ay bugün burç değiştiriyorsa iki burç da yazılır.
+  const [y, m, d] = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+    .format(now)
+    .split("-")
+    .map(Number);
+  const dayStart = zonedTimeToUtc(y, m, d, 0, timeZone);
+  const dayEnd = zonedTimeToUtc(y, m, d + 1, 0, timeZone);
+  const startSign = getMoonSign(dayStart);
+  const changes = getMoonSignIngresses(dayStart, 2).filter((i) => i.date < dayEnd);
+  const today =
+    changes.length === 0
+      ? `Bütün gün ${startSign.name}`
+      : [
+          `${startSign.name} (${f.time.format(changes[0].date)} saatine kadar)`,
+          ...changes.map((c, i) =>
+            changes[i + 1]
+              ? `${c.sign.name} (${f.time.format(changes[i + 1].date)} saatine kadar)`
+              : `${c.sign.name} (${f.time.format(c.date)} saatinden itibaren)`,
+          ),
+        ].join(", ");
+
+  return (
+    <AnswerBox
+      question="Bugün ay hangi burçta?"
+      answer={`Ay şu an ${sign.name} burcunda. ${f.dateTime.format(next.date)} saatinde ${next.sign.name} burcuna geçecek.`}
+      rows={[
+        { label: "Bugün (Türkiye saati)", value: today },
+        { label: "Derece", value: `${sign.name} burcunun ${Math.floor(sign.degree) + 1}. derecesi (30 dereceden)` },
+        { label: "Element", value: `${elementOf(sign.index)} grubu` },
+        { label: "Bu burca girdi", value: f.dateTime.format(since.date) },
+        { label: "Burç değişimine kalan", value: countdown(next.date.getTime() - now.getTime()) },
+        { label: "Gökyüzündeki takımyıldız", value: `${constellation} (IAU sınırlarına göre)` },
+      ]}
+      note={
+        <>
+          Burçlar bu sayfada <strong>geleneksel takvim</strong> olarak verilir; ayın konumu kesin hesaplanır, ama
+          burcunun bir etkisi olduğuna dair bilimsel kanıt yoktur.{src.ref("nasaConstellations")}
+        </>
+      }
+    />
   );
 }
 
@@ -273,7 +321,7 @@ async function SkyVsSign() {
       aria-labelledby="gokyuzu"
       className="mt-12 grid gap-4 rounded-3xl bg-[#05070d] p-6 text-white sm:grid-cols-2 sm:p-8"
     >
-      <h2 id="gokyuzu" className="text-xl font-semibold sm:col-span-2 sm:text-2xl">
+      <h2 id="gokyuzu" className="scroll-mt-32 text-xl font-semibold sm:col-span-2 sm:text-2xl">
         Gökyüzünde ay aslında nerede?
       </h2>
       <div className="rounded-2xl border border-amber-300/30 bg-amber-300/[0.07] p-5">
