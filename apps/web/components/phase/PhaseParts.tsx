@@ -38,7 +38,8 @@ function fmt() {
   };
 }
 
-function countdown(ms: number): string {
+/** "7 gün 13 saat" gibi kalan süre; giriş kutusu ve cevap kutuları aynı biçimi kullanır. */
+export function countdown(ms: number): string {
   const days = Math.floor(ms / DAY_MS);
   const hours = Math.floor((ms % DAY_MS) / 3_600_000);
   if (days === 0) return `${hours} saat`;

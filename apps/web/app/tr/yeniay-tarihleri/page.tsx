@@ -10,9 +10,11 @@ import {
   type PrincipalPhase,
   type SolarEclipse,
 } from "@moon-app/moon";
-import { ArticleFooter, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
+import { ArticleFooter, countdown, NextPrincipal, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
@@ -20,7 +22,8 @@ import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 
 const PAGE = PAGES.yeniayTarihleri;
 const YEARS = [2026, 2027];
-const UPDATED = "2026-10-27";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaSolarCatalog", "nasaEclipseTypes", "nasaMoonFactSheet", "nasaEclipseSafety");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 /** Tutulma görünürlüğünün gösterileceği iller: batıdan doğuya, kuzeyden güneye dağılmış. */
@@ -53,21 +56,27 @@ export default function NewMoons20262027Page() {
         eyebrow="Takvim"
         lead="2026 ve 2027'nin bütün yeni ayları, saatleriyle. Güneş tutulmaları yalnızca yeni ayda olur; bu iki yılın tutulmalarını ve Türkiye'den görünüşlerini de burada bulabilirsiniz."
         aside={<NextPrincipal phase="new-moon" />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Yeni ay ne zaman?" },
+          { href: "#tutulmalar", label: "Güneş tutulmaları" },
+          { href: "#turkiye-tutulma", label: "2 Ağustos 2027 illerden" },
+          ...YEARS.map((y) => ({ href: `#yil-${y}`, label: `${y} yeni ayları` })),
+          { href: "#kara-ay", label: "Kara ay" },
+        ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>2027&apos;de 13 yeni ay var. Ağustos ayına iki yeni ay düşüyor: 2 ve 31 Ağustos.</li>
-            <li>2 Ağustos 2027&apos;deki tam güneş tutulması Türkiye&apos;den parçalı olarak görülecek.</li>
-            <li>Bu tutulmada Güneş&apos;in en çok örtüleceği yerler Ege ve Akdeniz kıyılarıdır.</li>
-          </QuickFacts>
+          <NewMoonAnswer />
         </div>
 
         <EclipseTurkey />
 
         {YEARS.map((year) => (
           <section key={year} className="mt-14" aria-labelledby={`yil-${year}`}>
-            <h2 id={`yil-${year}`} className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 id={`yil-${year}`} className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
               {year} yeni ayları
             </h2>
             <NewMoonTable year={year} />
@@ -79,8 +88,8 @@ export default function NewMoons20262027Page() {
             <h2>Güneş tutulması neden yeni ayda olur?</h2>
             <p>
               Güneş tutulması, ayın Dünya ile Güneş arasına girip Güneş&apos;i örtmesidir. Ay ancak{" "}
-              <Link href={PAGES.yeniAy.path}>yeni ayda</Link> bu iki gök cisminin arasındadır. Ama ayın yörüngesi
-              yaklaşık 5 derece eğik olduğu için çoğu yeni ayda ay, Güneş&apos;in biraz üstünden ya da altından geçer.
+              <Link href={PAGES.yeniAy.path}>yeni ayda</Link> bu iki gök cisminin arasındadır.{src.ref("nasaEclipseTypes")} Ama ayın yörüngesi
+              yaklaşık 5 derece eğik olduğu için{src.ref("nasaMoonFactSheet")} çoğu yeni ayda ay, Güneş&apos;in biraz üstünden ya da altından geçer.
               Tutulma yalnızca yılda iki ile beş kez, yeni ay iki yörüngenin kesişme noktasına yakın bir zamana denk
               geldiğinde yaşanır.
             </p>
@@ -102,7 +111,7 @@ export default function NewMoons20262027Page() {
             <p>
               Bu tutulma, 21. yüzyılda karadan izlenebilecek en uzun tam güneş tutulmalarından biridir. Tam tutulma
               şeridi Cebelitarık Boğazı&apos;ndan başlayıp Kuzey Afrika&apos;yı boydan boya geçer; en uzun süre
-              Mısır&apos;da, Luksor çevresinde yaşanır ve orada 6 dakikayı aşar.
+              Mısır&apos;da, Luksor çevresinde yaşanır ve orada 6 dakikayı aşar.{src.ref("nasaSolarCatalog")}
             </p>
             <p>
               Türkiye bu şeridin kuzeyinde kaldığı için tutulmayı <strong>parçalı</strong> olarak görecek. Yukarıdaki
@@ -113,13 +122,13 @@ export default function NewMoons20262027Page() {
             <h3>Güneş&apos;e asla korumasız bakmayın</h3>
             <p>
               Güneş&apos;in %70&apos;i örtülse bile kalan kısım gözlere kalıcı zarar verecek kadar parlaktır. Tutulmayı
-              yalnızca ISO 12312-2 standardına uygun tutulma gözlükleriyle izleyin. Güneş gözlüğü, film negatifi ya da
+              yalnızca ISO 12312-2 standardına uygun tutulma gözlükleriyle izleyin.{src.ref("nasaEclipseSafety")} Güneş gözlüğü, film negatifi ya da
               isli cam güvenli değildir. Dürbün ve teleskopla, önüne uygun güneş filtresi takılmadan asla bakmayın.
               Güvenli ve kolay bir yol da iğne deliği yöntemidir: kartondaki küçük bir delikten geçen ışık, yere
               Güneş&apos;in hilal biçimindeki görüntüsünü düşürür.
             </p>
 
-            <h2>Kara ay nedir?</h2>
+            <h2 id="kara-ay">Kara ay nedir?</h2>
             <p>
               Bir takvim ayına iki dolunay sığdığında ikincisine mavi ay dendiği gibi, iki yeni ay sığdığında ikincisine
               de <strong>kara ay</strong> denir. 2027&apos;de bu durum ağustosta yaşanır: 2 Ağustos&apos;taki yeni ayı,
@@ -144,10 +153,7 @@ export default function NewMoons20262027Page() {
             page={PAGE}
             headline="2026-2027 Yeni Ay Tarihleri ve Güneş Tutulmaları"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Eclipses", href: "https://science.nasa.gov/eclipses/" },
-              { label: "NASA Science, Eclipse Safety", href: "https://science.nasa.gov/eclipses/safety/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -263,7 +269,7 @@ async function EclipseTurkey() {
   return (
     <>
       <section className="mt-14" aria-labelledby="tutulmalar">
-        <h2 id="tutulmalar" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="tutulmalar" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           2026-2027 güneş tutulmaları
         </h2>
         <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -288,7 +294,7 @@ async function EclipseTurkey() {
       </section>
 
       <section className="mt-14" aria-labelledby="turkiye-tutulma">
-        <h2 id="turkiye-tutulma" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="turkiye-tutulma" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           2 Ağustos 2027 tutulması illere göre
         </h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -341,5 +347,54 @@ function EclipseIcon({ kind }: { kind: SolarEclipse["kind"] }) {
       )}
       <circle cx={24 + offset} cy={24 - offset / 2} r={moonR} fill="#05070d" />
     </svg>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni). Saatte bir yenilenir. */
+async function NewMoonAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const upcoming = getUpcomingPrincipalPhases(now, 16).filter((p) => p.key === "new-moon");
+  const [next, ...later] = upcoming;
+  const lastYear = YEARS[YEARS.length - 1];
+  const yearMoons = newMoonsOfYear(lastYear);
+  // Kara ay: aynı takvim ayına düşen ikinci yeni ay.
+  const black = yearMoons.find(
+    (p, i) => i > 0 && localDateParts(p.date, timeZone).month === localDateParts(yearMoons[i - 1].date, timeZone).month,
+  );
+  const istanbul = siteConfig.defaultLocation;
+  const solar = getLocalSolarEclipse(now, istanbul);
+  const day = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+
+  return (
+    <AnswerBox
+      question="Yeni ay ne zaman?"
+      answer={`Bir sonraki yeni ay ${day.format(next.date)}, saat ${time.format(next.date)} (Türkiye saati).`}
+      rows={[
+        { label: "Kaç gün kaldı?", value: countdown(next.date.getTime() - now.getTime()) },
+        ...later.slice(0, 3).map((p, i) => ({
+          label: i === 0 ? "Sonraki yeni aylar" : "",
+          value: `${day.format(p.date)}, ${time.format(p.date)}`,
+        })),
+        {
+          label: `${lastYear} yılında kaç yeni ay var?`,
+          value: `${yearMoons.length}${black ? `; ${day.format(black.date)} yeni ayı, aynı aya düşen ikinci yeni ay (kara ay).` : "."}`,
+        },
+        {
+          label: "Türkiye'den görülecek sıradaki güneş tutulması",
+          value: `${day.format(solar.peak)} (İstanbul: Güneş'in %${Math.round(solar.obscuration * 100)} kadarı örtülür)`,
+        },
+      ]}
+      note="Yeni ay, ayın Güneş ile aynı yöne geldiği andır; ay o gece ve çevresinde görülmez. Hicri aylar, yeni aydan sonra hilalin görüldüğü akşam başlar."
+    />
   );
 }

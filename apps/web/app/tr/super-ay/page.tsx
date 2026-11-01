@@ -5,7 +5,9 @@ import { getFullMoonsOfYear, getMoonDistanceKm, type PrincipalPhase } from "@moo
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { AnswerBox } from "@/components/InfoTables";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
@@ -15,7 +17,8 @@ import { IMAGES } from "@/lib/images";
 import { LiveSize } from "./LiveSize";
 
 const PAGE = PAGES.superAy;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-01";
+const src = pageSources("nasaSupermoons", "nolleSupermoon", "usgsMoonSeismicity");
 const FIRST_YEAR = 2026;
 const LAST_YEAR = 2030;
 const timeZone = siteConfig.defaultLocation.timeZone;
@@ -51,15 +54,21 @@ export default function SupermoonPage() {
         eyebrow="Takvim"
         lead="Dolunay, ayın Dünya'ya en çok yaklaştığı zamana denk geldiğinde ay biraz daha büyük ve parlak görünür. Bu sayfada farkın gerçekte ne kadar olduğunu ve önümüzdeki süper ayları bulabilirsiniz."
         aside={<NextSupermoon />}
+        updated={UPDATED}
+      />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Süper ay ne zaman?" },
+          { href: "#karsilastirma", label: "Ne kadar büyük?" },
+          { href: "#liste", label: `${FIRST_YEAR}-${LAST_YEAR} süper ayları` },
+          { href: "#tanim", label: "Neden tek tanımı yok?" },
+          { href: "#deprem", label: "Deprem tetikler mi?" },
+        ]}
       />
       <LiveSize />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>Süper ay, Dünya&apos;ya en yakın konumuna çok yakınken gerçekleşen dolunaydır.</li>
-            <li>En büyük süper ay, en küçük dolunaydan yaklaşık %14 büyük ve %30 parlak görünür.</li>
-            <li>Ortalama bir dolunaya göre fark yalnızca %7 civarındadır; gözle fark etmek zordur.</li>
-          </QuickFacts>
+          <SupermoonAnswer />
         </div>
 
         <SizeComparison />
@@ -69,7 +78,7 @@ export default function SupermoonPage() {
             <h2>Süper ay nasıl oluşur?</h2>
             <p>
               Ayın Dünya etrafındaki yörüngesi tam bir daire değil, hafif bir elipstir. Bu yüzden ay her ay bir kez
-              Dünya&apos;ya en çok yaklaşır (yakınberi), bir kez de en çok uzaklaşır (uzakberi). Yakın noktada uzaklık
+              Dünya&apos;ya en çok yaklaşır (yakınberi), bir kez de en çok uzaklaşır (uzakberi).{src.ref("nasaSupermoons")} Yakın noktada uzaklık
               yaklaşık 356.000-370.000 km, uzak noktada ise 404.000-406.700 km arasındadır.
             </p>
             <p>
@@ -79,11 +88,11 @@ export default function SupermoonPage() {
               dolunay boyunca görülür, sonra yaklaşık bir yıl ara verir.
             </p>
 
-            <h2>Neden tek bir tanımı yok?</h2>
+            <h2 id="tanim">Neden tek bir tanımı yok?</h2>
             <p>
               &quot;Süper ay&quot; bir gökbilim terimi değildir. 1979&apos;da astrolog Richard Nolle tarafından ortaya
               atılmış, sonradan medyada yaygınlaşmıştır. Nolle&apos;un tanımı, ayın o yörüngedeki en yakın konumuna %90
-              oranında yaklaştığı dolunaylardır. Başka kaynaklar sabit bir uzaklık eşiği kullanır. Bu yüzden bir yılda
+              oranında yaklaştığı dolunaylardır.{src.ref("nolleSupermoon")} Başka kaynaklar sabit bir uzaklık eşiği kullanır. Bu yüzden bir yılda
               kaç süper ay olduğu kaynağa göre değişebilir.
             </p>
             <p>
@@ -93,7 +102,7 @@ export default function SupermoonPage() {
           </Prose>
         </div>
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="liste" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           {FIRST_YEAR}-{LAST_YEAR} süper ayları
         </h2>
         <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -122,7 +131,7 @@ export default function SupermoonPage() {
 
             <NasaFigure images={[IMAGES.supermoonCapitol]} />
 
-            <h2>Süper ay deprem tetikler mi?</h2>
+            <h2 id="deprem">Süper ay deprem tetikler mi?</h2>
             <p>
               Türkiye&apos;de her süper ayda bu soru gündeme gelir. Kısa cevap:{" "}
               <strong>
@@ -133,7 +142,7 @@ export default function SupermoonPage() {
             <p>
               Ay ve Güneş&apos;in çekimi, okyanuslarda olduğu gibi yer kabuğunda da çok küçük gelgitler oluşturur. Bazı
               bilimsel çalışmalar, zaten kırılmanın eşiğinde olan faylarda bu küçük ek yükün etkisini istatistiksel
-              olarak incelemiştir. Ancak bu etki, depremlerin asıl nedeni olan ve yüzyıllar boyunca biriken gerilimin
+              olarak incelemiştir.{src.ref("usgsMoonSeismicity")} Ancak bu etki, depremlerin asıl nedeni olan ve yüzyıllar boyunca biriken gerilimin
               yanında çok küçüktür. Süper ayda ay yalnızca biraz daha yakındır; gelgit kuvveti normal bir dolunaya göre
               çok az artar. Türkiye&apos;deki depremler süper ay olsun olmasın her zaman olabilir. Deprem hazırlığı,
               takvimden bağımsız olarak her zaman yapılmalıdır.
@@ -150,10 +159,7 @@ export default function SupermoonPage() {
             page={PAGE}
             headline="Süper Ay Nedir? Ne Zaman? 2026-2030 Süper Ay Tarihleri"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Science, Supermoons", href: "https://science.nasa.gov/moon/supermoons/" },
-              { label: "NASA Science, Moon Phases", href: "https://science.nasa.gov/moon/moon-phases/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -206,7 +212,7 @@ async function SizeComparison() {
       aria-labelledby="karsilastirma"
       className="starfield mt-12 overflow-hidden rounded-3xl bg-[#05070d] px-5 py-8 text-white sm:px-10"
     >
-      <h2 id="karsilastirma" className="text-center text-xl font-semibold sm:text-2xl">
+      <h2 id="karsilastirma" className="scroll-mt-32 text-center text-xl font-semibold sm:text-2xl">
         Süper ay ve mikro ay, gerçek oranlarıyla
       </h2>
       <p className="mx-auto mt-2 max-w-xl text-center text-sm text-zinc-400">
@@ -293,5 +299,57 @@ async function SupermoonList() {
         );
       })}
     </ol>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni). Saatte bir yenilenir. */
+async function SupermoonAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const all = fullMoonsWithDistance();
+  const upcoming = all.filter((m) => m.phase.date > now && m.km < SUPERMOON_KM);
+  const [next, ...later] = upcoming;
+  if (!next) return null;
+  const date = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const km = (n: number) => `${new Intl.NumberFormat(siteConfig.locale).format(Math.round(n))} km`;
+  const days = Math.ceil((next.phase.date.getTime() - now.getTime()) / DAY_MS);
+
+  return (
+    <AnswerBox
+      question="Süper ay ne zaman?"
+      answer={`Bir sonraki süper ay ${date.format(next.phase.date)}, saat ${time.format(next.phase.date)}; ay Dünya'ya ${km(next.km)} uzaklıkta olacak.`}
+      rows={[
+        { label: "Kaç gün kaldı?", value: `${days} gün` },
+        ...later.slice(0, 3).map((m, i) => ({
+          label: i === 0 ? "Sonraki süper aylar" : "",
+          value: `${date.format(m.phase.date)} (${km(m.km)})`,
+        })),
+        {
+          label: "Ne kadar büyük görünür?",
+          value: "Ortalama bir dolunaydan yaklaşık %7 büyük; gözle fark etmek zordur.",
+        },
+        {
+          label: "Deprem tetikler mi?",
+          value: (
+            <>
+              Kanıt yok; süper ay tarihleri deprem tahmini için kullanılamaz.{src.ref("usgsMoonSeismicity")}{" "}
+              <a href="#deprem" className="underline underline-offset-2">
+                Ayrıntı
+              </a>
+            </>
+          ),
+        },
+      ]}
+      note={`Bu sitede dolunay anında Dünya'ya ${km(SUPERMOON_KM)} uzaklıktan yakın olan dolunaylara süper ay diyoruz. Saatler Türkiye saatidir.`}
+    />
   );
 }

@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { getMoonAltitude, getMoonDistanceKm, getUpcomingLunarEclipses, getUpcomingPrincipalPhases } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
-import { ArticleFooter, NextPrincipal, PhaseHero, PhaseNav } from "@/components/phase/PhaseParts";
+import { ArticleFooter, countdown, NextPrincipal, PhaseHero, PhaseNav } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { AnswerBox } from "@/components/InfoTables";
 import { QuickLinks } from "@/components/QuickLinks";
@@ -257,7 +257,6 @@ async function FullMoonAnswer() {
     weekday: "long",
   });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
-  const days = Math.ceil((next.date.getTime() - now.getTime()) / 86_400_000);
   const kmText = `${Math.round(km).toLocaleString("tr-TR")} km`;
 
   return (
@@ -265,7 +264,7 @@ async function FullMoonAnswer() {
       question="Dolunay ne zaman?"
       answer={`Bir sonraki dolunay ${day.format(next.date)}, saat ${time.format(next.date)} (Türkiye saati).`}
       rows={[
-        { label: "Kaç gün kaldı?", value: `${days} gün` },
+        { label: "Kaç gün kaldı?", value: countdown(next.date.getTime() - now.getTime()) },
         ...(name
           ? [
               {

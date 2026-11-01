@@ -20,13 +20,14 @@ export interface Source {
   group: SourceGroup;
 }
 
-export type SourceGroup = "tutulma" | "ay" | "takvim" | "gelenek";
+export type SourceGroup = "tutulma" | "ay" | "takvim" | "gelenek" | "yer";
 
 export const SOURCE_GROUP_NAMES: Record<SourceGroup, string> = {
   tutulma: "Tutulmalar",
   ay: "Ay ve gökyüzü",
   takvim: "Takvim ve dinî günler",
   gelenek: "Gelenek ve astroloji",
+  yer: "Yer bilimleri",
 };
 
 export const SOURCES = {
@@ -149,6 +150,14 @@ export const SOURCES = {
     url: "http://www.astropro.com/features/articles/supermoon/",
     note: "\"Süper ay\" teriminin ilk kez 1979'da Nolle tarafından bir astroloji dergisinde kullanılması ve özgün tanımı (ayın yörüngedeki en yakın noktasının %90'ı içinde olması). Yalnız terimin kökeni için kaynak gösteriyoruz.",
     group: "ay",
+  },
+  usgsMoonSeismicity: {
+    no: 16,
+    title: "Can the position of the moon or the planets affect seismicity?",
+    publisher: "ABD Jeoloji Araştırmaları Kurumu (USGS), sık sorulan sorular",
+    url: "https://www.usgs.gov/faqs/can-position-moon-or-planets-affect-seismicity-are-there-more-earthquakes-morningin-eveningat",
+    note: "Eski çalışmaların çoğunun ay ile deprem sıklığı arasında anlamlı ilişki bulmaması; bazı yeni çalışmalarda yüksek gelgitlerde sığ bindirme faylarında küçük bir etki görülmesi; buna karşın belirli bir yerde ve yılda deprem olasılığının zaten çok düşük (yüzde birin kesirleri) kalması.",
+    group: "yer",
   },
 } as const satisfies Record<string, Source>;
 
