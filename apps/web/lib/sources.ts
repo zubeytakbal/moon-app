@@ -215,6 +215,22 @@ export const SOURCES = {
     note: "İkizler yağmurunun kuyruklu yıldızdan değil, 3200 Phaethon asteroidinden gelmesi; izlemek için şehir ışıklarından uzak bir yer seçilmesi.",
     group: "ay",
   },
+  nasaMoonFacts: {
+    no: 24,
+    title: "Moon Facts",
+    publisher: "NASA Science",
+    url: "https://science.nasa.gov/moon/facts/",
+    note: "Arka yüze \"karanlık yüz\" demenin yanıltıcı olması ve yeni ayda arka yüzün tamamen Güneş alması; ayın kendi ekseni çevresinde Dünya çevresindeki dolanımıyla aynı hızda dönmesi (eş zamanlı dönme); kabuğun ön yüzde yaklaşık 40, arka yüzde 60 kilometreye varan kalınlığı; arka yüzün ilk kez 1959'da görülmesi.",
+    group: "ay",
+  },
+  svsFarSidePhases: {
+    no: 25,
+    title: "Moon Phase and Libration, from the Other Side",
+    publisher: "NASA Bilimsel Görselleştirme Stüdyosu (SVS)",
+    url: "https://svs.gsfc.nasa.gov/4253",
+    note: "Arka yüzün de ön yüz gibi evrelerden geçmesi; ön yüzdeki büyük karanlık ovaların (ay denizleri) arka yüzde bulunmaması; Güney Kutbu-Aitken havzası; arka yüzün ilk kez Ekim 1959'da Luna 3'ün görüntüleriyle görülmesi.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { getMoonPhase, getNextNewMoon } from "@moon-app/moon";
+import { getMoonPhase, getNextFullMoon, getNextNewMoon } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Byline } from "@/components/Byline";
+import { AnswerBox } from "@/components/InfoTables";
 import { Faq } from "@/components/Faq";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { NasaFigure } from "@/components/NasaFigure";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { FAQS } from "@/lib/faqs";
 import { IMAGES } from "@/lib/images";
 import { pageOpenGraph } from "@/lib/og";
@@ -17,7 +20,8 @@ import { siteConfig } from "@/site.config";
 import { TwoFaces, type FaceSample } from "./TwoFaces";
 
 const PAGE = PAGES.ayinKaranlikYuzu;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-02";
+const src = pageSources("nasaMoonFacts", "svsFarSidePhases");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
@@ -43,35 +47,33 @@ export default function DarkSidePage() {
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Karanlık mı?" },
+          { href: "#iki-yuz", label: "İki yüz" },
+          { href: "#neden-karanlik", label: "Neden karanlık?" },
+          { href: "#neden-gormuyoruz", label: "Neden görünmez?" },
+          { href: "#ne-var", label: "Orada ne var?" },
+          { href: "#ilk", label: "İlk kim gördü?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>
-              &quot;Karanlık yüz&quot;, ayın Dünya&apos;dan hiç görünmeyen arka yüzüdür. Adı yanıltıcıdır: o da ön yüz
-              kadar Güneş ışığı alır.
-            </li>
-            <li>
-              Biz ayı göremediğimiz yeni ay gecelerinde, arka yüzün tamamı gündüzdür. Dolunayda ise arka yüzün tamamı
-              gecedir.
-            </li>
-            <li>
-              Ay kendi çevresindeki bir turunu, Dünya çevresindeki turuyla aynı sürede tamamlar; bu yüzden bize hep aynı
-              yüzünü gösterir.
-            </li>
-          </QuickFacts>
+          <FarSideAnswer />
         </div>
 
         <TwoFacesSection />
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Neden &quot;karanlık&quot; deniyor?</h2>
+            <h2 id="neden-karanlik">Neden &quot;karanlık&quot; deniyor?</h2>
             <p>
               Eski dilde &quot;karanlık&quot;, ışıksız değil &quot;bilinmeyen&quot; anlamında da kullanılırdı. Ayın arka
               yüzünü 1959&apos;a kadar hiçbir insan görmemişti; orada ne olduğu tam anlamıyla bir karanlıktı. Ad bu
               yüzden kaldı ve 1973&apos;te Pink Floyd&apos;un ünlü albümü, 2011&apos;de de Transformers filminin Türkçe
               adıyla iyice yaygınlaştı. Gökbilimciler ise yanlış anlaşılmasın diye &quot;arka yüz&quot; ya da &quot;uzak
-              yüz&quot; demeyi tercih eder.
+              yüz&quot; demeyi tercih eder.{src.ref("nasaMoonFacts")}
             </p>
             <p>
               Güneş ayı tıpkı Dünya&apos;yı aydınlattığı gibi her zaman yarım küre olarak aydınlatır. Ay döndükçe bu
@@ -80,13 +82,13 @@ export default function DarkSidePage() {
               aydınlıktır: ikisinin aydınlık oranlarının toplamı her zaman %100&apos;dür.
             </p>
 
-            <h2>Arka yüzü neden hiç göremiyoruz?</h2>
+            <h2 id="neden-gormuyoruz">Arka yüzü neden hiç göremiyoruz?</h2>
             <p>
               Ay, Dünya çevresindeki bir turunu yaklaşık 27,3 günde tamamlar; kendi ekseni etrafındaki bir turu da tam
               olarak bu kadar sürer. Bu eşitlik bir rastlantı değildir. Dünya&apos;nın çekim kuvveti ayı hafifçe uzatarak
               bir yumurta gibi şişirir; milyarlarca yıl boyunca bu şişkinliği çeken Dünya, ayın dönüşünü yavaşlatarak
               yörüngesiyle aynı hıza kilitlemiştir. Gökbilimciler buna <strong>eş zamanlı dönme</strong> (kütle çekimsel
-              kilitlenme) der.
+              kilitlenme) der.{src.ref("nasaMoonFacts")}
             </p>
           </Prose>
           <TidalLockDiagram />
@@ -97,7 +99,7 @@ export default function DarkSidePage() {
               odadaki bir pencereden bakan biri onun her yanını görür.
             </p>
 
-            <h2>Ayın yüzde kaçını görüyoruz?</h2>
+            <h2 id="yuzde">Ayın yüzde kaçını görüyoruz?</h2>
             <p>
               Ayın tam yarısını değil, zaman içinde <strong>yaklaşık %59&apos;unu</strong> görebiliriz. Ayın yörüngesi
               tam bir çember değildir ve ekseni yörüngesine göre biraz eğiktir; bu yüzden ay bize bir ay boyunca hafifçe
@@ -108,13 +110,14 @@ export default function DarkSidePage() {
           </Prose>
           <LibrationBar />
           <Prose>
-            <h2>Arka yüzde ne var?</h2>
+            <h2 id="ne-var">Arka yüzde ne var?</h2>
             <p>
               Arka yüzün ilk fotoğrafları geldiğinde gökbilimciler şaşırdı: ön yüzü süsleyen büyük karanlık lekeler,
               yani eski lav akıntılarının doldurduğu &quot;ay denizleri&quot;, arka yüzde neredeyse yoktu. Arka yüz baştan
-              sona kraterlerle kaplı, açık renkli, dağlık bir arazidir. Bunun en güçlü açıklaması, arka yüzdeki kabuğun
-              ön yüzdekinden onlarca kilometre daha kalın olmasıdır; derinlerden yükselen lav bu kalın kabuğu çoğu yerde
-              delip yüzeye çıkamamıştır.
+              sona kraterlerle kaplı, açık renkli, dağlık bir arazidir.{src.ref("svsFarSidePhases")} Bunun en güçlü
+              açıklaması kabuğun kalınlığıdır: ön yüzde yaklaşık 40 kilometre olan kabuk, arka yüzde 60 kilometreye
+              kadar kalınlaşır.{src.ref("nasaMoonFacts")} Derinlerden yükselen lav bu kalın kabuğu çoğu yerde delip
+              yüzeye çıkamamıştır.
             </p>
           </Prose>
           <NasaFigure images={[IMAGES.farSide]} />
@@ -124,7 +127,7 @@ export default function DarkSidePage() {
               <li>
                 <strong>Güney Kutbu-Aitken havzası:</strong> Yaklaşık 2.500 kilometre genişliğinde ve 8 kilometreye varan
                 derinliğiyle Güneş sisteminin bilinen en büyük çarpma çukurlarından biridir. Arka yüzün güney yarısını
-                kaplar; görüntünün alt kısmındaki koyu lekeler onun içindedir.
+                kaplar; görüntünün alt kısmındaki koyu lekeler onun içindedir.{src.ref("svsFarSidePhases")}
               </li>
               <li>
                 <strong>Moskova Denizi (Mare Moscoviense):</strong> Arka yüzdeki az sayıdaki karanlık ovadan biri. Adını,
@@ -142,7 +145,7 @@ export default function DarkSidePage() {
               radyo sinyallerini dinleyecek teleskoplar için en iyi aday yer olarak görülüyor.
             </p>
 
-            <h2>Arka yüzü ilk kim gördü?</h2>
+            <h2 id="ilk">Arka yüzü ilk kim gördü?</h2>
           </Prose>
           <Timeline />
           <NasaFigure images={[IMAGES.artemisFarSide]} />
@@ -158,14 +161,7 @@ export default function DarkSidePage() {
             page={PAGE}
             headline="Ayın Karanlık Yüzü: Gerçekten Karanlık mı, Neden Göremiyoruz?"
             updated={UPDATED}
-            sources={[
-              { label: "NASA Scientific Visualization Studio, The Moon's Far Side", href: "https://svs.gsfc.nasa.gov/11747" },
-              {
-                label: "NASA Scientific Visualization Studio, Moon Phase and Libration, from the Other Side",
-                href: "https://svs.gsfc.nasa.gov/4253",
-              },
-              { label: "NASA Science, Earth's Moon", href: "https://science.nasa.gov/moon/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -189,6 +185,7 @@ async function Hero() {
           <Breadcrumb page={PAGE} tone="dark" />
           <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">Ay bilgisi</p>
           <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl">{PAGE.title}</h1>
+          <Byline updated={UPDATED} />
           <p className="mt-5 max-w-xl text-lg text-zinc-200">
             Ayın Dünya&apos;dan hiç görünmeyen yüzü aslında karanlık değil. Şu an orada gündüz mü, gece mi? Neden onu
             hiç göremiyoruz ve orada ne var?
@@ -356,5 +353,59 @@ function Timeline() {
         </li>
       ))}
     </ol>
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): arka yüz karanlık mı, şu an ne kadarı aydınlık,
+ * ne zaman tamamen gündüz ya da gece olacak. Saatte bir yenilenir.
+ */
+async function FarSideAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const phase = getMoonPhase(now, timeZone);
+  const far = 100 - Math.round(phase.illumination * 100);
+  const newMoon = getNextNewMoon(now);
+  const fullMoon = getNextFullMoon(now);
+
+  return (
+    <AnswerBox
+      question="Ayın karanlık yüzü gerçekten karanlık mı?"
+      answer={`Hayır. Arka yüz de ön yüz kadar Güneş ışığı alır; şu an %${far} aydınlık.`}
+      rows={[
+        {
+          label: "Tamamen gündüz olacağı an",
+          value: `${dateTime.format(newMoon)} (yeni ay: o gece biz ayı göremeyiz)`,
+        },
+        { label: "Tamamen gece olacağı an", value: `${dateTime.format(fullMoon)} (dolunay)` },
+        {
+          label: "Neden hiç göremiyoruz?",
+          value: (
+            <>
+              Ay kendi çevresinde, Dünya çevresindeki turuyla aynı sürede (27,3 gün) döner; bize hep aynı yüzünü
+              gösterir.{src.ref("nasaMoonFacts")}
+            </>
+          ),
+        },
+        { label: "Ayın ne kadarını görebiliriz?", value: "Zaman içinde yaklaşık %59'unu (librasyon sayesinde)" },
+        {
+          label: "İlk görüntü",
+          value: (
+            <>
+              Luna 3, Ekim 1959{src.ref("svsFarSidePhases")}
+            </>
+          ),
+        },
+        { label: "İlk iniş", value: "Chang'e 4, 3 Ocak 2019" },
+      ]}
+      note={
+        <>
+          Gökbilimciler bu yüzden &quot;karanlık yüz&quot; yerine &quot;arka yüz&quot; ya da &quot;uzak yüz&quot; der.
+          Saatler Türkiye saatidir.
+        </>
+      }
+    />
   );
 }
