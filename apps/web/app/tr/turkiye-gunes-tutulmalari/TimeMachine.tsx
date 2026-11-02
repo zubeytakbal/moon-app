@@ -82,7 +82,7 @@ export async function TimeMachine({ slug, birthYear, id }: { slug: string; birth
 
   return (
     <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-      <h2 id="zaman-makinesi" className="text-xl font-semibold">
+      <h2 id="zaman-makinesi" className="scroll-mt-32 text-xl font-semibold">
         Tutulma zaman makinesi
       </h2>
       <p className="mt-1 max-w-2xl text-sm text-zinc-400">
