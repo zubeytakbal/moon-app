@@ -76,7 +76,7 @@ export const SOURCES = {
     title: "Moon Fact Sheet",
     publisher: "NASA Uzay Bilimi Veri Koordineli Arşivi (NSSDCA)",
     url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
-    note: "Ayın temel sayıları: evre döngüsü (sinodik dönem) 29,53 gün, yörünge dönemi 27,32 gün, ortalama uzaklık 384.400 km, yörünge eğikliği 5,145°.",
+    note: "Ayın temel sayıları: evre döngüsü (sinodik dönem) 29,53 gün, yörünge dönemi 27,32 gün, ortalama uzaklık 384.400 km, yakınberi 363.300 km ve uzakberi 405.500 km (ortalama), yörünge eğikliği 5,145°, Dünya'dan uzaklaşma hızı yılda 3,8 cm.",
     group: "ay",
   },
   nasaMoonPhases: {

@@ -3,11 +3,14 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { getMoonDistanceKm, getMoonPhase, getUpcomingLunarApsides } from "@moon-app/moon";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Byline } from "@/components/Byline";
+import { AnswerBox } from "@/components/InfoTables";
 import { Faq } from "@/components/Faq";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { FAQS } from "@/lib/faqs";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
@@ -15,7 +18,8 @@ import { siteConfig } from "@/site.config";
 import { RecessionCalculator, TravelCalculator } from "./DistanceTools";
 
 const PAGE = PAGES.ayUzaklik;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-02";
+const src = pageSources("nasaMoonFactSheet", "nasaSupermoons");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const LIGHT_KM_S = 299_792.458;
 const KM_PER_MILE = 1.609344;
@@ -55,25 +59,25 @@ export default function DistancePage() {
   return (
     <>
       <Hero />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Kaç km?" },
+          { href: "#olcek", label: "Gerçek ölçek" },
+          { href: "#hesapla", label: "Kaç günde gidilir?" },
+          { href: "#olcum", label: "Nasıl ölçülür?" },
+          { href: "#uzaklasma", label: "Neden uzaklaşıyor?" },
+          { href: "#sss", label: "Sık sorulanlar" },
+        ]}
+      />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
-          <QuickFacts>
-            <li>
-              Ay ile Dünya arası ortalama <strong>384.400 kilometredir</strong> (bilimsel gösterimle 3,844 × 10⁵ km).
-              Bu, merkezden merkeze ölçülen uzaklıktır.
-            </li>
-            <li>
-              Ayın yörüngesi tam bir çember olmadığı için uzaklık her ay yaklaşık 356.400 ile 406.700 km arasında
-              değişir.
-            </li>
-            <li>Işık bu yolu 1,3 saniyede alır. Ay her yıl Dünya&apos;dan yaklaşık 3,8 santimetre uzaklaşır.</li>
-          </QuickFacts>
+          <DistanceAnswer />
         </div>
 
         <NowSection />
 
         <section aria-labelledby="olcek" className="mt-14">
-          <h2 id="olcek" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2 id="olcek" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
             Gerçek ölçekte Dünya ve ay
           </h2>
           <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -85,7 +89,7 @@ export default function DistancePage() {
         </section>
 
         <section aria-labelledby="hesapla" className="mt-14">
-          <h2 id="hesapla" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h2 id="hesapla" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
             Bu uzaklığı hissetmek için
           </h2>
           <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -97,16 +101,17 @@ export default function DistancePage() {
 
         <div className="mx-auto max-w-3xl">
           <Prose>
-            <h2>Uzaklık neden her gün değişiyor?</h2>
+            <h2 id="neden-degisir">Uzaklık neden her gün değişiyor?</h2>
             <p>
               Ay Dünya&apos;nın çevresinde tam bir çember değil, hafif basık bir elips çizer. Yörüngenin Dünya&apos;ya en
               yakın noktasına <strong>yakınberi</strong>, en uzak noktasına <strong>uzakberi</strong> denir; ay bu iki
               nokta arasında 27,5 günde bir gidip gelir. Güneş&apos;in çekimi elipsin biçimini ay ay değiştirdiği için
               yakınberi ve uzakberi uzaklıkları da her ay biraz farklıdır. Yakınberi dolunaya denk geldiğinde ay
               gökyüzünde biraz daha büyük ve parlak görünür; buna <Link href={PAGES.superAy.path}>süper ay</Link> denir.
+              {src.ref("nasaSupermoons")}
             </p>
 
-            <h2>Bu uzaklık nasıl ölçülüyor?</h2>
+            <h2 id="olcum">Bu uzaklık nasıl ölçülüyor?</h2>
             <p>
               İlk tahminler iki bin yıldan eskidir. MÖ 2. yüzyılda Hipparkos, ay tutulmalarındaki gölgenin boyutundan ve
               farklı yerlerden görülen ay konumlarından yola çıkarak uzaklığı Dünya yarıçapının 60-67 katı olarak
@@ -118,11 +123,12 @@ export default function DistancePage() {
               süreden uzaklık hesaplanıyor. Ayın uzaklaştığını da bu ölçümler sayesinde biliyoruz.
             </p>
 
-            <h2>Ay neden uzaklaşıyor?</h2>
+            <h2 id="uzaklasma">Ay neden uzaklaşıyor?</h2>
             <p>
               Ayın çekimi Dünya&apos;daki okyanusları kendine doğru şişirir; bu şişkinlik gelgitleri oluşturur. Dünya
               kendi çevresinde aydan çok daha hızlı döndüğü için şişkinliği biraz önde taşır. Öne geçmiş bu su kütlesi ayı
-              yörüngesinde hafifçe ileri çeker; ay enerji kazanır ve her yıl biraz daha geniş bir yörüngeye çıkar. Aynı
+              yörüngesinde hafifçe ileri çeker; ay enerji kazanır ve her yıl yaklaşık 3,8 santimetre daha geniş bir
+              yörüngeye çıkar.{src.ref("nasaMoonFactSheet")} Aynı
               etkileşim Dünya&apos;nın dönüşünü de frenler: günlerimiz her yüzyılda yaklaşık 2 milisaniye uzar.
             </p>
             <p>
@@ -138,10 +144,7 @@ export default function DistancePage() {
             page={PAGE}
             headline="Ay ile Dünya Arası Kaç Km? Ay Şu An Ne Kadar Uzak?"
             updated={UPDATED}
-            sources={[
-              { label: "NASA, Moon Fact Sheet", href: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" },
-              { label: "NASA Science, Moon Facts", href: "https://science.nasa.gov/moon/facts/" },
-            ]}
+            src={src}
           />
         </div>
       </main>
@@ -166,6 +169,7 @@ async function Hero() {
           <Breadcrumb page={PAGE} tone="dark" />
           <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">Ay bilgisi</p>
           <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-6xl">{PAGE.title}</h1>
+          <Byline updated={UPDATED} />
           <p className="mt-5 max-w-xl text-lg text-zinc-200">
             Ortalama 384.400 kilometre. Ama ay her an aynı uzaklıkta değil; şu an tam olarak ne kadar uzakta?
           </p>
@@ -208,7 +212,7 @@ async function NowSection() {
 
   return (
     <section aria-labelledby="simdi" className="mt-12">
-      <h2 id="simdi" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h2 id="simdi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         Ay şu an {NF.format(Math.round(km))} km uzakta
       </h2>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
@@ -323,5 +327,46 @@ function ScaleDiagram() {
         gezegenler sığsın diye yükseklikleri kısaltıldı; genişlikleri gerçek ölçekte.
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): ortalama uzaklık, şu anki uzaklık, aralık ve sıradaki
+ * yakınberi-uzakberi. Saatte bir yenilenir.
+ */
+async function DistanceAnswer() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const km = getMoonDistanceKm(now);
+  const apsides = getUpcomingLunarApsides(now, 2);
+  const diff = km - MEAN_KM;
+
+  return (
+    <AnswerBox
+      question="Ay ile Dünya arası kaç km?"
+      answer={`Ortalama 384.400 km. Ay şu an ${NF.format(Math.round(km))} km uzakta.`}
+      rows={[
+        {
+          label: "Şu an ortalamaya göre",
+          value: `${NF.format(Math.abs(Math.round(diff)))} km ${diff > 0 ? "daha uzak" : "daha yakın"}`,
+        },
+        { label: "Değişim aralığı", value: `Yaklaşık ${NF.format(MIN_KM)} ile ${NF.format(MAX_KM)} km arası` },
+        ...apsides.map((a) => ({
+          label: a.kind === "perigee" ? "Sıradaki yakınberi (en yakın)" : "Sıradaki uzakberi (en uzak)",
+          value: `${dateFmt.format(a.date)}: ${NF.format(Math.round(a.km))} km`,
+        })),
+        { label: "Işık bu yolu", value: `${NF2.format(km / LIGHT_KM_S)} saniyede alır` },
+        { label: "Dünya genişliği olarak", value: `${NF1.format(km / EARTH_DIAMETER_KM)} Dünya` },
+        { label: "Uzaklaşma", value: "Yılda yaklaşık 3,8 cm" },
+      ]}
+      note={
+        <>
+          Uzaklık Dünya&apos;nın merkezinden ayın merkezine ölçülür. Ortalama uzaklık ve uzaklaşma hızı NASA&apos;nın ay
+          bilgi sayfasından{src.ref("nasaMoonFactSheet")}; şu anki uzaklık ve yakınberi-uzakberi anları kendi hesabımızdır.
+        </>
+      }
+    />
   );
 }
