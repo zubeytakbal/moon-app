@@ -3,10 +3,12 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { getMoonDistanceKm } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
+import { AnswerBox, DataTable } from "@/components/InfoTables";
 import { NasaFigure } from "@/components/NasaFigure";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
-import { QuickFacts } from "@/components/QuickFacts";
+import { QuickLinks } from "@/components/QuickLinks";
+import { pageSources } from "@/components/Sources";
 import { FAQS } from "@/lib/faqs";
 import { IMAGES } from "@/lib/images";
 import { pageOpenGraph } from "@/lib/og";
@@ -15,9 +17,18 @@ import { siteConfig } from "@/site.config";
 import { LandingMap } from "./LandingMap";
 
 const PAGE = PAGES.ayaYolculuk;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-02";
+const src = pageSources(
+  "nasaApollo11",
+  "svsLroApollo",
+  "nasaLunarSamples",
+  "nasaMoonFactSheet",
+  "nasaArtemis2",
+  "nasaArtemis3",
+  "tubitakLunar",
+);
 /** "Son gelişmeler" bölümünün en son elle güncellendiği gün. Önemli bir gelişmede bölümle birlikte güncellenir. */
-const NEWS_CHECKED = "29 Ekim 2026";
+const NEWS_CHECKED = "2 Kasım 2026";
 const LIGHT_KM_S = 299_792.458;
 
 export const metadata: Metadata = {
@@ -57,20 +68,29 @@ export default function MoonJourneyPage() {
         lead="1969'dan 1972'ye 12 astronot aya ayak bastı. Yarım yüzyıl sonra insanlık yeniden yola çıktı: Artemis II astronotları 2026'da ayın çevresini dolaştı, Türkiye'nin ay aracı fırlatılmaya hazırlanıyor."
         aside={<LiveDistance />}
         photo={IMAGES.apollo11}
+        updated={UPDATED}
       />
+      <QuickLinks
+        links={[
+          { href: "#cevap", label: "Gidildi mi?" },
+          { href: "#inis-haritasi", label: "İniş haritası" },
+          { href: "#kanitlar", label: "Kanıtlar" },
+          { href: "#apollo", label: "Apollo inişleri" },
+          { href: "#ulkeler", label: "Ülkeler" },
+          { href: "#sure", label: "Kaç gün?" },
+          { href: "#artemis", label: "Artemis" },
+          { href: "#turkiye", label: "Türkiye" },
+          { href: "#gelismeler", label: "Son gelişmeler" },
+        ]}
+      />
+      <div className="mx-auto w-full max-w-3xl px-4 py-10">
+        <JourneyAnswer />
+      </div>
       <LandingMap />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-        <QuickFacts>
-          <li>Aya 1969-1972 arasında altı kez inildi; 12 astronot ay yüzeyinde yürüdü.</li>
-          <li>Aya yumuşak iniş yapan ülkeler: Sovyetler Birliği, ABD, Çin, Hindistan ve Japonya.</li>
-          <li>
-            Artemis II Nisan 2026&apos;da dört astronotla ayın çevresini dolaştı; yeniden iniş 2028&apos;de hedefleniyor.
-          </li>
-          <li>Türkiye&apos;nin ilk ay aracının 2027&apos;nin ilk yarısında fırlatılması planlanıyor.</li>
-        </QuickFacts>
 
         <Prose>
-          <h2>Aya insan gitti mi? Kanıtlar</h2>
+          <h2 id="kanitlar">Aya insan gitti mi? Kanıtlar</h2>
           <p>
             Evet. Apollo inişleri, bugün hâlâ ölçülebilen ve farklı ülkelerin doğrulayabildiği izler bıraktı. Ayın sahte
             olduğu iddiası yıllardır dolaşıyor, ama en güçlü cevap tek tek kanıtlara bakmaktır:
@@ -80,17 +100,19 @@ export default function MoonJourneyPage() {
               <strong>Hâlâ çalışan aynalar.</strong> Apollo 11, 14 ve 15 astronotları ay yüzeyine lazer yansıtıcıları
               bıraktı. Dünya&apos;daki gözlemevleri bugün de bu aynalara lazer gönderip yansımanın dönüş süresini ölçüyor;
               ayın uzaklığı milimetre düzeyinde bu yolla biliniyor. Ayın her yıl yaklaşık 3,8 santimetre uzaklaştığı da bu
-              ölçümlerden öğrenildi.
+              ölçümlerden öğrenildi.{src.ref("nasaMoonFactSheet")}
             </li>
             <li>
               <strong>Uydudan görünen iniş yerleri.</strong> NASA&apos;nın 2009&apos;dan beri ayın çevresinde dönen LRO
-              uydusu, altı iniş yerinin hepsini fotoğrafladı: yüzeyde kalan iniş araçları, astronotların ayak izleriyle
-              oluşan patikalar ve ay arabalarının tekerlek izleri görülüyor. Hindistan&apos;ın Chandrayaan-2 sondası da
+              uydusu Apollo iniş yerlerini fotoğrafladı. Apollo 12, 14 ve 17&apos;nin görüntülerinde iniş araçlarının
+              yüzeyde kalan bölümleri, ay arabası ve astronotların yürürken bıraktığı izler seçiliyor.
+              {src.ref("svsLroApollo")} Hindistan&apos;ın Chandrayaan-2 sondası da
               Apollo 11 ve 12&apos;nin iniş yerlerini görüntüledi.
             </li>
             <li>
-              <strong>382 kilogram ay kayacı.</strong> Apollo astronotlarının getirdiği kayaçlar elli yıldır dünyanın
-              dört bir yanındaki laboratuvarlarda inceleniyor. Dünya kayaçlarından farklıdır: hiç su içermez, yüzeyleri
+              <strong>382 kilogram ay kayacı.</strong> Apollo astronotlarının getirdiği 2.196 örnek elli yıldır dünyanın
+              dört bir yanındaki laboratuvarlarda inceleniyor.{src.ref("nasaLunarSamples")} Dünya kayaçlarından
+              farklıdır: içlerinde su bulunmadı, yüzeyleri
               havası olmayan bir ortamda küçük göktaşlarının çarpmasıyla delik deşik olmuştur. Sovyetler Birliği&apos;nin
               insansız Luna araçlarıyla ayrıca getirdiği örnekler de aynı özellikleri taşır.
             </li>
@@ -104,37 +126,17 @@ export default function MoonJourneyPage() {
 
         <NasaFigure images={[IMAGES.apollo11]} />
 
-        <h2 className="mt-12 text-2xl font-semibold tracking-tight">Aya kaç kez gidildi? Apollo&apos;nun altı inişi</h2>
+        <h2 id="apollo" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">
+          Aya kaç kez gidildi? Apollo&apos;nun altı inişi
+        </h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
           Her görevde üç astronot vardı: ikisi aya indi, biri yörüngede bekledi. Apollo 13 (Nisan 1970) bir patlama yüzünden
           inişten vazgeçti ve ayın çevresinden dolaşarak Dünya&apos;ya güvenle döndü.
         </p>
-        <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <table className="w-full text-left text-sm sm:text-base">
-            <thead className="bg-zinc-50 text-sm text-zinc-500 dark:bg-zinc-950">
-              <tr>
-                <th className="px-4 py-3 font-medium sm:px-5">Görev ve tarih</th>
-                <th className="px-4 py-3 font-medium sm:px-5">Aya inen astronotlar</th>
-                <th className="hidden px-4 py-3 font-medium sm:table-cell sm:px-5">İniş yeri</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-              {APOLLO_LANDINGS.map((m) => (
-                <tr key={m.mission}>
-                  <td className="px-4 py-3 sm:px-5">
-                    <span className="block font-semibold">{m.mission}</span>
-                    <span className="block text-sm text-zinc-500">{m.date}</span>
-                  </td>
-                  <td className="px-4 py-3 sm:px-5">
-                    {m.crew}
-                    <span className="block text-sm text-zinc-500 sm:hidden">{m.site}</span>
-                  </td>
-                  <td className="hidden px-4 py-3 sm:table-cell sm:px-5">{m.site}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={["Görev", "İniş", "Aya inen astronotlar", "İniş yeri"]}
+          rows={APOLLO_LANDINGS.map((m) => ({ key: m.mission, cells: [m.mission, m.date, m.crew, m.site] }))}
+        />
 
         <Prose>
           <h2>Aya ilk kim ayak bastı?</h2>
@@ -142,7 +144,7 @@ export default function MoonJourneyPage() {
             Neil Armstrong, 21 Temmuz 1969&apos;da, Türkiye&apos;de sabahın erken saatlerinde, ay yüzeyine ayak basan ilk
             insan oldu. Yaklaşık 20 dakika sonra Buzz Aldrin onu izledi. Üçüncü astronot Michael Collins, ikisi yüzeydeyken
             ayın çevresinde dönen komuta modülünde tek başına bekledi. Armstrong ile Aldrin ayda 21 saat kaldı ve bunun iki buçuk
-            saatini iniş aracının dışında, yüzeyde yürüyerek geçirdi. Sonraki görevlerde aydaki kalış üç güne kadar uzadı ve
+            saatini iniş aracının dışında, yüzeyde yürüyerek geçirdi.{src.ref("nasaApollo11")} Sonraki görevlerde aydaki kalış üç güne kadar uzadı ve
             son üç görevde astronotlar ay arabasıyla kilometrelerce yol aldı.
           </p>
           <p>
@@ -150,25 +152,16 @@ export default function MoonJourneyPage() {
             yana kimse ay yüzeyine inmedi.
           </p>
 
-          <h2>Aya iniş yapan ülkeler</h2>
+          <h2 id="ulkeler">Aya iniş yapan ülkeler</h2>
           <p>
             İnsanlı iniş yalnızca ABD&apos;ye ait; ama insansız araçlarla aya yumuşak iniş yapan, yani aracını yüzeye sağlam
             indiren beş ülke var:
           </p>
         </Prose>
-        <ol className="mt-4 space-y-3">
-          {LANDING_COUNTRIES.map((c) => (
-            <li key={c.who} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <span className="font-semibold">{c.who}</span>
-                <span className="text-sm text-zinc-500">
-                  {c.first} · {c.date}
-                </span>
-              </p>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{c.note}</p>
-            </li>
-          ))}
-        </ol>
+        <DataTable
+          columns={["Ülke", "İlk yumuşak iniş", "Tarih", "Not"]}
+          rows={LANDING_COUNTRIES.map((c) => ({ key: c.who, cells: [c.who, c.first, c.date, c.note] }))}
+        />
 
         <Prose>
           <p>
@@ -178,11 +171,11 @@ export default function MoonJourneyPage() {
             inişe izin vermeyen, havasız ve engebeli yüzeyi, yarım yüzyıl sonra bile kolay bir hedef değil.
           </p>
 
-          <h2>Aya gitmek kaç gün sürer?</h2>
+          <h2 id="sure">Aya gitmek kaç gün sürer?</h2>
           <p>
             Apollo astronotları ayın yörüngesine yaklaşık üç günde ulaşıyordu; Apollo 11 16 Temmuz&apos;da fırlatıldı, 19
-            Temmuz&apos;da ayın yörüngesine girdi. Artemis II&apos;nin on günlük görevi de benzer bir yol izledi: astronotlar
-            altıncı gün ayın arkasından geçti.
+            Temmuz&apos;da ayın yörüngesine girdi.{src.ref("nasaApollo11")} Artemis II&apos;nin on günlük görevi de benzer
+            bir yol izledi: astronotlar altıncı gün ayın arkasından geçti.{src.ref("nasaArtemis2")}
           </p>
           <p>
             İnsansız araçlar ise çoğu zaman acele etmez. Yakıt tasarrufu için Dünya&apos;nın çevresinde giderek büyüyen
@@ -191,7 +184,7 @@ export default function MoonJourneyPage() {
             öngörülen yolculuk süresi yaklaşık iki aydır.
           </p>
 
-          <h2>Artemis: aya dönüş</h2>
+          <h2 id="artemis">Artemis: aya dönüş</h2>
           <p>
             NASA&apos;nın Artemis programı, Apollo&apos;dan sonra insanları yeniden aya indirmeyi ve orada kalıcı bir
             varlık kurmayı amaçlıyor. Program adını Yunan mitolojisinde Apollon&apos;un ikiz kız kardeşi Artemis&apos;ten
@@ -204,16 +197,16 @@ export default function MoonJourneyPage() {
             <li>
               <strong>Artemis II (1-10 Nisan 2026):</strong> Reid Wiseman, Victor Glover, Christina Koch ve Kanadalı Jeremy
               Hansen ayın arkasından dolaşıp döndü. 1972&apos;den beri aya giden ilk insanlar oldular ve insanların
-              Dünya&apos;dan en çok uzaklaştığı mesafenin rekorunu kırdılar.
+              Dünya&apos;dan en çok uzaklaştığı mesafenin rekorunu kırdılar.{src.ref("nasaArtemis2")}
             </li>
             <li>
-              <strong>Artemis III (2027 yazı, plan):</strong> NASA&apos;nın Ekim 2026&apos;daki açıklamasına göre bu görev
-              iniş yapmayacak; dört astronot Dünya yörüngesinde, ileride kullanılacak ay iniş araçlarıyla buluşma ve
-              kenetlenme denemesi yapacak.
+              <strong>Artemis III (2027, plan):</strong> NASA&apos;nın açıklamasına göre bu görev aya inmeyecek;
+              astronotlar Dünya yörüngesinde, ileride kullanılacak ticari ay iniş araçlarıyla buluşma ve kenetlenme
+              denemesi yapacak.{src.ref("nasaArtemis3")}
             </li>
             <li>
               <strong>Artemis IV (2028, plan):</strong> Apollo 17&apos;den sonraki ilk insanlı ay inişi olarak
-              hedefleniyor. İniş, ayın güney kutbu bölgesine yapılacak; burada gölgede kalan kraterlerde donmuş su
+              hedefleniyor; NASA ilk Artemis inişini 2028 başına planlıyor.{src.ref("nasaArtemis3")} İniş, ayın güney kutbu bölgesine yapılacak; burada gölgede kalan kraterlerde donmuş su
               bulunduğu düşünülüyor.
             </li>
           </ul>
@@ -222,33 +215,34 @@ export default function MoonJourneyPage() {
             önce kendi astronotlarını aya indirmeyi hedefliyor.
           </p>
 
-          <h2>Türkiye&apos;nin ay aracı</h2>
+          <h2 id="turkiye">Türkiye&apos;nin ay aracı</h2>
           <p>
             Türkiye&apos;nin Ay Araştırma Programı&apos;nın ilk aşamasında, TÜBİTAK UZAY&apos;ın geliştirdiği insansız bir
             uzay aracı aya gönderilecek. TÜBİTAK&apos;ın Ekim 2026&apos;daki açıklamasına göre aracın üretimi ve
             entegrasyonu tamamlandı; yaklaşık 3,5 ton ağırlığındaki aracın 65 kritik bileşeninden 56&apos;sı yerli
             imkânlarla üretildi. Araç, uzay koşullarını taklit eden çevresel testlerden sonra ABD&apos;deki Kennedy Uzay
             Merkezi&apos;ne gönderilecek; fırlatmanın 2027&apos;nin ilk yarısında yapılması planlanıyor.
+            {src.ref("tubitakLunar")}
           </p>
           <p>
             Planlanan görev şöyle: Araç yaklaşık iki aylık bir yolculuktan sonra ayın kutuplarının üzerinden geçen, yüzeyden
-            100 kilometre yükseklikteki bir yörüngeye girecek. Bu yörüngede en az üç ay, performansına göre bir buçuk yıla
-            kadar çalışacak; ikisi yerli, ikisi uluslararası iş birliğiyle geliştirilen dört bilimsel cihaz taşıyacak. Görev
-            sonunda araç, yerli olarak geliştirilen hibrit roket motoruyla kontrollü olarak ay yüzeyine indirilecek. Bu bir
-            yumuşak iniş değil, aracın yüzeye çarptığı bir &quot;sert iniş&quot;tir. Programın ikinci aşamasında ise ay
+            yaklaşık 100 kilometre yükseklikteki bir yörüngeye girecek ve dört bilimsel cihaz taşıyacak. Yörüngeye çıkış
+            ve görevin sonundaki manevralar, yerli olarak geliştirilen hibrit roket motoruyla yapılacak; araç görev sonunda
+            kontrollü manevralarla ay yüzeyine ulaşacak.{src.ref("tubitakLunar")} Programın ikinci aşamasında ise ay
             yüzeyine yumuşak iniş yapacak bir araç hedefleniyor.
           </p>
 
-          <h2>Son gelişmeler</h2>
+          <h2 id="gelismeler">Son gelişmeler</h2>
           <p className="text-sm text-zinc-500">Son kontrol: {NEWS_CHECKED}</p>
           <ul>
             <li>
-              <strong>23 Ekim 2026:</strong> NASA, Artemis III&apos;ün 2027 yazında Dünya yörüngesinde bir kenetlenme
-              denemesi olarak uçacağını, ilk insanlı inişin Artemis IV ile 2028&apos;de hedeflendiğini açıkladı.
+              <strong>23 Ekim 2026:</strong> NASA, Artemis III&apos;ün 2027&apos;de Dünya yörüngesinde gelecekteki ay iniş
+              araçlarının işlemlerini deneyeceğini açıkladı; ilk Artemis inişi 2028 başı için hedefleniyor.
+              {src.ref("nasaArtemis3")}
             </li>
             <li>
               <strong>6 Ekim 2026:</strong> TÜBİTAK, Türkiye&apos;nin ay aracının entegrasyonunun tamamlandığını ve aracın
-              çevresel testlere gönderildiğini duyurdu.
+              çevresel testlere gönderildiğini duyurdu.{src.ref("tubitakLunar")}
             </li>
             <li>
               <strong>Ağustos 2026:</strong> Çin, ayın güney kutbunu inceleyecek Chang&apos;e 7 görevinin 2026 fırlatma
@@ -256,7 +250,7 @@ export default function MoonJourneyPage() {
             </li>
             <li>
               <strong>1-10 Nisan 2026:</strong> Artemis II, dört astronotla ayın çevresini dolaşıp Pasifik Okyanusu&apos;na
-              indi.
+              indi.{src.ref("nasaArtemis2")}
             </li>
           </ul>
           <p>
@@ -270,16 +264,7 @@ export default function MoonJourneyPage() {
           page={PAGE}
           headline="Aya Yolculuk: Apollo'dan Artemis'e, Türkiye'nin Ay Aracı"
           updated={UPDATED}
-          sources={[
-            { label: "NASA, Apollo 11 görev özeti", href: "https://www.nasa.gov/history/apollo-11-mission-overview/" },
-            { label: "NASA Science, Lunar Reconnaissance Orbiter (LRO)", href: "https://science.nasa.gov/mission/lro/" },
-            {
-              label: "NASA, Artemis II görev özeti",
-              href: "https://www.nasa.gov/centers-and-facilities/johnson/artemis-ii-mission-milestones-an-image-and-video-recap/",
-            },
-            { label: "NASA, Artemis III haberleri", href: "https://www.nasa.gov/artemis-iii-news-and-updates/" },
-            { label: "TÜBİTAK, Ay uzay aracının entegrasyonu (Ekim 2026)", href: "https://tubitak.gov.tr/en/node/19226" },
-          ]}
+          src={src}
         />
       </main>
     </>
@@ -314,5 +299,53 @@ async function LiveDistance() {
         Ay ne kadar uzak? Arabayla kaç günde gidilir?
       </Link>
     </div>
+  );
+}
+
+/** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): aya insan gitti mi, kaç kez, şimdi ne oluyor. */
+function JourneyAnswer() {
+  return (
+    <AnswerBox
+      question="Aya insan gitti mi?"
+      answer="Evet. 1969-1972 arasında altı Apollo görevi aya indi ve 12 astronot ay yüzeyinde yürüdü."
+      rows={[
+        {
+          label: "İlk ayak basan",
+          value: (
+            <>
+              Neil Armstrong, 21 Temmuz 1969 (Türkiye saatiyle sabaha karşı){src.ref("nasaApollo11")}
+            </>
+          ),
+        },
+        { label: "Son ayrılan", value: "Eugene Cernan, 14 Aralık 1972 (Apollo 17)" },
+        {
+          label: "Getirilen örnek",
+          value: (
+            <>
+              382 kg kayaç ve toprak, 2.196 örnek{src.ref("nasaLunarSamples")}
+            </>
+          ),
+        },
+        { label: "Aya iniş yapan ülkeler", value: "Sovyetler Birliği, ABD, Çin, Hindistan, Japonya (insanlı yalnız ABD)" },
+        {
+          label: "Yeniden aya",
+          value: (
+            <>
+              Artemis II Nisan 2026&apos;da ayın çevresini dolaştı{src.ref("nasaArtemis2")}; ilk Artemis inişi 2028 başı
+              için hedefleniyor{src.ref("nasaArtemis3")}
+            </>
+          ),
+        },
+        {
+          label: "Türkiye'nin ay aracı",
+          value: (
+            <>
+              Entegrasyonu tamamlandı; fırlatma 2027&apos;nin ilk yarısında hedefleniyor{src.ref("tubitakLunar")}
+            </>
+          ),
+        },
+      ]}
+      note={<>Görev tarihleri sık değişir; son kontrol: {NEWS_CHECKED}.</>}
+    />
   );
 }

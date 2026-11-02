@@ -86,7 +86,7 @@ export async function LandingMap() {
     <section className="bg-[#05070d] text-white" aria-labelledby="inis-haritasi">
       <div className="mx-auto w-full max-w-5xl px-4 pb-14 pt-2">
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-          <h2 id="inis-haritasi" className="text-xl font-semibold">
+          <h2 id="inis-haritasi" className="scroll-mt-32 text-xl font-semibold">
             Aya iniş yerleri haritası
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-zinc-400">

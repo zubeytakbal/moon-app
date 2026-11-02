@@ -20,11 +20,12 @@ export interface Source {
   group: SourceGroup;
 }
 
-export type SourceGroup = "tutulma" | "ay" | "takvim" | "gelenek" | "yer";
+export type SourceGroup = "tutulma" | "ay" | "uzay" | "takvim" | "gelenek" | "yer";
 
 export const SOURCE_GROUP_NAMES: Record<SourceGroup, string> = {
   tutulma: "Tutulmalar",
   ay: "Ay ve gökyüzü",
+  uzay: "Uzay görevleri",
   takvim: "Takvim ve dinî günler",
   gelenek: "Gelenek ve astroloji",
   yer: "Yer bilimleri",
@@ -230,6 +231,54 @@ export const SOURCES = {
     url: "https://svs.gsfc.nasa.gov/4253",
     note: "Arka yüzün de ön yüz gibi evrelerden geçmesi; ön yüzdeki büyük karanlık ovaların (ay denizleri) arka yüzde bulunmaması; Güney Kutbu-Aitken havzası; arka yüzün ilk kez Ekim 1959'da Luna 3'ün görüntüleriyle görülmesi.",
     group: "ay",
+  },
+  nasaApollo11: {
+    no: 26,
+    title: "Apollo 11 Mission Overview",
+    publisher: "NASA",
+    url: "https://www.nasa.gov/history/apollo-11-mission-overview/",
+    note: "Apollo 11'in 16 Temmuz 1969'da fırlatılması, 19 Temmuz'da ay yörüngesine girmesi ve 20 Temmuz'da inmesi; Armstrong ile Aldrin'in ay yüzeyinde 21 saat 36 dakika kalması, yüzey yürüyüşünün iki buçuk saati aşması.",
+    group: "uzay",
+  },
+  svsLroApollo: {
+    no: 27,
+    title: "New LRO Images Offer Sharper Views of Apollo 12, 14, and 17 Sites",
+    publisher: "NASA Goddard, Bilimsel Görselleştirme Stüdyosu (SVS)",
+    url: "https://svs.gsfc.nasa.gov/10818",
+    note: "NASA'nın LRO uydusunun Apollo 12, 14 ve 17 iniş yerlerini fotoğraflaması; görüntülerde iniş araçlarının yüzeyde kalan bölümlerinin ve astronotların yürüyüş izlerinin seçilmesi (2011).",
+    group: "uzay",
+  },
+  nasaLunarSamples: {
+    no: 28,
+    title: "The Lunar Sample Collection",
+    publisher: "NASA Johnson Uzay Merkezi, Charles Meyer Jr.",
+    url: "https://astromaterials.jsc.nasa.gov/education/_documents/The%20Lunar%20Sample%20Collection.pdf",
+    note: "Apollo koleksiyonunun 382 kilogram kayaç ve topraktan oluşması; aya yürüyen 12 astronotun 80 saatlik keşifte 2.196 örnek toplaması; örneklerde canlı, organik molekül ve su bulunmaması.",
+    group: "uzay",
+  },
+  nasaArtemis2: {
+    no: 29,
+    title: "Artemis II Mission Milestones: An Image and Video Recap",
+    publisher: "NASA Johnson Uzay Merkezi",
+    url: "https://www.nasa.gov/centers-and-facilities/johnson/artemis-ii-mission-milestones-an-image-and-video-recap/",
+    note: "Artemis II'nin 1 Nisan 2026'da fırlatılıp 10 Nisan'da Pasifik Okyanusu'na inmesi; mürettebat (Wiseman, Glover, Koch, Hansen); görevin 6. gününde ayın arka yüzünün arkasından geçilmesi; Apollo 13'ün 1970'teki insanların Dünya'dan en uzak mesafesi rekorunun kırılması.",
+    group: "uzay",
+  },
+  nasaArtemis3: {
+    no: 30,
+    title: "Artemis III News and Updates",
+    publisher: "NASA",
+    url: "https://www.nasa.gov/artemis-iii-news-and-updates/",
+    note: "Artemis III'ün 2027'de Dünya yörüngesinde, ticari ay iniş araçlarıyla buluşma ve kenetlenme denemesi olarak uçması; ilk Artemis ay inişinin 2028 başı için hedeflenmesi (23 Ekim 2026 güncellemesi).",
+    group: "uzay",
+  },
+  tubitakLunar: {
+    no: 31,
+    title: "Integration Activities Completed for Türkiye's First Lunar Spacecraft",
+    publisher: "TÜBİTAK (6 Ekim 2026)",
+    url: "https://tubitak.gov.tr/en/node/19226",
+    note: "Türkiye'nin ilk ay aracının üretim, montaj ve entegrasyonunun tamamlanması; yaklaşık 3,5 ton ağırlık; 65 kritik bileşenden 56'sının yerli üretimi; çevresel testler, Kennedy Uzay Merkezi'nden 2027'nin ilk yarısında fırlatma hedefi; yaklaşık iki aylık yolculuktan sonra ayın 100 km üzerindeki kutupsal yörünge; dört bilimsel yük; yerli hibrit roket motoru.",
+    group: "uzay",
   },
 } as const satisfies Record<string, Source>;
 
