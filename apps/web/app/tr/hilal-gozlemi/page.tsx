@@ -3,14 +3,21 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import {
+  ABROAD_CITIES,
   CRESCENT_MIN_ALTITUDE,
   CRESCENT_MIN_ELONGATION,
-  findProvince,
+  findPlace,
   getCrescentEvenings,
   getUpcomingPrincipalPhases,
-  TURKEY_PROVINCES,
+  isAbroad,
   type CrescentEvening,
+  type GeoLocation,
+  type Place,
 } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
+import { FAQS } from "@/lib/faqs";
+import { fromHijri, toHijri } from "@/lib/hijri-calendar";
+import { ABROAD_OPTIONS, BERLIN, FEATURED_ABROAD, PROVINCE_OPTIONS } from "@/lib/place-options";
 import { CitySelect } from "@/components/CitySelect";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { ArticleFooter, PhaseHero } from "@/components/phase/PhaseParts";
@@ -23,16 +30,33 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hilalGozlemi;
-const UPDATED = "2026-11-01";
-const src = pageSources("nasaMoonPhases", "nasaEclipseSafety");
+const UPDATED = "2026-11-04";
+const src = pageSources("nasaMoonPhases", "nasaEclipseSafety", "diyanet2027", "diyanetAyTanim");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
-const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const CITY_OPTIONS = PROVINCE_OPTIONS;
+
+/** Saatin hangi saat dilimiyle yazıldığı: "Türkiye saati" ya da "Almanya saati"... */
+function zoneLabelOf(place: Place) {
+  return isAbroad(place) ? place.zoneLabel : "Türkiye saati";
+}
+
+/** Hilalin ölçütlere göre görülebileceği ilk akşam (yoksa undefined). */
+function firstVisible(evenings: CrescentEvening[]) {
+  return evenings.find((e) => e.meetsCriteria && e.moonSetsAfterSun && e.moonAltitude > 0);
+}
+
+/** Hicri ayın başından önceki son yeni ay (ayı başlatan hilalin yeni ayı). */
+function newMoonBefore(monthStart: Date) {
+  return getUpcomingPrincipalPhases(new Date(monthStart.getTime() - 5 * DAY_MS), 4).find(
+    (p) => p.key === "new-moon" && p.date < monthStart,
+  );
+}
 
 export const metadata: Metadata = {
   title: `Hilal Gözlemi Nasıl Yapılır? Yeni Hilal Ne Zaman, Nerede Görülür? | ${siteConfig.name}`,
   description:
-    "Yeni hilali görmek için ne zaman ve nereye bakmalı? İlinize göre önümüzdeki akşamların gün batımı, ay batışı, hilalin yüksekliği ve yönü. Hilal gözlemi için pratik ipuçları ve güvenlik uyarıları.",
+    "Yeni hilali görmek için ne zaman ve nereye bakmalı? İlinize ya da Almanya, Hollanda, Fransa gibi yurt dışındaki şehrinize göre gün batımı, ay batışı, hilalin yüksekliği ve yönü. Ramazan ve bayram hilali Avrupa'dan ne zaman görülebilir?",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
@@ -58,11 +82,12 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
       />
       <QuickLinks
         links={[
-          { href: "#cevap", label: "Ne zaman, nerede?" },
-          { href: "#aksamlar", label: "İlinize göre akşamlar" },
-          { href: "#ne-zaman", label: "Ne zaman bakmalı?" },
-          { href: "#nereye", label: "Nereye bakmalı?" },
-          { href: "#guvenlik", label: "Dürbün ve güvenlik" },
+          { href: "#cevap", label: "Sıradaki hilal" },
+          { href: "#aksamlar", label: "İlinize göre" },
+          { href: "#avrupa", label: "Avrupa'dan" },
+          { href: "#ne-zaman", label: "Ne zaman?" },
+          { href: "#nereye", label: "Nereye?" },
+          { href: "#guvenlik", label: "Güvenlik" },
           { href: "#hicri", label: "Hicri takvim" },
         ]}
       />
@@ -74,6 +99,8 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
         <Suspense fallback={<Evenings slug={siteConfig.defaultLocation.slug} />}>
           <SelectedCity searchParams={searchParams} />
         </Suspense>
+
+        <EuropeTable />
 
         <div className="mx-auto max-w-3xl">
           <Prose>
@@ -147,6 +174,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
               tahmini başlangıçlarını <Link href={PAGES.hicriTakvim.path}>Hicri Takvim</Link> sayfasında bulabilirsiniz.
             </p>
           </Prose>
+          <Faq items={FAQS.hilalGozlemi} />
           <ArticleFooter
             page={PAGE}
             headline="Hilal Gözlemi Nasıl Yapılır? Yeni Hilal Ne Zaman, Nerede Görülür?"
@@ -161,7 +189,7 @@ export default function CrescentWatchPage({ searchParams }: PageProps<"/tr/hilal
 
 async function SelectedCity({ searchParams }: Pick<PageProps<"/tr/hilal-gozlemi">, "searchParams">) {
   const { il } = await searchParams;
-  const city = findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  const city = findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
   return <Evenings slug={city.slug} />;
 }
 
@@ -191,22 +219,23 @@ async function Evenings({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
-  const city = findProvince(slug) ?? siteConfig.defaultLocation;
+  const city = findPlace(slug) ?? siteConfig.defaultLocation;
   const now = new Date();
+  const tz = city.timeZone;
   // Son dört gün içinde yeni ay olduysa onu, yoksa bir sonrakini göster.
   const newMoon = getUpcomingPrincipalPhases(new Date(now.getTime() - 4 * DAY_MS), 6).find(
     (p) => p.key === "new-moon",
   )!;
   const evenings = getCrescentEvenings(newMoon.date, city);
 
-  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "long", weekday: "long" });
   const dateLong = new Intl.DateTimeFormat(siteConfig.locale, {
-    timeZone,
+    timeZone: tz,
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, hour: "2-digit", minute: "2-digit" });
   const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
 
   return (
@@ -215,13 +244,13 @@ async function Evenings({ slug }: { slug: string }) {
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Önümüzdeki hilal akşamları</p>
           <h2 id="aksamlar" className="scroll-mt-32 mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            {city.name} için
+            {isAbroad(city) ? `${city.name}, ${city.country}` : city.name} için
           </h2>
           <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-            Yeni ay: {dateLong.format(newMoon.date)}, saat {time.format(newMoon.date)}
+            Yeni ay: {dateLong.format(newMoon.date)}, saat {time.format(newMoon.date)} ({zoneLabelOf(city)})
           </p>
         </div>
-        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
       </div>
 
       <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -279,6 +308,148 @@ async function Evenings({ slug }: { slug: string }) {
   );
 }
 
+/** Avrupa tablosunda yeni aydan sonra bakılan akşam sayısı. */
+const EVENINGS = 5;
+
+const HIJRI_KEY_MONTHS = [
+  { month: 9, label: "Ramazan hilali", dayName: "1 Ramazan" },
+  { month: 10, label: "Şevval (bayram) hilali", dayName: "Ramazan Bayramı" },
+  { month: 12, label: "Zilhicce hilali", dayName: "1 Zilhicce" },
+];
+
+/**
+ * "Hilal Avrupa'dan ne zaman görülebilir?": sıradaki Ramazan, Şevval ve Zilhicce hilallerinin Avrupa'daki büyük
+ * şehirlerden astronomik olarak görülebileceği ilk akşam ve Diyanet'in ilan ettiği ay başıyla karşılaştırma.
+ * "Almanya'da hilal göründü mü" aramalarına dinî hüküm değil, astronomik tahmin olarak cevap verir. Günde bir yenilenir.
+ */
+async function EuropeTable() {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const t = toHijri(now, timeZone);
+  const isoDay = (d: Date, tz: string) =>
+    new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const short = (tz: string) => new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "short" });
+  const longUtc = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: "UTC", day: "numeric", month: "long", year: "numeric" });
+
+  const columns = HIJRI_KEY_MONTHS.map((m) => {
+    const year = t.month >= m.month ? t.year + 1 : t.year;
+    const start = fromHijri(year, m.month, 1);
+    const newMoon = start ? newMoonBefore(start) : undefined;
+    return { ...m, year, start, newMoon };
+  }).filter((c): c is typeof c & { start: Date; newMoon: NonNullable<typeof c.newMoon> } => !!c.start && !!c.newMoon);
+
+  const cell = (c: (typeof columns)[number], place: GeoLocation) =>
+    firstVisible(getCrescentEvenings(c.newMoon.date, place, EVENINGS));
+  // Yerel gözleme göre ay başı (ilk görülebilir akşamın ertesi günü) Diyanet'ten farklı mı? Berlin'e göre.
+  const differing = columns
+    .map((c) => {
+      const fv = cell(c, BERLIN);
+      if (!fv) return null;
+      const localStart = new Date(fv.sunset.getTime() + DAY_MS);
+      return isoDay(localStart, BERLIN.timeZone) !== isoDay(c.start, "UTC") ? { c, fv, localStart } : null;
+    })
+    .filter((x) => x !== null);
+  const berlinShort = short(BERLIN.timeZone);
+
+  return (
+    <section className="mt-14" aria-labelledby="avrupa">
+      <h2 id="avrupa" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Ramazan ve bayram hilali Avrupa&apos;dan ne zaman görülebilir?
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın büyük
+        şehirlerinden, sıradaki Ramazan, Şevval ve Zilhicce hilalinin astronomik olarak görülebileceği ilk akşam. Bu,
+        hilalin gerçekten görüldüğü anlamına gelmez; hava ve ufuk sonucu değiştirir. Bu ülkelerdeki{" "}
+        {ABROAD_CITIES.length} şehrin tamamı için yukarıdaki seçiciyi kullanabilirsiniz.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full min-w-[600px] text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">Şehir</th>
+              {columns.map((c) => (
+                <th key={c.month} className="px-4 py-2.5 font-medium">
+                  <span className="block text-zinc-700 dark:text-zinc-300">{c.label}</span>
+                  <span className="text-xs font-normal">
+                    Diyanet: {c.dayName} {longUtc.format(c.start)}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {FEATURED_ABROAD.map((p) => (
+              <tr key={p.slug}>
+                <td className="px-4 py-2">
+                  <Link href={`${PAGE.path}?il=${p.slug}`} rel="nofollow" scroll={false} className="font-medium hover:underline">
+                    {p.name}
+                  </Link>
+                  <span className="ml-1.5 text-zinc-500">{p.country}</span>
+                </td>
+                {columns.map((c) => {
+                  const fv = cell(c, p);
+                  const d = fv && difficulty(fv);
+                  return (
+                    <td key={c.month} className="px-4 py-2">
+                      {fv ? (
+                        <>
+                          <span className="tabular-nums">{short(p.timeZone).format(fv.sunset)} akşamı</span>
+                          <span className="ml-1.5 text-xs text-zinc-500">
+                            {d && (d.tone === "easy" ? "kolay" : d.tone === "naked" ? "çıplak gözle" : "çok zor")}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-zinc-400">ilk {EVENINGS} akşamda görülmez</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-sm text-zinc-500">
+        Ölçüt: gün batımında ay en az {CRESCENT_MIN_ALTITUDE}° yüksekte ve Güneş&apos;ten en az {CRESCENT_MIN_ELONGATION}°
+        uzakta. Hicri ay, hilalin görüldüğü akşam başlar; ilk günü ertesi gündür.
+      </p>
+      <div className="mx-auto max-w-3xl">
+        <Prose>
+          <p>
+            Kış ve ilkbaharda hilal, Avrupa&apos;nın büyük şehirlerinden çoğunlukla Türkiye ile aynı akşam görülebilir
+            hale gelir. Yaz sonu ve sonbaharda ise akşamları ayın yolu ufka yatık olduğu için hilal kuzeydeki
+            şehirlerden (Berlin, Hamburg, Amsterdam, Londra) bir iki akşam sonra görülebilir; güneydeki Lefkoşa ve
+            Bakü&apos;de fark yoktur. Diyanet ise ay başını yalnızca bir ülkeden değil, hilalin dünyanın
+            herhangi bir yerinden görülebilmesine göre belirler.{src.ref("diyanetAyTanim")} Bu yüzden Diyanet&apos;in
+            ilan ettiği gün ile Avrupa&apos;dan yerel gözleme göre çıkan gün bazen aynı, bazen bir gün farklıdır.
+          </p>
+          {differing.length > 0 ? (
+            <p>
+              Örneğin {differing[0].c.label} Berlin&apos;den ilk kez{" "}
+              {berlinShort.format(differing[0].fv.sunset)} akşamı görülebilir; yerel gözlemi esas alan biri için{" "}
+              {differing[0].c.dayName} {berlinShort.format(differing[0].localStart)} olur. Diyanet&apos;in ilan ettiği gün
+              ise {longUtc.format(differing[0].c.start)}.{src.ref("diyanet2027")} Avrupa&apos;da aynı şehirdeki
+              camilerin bazen farklı günlerde bayram yapmasının astronomik nedeni bu farktır. Hangi günün esas
+              alınacağı dinî bir karardır; bağlı olduğunuz camiye ya da derneğe danışın.
+            </p>
+          ) : (
+            <p>
+              Önümüzdeki üç ay başında Avrupa&apos;dan yerel gözleme göre çıkan gün, Diyanet&apos;in ilan ettiği günle
+              aynıdır. Hangi günün esas alınacağı dinî bir karardır; bağlı olduğunuz camiye ya da derneğe danışın.
+            </p>
+          )}
+          <p>
+            Tarihlerin listesi için <Link href={PAGES.hicriTakvim.path}>Hicri Takvim</Link> sayfasındaki
+            &quot;Ramazan ve bayramlar yurt dışında ne zaman?&quot; bölümüne bakabilirsiniz.
+          </p>
+        </Prose>
+      </div>
+    </section>
+  );
+}
+
 /**
  * Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni): İstanbul'dan hilalin görülebileceği ilk akşam,
  * gün batımı, gözlem penceresi ve nereye bakılacağı. Saatte bir yenilenir.
@@ -307,6 +478,18 @@ async function CrescentAnswer() {
   }
   const offset = first.moonAzimuth - first.sunAzimuth;
   const windowMin = first.moonSet ? Math.round((first.moonSet.getTime() - first.sunset.getTime()) / 60_000) : 0;
+  const deFirst = firstVisible(getCrescentEvenings(newMoon.date, BERLIN));
+  const deDay = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    day: "numeric",
+    month: "long",
+    weekday: "long",
+  });
+  const deTime = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <AnswerBox
@@ -323,6 +506,22 @@ async function CrescentAnswer() {
           value: `Gün batımı noktasının ${nf.format(Math.abs(offset))}° ${offset < 0 ? "solunda" : "sağında"}, ufuktan ${nf.format(first.moonAltitude)}° yukarıda`,
         },
         { label: "Ne zaman bakmalı?", value: "Güneş battıktan 15-30 dakika sonra" },
+        ...(deFirst
+          ? [
+              {
+                label: `Almanya'dan (${BERLIN.name})`,
+                value: (
+                  <>
+                    {deDay.format(deFirst.sunset)} akşamı, gün batımı {deTime.format(deFirst.sunset)} ({BERLIN.zoneLabel}
+                    ).{" "}
+                    <a href="#avrupa" className="underline underline-offset-2">
+                      Diğer Avrupa şehirleri
+                    </a>
+                  </>
+                ),
+              },
+            ]
+          : []),
         {
           label: "Dürbün kullanılır mı?",
           value: "Evet, ama yalnızca Güneş tamamen battıktan sonra; Güneş'e dürbünle bakmak kalıcı göz hasarı yapar.",
@@ -330,9 +529,9 @@ async function CrescentAnswer() {
       ]}
       note={
         <>
-          İstanbul&apos;a göre; iliniz için{" "}
+          İstanbul&apos;a göre; iliniz ya da yurt dışında yaşadığınız şehir için{" "}
           <a href="#aksamlar" className="underline underline-offset-2">
-            aşağıdan il seçin
+            aşağıdan seçin
           </a>
           . Yumruğunuzu kolunuz uzanmışken gökyüzüne tutarsanız genişliği yaklaşık 10 derecedir.
         </>

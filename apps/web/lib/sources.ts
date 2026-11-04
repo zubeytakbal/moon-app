@@ -288,6 +288,14 @@ export const SOURCES = {
     note: "2 Ağustos 2027 tutulmasının tam görüleceği ülkeler (Fas, İspanya, Cezayir, Libya, Mısır, Suudi Arabistan, Yemen, Somali), Avrupa'nın geri kalanından parçalı görülmesi, en büyük tutulmanın 10:06 UT'de Mısır'da (25,5° K, 33,2° D) olması.",
     group: "tutulma",
   },
+  diyanetAyTanim: {
+    no: 33,
+    title: "Yeni Ay Tanım Farkı (Sıkça Sorulan Sorular)",
+    publisher: "Diyanet İşleri Başkanlığı, Vakit Hesaplama",
+    url: "https://vakithesaplama.diyanet.gov.tr/ay_tanim.php",
+    note: "\"İslam'da Hicri aylar hilalin ilk defa dünyanın herhangi bir yerinden görülmesi ile başlamaktadır.\" Diyanet'in ilan ettiği Hicri ay başlarının astronomi sitelerindeki yeni ay tarihlerinden neden farklı olduğu.",
+    group: "takvim",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

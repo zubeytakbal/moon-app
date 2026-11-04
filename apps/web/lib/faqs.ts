@@ -130,6 +130,11 @@ export const FAQS = {
   ],
   hicriTakvim: [
     {
+      q: "Almanya'da Ramazan Türkiye ile aynı gün mü başlar?",
+      a: "Diyanet takvimine göre evet. Diyanet Hicri ayların, hilalin dünyanın herhangi bir yerinden ilk kez görülmesiyle başladığını esas alır; bu yüzden ilan ettiği tarih bütün dünya için tektir. Almanya'da ya da başka bir Avrupa ülkesinde bazı camiler ise hilalin o ülkeden görülmesini ya da başka bir ülkenin ilanını esas alabilir; bu durumda Ramazan bir gün sonra başlayabilir. Kesin tarih için bağlı olduğunuz camiye ya da derneğe danışın.",
+      link: { href: "#yurt-disi", label: "Yurt dışında Ramazan ve bayram tarihleri" },
+    },
+    {
       q: "Hicri takvim neden her yıl 10-11 gün geri gelir?",
       a: "Hicri yıl 12 ay döngüsünden oluşur ve 354 ya da 355 gündür; Miladi yıl ise 365 ya da 366 gündür. Aradaki 10-11 günlük fark yüzünden Ramazan ve bayramlar her yıl Miladi takvimde 10-11 gün öne kayar ve yaklaşık 33 yılda bütün mevsimleri dolaşır.",
     },
@@ -140,6 +145,18 @@ export const FAQS = {
     {
       q: "Hicri takvim ne zaman başladı?",
       a: "Başlangıç noktası, Hz. Muhammed'in Mekke'den Medine'ye hicretinin yaşandığı yıldır (Miladi 622). Takvim, Hz. Ömer döneminde, hicretten yaklaşık 17 yıl sonra bu yıl esas alınarak düzenlendi. Hicri 1 Muharrem 1, Miladi takvimde genellikle 16 Temmuz 622'ye karşılık gelir.",
+    },
+  ],
+  hilalGozlemi: [
+    {
+      q: "Almanya'da hilal göründü mü?",
+      a: "Hilalin o akşam gerçekten görülüp görülmediğini ancak gözlem yapanlar bildirebilir; hava, pus ve ufuk sonucu belirler. Bu sayfa, hilalin Almanya'dan ve diğer Avrupa şehirlerinden astronomik olarak hangi akşam görülebileceğini hesaplar. Kış ve ilkbaharda hilal Almanya'dan çoğunlukla Türkiye ile aynı akşam görülebilir; yaz sonu ve sonbaharda ise Almanya gibi kuzeydeki ülkelerden bir iki akşam sonra görülebilir. Ramazan ya da bayramın hangi gün başlayacağı ise dinî bir karardır; Diyanet takvimini ya da bağlı olduğunuz caminin ilanını esas alın.",
+      link: { href: "#avrupa", label: "Avrupa şehirleri tablosu" },
+    },
+    {
+      q: "Avrupa'da bazı camiler bayramı neden bir gün sonra yapar?",
+      a: "Fark çoğunlukla ay başının nasıl belirlendiğinden doğar. Diyanet, hilalin dünyanın herhangi bir yerinden görülebilmesine bakar; bu yüzden ilan ettiği gün, Avrupa'dan yerel gözleme göre çıkan günden bir gün önce olabilir. Yerel gözlemi esas alan camiler bu durumda Ramazan'a ya da bayrama bir gün sonra başlar.",
+      link: { href: "/tr/hicri-takvim#yurt-disi", label: "Ramazan ve bayramlar yurt dışında" },
     },
   ],
   ayBurcu: [

@@ -22,8 +22,8 @@ import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hicriTakvim;
-const UPDATED = "2026-11-01";
-const src = pageSources("diyanet2027");
+const UPDATED = "2026-11-04";
+const src = pageSources("diyanet2027", "diyanetAyTanim");
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Hilal tahmini Türkiye'nin ortasına yakın bir noktadan, Ankara'dan yapılır. */
 const OBSERVER = findProvince("ankara")!;
@@ -32,7 +32,7 @@ const DAY_MS = 86_400_000;
 export const metadata: Metadata = {
   title: `Hicri Takvim: Hicri Miladi Tarih Çevirme, Hicri Aylar | ${siteConfig.name}`,
   description:
-    "Hicri tarihi Miladiye, Miladi tarihi Hicriye çevirin. Hicri takvim nasıl işler, aylar neden her yıl 11 gün öne gelir? Hicri aylar ve önümüzdeki ay başları. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
+    "Hicri tarihi Miladiye, Miladi tarihi Hicriye çevirin. Ramazan ve bayramlar ne zaman, Almanya, Hollanda, Fransa gibi yurt dışında da aynı gün mü? Hicri aylar ve önümüzdeki ay başları. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -70,9 +70,10 @@ export default function HijriCalendarPage() {
       />
       <QuickLinks
         links={[
-          { href: "#cevap", label: "Bugün Hicri tarih" },
-          { href: "#cevirici", label: "Tarih çevirici" },
-          { href: "#ay-baslari", label: "Önümüzdeki ay başları" },
+          { href: "#cevap", label: "Bugün" },
+          { href: "#cevirici", label: "Çevirici" },
+          { href: "#yurt-disi", label: "Yurt dışında" },
+          { href: "#ay-baslari", label: "Ay başları" },
           { href: "#aylar", label: "Hicri aylar" },
           { href: "#ay-basi", label: "Ay başı nasıl belirlenir?" },
           { href: "#sss", label: "Sık sorulanlar" },
@@ -85,6 +86,10 @@ export default function HijriCalendarPage() {
 
         <div id="cevirici" className="mx-auto max-w-3xl scroll-mt-32">
           <HijriConverter />
+        </div>
+
+        <div className="mx-auto max-w-3xl">
+          <AbroadDates />
         </div>
 
         <div className="mx-auto max-w-3xl">
@@ -270,6 +275,19 @@ async function HijriAnswer() {
         { label: "Ramazan Bayramı (1. gün)", value: fmt(nextHijri(10, 1, now), "1 Şevval") },
         { label: "Kurban Bayramı (1. gün)", value: fmt(nextHijri(12, 10, now), "10 Zilhicce") },
         { label: "Hicri yılbaşı", value: fmt(nextHijri(1, 1, now), "1 Muharrem") },
+        {
+          label: "Almanya'da ve yurt dışında aynı gün mü?",
+          value: (
+            <>
+              Diyanet&apos;in ilan ettiği tarih bütün dünya için tektir; Almanya&apos;da, Hollanda&apos;da ya da
+              Fransa&apos;da da aynı gündür.{src.ref("diyanetAyTanim")} Bulunduğunuz yerdeki cami ya da ülkenin dinî
+              kurumu başka bir yöntem izliyorsa bir gün fark olabilir.{" "}
+              <a href="#yurt-disi" className="underline underline-offset-2">
+                Ayrıntılar
+              </a>
+            </>
+          ),
+        },
       ]}
       note={
         <>
@@ -278,6 +296,87 @@ async function HijriAnswer() {
         </>
       }
     />
+  );
+}
+
+/**
+ * "Ramazan ve bayramlar yurt dışında ne zaman?": önümüzdeki Ramazan ve bayram tarihleri, ilk gece ve son oruç günüyle.
+ * Yurt dışındaki Türklerin ülke ve şehir adıyla sorduğu "ramazan ne zaman başlıyor / bitiyor, bayram ne zaman"
+ * aramalarının cevabı. Namaz ve imsak vakti verilmez (kapsam dışı). Günde bir yenilenir.
+ */
+async function AbroadDates() {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const ramadan = nextHijri(9, 1, now);
+  const t = toHijri(now, timeZone);
+  // Şu an Ramazan'daysak bu Ramazan'ın sonu ve bayramı; değilse sıradaki Ramazan'ınki.
+  const ramadanYear = t.month === 9 ? t.year : ramadan.year;
+  const start = fromHijri(ramadanYear, 9, 1);
+  const eid = fromHijri(ramadanYear, 10, 1);
+  const kurban = nextHijri(12, 10, now);
+  const dayBefore = (d: Date | null) => (d ? new Date(d.getTime() - DAY_MS) : null);
+  const dm = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: "UTC", day: "numeric", month: "long" });
+  const show = (d: Date | null) => (d ? miladi.format(d) : "Hesaplanamadı");
+
+  return (
+    <section aria-labelledby="yurt-disi" className="mt-14">
+      <h2 id="yurt-disi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Ramazan ve bayramlar yurt dışında ne zaman?
+      </h2>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ya da başka bir ülkede
+        yaşayanlar için önümüzdeki Ramazan ve bayram tarihleri, Diyanet takvimine göre.
+      </p>
+      <DataTable
+        columns={["Gün", "Tarih", "Not"]}
+        rows={[
+          {
+            key: "ramazan",
+            cells: [
+              "Ramazan'ın ilk günü (ilk oruç)",
+              show(start),
+              start ? `İlk gece (teravih ve ilk sahur): ${dm.format(dayBefore(start)!)} akşamı` : "",
+            ],
+          },
+          { key: "son-oruc", cells: ["Son oruç günü", show(dayBefore(eid)), "Ramazan 29 ya da 30 gün sürer"] },
+          {
+            key: "ramazan-bayrami",
+            cells: [
+              "Ramazan Bayramı (1. gün)",
+              show(eid),
+              eid ? `Bayram 3 gün: ${dm.format(eid)} - ${dm.format(new Date(eid.getTime() + 2 * DAY_MS))}` : "",
+            ],
+          },
+          {
+            key: "kurban-bayrami",
+            cells: [
+              "Kurban Bayramı (1. gün)",
+              show(kurban.date),
+              kurban.date ? `Arefe: ${dm.format(dayBefore(kurban.date)!)}; bayram 4 gün` : "",
+            ],
+          },
+        ]}
+      />
+      <Prose>
+        <p>
+          Diyanet İşleri Başkanlığı Hicri ayların, hilalin dünyanın herhangi bir yerinden ilk kez görülmesiyle
+          başladığını esas alır.{src.ref("diyanetAyTanim")} Bu yüzden Diyanet&apos;in açıkladığı tarih bir ülkeye özgü
+          değildir: Türkiye&apos;de Ramazan hangi gün başlıyorsa, bu takvimi izleyen biri için Almanya&apos;da,
+          Hollanda&apos;da ya da Kıbrıs&apos;ta da o gün başlar. Tablodaki tarihler Ümmülkurâ hesabından gelir ve
+          Diyanet&apos;in 2027 dinî günler listesiyle birebir aynıdır.{src.ref("diyanet2027")}
+        </p>
+        <p>
+          Yaşadığınız ülkede herkes aynı günde başlamayabilir. Bazı camiler ve topluluklar hilalin o ülkeden gözle
+          görülmesini, bazıları başka bir ülkenin ilanını esas alır; bu durumda Ramazan ya da bayram bir gün sonra
+          başlayabilir. Azerbaycan, Irak ve Bulgaristan gibi ülkelerde tarihleri o ülkenin kendi dinî kurumu ilan eder.
+          Bu yüzden <strong>kesin tarih için bağlı olduğunuz camiye ya da derneğe danışın.</strong> Hilalin
+          bulunduğunuz şehirden astronomik olarak görülüp görülemeyeceğini{" "}
+          <Link href={PAGES.hilalGozlemi.path}>Hilal Gözlemi</Link> sayfasında hesaplayabilirsiniz.
+        </p>
+      </Prose>
+    </section>
   );
 }
 
