@@ -45,6 +45,8 @@ export {
   type SunDay,
   type Twilights,
 } from "./daylight.ts";
+export { getMoonView, type MoonView } from "./moon-view.ts";
+export { getTithi, TITHI_NAMES, type Tithi } from "./tithi.ts";
 export { getBrahmaMuhurta, getRahuKaal, MUHURTA_MINUTES, RAHU_KAAL_PART, type TimeRange } from "./hindu-times.ts";
 export { getMonthCalendar, getNextBlueMoon, type CalendarDay } from "./calendar.ts";
 export { localDateParts, zonedTimeToUtc } from "./time.ts";
