@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CONTENT_ID } from "@/lib/content-id";
+import { UI, type Lang } from "@/lib/i18n";
 import { goToHeading, usePageHeadings, type PageHeading as Heading } from "@/lib/use-page-headings";
 
 /** Sol kutunun yeri ve genişliği (px). Kutu ekranın sol kenarında durur, içeriğe yaslanmaz. */
@@ -34,7 +35,8 @@ function writeClosed(value: boolean) {
  * durur ve okunan bölümü işaretler; yanındaki içerikle çakışacaksa, kullanıcı kapattıysa ya da ekran
  * darsa sağ alttaki düğmeyle alttan açılır. Üçten az bölümü olan sayfada görünmez.
  */
-export function TableOfContents() {
+export function TableOfContents({ lang }: { lang: Lang }) {
+  const ui = UI[lang];
   const pathname = usePathname();
   const headings = usePageHeadings();
   const [active, setActive] = useState<string | null>(null);
@@ -152,7 +154,7 @@ export function TableOfContents() {
       {/* Geniş ekran: sol kenarda sabit kutu (yalnızca içerikle çakışmıyorsa) */}
       <nav
         ref={boxRef}
-        aria-label="İçindekiler"
+        aria-label={ui.toc}
         aria-hidden={!showBox}
         className={`fixed z-30 hidden max-h-[calc(100vh-11rem)] overflow-y-auto rounded-2xl border border-zinc-200 bg-white/95 p-3 shadow-sm backdrop-blur transition-opacity duration-300 lg:block dark:border-zinc-800 dark:bg-zinc-900/95 ${
           showBox ? "opacity-100" : "pointer-events-none invisible opacity-0"
@@ -160,15 +162,15 @@ export function TableOfContents() {
         style={{ left: BOX_LEFT, top: BOX_TOP, width: WIDTH }}
       >
         <div className="flex items-center justify-between pb-2 pl-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">İçindekiler</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{ui.toc}</p>
           <button
             type="button"
             onClick={() => {
               setClosed(true);
               writeClosed(true);
             }}
-            aria-label="İçindekileri gizle"
-            title="Gizle"
+            aria-label={ui.hideToc}
+            title={ui.hide}
             className="flex h-7 w-7 items-center justify-center rounded-full text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           >
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -185,7 +187,7 @@ export function TableOfContents() {
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="icindekiler-listesi"
-        aria-label="İçindekiler"
+        aria-label={ui.toc}
         className={`fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full bg-[#05070d]/90 p-3 text-sm font-semibold text-white shadow-lg ring-1 ring-white/15 backdrop-blur transition-opacity duration-300 sm:px-4 ${
           buttonVisible && !showBox && !open ? "opacity-100" : "pointer-events-none invisible opacity-0"
         }`}
@@ -193,23 +195,23 @@ export function TableOfContents() {
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" strokeLinecap="round" />
         </svg>
-        <span className="hidden sm:inline">İçindekiler</span>
+        <span className="hidden sm:inline">{ui.toc}</span>
       </button>
       {open && (
-        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="İçindekiler">
-          <button type="button" aria-label="Kapat" className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={ui.toc}>
+          <button type="button" aria-label={ui.close} className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
           <nav
             id="icindekiler-listesi"
             className="absolute inset-x-0 bottom-0 max-h-[70vh] overflow-y-auto rounded-t-3xl bg-white p-4 pb-8 shadow-2xl sm:inset-x-auto sm:bottom-20 sm:right-4 sm:w-80 sm:rounded-3xl dark:bg-zinc-900"
           >
             <div className="mb-2 flex items-center justify-between px-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">İçindekiler</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{ui.toc}</p>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 className="rounded-full px-3 py-1 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
-                Kapat
+                {ui.close}
               </button>
             </div>
             {list}
@@ -223,7 +225,7 @@ export function TableOfContents() {
                 }}
                 className="mt-3 hidden w-full rounded-xl px-3 py-2 text-left text-sm text-indigo-600 hover:bg-indigo-50 lg:block dark:text-indigo-300 dark:hover:bg-indigo-950/40"
               >
-                Kenar kutusunu yeniden göster
+                {ui.showTocAgain}
               </button>
             )}
           </nav>

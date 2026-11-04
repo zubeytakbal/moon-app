@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { UI, type Lang } from "@/lib/i18n";
 
 export interface SearchItem {
   path: string;
@@ -39,11 +40,14 @@ export function SiteSearch({
   items,
   variant = "hero",
   autoFocus = false,
+  lang = "tr",
 }: {
   items: SearchItem[];
   variant?: "hero" | "header";
   autoFocus?: boolean;
+  lang?: Lang;
 }) {
+  const ui = UI[lang];
   const pathname = usePathname();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -96,7 +100,7 @@ export function SiteSearch({
   return (
     <div ref={box} className={`relative w-full ${header ? "" : "max-w-md"}`}>
       <label htmlFor={id} className="sr-only">
-        Sitede ara
+        {ui.search}
       </label>
       <div
         className={`flex items-center gap-2 border border-white/15 focus-within:border-white/35 ${
@@ -126,7 +130,7 @@ export function SiteSearch({
           }}
           onFocus={() => setOpen(true)}
           autoFocus={autoFocus}
-          placeholder={header ? "Ara…" : "Ara: dolunay, tutulma, ay burcu…"}
+          placeholder={header ? ui.searchShort : ui.searchLong}
           autoComplete="off"
           className={`w-full bg-transparent text-white placeholder:text-zinc-500 focus:outline-none ${
             header ? "text-base md:text-sm" : "text-base"
@@ -149,7 +153,7 @@ export function SiteSearch({
               </li>
             ))
           ) : (
-            <li className="px-4 py-3 text-sm text-zinc-400">Sonuç bulunamadı.</li>
+            <li className="px-4 py-3 text-sm text-zinc-400">{ui.noResults}</li>
           )}
         </ul>
       )}

@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UI, type Lang } from "@/lib/i18n";
 import { goToHeading, usePageHeadings } from "@/lib/use-page-headings";
 
 /**
  * Sayfanın başında ("Kısaca" kutusunun altında) kapalı duran içindekiler; dokununca açılır. Yalnızca dar
  * ekranda görünür, geniş ekranda sol kenardaki kutu aynı işi yapar. Üçten az bölümü olan sayfada görünmez.
  */
-export function InlineToc() {
+export function InlineToc({ lang = "tr" }: { lang?: Lang }) {
+  const ui = UI[lang];
   const headings = usePageHeadings();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -17,7 +19,7 @@ export function InlineToc() {
 
   return (
     <nav
-      aria-label="İçindekiler"
+      aria-label={ui.toc}
       className="mt-4 rounded-2xl border border-zinc-200 bg-white lg:hidden dark:border-zinc-800 dark:bg-zinc-900"
     >
       <button
@@ -30,8 +32,8 @@ export function InlineToc() {
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-indigo-500">
             <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" strokeLinecap="round" />
           </svg>
-          İçindekiler
-          {headings.length > 0 && <span className="text-sm font-normal text-zinc-500">{headings.length} bölüm</span>}
+          {ui.toc}
+          {headings.length > 0 && <span className="text-sm font-normal text-zinc-500">{ui.tocCount(headings.length)}</span>}
         </span>
         <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" className={`text-zinc-500 transition ${open ? "rotate-180" : ""}`}>
           <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" />

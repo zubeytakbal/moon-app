@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { SitePage } from "@/lib/pages";
+import { UI, type Lang } from "@/lib/i18n";
+import type { ShellPage } from "@/lib/shell";
 import { MoonPhaseIcon } from "./MoonPhaseIcon";
 
 /**
  * Sayfanın altındaki "İlgili sayfalar" bölümü. Hangi sayfada olunduğunu adresten bulur;
  * eşleştirmeler sunucuda hazırlanıp `byPath` olarak gelir.
  */
-export function RelatedPages({ byPath }: { byPath: Record<string, SitePage[]> }) {
+export function RelatedPages({ byPath, lang }: { byPath: Record<string, ShellPage[]>; lang: Lang }) {
   const pathname = usePathname();
   const related = byPath[pathname];
   if (!related?.length) return null;
@@ -21,7 +22,7 @@ export function RelatedPages({ byPath }: { byPath: Record<string, SitePage[]> })
     >
       <div className="mx-auto w-full max-w-5xl px-4 py-12">
         <h2 id="ilgili" className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
-          İlgili sayfalar
+          {UI[lang].related}
         </h2>
         <ul className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {related.map((p) => (

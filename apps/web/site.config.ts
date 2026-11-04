@@ -19,7 +19,14 @@ export const siteConfig = {
   /** Google Analytics 4 ölçüm kimliği (ayrı "Lunatlas" hesabı). Yalnız çerez izni verilince yüklenir. */
   gaMeasurementId: "G-NWEWD8EVVL",
   locale: "tr-TR",
-  /** Sitenin dilleri. Yeni dil, içeriği hazır olunca buraya eklenir (makine çevirisi yok, bkz. CLAUDE.md). */
-  languages: [{ code: "tr", label: "Türkçe", home: "/tr" }],
+  /**
+   * Sitenin dilleri (makine çevirisi yok, bkz. CLAUDE.md). `published: false` olan dil hazırlanıyor demektir:
+   * dil seçicide, site haritasında ve hreflang bağlarında görünmez, sayfaları `noindex` olur. Geliştirmede
+   * (`npm run dev`) ya da `LUNATLAS_DRAFTS=1` ile başlatılan sunucuda seçicide görünür.
+   */
+  languages: [
+    { code: "tr", label: "Türkçe", home: "/tr", locale: "tr-TR", tagline: "Ay rehberi", published: true },
+    { code: "en", label: "English", home: "/en", locale: "en-US", tagline: "Moon guide", published: false },
+  ],
   defaultLocation: findProvince("istanbul") as Province,
 } as const;

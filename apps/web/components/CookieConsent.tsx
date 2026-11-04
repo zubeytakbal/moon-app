@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useSyncExternalStore } from "react";
-import { PAGES } from "@/lib/pages";
+import { UI, type Lang } from "@/lib/i18n";
 import { siteConfig } from "@/site.config";
 
 /**
  * Çerez bildirimi ve Google Analytics.
  * Analytics yalnız ziyaretçi "Kabul et" derse yüklenir; reddedilirse Google'a hiçbir şey gönderilmez.
- * Seçim kendi çerezimizde 13 ay saklanır (Çerez Politikası tablosundaki "Çerez tercihi").
+ * Seçim kendi çerezimizde 13 ay saklanır (Çerez Politikası tablosundaki "Çerez tercihi"). Çerez bütün dillerde
+ * ortaktır: bir dilde verilen karar ötekinde de geçerlidir.
  * AdSense gelince Google'ın sertifikalı bildirimine (CMP) geçilecek; reklam izinleri şimdiden "reddedildi" başlar.
  */
 
@@ -104,7 +105,8 @@ function decide(choice: "evet" | "hayir") {
   }
 }
 
-export function CookieConsent() {
+export function CookieConsent({ lang, policyPath }: { lang: Lang; policyPath?: string }) {
+  const ui = UI[lang];
   const { choice, open } = useSyncExternalStore(
     subscribe,
     () => state,
@@ -126,16 +128,20 @@ export function CookieConsent() {
   return (
     <div
       role="dialog"
-      aria-label="Çerez bildirimi"
+      aria-label={ui.cookieDialog}
       className="fixed inset-x-0 bottom-0 z-[60] px-3 pb-3 sm:px-4 sm:pb-4"
     >
       <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-[#0b0f1a]/95 p-5 text-zinc-300 shadow-2xl shadow-black/50 backdrop-blur sm:flex sm:items-center sm:gap-6">
         <p className="text-sm leading-relaxed">
-          Hangi sayfaların okunduğunu görmek için Google Analytics çerezlerini kullanmak istiyoruz. İzin vermezseniz
-          site aynen çalışır ve Google&apos;a hiçbir ziyaret bilgisi gönderilmez.{" "}
-          <Link href={PAGES.cerez.path} className="text-indigo-300 underline-offset-2 hover:underline">
-            Çerez Politikası
-          </Link>
+          {ui.cookieText}
+          {policyPath && (
+            <>
+              {" "}
+              <Link href={policyPath} className="text-indigo-300 underline-offset-2 hover:underline">
+                {ui.cookiePolicy}
+              </Link>
+            </>
+          )}
         </p>
         <div className="mt-4 grid shrink-0 grid-cols-2 gap-2 sm:mt-0 sm:w-64">
           <button
@@ -143,14 +149,14 @@ export function CookieConsent() {
             onClick={() => decide("hayir")}
             className="rounded-xl border border-white/20 px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10"
           >
-            Reddet
+            {ui.reject}
           </button>
           <button
             type="button"
             onClick={() => decide("evet")}
             className="rounded-xl border border-white/20 px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10"
           >
-            Kabul et
+            {ui.accept}
           </button>
         </div>
       </div>
@@ -159,10 +165,10 @@ export function CookieConsent() {
 }
 
 /** Alt bilgideki "Çerez tercihleri" bağlantısı: bildirimi yeniden açar. */
-export function CookieSettingsButton({ className }: { className?: string }) {
+export function CookieSettingsButton({ label, className }: { label: string; className?: string }) {
   return (
     <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_EVENT))} className={className}>
-      Çerez tercihleri
+      {label}
     </button>
   );
 }

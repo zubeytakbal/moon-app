@@ -8,7 +8,13 @@ export function Emblem({ size, glow = false }: { size: number; glow?: boolean })
 }
 
 /** Amblem ve geniş aralıklı ad; altında kısa açıklama. Üst menünün ortasında kullanılır. */
-export function BrandLockup() {
+export function BrandLockup({
+  tagline = siteConfig.tagline,
+  upperLocale = "tr-TR",
+}: {
+  tagline?: string;
+  upperLocale?: string;
+}) {
   return (
     <span className="flex items-center gap-2.5 sm:gap-3">
       <span className="sm:hidden">
@@ -19,10 +25,10 @@ export function BrandLockup() {
       </span>
       <span className="flex flex-col items-center" style={{ fontFamily: "var(--font-brand)" }}>
         <span className="pl-[0.38em] text-[1.0625rem] font-light leading-none tracking-[0.38em] sm:text-[1.3125rem]">
-          {siteConfig.name.toLocaleUpperCase("tr-TR")}
+          {siteConfig.name.toLocaleUpperCase(upperLocale)}
         </span>
         <span className="mt-1.5 hidden pl-[0.5em] text-[0.625rem] leading-none tracking-[0.5em] text-indigo-200/80 sm:block">
-          {siteConfig.tagline.toLocaleUpperCase("tr-TR")}
+          {tagline.toLocaleUpperCase(upperLocale)}
         </span>
       </span>
     </span>

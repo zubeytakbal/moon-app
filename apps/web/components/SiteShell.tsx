@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import { Geist, Josefin_Sans } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import { CookieConsent } from "@/components/CookieConsent";
 import { RelatedPages } from "@/components/RelatedPages";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { TableOfContents } from "@/components/TableOfContents";
 import { CONTENT_ID } from "@/lib/content-id";
-import { ALL_PAGES, relatedPages } from "@/lib/pages";
-import { siteConfig } from "@/site.config";
+import type { Lang } from "@/lib/i18n";
+import { getShell } from "@/lib/shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,27 +22,25 @@ const brandFont = Josefin_Sans({
   subsets: ["latin", "latin-ext"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: siteConfig.name,
-  robots: siteConfig.allowIndexing ? undefined : { index: false, follow: false },
-  twitter: { card: "summary_large_image" },
-};
+/**
+ * Bütün dillerin ortak sayfa iskeleti: <html>, üst menü, içerik, İçindekiler, ilgili sayfalar, alt bilgi ve
+ * çerez bildirimi. Her dilin kök düzeni (`app/tr/layout.tsx`, `app/en/layout.tsx`) bunu kendi diliyle çağırır;
+ * tasarım her dilde aynıdır.
+ */
+export function SiteShell({ lang, children }: { lang: Lang; children: React.ReactNode }) {
+  const shell = getShell(lang);
 
-const RELATED_BY_PATH = Object.fromEntries(ALL_PAGES.map((p) => [p.path, relatedPages(p.path)]));
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="tr" className={`${geistSans.variable} ${brandFont.variable} h-full antialiased`}>
+    <html lang={lang} className={`${geistSans.variable} ${brandFont.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
+        <SiteHeader lang={lang} />
         <div id={CONTENT_ID} className="flex-1">
           {children}
         </div>
-        <TableOfContents />
-        <RelatedPages byPath={RELATED_BY_PATH} />
-        <SiteFooter />
-        <CookieConsent />
+        <TableOfContents lang={lang} />
+        <RelatedPages byPath={shell.related} lang={lang} />
+        <SiteFooter lang={lang} />
+        <CookieConsent lang={lang} policyPath={shell.cookiePolicyPath} />
       </body>
     </html>
   );

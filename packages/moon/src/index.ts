@@ -6,6 +6,7 @@ export {
   getNextNewMoon,
   getUpcomingPrincipalPhases,
   PHASE_NAMES_TR,
+  PHASE_NAMES_EN,
   SYNODIC_MONTH_DAYS,
   type Lunation,
   type MoonPhaseInfo,

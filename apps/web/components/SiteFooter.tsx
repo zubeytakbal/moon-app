@@ -1,68 +1,60 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { GROUP_NAMES, HOME_PATH, PAGES, type PageGroup, type SitePage } from "@/lib/pages";
+import { UI, type Lang } from "@/lib/i18n";
+import { getShell } from "@/lib/shell";
 import { siteConfig } from "@/site.config";
 import { CookieSettingsButton } from "./CookieConsent";
 import { Emblem } from "./Emblem";
 
 /**
- * Alt bilgide her bölümün yalnız en önemli sayfaları. Bütün sayfalar üst menüde ve ana sayfanın
- * "Bütün sayfalar" bölümünde zaten var; burada tekrar listelenmez.
+ * Üç katlı alt bilgi: marka ve seçili sayfalar, görsel künyesi, telif ve kurumsal bağlantılar.
+ * Her bölümün yalnız en önemli sayfaları listelenir (seçim `lib/shell.ts` içinde, dil başına). Bütün sayfalar
+ * üst menüde ve ana sayfanın "Bütün sayfalar" bölümünde zaten var.
  */
-const FOOTER_SECTIONS: { group: PageGroup; pages: SitePage[] }[] = [
-  { group: "evreler", pages: [PAGES.ayEvreleri, PAGES.dolunay, PAGES.yeniAy, PAGES.hilal, PAGES.dogdugumGun] },
-  { group: "takvim", pages: [PAGES.bugunAy, PAGES.ayTakvimi, PAGES.dolunayTarihleri, PAGES.superAy] },
-  { group: "tutulmalar", pages: [PAGES.ayTutulmalari, PAGES.kanliAy, PAGES.gunesTutulmasi] },
-  { group: "hicri", pages: [PAGES.hicriTakvim, PAGES.hilalGozlemi, PAGES.eyyamiBiyz] },
-  { group: "gelenek-burclar", pages: [PAGES.ayHangiBurcta, PAGES.ayBurcu, PAGES.sacKesim, PAGES.aybosluk] },
-];
-
-/** Her sayfanın en altında, hep aynı yerde duran kurumsal bağlantılar. */
-const CORPORATE = [PAGES.hakkimizda, PAGES.yazar, PAGES.iletisim, PAGES.yontem, PAGES.kaynaklar, PAGES.gizlilik, PAGES.cerez];
-
-/** Üç katlı alt bilgi: marka ve seçili sayfalar, görsel künyesi, telif ve kurumsal bağlantılar. */
-export async function SiteFooter() {
+export async function SiteFooter({ lang }: { lang: Lang }) {
   "use cache";
   cacheLife("days");
   const year = new Date().getFullYear();
+  const shell = getShell(lang);
+  const ui = UI[lang];
 
   return (
     <footer className="mt-20 bg-[#05070d] text-zinc-300">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-10 pt-14 lg:grid-cols-[1fr_2.6fr] lg:gap-14">
         <div>
-          <Link href={HOME_PATH} className="inline-flex items-center gap-3" aria-label={`${siteConfig.name} ana sayfa`}>
+          <Link href={shell.home} className="inline-flex items-center gap-3" aria-label={ui.homeLabel(siteConfig.name)}>
             <Emblem size={44} glow />
             <span className="flex flex-col" style={{ fontFamily: "var(--font-brand)" }}>
               <span className="text-xl font-light leading-none tracking-[0.38em] text-white">
-                {siteConfig.name.toLocaleUpperCase("tr-TR")}
+                {siteConfig.name.toLocaleUpperCase(ui.upperLocale)}
               </span>
               <span className="mt-1.5 text-[0.625rem] leading-none tracking-[0.5em] text-indigo-200/80">
-                {siteConfig.tagline.toLocaleUpperCase("tr-TR")}
+                {shell.tagline.toLocaleUpperCase(ui.upperLocale)}
               </span>
             </span>
           </Link>
-          <p className="mt-5 max-w-xs text-sm leading-relaxed text-zinc-400">
-            Ayın evresi, doğuş-batış saatleri, dolunaylar ve tutulmalar. Hepsi Türkiye saatine göre, astronomik hesapla.
-          </p>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-zinc-400">{shell.footerBlurb}</p>
           <ul className="mt-5 space-y-2 text-sm">
             <li>
               <a href={`mailto:${siteConfig.contactEmail}`} className="text-zinc-300 hover:text-white hover:underline">
                 {siteConfig.contactEmail}
               </a>
             </li>
-            <li>
-              <Link href={PAGES.yontem.path} className="text-indigo-300 hover:text-indigo-200 hover:underline">
-                Nasıl hesaplıyoruz? →
-              </Link>
-            </li>
+            {shell.methodPath && (
+              <li>
+                <Link href={shell.methodPath} className="text-indigo-300 hover:text-indigo-200 hover:underline">
+                  {ui.howWeCalculate} →
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
 
-        <nav aria-label="Öne çıkan sayfalar">
+        <nav aria-label={ui.featuredPages}>
           <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
-            {FOOTER_SECTIONS.map(({ group, pages }) => (
-              <div key={group}>
-                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{GROUP_NAMES[group]}</p>
+            {shell.footerSections.map(({ name, pages }) => (
+              <div key={name}>
+                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{name}</p>
                 <ul className="mt-3 space-y-2 text-sm">
                   {pages.map((p) => (
                     <li key={p.path}>
@@ -76,19 +68,16 @@ export async function SiteFooter() {
             ))}
           </div>
           <Link
-            href={`${HOME_PATH}#kesfet`}
+            href={`${shell.home}#kesfet`}
             className="mt-8 inline-block text-sm font-medium text-indigo-300 hover:text-indigo-200 hover:underline"
           >
-            Bütün sayfalar →
+            {ui.allPages} →
           </Link>
         </nav>
       </div>
 
       <div className="border-t border-white/10">
-        <p className="mx-auto w-full max-w-6xl px-4 py-5 text-xs leading-relaxed text-zinc-500">
-          Ay fotoğrafları: NASA Scientific Visualization Studio ve NASA görsel arşivi (kamu malı). Lunatlas, NASA ile
-          bağlantılı değildir ve NASA tarafından onaylanmamıştır. Aksi belirtilmedikçe saatler Türkiye saatine (UTC+3) göredir.
-        </p>
+        <p className="mx-auto w-full max-w-6xl px-4 py-5 text-xs leading-relaxed text-zinc-500">{ui.footerCredit}</p>
       </div>
 
       <div className="border-t border-white/10">
@@ -97,7 +86,7 @@ export async function SiteFooter() {
             © {year} {siteConfig.name}
           </p>
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {CORPORATE.map((p) => (
+            {shell.corporate.map((p) => (
               <li key={p.path}>
                 <Link href={p.path} className="text-zinc-400 hover:text-white hover:underline">
                   {p.navLabel}
@@ -105,7 +94,10 @@ export async function SiteFooter() {
               </li>
             ))}
             <li>
-              <CookieSettingsButton className="cursor-pointer text-zinc-400 hover:text-white hover:underline" />
+              <CookieSettingsButton
+                label={ui.cookieSettings}
+                className="cursor-pointer text-zinc-400 hover:text-white hover:underline"
+              />
             </li>
           </ul>
         </div>

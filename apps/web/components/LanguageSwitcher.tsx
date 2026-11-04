@@ -1,18 +1,38 @@
-import Link from "next/link";
-import { siteConfig } from "@/site.config";
+"use client";
+
+import { usePathname } from "next/navigation";
+import type { Lang } from "@/lib/i18n";
+
+interface LanguageOption {
+  code: string;
+  label: string;
+  home: string;
+}
 
 /**
- * Dil seçici. JavaScript gerektirmez (<details> ile açılır).
- * Şimdilik tek dil var; yeni dil `siteConfig.languages` listesine eklenince burada kendiliğinden görünür.
+ * Dil seçici (<details> ile açılır). Bulunulan sayfanın diğer dilde aynı soruya cevap veren bir karşılığı
+ * varsa ona, yoksa o dilin ana sayfasına gider. Diller farklı kök düzen kullandığı için geçiş tam sayfa
+ * yüklemesidir; bu yüzden düz <a> kullanılır.
  */
-export function LanguageSwitcher({ current = "tr" }: { current?: string }) {
-  const active = siteConfig.languages.find((l) => l.code === current) ?? siteConfig.languages[0];
+export function LanguageSwitcher({
+  current,
+  languages,
+  counterparts,
+  label,
+}: {
+  current: Lang;
+  languages: LanguageOption[];
+  counterparts: Partial<Record<Lang, Record<string, string>>>;
+  label: string;
+}) {
+  const pathname = usePathname();
+  const active = languages.find((l) => l.code === current) ?? languages[0];
 
   return (
     <details className="group relative">
       <summary
         className="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-zinc-200 hover:border-white/30 hover:text-white [&::-webkit-details-marker]:hidden"
-        aria-label={`Dil: ${active.label}`}
+        aria-label={`${label}: ${active.label}`}
       >
         <svg
           viewBox="0 0 24 24"
@@ -32,20 +52,24 @@ export function LanguageSwitcher({ current = "tr" }: { current?: string }) {
         </svg>
       </summary>
       <ul className="absolute right-0 z-20 mt-2 min-w-40 overflow-hidden rounded-xl border border-white/10 bg-[#0d111c] py-1 text-sm shadow-xl">
-        {siteConfig.languages.map((lang) => (
-          <li key={lang.code}>
-            <Link
-              href={lang.home}
-              hrefLang={lang.code}
-              lang={lang.code}
-              aria-current={lang.code === active.code ? "true" : undefined}
-              className="flex items-center justify-between gap-4 px-4 py-2 text-zinc-200 hover:bg-white/5 hover:text-white"
-            >
-              {lang.label}
-              {lang.code === active.code && <span aria-hidden="true">✓</span>}
-            </Link>
-          </li>
-        ))}
+        {languages.map((lang) => {
+          const isActive = lang.code === active.code;
+          const href = isActive ? pathname : (counterparts[lang.code as Lang]?.[pathname] ?? lang.home);
+          return (
+            <li key={lang.code}>
+              <a
+                href={href}
+                hrefLang={lang.code}
+                lang={lang.code}
+                aria-current={isActive ? "true" : undefined}
+                className="flex items-center justify-between gap-4 px-4 py-2 text-zinc-200 hover:bg-white/5 hover:text-white"
+              >
+                {lang.label}
+                {isActive && <span aria-hidden="true">✓</span>}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </details>
   );

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { UI, type Lang } from "@/lib/i18n";
 import { MoonPhaseIcon } from "./MoonPhaseIcon";
 import { SiteSearch, type SearchItem } from "./SiteSearch";
 
@@ -35,11 +36,11 @@ const linkState = (active: boolean) =>
   active ? "border-indigo-400 text-white" : "border-transparent text-zinc-300 hover:text-white";
 
 /** Masaüstü bölüm menüsü (ikinci kat). Bulunulan bölümün altı çizilir. */
-export function DesktopNav({ sections }: { sections: NavSection[] }) {
+export function DesktopNav({ sections, label }: { sections: NavSection[]; label: string }) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Bölümler" className="hidden md:block">
+    <nav aria-label={label} className="hidden md:block">
       <ul className="flex items-center justify-center gap-2">
         {sections.map((section) => {
           const active = section.items.some((i) => isActive(pathname, i.path));
@@ -110,7 +111,8 @@ export function DesktopNav({ sections }: { sections: NavSection[] }) {
 }
 
 /** Telefon menüsü: ☰ ile açılır, sayfa değişince kendiliğinden kapanır. */
-export function MobileNav({ sections }: { sections: NavSection[] }) {
+export function MobileNav({ sections, lang }: { sections: NavSection[]; lang: Lang }) {
+  const ui = UI[lang];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
@@ -135,7 +137,7 @@ export function MobileNav({ sections }: { sections: NavSection[] }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobil-menu"
-        aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
+        aria-label={open ? ui.closeMenu : ui.openMenu}
         className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-200 hover:bg-white/10"
       >
         <svg
@@ -153,7 +155,7 @@ export function MobileNav({ sections }: { sections: NavSection[] }) {
       {open && (
         <nav
           id="mobil-menu"
-          aria-label="Ana menü"
+          aria-label={ui.mainMenu}
           className="absolute inset-x-0 top-full max-h-[80vh] overflow-y-auto border-b border-white/10 bg-[#05070d]"
         >
           <div className="mx-auto max-w-5xl px-4 py-3">
@@ -189,7 +191,8 @@ export function MobileNav({ sections }: { sections: NavSection[] }) {
 }
 
 /** Telefonda arama: büyüteçle açılır, menünün altında tam genişlikte kutu gösterir. */
-export function MobileSearch({ items }: { items: SearchItem[] }) {
+export function MobileSearch({ items, lang }: { items: SearchItem[]; lang: Lang }) {
+  const ui = UI[lang];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [lastPath, setLastPath] = useState(pathname);
@@ -206,7 +209,7 @@ export function MobileSearch({ items }: { items: SearchItem[] }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobil-arama"
-        aria-label={open ? "Aramayı kapat" : "Sitede ara"}
+        aria-label={open ? ui.closeSearch : ui.openSearch}
         className="flex h-10 w-10 items-center justify-center rounded-full text-zinc-200 hover:bg-white/10"
       >
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
@@ -222,7 +225,7 @@ export function MobileSearch({ items }: { items: SearchItem[] }) {
       </button>
       {open && (
         <div id="mobil-arama" className="absolute inset-x-0 top-full border-b border-white/10 bg-[#05070d] px-4 py-3">
-          <SiteSearch items={items} variant="header" autoFocus />
+          <SiteSearch items={items} variant="header" lang={lang} autoFocus />
         </div>
       )}
     </div>

@@ -22,6 +22,18 @@ export const PHASE_NAMES_TR: Record<PhaseKey, string> = {
   "waning-crescent": "Küçülen Hilal",
 };
 
+/** İngilizce sürümün evre adları (Amerikan İngilizcesi; "last quarter" ABD'de "third quarter"dan yaygın). */
+export const PHASE_NAMES_EN: Record<PhaseKey, string> = {
+  "new-moon": "New Moon",
+  "waxing-crescent": "Waxing Crescent",
+  "first-quarter": "First Quarter",
+  "waxing-gibbous": "Waxing Gibbous",
+  "full-moon": "Full Moon",
+  "waning-gibbous": "Waning Gibbous",
+  "last-quarter": "Last Quarter",
+  "waning-crescent": "Waning Crescent",
+};
+
 /** astronomy-engine çeyrek numaraları: 0 yeni ay, 1 ilk dördün, 2 dolunay, 3 son dördün. */
 const QUARTER_KEYS: PhaseKey[] = ["new-moon", "first-quarter", "full-moon", "last-quarter"];
 
