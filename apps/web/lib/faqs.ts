@@ -67,6 +67,15 @@ export const FAQS = {
       q: "Güneş tutulmasında ay hangi evrededir?",
       a: "Yeni ay evresindedir. Ay, Dünya ile Güneş'in arasındadır ve aydınlık yüzü bize ters bakar; bu yüzden tutulma sırasında Güneş'in önünde kara bir disk olarak görülür. Ay tutulmasında ise ay dolunay evresindedir.",
     },
+    {
+      q: "Güneş tutulması Almanya'dan görülecek mi?",
+      a: "2 Ağustos 2027 tutulması Almanya'nın her yerinden parçalı görülecek; tam tutulma şeridi Almanya'ya ulaşmıyor. Güneş'in örtülen kısmı güneyde daha fazla: Münih yaklaşık %50, Berlin ve Hamburg %32-34. Tutulma öğleden önce, Almanya saatiyle yaklaşık 10:08 ile 12:16 arasında yaşanır. Hollanda, Belçika, Fransa ve Avusturya'dan da benzer şekilde parçalı görülür.",
+      link: { href: "#avrupa", label: "Avrupa şehirleri tablosu" },
+    },
+    {
+      q: "Almanya'da tam güneş tutulması ne zaman?",
+      a: "Almanya'da son tam güneş tutulması 11 Ağustos 1999'da görüldü; tam tutulma şeridi ülkenin güneyinden geçti ve Münih'te yaklaşık 2 dakika sürdü. Hesabımıza göre Berlin, Köln, Münih, Hamburg ve Frankfurt'tan 2100'e kadar tam tutulma görülmüyor. Berlin ve Hamburg, 23 Temmuz 2093'te halkalı bir tutulma görecek.",
+    },
   ],
   dolunay: [
     {

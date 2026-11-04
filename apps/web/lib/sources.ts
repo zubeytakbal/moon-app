@@ -280,6 +280,14 @@ export const SOURCES = {
     note: "Türkiye'nin ilk ay aracının üretim, montaj ve entegrasyonunun tamamlanması; yaklaşık 3,5 ton ağırlık; 65 kritik bileşenden 56'sının yerli üretimi; çevresel testler, Kennedy Uzay Merkezi'nden 2027'nin ilk yarısında fırlatma hedefi; yaklaşık iki aylık yolculuktan sonra ayın 100 km üzerindeki kutupsal yörünge; dört bilimsel yük; yerli hibrit roket motoru.",
     group: "uzay",
   },
+  eclipsewise2027: {
+    no: 32,
+    title: "Total Solar Eclipse of 2027 Aug 02",
+    publisher: "Fred Espenak, EclipseWise",
+    url: "http://www.eclipsewise.com/solar/SEprime/2001-2100/SE2027Aug02Tprime.html",
+    note: "2 Ağustos 2027 tutulmasının tam görüleceği ülkeler (Fas, İspanya, Cezayir, Libya, Mısır, Suudi Arabistan, Yemen, Somali), Avrupa'nın geri kalanından parçalı görülmesi, en büyük tutulmanın 10:06 UT'de Mısır'da (25,5° K, 33,2° D) olması.",
+    group: "tutulma",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

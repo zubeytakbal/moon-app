@@ -338,6 +338,12 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 - Pilot: Kanlı Ay (1 Kasım 2026). Sırada: kullanıcı onayından sonra diğer sayfalara yayma (Search Console'da en çok görünenlerden başlayarak).
 - Search Console ilk veri (27-30 Ekim): 630 gösterim, 13 tıklama, ort. sıra ~8, 24 sayfa aramada görünüyor. Talep sinyalleri: "kanlı ay ne zaman 2027" (çözüldü), "ay doğuş batış saatleri" (~20 gösterim, il seçmeli aylık tablo adayı), Ekim Dikim 98 gösterim ("ekim ayı ekim dikim": başlığa içinde bulunulan ay adı adayı).
 
+## 11d. Yurt dışındaki Türkçe konuşanlar (4 Kasım 2026, kullanıcı onayladı)
+- Ülke taraması (`research/ulke-tarama.ts`, otomatik tamamlama `hl=tr&gl=<ülke>`, 19 ülke): Türkçe aramalar ülke adıyla "saat kaçta / görülecek mi" soruyor. Güçlü: Almanya (açık ara); orta: Hollanda, Fransa, Belçika, Avusturya, İsviçre, İngiltere; az: KKTC, Azerbaycan, Bulgaristan, ABD. Konular: güneş tutulması (en güçlü), ay tutulması/kanlı ay, "hilal göründü mü", meteor yağmuru, dolunay. Türkmenistan ayrı dil, hedef değil.
+- Karar: ülkeye özel sayfa/hreflang YOK (aynı Türkçe metin = şablon riski). Bunun yerine `packages/moon/src/places-abroad.ts` (`ABROAD_CITIES`, 14 şehir, `findPlace`, `isAbroad`, `zoneLabel`), seçicide gruplu (`CitySelect abroad=`), adres aynı (`?il=koln`).
+- Google seçiciyi okuyamaz; her sayfaya o sayfaya özgü, her zaman duran içerik: cevap kutusunda Almanya satırı, şehir tablosu (yerel saat), elle yazılmış not, gerçek sorulardan SSS. Yalnız talebi kanıtlanmış sayfalarda; başlıklara ülke adı serpiştirilmez.
+- ✅ Pilot Güneş Tutulması (#avrupa). Sırada: Ay Tutulmaları, Kanlı Ay, Meteor Yağmurları, Hilal Gözlemi. Şehir saatleri 2027 için bağımsız kaynakla doğrulanmadı (timeanddate 403); 1999 Münih tam / Paris %99 testte.
+
 ## 11b. Yıllık güncelleme takvimi
 - Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
 - Tablolar, "sıradaki" vurgusu, süper ay/tutulma etiketleri hesapla kendiliğinden güncellenir.

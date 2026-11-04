@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
-import { findProvince, getLocalSolarEclipse, TURKEY_PROVINCES, type LocalSolarEclipse } from "@moon-app/moon";
+import {
+  ABROAD_CITIES,
+  findPlace,
+  getLocalSolarEclipse,
+  isAbroad,
+  TURKEY_PROVINCES,
+  type AbroadCity,
+  type LocalSolarEclipse,
+} from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
 import { FAQS } from "@/lib/faqs";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -24,11 +32,38 @@ import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 import { MobileCollapse } from "@/components/MobileCollapse";
 
 const PAGE = PAGES.gunesTutulmasi;
-const UPDATED = "2026-11-01";
-const src = pageSources("nasaSolarCatalog", "nasaSolarCatalog1900", "nasaEclipseSafety", "nasaEclipseTypes");
+const UPDATED = "2026-11-04";
+const src = pageSources(
+  "nasaSolarCatalog",
+  "nasaSolarCatalog1900",
+  "nasaEclipseSafety",
+  "nasaEclipseTypes",
+  "eclipsewise2027",
+);
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+/** Seçicideki yurt dışı şehirler, ülkeye göre gruplu. */
+const ABROAD_OPTIONS = [...new Set(ABROAD_CITIES.map((c) => c.country))].map((country) => ({
+  country,
+  cities: ABROAD_CITIES.filter((c) => c.country === country).map(({ slug, name }) => ({ slug, name })),
+}));
+/** Cevap kutusunda Almanya'yı temsil eden şehir (aramaların en çok geldiği ülke). */
+const GERMANY = ABROAD_CITIES.find((c) => c.slug === "berlin") as AbroadCity;
+
+/** Güneş tutulma sırasında ufka yakınsa ya da en derin anda ufkun altındaysa kısa uyarı. */
+function horizonNote(e: LocalSolarEclipse): string | undefined {
+  const rising = e.endSunAltitude > e.beginSunAltitude;
+  if (e.peakSunAltitude < 0) {
+    return rising
+      ? "Güneş tutulmanın sonlarına doğru doğar; en derin an ufkun altında kalır."
+      : "Güneş tutulma sürerken batar; en derin an ufkun altında kalır.";
+  }
+  if (e.peakSunAltitude < 8) {
+    return `Güneş ufka çok yakın; ${rising ? "doğuya" : "batıya"} açık bir yer gerekir.`;
+  }
+  return undefined;
+}
 /** 2 Ağustos 2027 tutulmasını yerel olarak aramaya başlanan an. */
 const AUG_2027_SEARCH = new Date(Date.UTC(2027, 6, 25));
 /** Telefonda 81 il tablosunun ilk gösterilen satır sayısı. */
@@ -37,7 +72,7 @@ const MOBILE_ROWS = 10;
 export const metadata: Metadata = {
   title: `Güneş Tutulması Ne Zaman? 2027 ve 2030 Güneş Tutulmaları Türkiye | ${siteConfig.name}`,
   description:
-    "Bir sonraki güneş tutulması ne zaman ve ilinizden ne kadarı görülecek? 2 Ağustos 2027 güneş tutulmasının 81 ildeki saatleri ve örtülme oranı, İstanbul'dan görülecek 1 Haziran 2030 halkalı tutulması, güvenli izleme kuralları.",
+    "Bir sonraki güneş tutulması ne zaman ve ilinizden ne kadarı görülecek? 2 Ağustos 2027 güneş tutulmasının 81 ildeki ve Almanya, Hollanda, Fransa gibi Avrupa ülkelerindeki saatleri ve örtülme oranı, 1 Haziran 2030 halkalı tutulması, güvenli izleme kuralları.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
@@ -87,10 +122,11 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
       <Hero />
       <QuickLinks
         links={[
-          { href: "#cevap", label: "Bir sonraki ne zaman?" },
+          { href: "#cevap", label: "Ne zaman?" },
           { href: "#ilden", label: "İlinizden" },
-          { href: "#iller", label: "81 il tablosu" },
-          { href: "#merkezi", label: "Tam ve halkalı tutulmalar" },
+          { href: "#iller", label: "81 il" },
+          { href: "#avrupa", label: "Avrupa'dan" },
+          { href: "#merkezi", label: "Tam ve halkalı" },
           { href: "#nasil-olur", label: "Nasıl olur?" },
           { href: "#guvenli", label: "Güvenli izleme" },
           { href: "#sss", label: "Sık sorulanlar" },
@@ -106,6 +142,8 @@ export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-
         </Suspense>
 
         <ProvinceTable />
+
+        <EuropeTable />
 
         <section aria-labelledby="merkezi" className="mt-14">
           <h2 id="merkezi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -287,16 +325,17 @@ async function Hero() {
 
 async function SelectedCity({ searchParams }: Pick<PageProps<"/tr/gunes-tutulmasi">, "searchParams">) {
   const { il } = await searchParams;
-  const city = findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  const city = findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
   return <CityEclipses slug={city.slug} />;
 }
 
-/** Seçilen ilden görülecek önümüzdeki üç güneş tutulması. Günde bir yenilenir. */
+/** Seçilen il ya da yurt dışı şehirden görülecek önümüzdeki üç güneş tutulması. Günde bir yenilenir. */
 async function CityEclipses({ slug }: { slug: string }) {
   "use cache";
   cacheLife("days");
 
-  const city = findProvince(slug) ?? siteConfig.defaultLocation;
+  const city = findPlace(slug) ?? siteConfig.defaultLocation;
+  const abroad = isAbroad(city) ? city : undefined;
   const list: LocalSolarEclipse[] = [];
   let t = new Date();
   for (let i = 0; i < 3; i++) {
@@ -304,29 +343,33 @@ async function CityEclipses({ slug }: { slug: string }) {
     list.push(e);
     t = new Date(e.peak.getTime() + DAY_MS);
   }
+  // Saatler seçilen yerin kendi saatiyle; yurt dışında en derin an Türkiye saatiyle de yazılır.
   const date = new Intl.DateTimeFormat(siteConfig.locale, {
-    timeZone,
+    timeZone: city.timeZone,
     day: "numeric",
     month: "long",
     year: "numeric",
     weekday: "long",
   });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: city.timeZone, hour: "2-digit", minute: "2-digit" });
+  const trTime = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
 
   return (
     <section className="mt-12" aria-labelledby="ilden">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">İlinizden görülecek tutulmalar</p>
+          <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+            {abroad ? "Şehrinizden" : "İlinizden"} görülecek tutulmalar
+          </p>
           <h2
             id="ilden"
             data-toc-label="İlinizden görülecek tutulmalar"
             className="scroll-mt-32 mt-1 text-2xl font-semibold tracking-tight sm:text-3xl"
           >
-            {city.name}
+            {abroad ? `${abroad.name}, ${abroad.country}` : city.name}
           </h2>
         </div>
-        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
       </div>
       <ol className="mt-6 space-y-3">
         {list.map((e) => (
@@ -340,11 +383,18 @@ async function CityEclipses({ slug }: { slug: string }) {
               <p className="mt-0.5 text-xl font-semibold">{date.format(e.peak)}</p>
               <p className="mt-1 text-sm tabular-nums text-zinc-300">
                 {time.format(e.begin)} başlar · {time.format(e.peak)} en derin · {time.format(e.end)} biter
+                {abroad && ` (${abroad.zoneLabel})`}
               </p>
+              {abroad && (
+                <p className="mt-0.5 text-sm tabular-nums text-zinc-400">
+                  Türkiye saatiyle en derin an {trTime.format(e.peak)}
+                </p>
+              )}
+              {horizonNote(e) && <p className="mt-1 text-sm text-amber-200">{horizonNote(e)}</p>}
             </div>
             <div className="text-right">
               <p className="text-3xl font-light tabular-nums">%{Math.round(e.obscuration * 100)}</p>
-              <p className="text-xs text-zinc-400">örtülme</p>
+              <p className="text-xs text-zinc-400">{e.peakSunAltitude < 0 ? "en derin anda" : "örtülme"}</p>
             </div>
           </li>
         ))}
@@ -421,6 +471,102 @@ async function ProvinceTable() {
   );
 }
 
+/**
+ * 2 Ağustos 2027 tutulmasının yurt dışı şehirlerdeki görünüşü, her şehrin kendi saatiyle.
+ * Seçiciden bağımsız, sayfada her zaman durur (Almanya, Hollanda... aramalarının cevabı). Haftada bir yenilenir.
+ */
+async function EuropeTable() {
+  "use cache";
+  cacheLife("weeks");
+
+  const rows = ABROAD_CITIES.map((c) => ({ c, e: getLocalSolarEclipse(AUG_2027_SEARCH, c) }));
+  const pct = (slug: string) => Math.round((rows.find((r) => r.c.slug === slug)?.e.obscuration ?? 0) * 100);
+  const berlin = rows.find((r) => r.c.slug === "berlin")!.e;
+  const istanbul = getLocalSolarEclipse(AUG_2027_SEARCH, siteConfig.defaultLocation);
+  const trTime = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const minutesEarlier = Math.round((istanbul.peak.getTime() - berlin.peak.getTime()) / 60_000);
+
+  return (
+    <section className="mt-14" aria-labelledby="avrupa">
+      <h2 id="avrupa" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        2 Ağustos 2027 güneş tutulması Avrupa&apos;dan nasıl görülecek?
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, KKTC ve Azerbaycan&apos;dan seçtiğimiz
+        şehirlerde Güneş&apos;in örtülecek kısmı ve tutulmanın saatleri. Saatler her şehrin kendi yerel saatidir.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">Şehir</th>
+              <th className="px-4 py-2.5 font-medium">Örtülme</th>
+              <th className="hidden px-4 py-2.5 font-medium sm:table-cell">Başlangıç</th>
+              <th className="px-4 py-2.5 font-medium">En derin</th>
+              <th className="hidden px-4 py-2.5 font-medium sm:table-cell">Bitiş</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {rows.map(({ c, e }) => {
+              const time = new Intl.DateTimeFormat(siteConfig.locale, {
+                timeZone: c.timeZone,
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              const p = Math.round(e.obscuration * 100);
+              return (
+                <tr key={c.slug}>
+                  <td className="px-4 py-2">
+                    <Link
+                      href={`${PAGE.path}?il=${c.slug}`}
+                      rel="nofollow"
+                      scroll={false}
+                      className="font-medium hover:underline"
+                    >
+                      {c.name}
+                    </Link>
+                    <span className="ml-1.5 text-zinc-500">{c.country}</span>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <div className="hidden h-1.5 w-16 overflow-hidden rounded-full bg-zinc-200 sm:block dark:bg-zinc-800">
+                        <div className="h-full rounded-full bg-amber-400" style={{ width: `${p}%` }} />
+                      </div>
+                      <span className="tabular-nums">%{p}</span>
+                    </div>
+                  </td>
+                  <td className="hidden px-4 py-2 tabular-nums sm:table-cell">{time.format(e.begin)}</td>
+                  <td className="px-4 py-2 tabular-nums">{time.format(e.peak)}</td>
+                  <td className="hidden px-4 py-2 tabular-nums sm:table-cell">{time.format(e.end)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="mx-auto max-w-3xl">
+        <Prose>
+          <p>
+            2 Ağustos 2027 tutulması aslında bir tam tutulmadır, ama tam görüleceği dar şerit Avrupa&apos;ya yalnızca
+            İspanya&apos;nın güney ucunda değer; oradan Fas, Cezayir, Libya, Mısır, Suudi Arabistan, Yemen ve
+            Somali&apos;ye uzanır.{src.ref("eclipsewise2027")} Tablodaki şehirlerin hepsinden tutulma parçalı görülür. Örtülme güneyden
+            kuzeye doğru azalır: Almanya&apos;da Münih %{pct("munih")}, Frankfurt %{pct("frankfurt")}, Hamburg %
+            {pct("hamburg")}. Avrupa&apos;da tutulma öğleden önce olur ve Güneş gökyüzünde yüksektedir; ufku açık bir
+            yer aramaya gerek yoktur, ama gözlük yine şarttır.
+          </p>
+          <p>
+            Tutulma her yerde aynı anda yaşanmaz, çünkü Ay&apos;ın gölgesi Dünya üzerinde batıdan doğuya ilerler.
+            Berlin&apos;de en derin an Türkiye saatiyle {trTime.format(berlin.peak)}, İstanbul&apos;da{" "}
+            {trTime.format(istanbul.peak)}; yani Berlin&apos;de {minutesEarlier} dakika önce. Türkiye&apos;deki
+            ailenizle aynı anda izlemek istiyorsanız aradaki bu farkı hesaba katın. Tablodaki bir şehrin adına dokunursanız o
+            şehirden görülecek sonraki tutulmalar da yukarıda açılır.
+          </p>
+        </Prose>
+      </div>
+    </section>
+  );
+}
+
 /** Sayfanın sorusunun cevabı, en üstte (timeanddate düzeni). İstanbul'a göre; saatte bir yenilenir. */
 async function SolarAnswer() {
   "use cache";
@@ -439,6 +585,18 @@ async function SolarAnswer() {
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
   const days = Math.ceil((next.peak.getTime() - now.getTime()) / DAY_MS);
   const percent = Math.round(next.obscuration * 100);
+  const de = getLocalSolarEclipse(now, GERMANY);
+  const deDate = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: GERMANY.timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const deTime = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: GERMANY.timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   const nextCentral = CENTRAL_ECLIPSES.find((c) => Date.parse(c.date) > now.getTime());
   const kindText =
     next.kind === "partial" || next.centralSeconds === 0 ? "parçalı" : next.kind === "annular" ? "halkalı" : "tam";
@@ -453,6 +611,18 @@ async function SolarAnswer() {
           value: `Başlangıç ${time.format(next.begin)}, en derin an ${time.format(next.peak)}, bitiş ${time.format(next.end)}`,
         },
         { label: "Kaç gün kaldı?", value: `${days} gün` },
+        {
+          label: `Almanya'dan (${GERMANY.name})`,
+          value: (
+            <>
+              {deDate.format(de.peak)}, en derin an {deTime.format(de.peak)} ({GERMANY.zoneLabel}), örtülme %
+              {Math.round(de.obscuration * 100)}.{" "}
+              <a href="#avrupa" className="underline underline-offset-2">
+                Diğer Avrupa şehirleri
+              </a>
+            </>
+          ),
+        },
         ...(nextCentral
           ? [
               {
@@ -474,9 +644,9 @@ async function SolarAnswer() {
       ]}
       note={
         <>
-          Tarihler NASA tutulma kataloğuyla karşılaştırılmıştır.{src.ref("nasaSolarCatalog")} İliniz için{" "}
+          Tarihler NASA tutulma kataloğuyla karşılaştırılmıştır.{src.ref("nasaSolarCatalog")} İliniz ya da yurt dışında yaşadığınız şehir için{" "}
           <a href="#ilden" className="underline underline-offset-2">
-            aşağıdan il seçin
+            aşağıdan seçin
           </a>{" "}
           ya da{" "}
           <a href="#iller" className="underline underline-offset-2">
