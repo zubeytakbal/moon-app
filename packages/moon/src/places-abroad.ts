@@ -22,7 +22,10 @@ export type Place = Province | AbroadCity;
  * Saat dilimi IANA adıdır; yaz saati uygulaması hesaplarda kendiliğinden işler.
  * Kuzey Kıbrıs için Asia/Famagusta (KKTC 2017'den beri Güney Kıbrıs ile aynı saati kullanır).
  */
-const COUNTRIES: [country: string, timeZone: string, zoneLabel: string, cities: [slug: string, name: string, lat: number, lon: number, featured: 0 | 1][]][] = [
+/** Şehir: [adres adı, ad, enlem, boylam, tablolarda öne çıkan mı, (isteğe bağlı) kendi saat dilimi ve etiketi]. */
+type CityRow = [slug: string, name: string, lat: number, lon: number, featured: 0 | 1, timeZone?: string, zoneLabel?: string];
+
+const COUNTRIES: [country: string, timeZone: string, zoneLabel: string, cities: CityRow[]][] = [
   [
     "Almanya",
     "Europe/Berlin",
@@ -127,6 +130,7 @@ const COUNTRIES: [country: string, timeZone: string, zoneLabel: string, cities: 
       ["girne", "Girne", 35.3364, 33.3199, 0],
       ["gazimagusa", "Gazimağusa", 35.125, 33.9417, 0],
       ["guzelyurt", "Güzelyurt", 35.1983, 32.9928, 0],
+      ["iskele", "İskele", 35.2867, 33.8917, 0],
     ],
   ],
   [
@@ -139,19 +143,53 @@ const COUNTRIES: [country: string, timeZone: string, zoneLabel: string, cities: 
       ["nahcivan", "Nahçıvan", 39.2089, 45.4122, 0],
     ],
   ],
+  // 4 Kasım 2026 gün doğumu taramasıyla eklenenler (tablolarda öne çıkmaz; seçicide ve "dünyada" tablolarında görünür).
+  ["Danimarka", "Europe/Copenhagen", "Danimarka saati", [["kopenhag", "Kopenhag", 55.6761, 12.5683, 0]]],
+  ["İsveç", "Europe/Stockholm", "İsveç saati", [["stockholm", "Stockholm", 59.3293, 18.0686, 0]]],
+  ["Norveç", "Europe/Oslo", "Norveç saati", [["oslo", "Oslo", 59.9139, 10.7522, 0]]],
+  ["Makedonya", "Europe/Skopje", "Makedonya saati", [["uskup", "Üsküp", 41.9981, 21.4254, 0]]],
+  [
+    "Kosova",
+    "Europe/Belgrade",
+    "Kosova saati",
+    [
+      ["pristine", "Priştine", 42.6629, 21.1655, 0],
+      ["prizren", "Prizren", 42.2139, 20.7397, 0],
+    ],
+  ],
+  ["Irak", "Asia/Baghdad", "Irak saati", [["erbil", "Erbil", 36.1911, 44.0092, 0]]],
+  [
+    "ABD",
+    "America/New_York",
+    "ABD doğu saati",
+    [
+      ["new-york", "New York", 40.7128, -74.006, 0],
+      ["chicago", "Chicago", 41.8781, -87.6298, 0, "America/Chicago", "ABD orta saati"],
+    ],
+  ],
+  ["Kanada", "America/Toronto", "Kanada doğu saati", [["toronto", "Toronto", 43.6532, -79.3832, 0]]],
+  [
+    "Avustralya",
+    "Australia/Sydney",
+    "Avustralya doğu saati",
+    [
+      ["sidney", "Sidney", -33.8688, 151.2093, 0],
+      ["melbourne", "Melbourne", -37.8136, 144.9631, 0, "Australia/Melbourne"],
+    ],
+  ],
 ];
 
 /** Yurt dışı şehirler, listedeki sırayla (ülkeler bir arada, her ülkede önce öne çıkanlar). */
 export const ABROAD_CITIES: readonly AbroadCity[] = COUNTRIES.flatMap(([country, timeZone, zoneLabel, cities]) =>
-  cities.map(([slug, name, latitude, longitude, featured]) => ({
+  cities.map(([slug, name, latitude, longitude, featured, cityZone, cityLabel]) => ({
     slug,
     name,
     country,
     latitude,
     longitude,
     elevation: 0,
-    timeZone,
-    zoneLabel,
+    timeZone: cityZone ?? timeZone,
+    zoneLabel: cityLabel ?? zoneLabel,
     featured: featured === 1,
   })),
 );

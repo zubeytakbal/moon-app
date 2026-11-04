@@ -43,3 +43,16 @@ describe("gün uzunluğu", () => {
     assert.equal(getDayLength(s.decemberSolstice, tromso).polar, "night");
   });
 });
+
+describe("Güneş günü ayrıntıları", () => {
+  it("İstanbul 21 Haziran 2026: doğuş kuzeydoğudan, batış kuzeybatıdan; sivil alacakaranlık ~30 dk", async () => {
+    const { getSunDay } = await import("./daylight.ts");
+    const d = getSunDay(new Date("2026-06-21T12:00:00Z"), ISTANBUL);
+    assert.ok(d.riseAzimuth! > 50 && d.riseAzimuth! < 65, `${d.riseAzimuth}`);
+    assert.ok(d.setAzimuth! > 295 && d.setAzimuth! < 310, `${d.setAzimuth}`);
+    assert.ok(d.transitAltitude > 70 && d.transitAltitude < 74);
+    const dusk = (d.civilDusk!.getTime() - d.set!.getTime()) / 60_000;
+    assert.ok(dusk > 25 && dusk < 40, `${dusk}`);
+    assert.ok(d.goldenEveningStart! < d.set!);
+  });
+});

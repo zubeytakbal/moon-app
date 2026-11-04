@@ -520,7 +520,7 @@ async function EuropeTable() {
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
         Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın büyük
         şehirlerinde önümüzdeki ay tutulmalarının en derin anı (her şehrin kendi yerel saatiyle) ve tutulmanın ne
-        kadarının görüleceği. Bu ülkelerdeki {ABROAD_CITIES.length} şehrin tamamı için yukarıdaki seçiciyi
+        kadarının görüleceği. Yurt dışındaki {ABROAD_CITIES.length} şehrin tamamı için yukarıdaki seçiciyi
         kullanabilirsiniz.
       </p>
       <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">

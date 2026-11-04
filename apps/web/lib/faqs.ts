@@ -147,6 +147,21 @@ export const FAQS = {
       a: "Başlangıç noktası, Hz. Muhammed'in Mekke'den Medine'ye hicretinin yaşandığı yıldır (Miladi 622). Takvim, Hz. Ömer döneminde, hicretten yaklaşık 17 yıl sonra bu yıl esas alınarak düzenlendi. Hicri 1 Muharrem 1, Miladi takvimde genellikle 16 Temmuz 622'ye karşılık gelir.",
     },
   ],
+  gunDogumuBatimi: [
+    {
+      q: "Norveç'te kışın güneş kaçta doğuyor?",
+      a: "Yılın en kısa gününde (21 Aralık) Oslo'da güneş 09:18'de doğup 15:12'de batar; gündüz yalnızca 6 saat kadardır. Kuzey Kutup Dairesi'nin ötesindeki Tromsø gibi şehirlerde ise kış ortasında güneş hiç doğmaz. Kuzey ülkelerinde gün uzunluğunun yıl boyunca nasıl değiştiğini Ekinoks ve Gündönümü sayfasındaki dünya tablosunda görebilirsiniz.",
+      link: { href: "/tr/ekinoks-gundonumu#dunyada", label: "Dünyada en uzun ve en kısa gün" },
+    },
+    {
+      q: "Gün batımından sonra hava ne kadar sürede kararır?",
+      a: "Türkiye'de gün batımından yaklaşık 25-35 dakika sonra sivil alacakaranlık biter; sokak lambası olmadan okumak zorlaşır, parlak yıldızlar görünmeye başlar. Kuzeye gidildikçe bu süre uzar: Berlin'de yaz ortasında yaklaşık 50 dakika sürer. Tam karanlık (astronomik gece) ise gün batımından yaklaşık 1,5 saat sonra başlar.",
+    },
+    {
+      q: "Yazın güneş en erken kaçta doğar?",
+      a: "İstanbul'da yılın en erken gün doğumu haziran başındadır, saat 05:30 civarı; en geç gün batımı ise haziran sonunda, 20:40 civarıdır. Doğudaki illerde güneş daha erken doğar: Van'da haziranda gün doğumu 04:40 civarıdır.",
+    },
+  ],
   ekinoksGundonumu: [
     {
       q: "Gece gündüz eşitliği yılda kaç kez olur?",

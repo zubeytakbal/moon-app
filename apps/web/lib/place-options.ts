@@ -21,3 +21,8 @@ export const BERLIN = ABROAD_CITIES.find((c) => c.slug === "berlin")!;
 export const ONE_PER_COUNTRY = FEATURED_ABROAD.filter(
   (c, i) => FEATURED_ABROAD.findIndex((x) => x.country === c.country) === i,
 );
+
+/** Her ülkeden bir şehir, sonradan eklenen ülkeler dahil (listedeki ilk şehir). Dünya genelindeki tablolar için. */
+export const ONE_PER_COUNTRY_ALL = ABROAD_CITIES.filter(
+  (c, i) => ABROAD_CITIES.findIndex((x) => x.country === c.country) === i,
+);

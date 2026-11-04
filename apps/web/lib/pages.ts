@@ -324,6 +324,17 @@ export const PAGES = {
       "Ekinoks ve gündönümü ne zaman? En uzun ve en kısa gün, ilinizde gündüz kaç saat, gece gündüz gerçekten eşit mi?",
     cardPhaseAngle: 90,
   },
+  gunDogumuBatimi: {
+    path: "/tr/gun-dogumu-gun-batimi",
+    title: "Gün Doğumu ve Gün Batımı",
+    navLabel: "Gün Doğumu ve Batımı",
+    group: "takvim",
+    inHeader: true,
+    featured: true,
+    description:
+      "Bugün güneş kaçta doğuyor, kaçta batıyor? 81 il, KKTC ve dünya şehirleri için saatler, yön, hava kaçta kararır ve aylık takvim.",
+    cardPhaseAngle: 90,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -459,7 +470,8 @@ const RELATED: Record<PageKey, PageKey[]> = {
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   turkiyeTutulmalari: ["gunesTutulmasi", "ayTutulmalari", "yeniAy"],
   meteorYagmurlari: ["yeniAy", "bugunAy", "dolunayTarihleri"],
-  ekinoksGundonumu: ["bugunAy", "ayTakvimi", "dolunayTarihleri"],
+  ekinoksGundonumu: ["gunDogumuBatimi", "bugunAy", "ayTakvimi"],
+  gunDogumuBatimi: ["ekinoksGundonumu", "bugunAy", "dolunay"],
   ayinKaranlikYuzu: ["ayEvreleri", "yeniAy", "ayaYolculuk"],
   ayUzaklik: ["superAy", "ayaYolculuk", "ayinKaranlikYuzu"],
   ayaYolculuk: ["ayUzaklik", "ayinKaranlikYuzu", "superAy"],

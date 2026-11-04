@@ -512,7 +512,7 @@ async function EuropeTable() {
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
         Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın büyük
         şehirlerinde önümüzdeki büyük meteor yağmurlarının en iyi gecesi ve en iyi saatleri (her şehrin kendi yerel
-        saatiyle), şehir kenarından saatte kaç meteor görüleceği. Bu ülkelerdeki {ABROAD_CITIES.length} şehrin tamamı
+        saatiyle), şehir kenarından saatte kaç meteor görüleceği. Yurt dışındaki {ABROAD_CITIES.length} şehrin tamamı
         için yukarıdaki seçiciyi kullanabilirsiniz.
       </p>
       <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">

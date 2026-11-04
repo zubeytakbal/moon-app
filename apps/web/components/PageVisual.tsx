@@ -179,7 +179,7 @@ export function PageVisual({ page }: { page: SitePage }) {
       </div>
     );
   else if (path === PAGES.meteorYagmurlari.path) visual = <Meteors />;
-  else if (path === PAGES.ekinoksGundonumu.path) visual = <SunPaths />;
+  else if (path === PAGES.ekinoksGundonumu.path || path === PAGES.gunDogumuBatimi.path) visual = <SunPaths />;
   else if (path === PAGES.ayinKaranlikYuzu.path)
     visual = <MoonPhaseIcon side="far" phaseAngle={30} size={96} title="" />;
   else if (path === PAGES.superAy.path) visual = <MoonPhaseIcon phaseAngle={180} size={112} glow title="" />;

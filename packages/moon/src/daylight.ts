@@ -74,3 +74,56 @@ export function getEquiluxDay(equinox: Date, location: GeoLocation, spanDays = 8
   }
   return best!;
 }
+
+export interface SunDay extends DayLength {
+  /** Güneş'in en yüksekte olduğu an (öğle vakti) ve o anki yüksekliği (derece). */
+  transit: Date;
+  transitAltitude: number;
+  /** Doğuş ve batış yönü (azimut, derece; kuzey 0, doğu 90, güney 180, batı 270). */
+  riseAzimuth: number | null;
+  setAzimuth: number | null;
+  /** Sivil alacakaranlık: Güneş ufkun 6° altında. Sabah gökyüzü bu saatte ağarır, akşam bu saatte kararır. */
+  civilDawn: Date | null;
+  civilDusk: Date | null;
+  /**
+   * Altın saat (fotoğrafçıların yaygın tanımı): Güneş ufkun 6° üstündeyken gün doğumuna/batımına kadar.
+   * Sabah: doğuştan Güneş 6°'ye yükselene kadar; akşam: Güneş 6°'ye inince batışa kadar.
+   */
+  goldenMorningEnd: Date | null;
+  goldenEveningStart: Date | null;
+}
+
+/** Bir yerel günün Güneş ayrıntıları: doğuş, batış, yönleri, öğle vakti, alacakaranlık ve altın saat. */
+export function getSunDay(date: Date, location: GeoLocation): SunDay {
+  const base = getDayLength(date, location);
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const p = localDateParts(date, location.timeZone);
+  const dayStart = zonedTimeToUtc(p.year, p.month, p.day, 0, location.timeZone);
+  const within = (t: Astronomy.AstroTime | null) =>
+    t && t.date >= dayStart && t.date.getTime() < dayStart.getTime() + DAY_MS ? t.date : null;
+  const altitudeSearch = (direction: 1 | -1, altitude: number) =>
+    within(Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, direction, dayStart, 1, altitude));
+  const azimuthAt = (t: Date | null) => {
+    if (!t) return null;
+    const eq = Astronomy.Equator(Astronomy.Body.Sun, t, observer, true, true);
+    return Astronomy.Horizon(t, observer, eq.ra, eq.dec, "normal").azimuth;
+  };
+  const transitEvent = Astronomy.SearchHourAngle(Astronomy.Body.Sun, observer, 0, dayStart);
+  return {
+    ...base,
+    transit: transitEvent.time.date,
+    transitAltitude: transitEvent.hor.altitude,
+    riseAzimuth: azimuthAt(base.rise),
+    setAzimuth: azimuthAt(base.set),
+    civilDawn: altitudeSearch(1, -6),
+    civilDusk: altitudeSearch(-1, -6),
+    goldenMorningEnd: altitudeSearch(1, 6),
+    goldenEveningStart: altitudeSearch(-1, 6),
+  };
+}
+
+/** Bir ayın her günü için Güneş doğuşu, batışı ve gündüz süresi (aylık tablo). */
+export function getMonthSunDays(year: number, month: number, location: GeoLocation): DayLength[] {
+  const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  return Array.from({ length: days }, (_, i) => getDayLength(new Date(Date.UTC(year, month - 1, i + 1, 12)), location));
+}
