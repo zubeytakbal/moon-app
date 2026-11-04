@@ -18,6 +18,11 @@ export const siteConfig = {
   allowIndexing: true,
   /** Google Analytics 4 ölçüm kimliği (ayrı "Lunatlas" hesabı). Yalnız çerez izni verilince yüklenir. */
   gaMeasurementId: "G-NWEWD8EVVL",
+  /**
+   * AdSense yayıncı kimliği. Sayfalara yalnız sahiplik etiketi olarak yazılır (<meta name="google-adsense-account">):
+   * kod çalıştırmaz, çerez koymaz, reklam göstermez. Reklam kodu onaydan sonra çerez izniyle birlikte eklenecek.
+   */
+  adsenseClient: "ca-pub-4103878788447160",
   locale: "tr-TR",
   /** Sitenin dilleri. Yeni dil, içeriği hazır olunca buraya eklenir (makine çevirisi yok, bkz. CLAUDE.md). */
   languages: [{ code: "tr", label: "Türkçe", home: "/tr" }],
