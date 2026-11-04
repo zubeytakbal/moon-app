@@ -35,20 +35,24 @@ import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { elementOf, ZODIAC_SYMBOLS } from "@/lib/zodiac";
 import { siteConfig } from "@/site.config";
+import { currentMonthLabel } from "@/lib/meta-dates";
 
 const PAGE = PAGES.ekimDikim;
 const UPDATED = "2026-11-01";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const WEEKDAYS_LONG = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
 
-export const metadata: Metadata = {
-  title: `Ay Takvimine Göre Ekim Dikim Takvimi: Ne Zaman Ne Ekilir? | ${siteConfig.name}`,
-  description:
-    "Ay takvimine göre ekim dikim: domates, biber, marul, patates, soğan ve diğerleri için önümüzdeki uygun günleri bulun, takviminize ekleyin. Büyüyen ay, küçülen ay, dinlenme günleri ve biyodinamik kök, yaprak, çiçek, meyve günleri.",
+/** Başlıkta içinde bulunulan ay ("Ekim Dikim Kasım 2026"); aramalar "ekim ayı ekim dikim" gibi ay adıyla geliyor. */
+export async function generateMetadata(): Promise<Metadata> {
+  const month = await currentMonthLabel();
+  return {
+  title: `Ay Takvimine Göre Ekim Dikim ${month}: Bu Ay Ne Ekilir? | ${siteConfig.name}`,
+  description: `${month} için ay takvimine göre ekim dikim günleri: domates, biber, marul, patates, soğan ne zaman ekilir? Büyüyen ay, küçülen ay ve dinlenme günleri, biyodinamik takvim. Uygun günü takviminize ekleyin.`,
   // Ay ve bitki seçimi (?ay=, ?bitki=) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
-};
+  };
+}
 
 type Work = "ust" | "kok" | "dinlenme";
 

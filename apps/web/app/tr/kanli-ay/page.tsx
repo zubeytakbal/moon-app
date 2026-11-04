@@ -32,6 +32,7 @@ import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
+import { yearLocative } from "@/lib/meta-dates";
 import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 
@@ -54,14 +55,35 @@ const KIND_TR: Record<LunarEclipse["kind"], string> = { total: "tam", partial: "
 /** Yarı süresi bundan kısa yarı gölge tutulması gölgenin ucundan geçer; gözle fark edilmez (ör. 18 Temmuz 2027). */
 const FAINT_PENUMBRAL_MINUTES = 30;
 
-export const metadata: Metadata = {
-  title: `Kanlı Ay Ne Zaman? Bir Sonraki Kanlı Ay ve Türkiye'den Görünüşü | ${siteConfig.name}`,
-  description:
-    "Bir sonraki kanlı ay (tam ay tutulması) ne zaman, Türkiye'den ve Almanya, Hollanda, Fransa gibi Avrupa ülkelerinden saat kaçta görülecek? 2025-2037 kanlı ayları, kızıllığın süresi, ayın neden kırmızıya döndüğü ve Anadolu'daki tutulma gelenekleri.",
+/**
+ * Başlıkta sorulan yıl ("2027'de var mı?": Ekim'den sonra gelecek yıl, öncesinde bu yıl) ve sıradaki kanlı ayın tarihi.
+ * Aramalar "kanlı ay ne zaman 2027" biçiminde geliyor. Saatte bir yenilenir.
+ */
+async function bloodMoonMeta() {
+  "use cache";
+  cacheLife("hours");
+  const now = new Date();
+  const month = Number(new Intl.DateTimeFormat("en-US", { timeZone, month: "numeric" }).format(now));
+  const year = yearOf(now) + (month >= 10 ? 1 : 0);
+  const next = bloodMoons(ISTANBUL).find((b) => b.eclipse.peak > now);
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+  return {
+    year,
+    hasTotal: yearSummary(year).totals.length > 0,
+    next: next && { date: date.format(next.eclipse.peak), seen: next.visibleShare > 0.5 },
+  };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const m = await bloodMoonMeta();
+  return {
+  title: `Kanlı Ay Ne Zaman? ${yearLocative(m.year)} Var mı?${m.next ? ` Sıradaki: ${m.next.date}` : ""} | ${siteConfig.name}`,
+  description: `${m.next ? `Sıradaki kanlı ay ${m.next.date}; Türkiye'den ${m.next.seen ? "görülecek" : "görülmeyecek"}. ` : ""}${yearLocative(m.year)} kanlı ay ${m.hasTotal ? "var" : "yok"}. 2025-2037 kanlı ayları, kızıllık saatleri ve süresi, ilinizden ve Almanya, Hollanda gibi Avrupa ülkelerinden görünürlüğü, ayın neden kırmızıya döndüğü.`,
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
-};
+  };
+}
 
 interface BloodMoon {
   eclipse: LunarEclipse;

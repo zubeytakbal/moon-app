@@ -23,9 +23,9 @@ const UPDATED = "2026-11-01";
 const src = pageSources("nasaMoonPhases");
 
 export const metadata: Metadata = {
-  title: `İlk Dördün Nedir? Ne Zaman, Nasıl Görülür? | ${siteConfig.name}`,
+  title: `İlk Dördün Nedir, Ne Zaman? Görseli ve Tarihleri | ${siteConfig.name}`,
   description:
-    "İlk dördün ne zaman? Önümüzdeki ilk dördün tarihleri. Yarım görünen aya neden dördün denir, neden öğleden sonra gündüz görülür, kraterleri izlemek için neden en iyi zamandır?",
+    "İlk dördün, ayın sağ yarısının aydınlık göründüğü evredir. Önümüzdeki ilk dördün tarihleri ve saatleri, gerçek fotoğrafı, neden öğleden sonra gündüz görüldüğü ve ilinizden gündüz ayını nerede bulacağınız.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),

@@ -36,9 +36,9 @@ const DAY_MS = 86_400_000;
 const src = pageSources("usnoMoonPhases", "nasaMoonFactSheet");
 
 export const metadata: Metadata = {
-  title: `Bugün Ay Nasıl? Ayın Evresi ve Doğuş-Batış Saatleri | ${siteConfig.name}`,
+  title: `Ay Doğuş ve Batış Saatleri (81 İl) · Bugün Ay Hangi Evrede? | ${siteConfig.name}`,
   description:
-    "Bugün ay hangi evrede, yüzde kaçı aydınlık, kaç günlük? 81 il için ayın doğuş ve batış saatleri ve bir sonraki dolunay tarihi.",
+    "İlinizi seçin: ayın bugünkü doğuş ve batış saati, hangi yönden doğduğu ve bütün ayın doğuş-batış tablosu. Bugün ay hangi evrede, yüzde kaçı aydınlık, sıradaki dolunay ne zaman?",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PATH },
   openGraph: pageOpenGraph(PAGE),

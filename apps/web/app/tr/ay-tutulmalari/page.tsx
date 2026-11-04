@@ -46,14 +46,25 @@ const EUROPE_COLUMNS = 4;
 const MOBILE_ITEMS = 3;
 const MINUTE = 60_000;
 
-export const metadata: Metadata = {
-  title: `Ay Tutulmaları 2026-2029: Tarihleri, Saatleri ve Türkiye'den Görünüşü | ${siteConfig.name}`,
-  description:
-    "Bir sonraki ay tutulması ne zaman? 2026-2029 ay tutulmalarının tarihleri, evrelerinin saatleri ve Türkiye'den, Almanya, Hollanda, Fransa gibi Avrupa ülkelerinden görülüp görülmeyeceği. 31 Aralık 2028 yılbaşı gecesi tam ay tutulması.",
+/** Başlıkta sıradaki tutulmanın tarihi; tutulma geçince kendiliğinden bir sonrakine geçer. Saatte bir yenilenir. */
+async function nextEclipseLabel() {
+  "use cache";
+  cacheLife("hours");
+  const next = getUpcomingLunarEclipses(new Date(), 1)[0];
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
+  return { date: date.format(next.peak), kind: KIND_TR[next.kind].toLocaleLowerCase("tr-TR") };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const next = await nextEclipseLabel();
+  return {
+  title: `Bir Sonraki Ay Tutulması Ne Zaman? Sıradaki: ${next.date} | ${siteConfig.name}`,
+  description: `Sıradaki ay tutulması ${next.date} (${next.kind} ay tutulması). 2026-2029 ay tutulmalarının sıralaması, saatleri ve ilinizden ya da Almanya, Hollanda gibi Avrupa ülkelerinden görülüp görülmeyeceği; 31 Aralık 2028 yılbaşı kanlı ayı.`,
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
-};
+  };
+}
 
 const KIND_TR = { penumbral: "Yarı gölge", partial: "Parçalı", total: "Tam" } as const;
 

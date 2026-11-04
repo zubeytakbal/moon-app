@@ -26,9 +26,9 @@ const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {
-  title: `Türkiye'den Görülen Güneş Tutulmaları: 1999, 2006 ve Gelecek Tam Tutulmalar | ${siteConfig.name}`,
+  title: `Türkiye'de En Son Güneş Tutulması Ne Zaman Oldu? 1999, 2006 | ${siteConfig.name}`,
   description:
-    "11 Ağustos 1999 ve 29 Mart 2006 tam güneş tutulmaları hangi illerden görüldü, kaç dakika sürdü? İlinizden hayatınız boyunca görülen ve görülecek tutulmalar, 2100'e kadar Türkiye'nin tam ve halkalı tutulmaları.",
+    "Türkiye'de en son tam güneş tutulması 29 Mart 2006'da Antalya ve çevresinden, ondan önce 11 Ağustos 1999'da görüldü. İlinizden hayatınız boyunca görülen ve görülecek tutulmalar, 2100'e kadar Türkiye'nin tam ve halkalı tutulmaları.",
   // İl, doğum yılı ve seçili tutulma (?il=, ?dy=, ?t=) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),

@@ -26,9 +26,9 @@ const CONTENT_UPDATED = "2026-11-01";
 const src = pageSources("nasaMoonPhases", "nasaPhaseCatalog", "nasaMoonFactSheet");
 
 export const metadata: Metadata = {
-  title: `Ay Evreleri Nedir? 8 Evrenin Adı, Sırası ve Anlamı | ${siteConfig.name}`,
+  title: `Ay Evreleri: 8 Evrenin Adı ve Sırası, Görselleriyle | ${siteConfig.name}`,
   description:
-    "Ay evreleri nasıl oluşur? Yeni aydan dolunaya 8 evrenin adı, sırası, ay yaşı ve görünüşü. Bir döngü kaç gün sürer, Türkiye'den ay hangi taraftan dolar? Önümüzdeki evre tarihleri.",
+    "Yeni ay, hilal, ilk dördün, şişkin ay, dolunay ve son dördün: ayın 8 evresinin adı, sırası ve gerçek ay fotoğraflarıyla görünüşü. Evreler nasıl oluşur, bir döngü kaç gün sürer, bugün ay hangi evrede?",
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };

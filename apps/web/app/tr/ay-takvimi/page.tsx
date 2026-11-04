@@ -34,20 +34,24 @@ import {
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
+import { currentMonthLabel } from "@/lib/meta-dates";
 
 const PAGE = PAGES.ayTakvimi;
 const UPDATED = "2026-11-01";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const src = pageSources("usnoMoonPhases", "nasaPhaseCatalog", "nasaMoonFactSheet");
 
-export const metadata: Metadata = {
-  title: `Ay Takvimi: Aylık Ay Evreleri, Dolunay ve Yeni Ay Günleri | ${siteConfig.name}`,
-  description:
-    "Ay takvimi: bu ayın her günü için ay evresi ve aydınlık oranı, dolunay, yeni ay ve dördün tarihleri saatleriyle (Türkiye saati). Önceki ve sonraki aylara geçebilirsiniz.",
+/** Başlıkta içinde bulunulan ay ("Ay Takvimi Kasım 2026"); ay değişince kendiliğinden güncellenir. */
+export async function generateMetadata(): Promise<Metadata> {
+  const month = await currentMonthLabel();
+  return {
+  title: `Ay Takvimi ${month}: Günlük Ay Evreleri ve Dolunay | ${siteConfig.name}`,
+  description: `${month} ay takvimi: her günün ay evresi ve aydınlık oranı, dolunay, yeni ay ve dördün tarihleri saatleriyle. Yılın bütün ay evreleri tek tabloda, önceki ve sonraki aylar.`,
   // Ay seçimi (?ay=...) ayrı sayfa sayılmasın: Google'a her zaman tek adres gösterilir.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
-};
+  };
+}
 
 export default function MoonCalendarPage({ searchParams }: PageProps<"/tr/ay-takvimi">) {
   return (
