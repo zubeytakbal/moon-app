@@ -147,6 +147,22 @@ export const FAQS = {
       a: "Başlangıç noktası, Hz. Muhammed'in Mekke'den Medine'ye hicretinin yaşandığı yıldır (Miladi 622). Takvim, Hz. Ömer döneminde, hicretten yaklaşık 17 yıl sonra bu yıl esas alınarak düzenlendi. Hicri 1 Muharrem 1, Miladi takvimde genellikle 16 Temmuz 622'ye karşılık gelir.",
     },
   ],
+  ayFotografi: [
+    {
+      q: "Ay fotoğrafı için hangi lens gerekir?",
+      a: "Ay gökyüzünde yaklaşık yarım derecelik küçük bir dairedir. Tam kare bir makinede 200 mm'lik lensle ay karenin genişliğinin yalnızca %5'i kadar çıkar; ayrıntılı bir ay için 400 mm ve üstü idealdir. APS-C makinelerde aynı lens 1,5-1,6 kat daha uzun etki eder. Sayfadaki hesaplayıcıya lensinizi yazarak ayın ne kadar büyük çıkacağını görebilirsiniz.",
+      link: { href: "#hesaplayici", label: "Hesaplayıcı" },
+    },
+    {
+      q: "Dolunay mı, hilal mi daha güzel çıkar?",
+      a: "Kraterler ve dağlar için hilal ve dördün evreleri daha iyidir. Dolunayda Güneş ışığı aya tam karşıdan vurduğu için gölge oluşmaz ve yüzey düz görünür. Dördünde ise aydınlık ile karanlığın sınırındaki kraterler uzun gölgeler bırakır ve kabartma gibi belirginleşir.",
+      link: { href: "/tr/ilk-dordun", label: "İlk dördün" },
+    },
+    {
+      q: "Ay fotoğrafı gece mi, akşam alacakaranlıkta mı çekilmeli?",
+      a: "İkisi de olur ama sonuç farklıdır. Alacakaranlıkta gökyüzü henüz aydınlık olduğu için ay ile gökyüzü arasındaki parlaklık farkı azalır; ayı manzarayla birlikte, ikisi de görünür biçimde çekmek kolaylaşır. Tam karanlıkta ise yalnız ayın kendisini, yakın plan çekmek daha kolaydır; ay ufuktan yükseldikçe görüntü daha net olur.",
+    },
+  ],
   kuzeyIsiklari: [
     {
       q: "Kuzey ışıkları kaç saat sürer?",

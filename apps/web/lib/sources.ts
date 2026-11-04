@@ -376,6 +376,22 @@ export const SOURCES = {
     note: "WMM2025'e göre jeomanyetik kuzey kutbu 2025.0'da 80,85° K, 72,76° B. Türkiye'nin jeomanyetik enlemini (İstanbul ~38,6°, Antalya ~34,3°) bununla hesapladık.",
     group: "ay",
   },
+  nasaPhotoGuide: {
+    no: 44,
+    title: "Lunar Photography Guide",
+    publisher: "NASA",
+    url: "https://science.nasa.gov/moon/photography-guide/",
+    note: "Telefonla: flaşı kapatın, ayın üstüne dokunup odaklayın, ay beyaz değil gri görünsün diye parlaklığı düşürün, sarsıntı olmasın diye zamanlayıcı kullanın; ay gökyüzünden çok parlak değilken (alacakaranlıkta) çekin. Fotoğraf makinesiyle \"Looney 11\" kuralı: diyafram f/11, ISO ile pozlama süresi aynı; ISO 100 iyi bir başlangıç.",
+    group: "ay",
+  },
+  samsungMoon: {
+    no: 45,
+    title: "How Galaxy cameras combine Super Resolution technologies with AI to produce high-quality images of the Moon",
+    publisher: "Samsung (destek sayfası, 30 Nisan 2024)",
+    url: "https://www.samsung.com/uk/support/mobile-devices/how-galaxy-cameras-combine-super-resolution-technologies-with-ai-to-produce-high-quality-images-of-the-moon/",
+    note: "Galaxy S21 serisinden beri Scene Optimiser ayı tanır; 10'dan fazla kareyi birleştirir (Super Resolution) ve derin öğrenmeye dayalı yapay zekâ ayrıntı geliştirme motoruyla gürültüyü siler, ayrıntıyı artırır. Scene Optimiser kapatılarak yapay zekâsız çekilebilir.",
+    group: "ay",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

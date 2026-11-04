@@ -346,6 +346,17 @@ export const PAGES = {
       "Kuzey ışıkları hangi ülkede, hangi ayda, hangi gece görülür? Gezi planlayıcı, ay ışığı ve Türkiye'den görülür mü?",
     cardPhaseAngle: 0,
   },
+  ayFotografi: {
+    path: "/tr/ay-fotografi",
+    title: "Ay Fotoğrafı Nasıl Çekilir?",
+    navLabel: "Ay Fotoğrafı",
+    group: "bilgi",
+    inHeader: true,
+    featured: true,
+    description:
+      "Telefonla net ay fotoğrafı: iPhone, Samsung ve Android ayarları, bu gece en iyi saat, ay karede ne kadar büyük çıkar?",
+    cardPhaseAngle: 110,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -484,6 +495,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   ekinoksGundonumu: ["gunDogumuBatimi", "bugunAy", "ayTakvimi"],
   gunDogumuBatimi: ["ekinoksGundonumu", "bugunAy", "dolunay"],
   kuzeyIsiklari: ["yeniayTarihleri", "meteorYagmurlari", "gunDogumuBatimi"],
+  ayFotografi: ["ilkDordun", "dolunay", "ayTutulmalari"],
   ayinKaranlikYuzu: ["ayEvreleri", "yeniAy", "ayaYolculuk"],
   ayUzaklik: ["superAy", "ayaYolculuk", "ayinKaranlikYuzu"],
   ayaYolculuk: ["ayUzaklik", "ayinKaranlikYuzu", "superAy"],
