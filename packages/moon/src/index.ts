@@ -70,3 +70,4 @@ export {
   type ShowerPeak,
   type SkyKind,
 } from "./meteors.ts";
+export { AURORA_DESTINATIONS, AURORA_SUN_DEG, geomagneticLatitude, getAuroraNight, getDarkMinutes, type AuroraDestination, type AuroraNight } from "./aurora.ts";

@@ -335,6 +335,17 @@ export const PAGES = {
       "Bugün güneş kaçta doğuyor, kaçta batıyor? 81 il, KKTC ve dünya şehirleri için saatler, yön, hava kaçta kararır ve aylık takvim.",
     cardPhaseAngle: 90,
   },
+  kuzeyIsiklari: {
+    path: "/tr/kuzey-isiklari",
+    title: "Kuzey Işıkları",
+    navLabel: "Kuzey Işıkları",
+    group: "takvim",
+    inHeader: true,
+    featured: true,
+    description:
+      "Kuzey ışıkları hangi ülkede, hangi ayda, hangi gece görülür? Gezi planlayıcı, ay ışığı ve Türkiye'den görülür mü?",
+    cardPhaseAngle: 0,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -472,6 +483,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   meteorYagmurlari: ["yeniAy", "bugunAy", "dolunayTarihleri"],
   ekinoksGundonumu: ["gunDogumuBatimi", "bugunAy", "ayTakvimi"],
   gunDogumuBatimi: ["ekinoksGundonumu", "bugunAy", "dolunay"],
+  kuzeyIsiklari: ["yeniayTarihleri", "meteorYagmurlari", "gunDogumuBatimi"],
   ayinKaranlikYuzu: ["ayEvreleri", "yeniAy", "ayaYolculuk"],
   ayUzaklik: ["superAy", "ayaYolculuk", "ayinKaranlikYuzu"],
   ayaYolculuk: ["ayUzaklik", "ayinKaranlikYuzu", "superAy"],

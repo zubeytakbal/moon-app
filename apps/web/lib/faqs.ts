@@ -147,6 +147,21 @@ export const FAQS = {
       a: "Başlangıç noktası, Hz. Muhammed'in Mekke'den Medine'ye hicretinin yaşandığı yıldır (Miladi 622). Takvim, Hz. Ömer döneminde, hicretten yaklaşık 17 yıl sonra bu yıl esas alınarak düzenlendi. Hicri 1 Muharrem 1, Miladi takvimde genellikle 16 Temmuz 622'ye karşılık gelir.",
     },
   ],
+  kuzeyIsiklari: [
+    {
+      q: "Kuzey ışıkları kaç saat sürer?",
+      a: "Belli bir süresi yoktur. Işıklar birkaç dakika içinde belirip kaybolabilir ya da güçlü gecelerde saatlerce, dalgalar halinde sürebilir. Hareketlenme çoğu zaman akşamın geç saatlerinde, gece yarısına doğru artar. Bu yüzden gece boyunca, özellikle 21:00 ile 02:00 arasında gökyüzünü aralıklarla kontrol etmek en iyi yoldur.",
+    },
+    {
+      q: "Güney ışıkları da var mı?",
+      a: "Evet. Aynı olay güney yarımkürede de yaşanır ve güney ışıkları (aurora australis) adını alır. Güney Kutbu'nun çevresindeki ışık halkası çoğunlukla okyanusun ve Antarktika'nın üzerinde kaldığı için en çok Antarktika'dan, güçlü gecelerde Yeni Zelanda'nın ve Avustralya'nın güneyinden (Tazmanya) görülür.",
+    },
+    {
+      q: "Kuzey ışıkları için ayın bir önemi var mı?",
+      a: "Var. Dolunay gökyüzünü aydınlatır ve soluk ışıkları siler; yalnız güçlü ışıklar görülür. Yeni ay döneminde ise gökyüzü en karanlık haldedir ve soluk ışıklar da seçilir. Bu yüzden kuzey ışıkları gezileri mümkünse yeni ayın birkaç gün öncesi ile sonrasına denk getirilir. Sayfadaki planlayıcı her gece için ay ışığını hesaplıyor.",
+      link: { href: "#planlayici", label: "Gezi planlayıcı" },
+    },
+  ],
   gunDogumuBatimi: [
     {
       q: "Norveç'te kışın güneş kaçta doğuyor?",

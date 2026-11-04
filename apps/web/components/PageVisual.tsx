@@ -107,6 +107,23 @@ function SunPaths() {
   );
 }
 
+/** Kuzey ışıkları: yeşil perdeler ve ufuk. */
+function AuroraCurtains() {
+  return (
+    <svg viewBox="0 0 120 96" className="h-24 w-32" aria-hidden="true">
+      {[
+        [10, 60, 0.55],
+        [35, 46, 0.8],
+        [62, 54, 0.6],
+        [86, 40, 0.45],
+      ].map(([x, h, o], i) => (
+        <rect key={i} x={x} y={78 - h} width={22} height={h} rx={11} fill="#34d399" fillOpacity={o} />
+      ))}
+      <line x1="4" y1="80" x2="116" y2="80" stroke="#a1a1aa" strokeWidth={1.2} />
+    </svg>
+  );
+}
+
 function SolarEclipse() {
   return (
     <svg viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">
@@ -180,6 +197,7 @@ export function PageVisual({ page }: { page: SitePage }) {
     );
   else if (path === PAGES.meteorYagmurlari.path) visual = <Meteors />;
   else if (path === PAGES.ekinoksGundonumu.path || path === PAGES.gunDogumuBatimi.path) visual = <SunPaths />;
+  else if (path === PAGES.kuzeyIsiklari.path) visual = <AuroraCurtains />;
   else if (path === PAGES.ayinKaranlikYuzu.path)
     visual = <MoonPhaseIcon side="far" phaseAngle={30} size={96} title="" />;
   else if (path === PAGES.superAy.path) visual = <MoonPhaseIcon phaseAngle={180} size={112} glow title="" />;
