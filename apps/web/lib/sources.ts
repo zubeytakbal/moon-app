@@ -320,6 +320,14 @@ export const SOURCES = {
     note: "Dünya'nın eksen eğikliği (yörüngeye göre) 23,44°; tropikal yıl 365,242 gün.",
     group: "takvim",
   },
+  geonames: {
+    no: 37,
+    title: "GeoNames coğrafi veritabanı",
+    publisher: "GeoNames (CC BY 4.0)",
+    url: "https://www.geonames.org/",
+    note: "Gün doğumu sayfasındaki yer arama kutusunun şehir, ilçe ve kasaba listesi: adlar (Türkçe adlar dahil), koordinatlar ve saat dilimleri.",
+    group: "yer",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

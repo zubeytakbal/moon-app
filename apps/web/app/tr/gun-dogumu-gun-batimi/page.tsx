@@ -26,6 +26,7 @@ import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickLinks } from "@/components/QuickLinks";
 import { SunHere } from "@/components/SunHere";
+import { pageSources } from "@/components/Sources";
 import { FAQS } from "@/lib/faqs";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
@@ -34,6 +35,7 @@ import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.gunDogumuBatimi;
 const UPDATED = "2026-11-04";
+const src = pageSources("geonames");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const DIRECTIONS = ["kuzey", "kuzeydoğu", "doğu", "güneydoğu", "güney", "güneybatı", "batı", "kuzeybatı"];
@@ -123,7 +125,7 @@ export default function SunrisePage({ searchParams }: PageProps<"/tr/gun-dogumu-
               Saatler, il merkezinin (yurt dışında şehir merkezinin) koordinatlarına göre, düz bir ufuk varsayılarak
               hesaplanır; ışığın havada kırılması hesaba katılır. Dağlık bir yerde ya da önünüzde yüksek binalar varsa
               Güneş birkaç dakika geç doğar ve erken batar gibi görünür. İlçeler il merkezinden birkaç dakika farklı
-              olabilir; tam yeriniz için yukarıdaki &quot;Konumumu kullan&quot; düğmesini kullanın. Yılın en uzun ve en
+              olabilir; ilçeniz için yukarıdaki arama kutusuna yer adını yazın ya da &quot;Konumumu kullan&quot; düğmesine basın. Yılın en uzun ve en
               kısa günleri için <Link href={PAGES.ekinoksGundonumu.path}>Ekinoks ve Gündönümü</Link> sayfasına bakın.
             </p>
           </Prose>
@@ -132,6 +134,7 @@ export default function SunrisePage({ searchParams }: PageProps<"/tr/gun-dogumu-
             page={PAGE}
             headline="Gün Doğumu ve Gün Batımı Saatleri: Bugün Güneş Kaçta Doğuyor?"
             updated={UPDATED}
+            src={src}
           />
         </div>
       </main>
@@ -209,7 +212,7 @@ async function SunAnswer() {
           <a href="#hesapla" className="underline underline-offset-2">
             aşağıdan seçin
           </a>
-          ; tam bulunduğunuz yer için &quot;Konumumu kullan&quot;.
+          ; ilçe, tatil yeri ya da dünyadaki herhangi bir şehir için arama kutusunu kullanın.
         </>
       }
     />
