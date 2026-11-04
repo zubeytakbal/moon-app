@@ -218,6 +218,16 @@ export const FAQS = {
       q: "Meteor yağmuru teleskopla ya da dürbünle izlenir mi?",
       a: "Hayır, en iyisi çıplak gözdür. Meteorlar gökyüzünün herhangi bir yerinde bir saniyeden kısa sürede belirip kaybolur. Teleskop ve dürbün gökyüzünün çok küçük bir parçasını gösterdiği için meteorların çoğu görüş alanının dışında kalır.",
     },
+    {
+      q: "Meteor yağmuru Almanya'da saat kaçta izlenir?",
+      a: "Haberlerde geçen doruk saati Türkiye saatiyle verilir; Almanya saati kışın 2, yazın 1 saat geridedir. Ama asıl önemli olan doruk anı değil, Almanya'da gökyüzünün karanlık ve radyantın yüksek olduğu saatlerdir. Çoğu yağmurda bu, gece yarısından sonra sabaha kadar olan saatlerdir; İkizler (Aralık) ise akşam 20:30 civarından itibaren bütün gece iyi sonuç verir. Berlin, Köln, Münih, Hamburg ve diğer şehirler için saatler sayfadaki Avrupa tablosunda.",
+      link: { href: "#avrupa", label: "Avrupa şehirleri tablosu" },
+    },
+    {
+      q: "Meteor yağmuru Kıbrıs'tan görünecek mi?",
+      a: "Evet. Büyük meteor yağmurlarının hepsinin radyantı Kıbrıs'tan ufkun üzerine çıkar, yani hepsi Kıbrıs'tan da görülür. Kıbrıs Türkiye'nin güneyinde olduğu için yaz gecelerinde tam karanlık biraz daha uzun sürer; saatler ise Kıbrıs saatiyle Türkiye'den yaz aylarında aynı, kış aylarında 1 saat geridedir. Işık kirliliğinden uzak, ufku açık bir yer seçmek, gördüğünüz meteor sayısını belirgin şekilde artırır.",
+      link: { href: "#avrupa", label: "Lefkoşa için saatler" },
+    },
   ],
   ayinKaranlikYuzu: [
     {

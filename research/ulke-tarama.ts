@@ -5,8 +5,11 @@
  * Google otomatik tamamlamasına (hl=tr, gl=<ülke>) "dolunay almanya", "almanyada ay tutulması saat kaçta",
  * "köln dolunay" gibi kalıplar sorulur; yalnız ülke ya da şehir adı geçen öneriler tutulur.
  *
- * Kullanım (kökten): node research/ulke-tarama.ts
- * Çıktı: research/sonuclar/<tarih>-ulke-tarama.csv
+ * Kullanım (kökten):
+ *   node research/ulke-tarama.ts                         (varsayılan 14 konu)
+ *   node research/ulke-tarama.ts "meteor yağmuru" perseid (yalnız verilen konular; şehirler de bu konularla taranır)
+ * Verilen konularda ülkeyle birlikte amaç kalıpları da sorulur: ne zaman, saat kaçta, nereden izlenir, hangi yön...
+ * Çıktı: research/sonuclar/<tarih>-ulke-tarama[-konu].csv
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -42,7 +45,7 @@ const COUNTRIES: Country[] = [
 ];
 
 /** Ülkeyle birlikte taranan konular (sitemizde karşılığı olanlar). */
-const TOPICS = [
+const DEFAULT_TOPICS = [
   "ay tutulması",
   "güneş tutulması",
   "kanlı ay",
@@ -59,7 +62,12 @@ const TOPICS = [
   "ay evreleri",
 ];
 /** Şehirlerle yalnız en güçlü konular taranır (istek sayısını makul tutmak için). */
-const CITY_TOPICS = ["ay tutulması", "güneş tutulması", "dolunay", "hilal", "ay doğuşu"];
+const DEFAULT_CITY_TOPICS = ["ay tutulması", "güneş tutulması", "dolunay", "hilal", "ay doğuşu"];
+const ARGS = process.argv.slice(2);
+const TOPICS = ARGS.length ? ARGS : DEFAULT_TOPICS;
+const CITY_TOPICS = ARGS.length ? ARGS : DEFAULT_CITY_TOPICS;
+/** Konu verildiğinde ülkeyle birlikte sorulan amaç kalıpları. */
+const INTENTS = ARGS.length ? ["ne zaman", "saat kaçta", "nereden izlenir", "hangi yön", "görülecek mi", "bu gece", "2026", "2027"] : [];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -125,6 +133,7 @@ for (const c of COUNTRIES) {
       `${topic} ${c.name} görülecek mi`,
     ];
     for (const e of c.extra ?? []) patterns.push(`${topic} ${e}`);
+    for (const intent of INTENTS) patterns.push(`${topic} ${c.name} ${intent}`, `${c.loc} ${topic} ${intent}`);
     for (const p of patterns) await probe(c, c.name, topic, p, [...names, ...c.cities]);
   }
   for (const city of c.cities) {
@@ -139,7 +148,8 @@ for (const c of COUNTRIES) {
 
 mkdirSync(OUT_DIR, { recursive: true });
 const date = new Date().toISOString().slice(0, 10);
-const file = join(OUT_DIR, `${date}-ulke-tarama.csv`);
+const suffix = ARGS.length ? "-" + ARGS.join("_").toLocaleLowerCase("tr-TR").replace(/[^a-z0-9çğıöşü_]+/g, "-") : "";
+const file = join(OUT_DIR, `${date}-ulke-tarama${suffix}.csv`);
 const esc = (s: string) => (/[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);
 writeFileSync(
   file,

@@ -3,16 +3,18 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import {
-  findProvince,
+  ABROAD_CITIES,
+  findPlace,
   getMeteorNight,
   getMoonPhase,
   getUpcomingMeteorShowers,
+  isAbroad,
   METEOR_SHOWERS,
-  TURKEY_PROVINCES,
   type MeteorNight,
   type MeteorShower,
-  type Province,
+  type Place,
 } from "@moon-app/moon";
+import { ABROAD_OPTIONS, BERLIN, FEATURED_ABROAD, PROVINCE_OPTIONS } from "@/lib/place-options";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Byline } from "@/components/Byline";
@@ -33,10 +35,15 @@ import { siteConfig } from "@/site.config";
 import { MeteorSimulator } from "./MeteorSimulator";
 
 const PAGE = PAGES.meteorYagmurlari;
-const UPDATED = "2026-11-02";
+const UPDATED = "2026-11-04";
 const src = pageSources("imoCalendar2026", "imoCalendar2027", "nasaMeteors", "nasaGeminids");
 const timeZone = siteConfig.defaultLocation.timeZone;
-const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const CITY_OPTIONS = PROVINCE_OPTIONS;
+/** Avrupa tablosundaki büyük yağmur sayısı (sütun). */
+const EUROPE_COLUMNS = 3;
+/** Kıbrıs sorusunun cevabında kullanılan şehir. */
+const NICOSIA = ABROAD_CITIES.find((c) => c.slug === "lefkosa")!;
+
 const DAY_MS = 86_400_000;
 /** Girişte ve il bölümünde öne çıkan "büyük" yağmurlar: IMO ZHR ≥ 15 ve düzenli. Küçükler yalnız takvimde. */
 const isMajor = (s: MeteorShower) => s.zhr >= 15 && !s.variable;
@@ -63,15 +70,25 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Meteor Yağmurları ${y}-${y + 1}: Ne Zaman, Saat Kaçta, Nereden İzlenir? | ${siteConfig.name}`,
     description:
-      "Sıradaki meteor yağmuru ne zaman? Perseid, İkizler, Orionid ve diğer yağmurların tarihleri, ilinizden en iyi izleme saatleri, ay ışığının etkisi ve saatte kaç meteor göreceğiniz.",
+      "Sıradaki meteor yağmuru ne zaman? Perseid, İkizler, Orionid ve diğer yağmurların tarihleri, ilinizden ve Almanya, Hollanda, KKTC gibi ülkelerden en iyi izleme saatleri, ay ışığının etkisi ve saatte kaç meteor göreceğiniz.",
     // İl seçimi (?il=...) ayrı sayfa sayılmasın.
     alternates: { canonical: PAGE.path },
     openGraph: pageOpenGraph(PAGE),
   };
 }
 
-function cityOf(il: string | string[] | undefined): Province {
-  return findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+function cityOf(il: string | string[] | undefined): Place {
+  return findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+}
+
+/** Saatin hangi saat dilimiyle yazıldığı: "Türkiye saati" ya da "Almanya saati"... */
+function zoneLabelOf(place: Place) {
+  return isAbroad(place) ? place.zoneLabel : "Türkiye saati";
+}
+
+/** Verilen saat dilimine göre saat (yurt dışı şehirler için). */
+function timeIn(tz: string) {
+  return new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, hour: "2-digit", minute: "2-digit" });
 }
 
 const dateFmt = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
@@ -79,14 +96,15 @@ const dayMonth = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "nu
 const weekday = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, weekday: "long" });
 const timeFmt = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
 
-/** "14-15 Aralık gecesi" ya da "31 Aralık - 1 Ocak gecesi". */
-function nightLabel(n: MeteorNight) {
-  const a = dayMonth.formatToParts(n.dusk);
-  const b = dayMonth.formatToParts(n.dawn);
+/** "14-15 Aralık gecesi" ya da "31 Aralık - 1 Ocak gecesi" (verilen saat dilimine göre; varsayılan Türkiye). */
+function nightLabel(n: MeteorNight, tz: string = timeZone) {
+  const dm = tz === timeZone ? dayMonth : new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "long" });
+  const a = dm.formatToParts(n.dusk);
+  const b = dm.formatToParts(n.dawn);
   const part = (p: Intl.DateTimeFormatPart[], t: string) => p.find((x) => x.type === t)?.value ?? "";
   return part(a, "month") === part(b, "month")
     ? `${part(a, "day")}-${part(b, "day")} ${part(b, "month")} gecesi`
-    : `${dayMonth.format(n.dusk)} - ${dayMonth.format(n.dawn)} gecesi`;
+    : `${dm.format(n.dusk)} - ${dm.format(n.dawn)} gecesi`;
 }
 
 /** En iyi aralıkta ayın ne kadar engel olduğu: ufukta kalma payı × aydınlık oranı. */
@@ -126,10 +144,11 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
       <QuickLinks
         links={[
           { href: "#cevap", label: "Sıradaki" },
-          { href: "#il-sec", label: "İlinizden saatler" },
+          { href: "#il-sec", label: "İlinizden" },
+          { href: "#avrupa", label: "Avrupa'dan" },
           { href: "#takvim", label: "Takvim" },
           { href: "#yagmurlar", label: "Büyük yağmurlar" },
-          { href: "#zhr", label: "Saatte kaç meteor?" },
+          { href: "#zhr", label: "Kaç meteor?" },
           { href: "#izleme", label: "Nasıl izlenir?" },
           { href: "#sss", label: "Sık sorulanlar" },
         ]}
@@ -142,6 +161,8 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
         <Suspense fallback={<CitySection slug={siteConfig.defaultLocation.slug} />}>
           <SelectedCity searchParams={searchParams} />
         </Suspense>
+
+        <EuropeTable />
 
         <YearList />
 
@@ -318,13 +339,15 @@ async function CitySection({ slug }: { slug: string }) {
   const night = getMeteorNight(next.shower, next.peak, city);
   const best = night.best;
   const dateKey = next.peak.toISOString().slice(0, 10);
+  const timeFmt = timeIn(city.timeZone);
+  const zone = zoneLabelOf(city);
 
   return (
     <section aria-labelledby="ilden" className="mt-12">
       <div id="il-sec" className="flex scroll-mt-32 flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">
-            {next.shower.name} · {nightLabel(night)}
+            {next.shower.name} · {nightLabel(night, city.timeZone)}
           </p>
           <h2
             id="ilden"
@@ -334,15 +357,15 @@ async function CitySection({ slug }: { slug: string }) {
             {city.name}: en iyi saat {best ? `${timeFmt.format(best.start)}-${timeFmt.format(best.end)}` : "yok"}
           </h2>
         </div>
-        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
       </div>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-        Gökyüzünün karardığı saat: {timeFmt.format(night.dusk)} · aydınlanmaya başladığı saat:{" "}
+        Saatler {zone}dir. Gökyüzünün karardığı saat: {timeFmt.format(night.dusk)} · aydınlanmaya başladığı saat:{" "}
         {timeFmt.format(night.dawn)}. Çizelge, gece boyunca saatte görülmesi beklenen meteor sayısını gösterir; gri
         alanlar ayın ufkun üzerinde olduğu saatlerdir.
       </p>
 
-      <NightChart night={night} />
+      <NightChart night={night} timeZone={city.timeZone} />
 
       {best && (
         <div className="mt-6">
@@ -369,7 +392,7 @@ async function CitySection({ slug }: { slug: string }) {
             event={{
               uid: `meteor-${next.shower.key}-${dateKey}-${city.slug}`,
               summary: `${next.shower.name} meteor yağmuru`,
-              description: `${city.name} için en iyi saatler: ${timeFmt.format(best.start)}-${timeFmt.format(best.end)} (Türkiye saati). ${moonNote(night)} Işıklardan uzak, ufku açık bir yer seçin; gözlerinizin karanlığa alışması için 20 dakika bekleyin.`,
+              description: `${city.name} için en iyi saatler: ${timeFmt.format(best.start)}-${timeFmt.format(best.end)} (${zone}). ${moonNote(night)} Işıklardan uzak, ufku açık bir yer seçin; gözlerinizin karanlığa alışması için 20 dakika bekleyin.`,
               url: new URL(PAGE.path, siteConfig.url).toString(),
               start: icsTime(best.start),
               end: icsTime(best.end),
@@ -382,7 +405,8 @@ async function CitySection({ slug }: { slug: string }) {
 }
 
 /** Gece boyunca saatlik meteor sayısı (köy ve şehir kenarı), ayın ufukta olduğu saatler gri. */
-function NightChart({ night }: { night: MeteorNight }) {
+function NightChart({ night, timeZone: tz }: { night: MeteorNight; timeZone: string }) {
+  const timeFmt = timeIn(tz);
   const W = 720;
   const H = 200;
   const PAD = { l: 44, r: 10, t: 12, b: 34 };
@@ -451,6 +475,128 @@ function NightChart({ night }: { night: MeteorNight }) {
         <span>Dikey eksen: saatte meteor</span>
       </figcaption>
     </figure>
+  );
+}
+
+/**
+ * Önümüzdeki büyük yağmurların Avrupa'daki büyük şehirlerden en iyi saatleri, her şehrin kendi saatiyle.
+ * Seçiciden bağımsız, sayfada her zaman durur ("meteor yağmuru almanyada saat kaçta / kıbrıstan görünecek mi"
+ * aramalarının cevabı). Günde bir yenilenir.
+ */
+async function EuropeTable() {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const showers = getUpcomingMeteorShowers(new Date(now.getTime() - DAY_MS), METEOR_SHOWERS.length)
+    .filter((s) => isMajor(s.shower))
+    .slice(0, EUROPE_COLUMNS);
+  const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
+  // Perseid notunun sayıları hesaptan gelir.
+  const perseid = getUpcomingMeteorShowers(new Date(now.getTime() - DAY_MS), METEOR_SHOWERS.length).find(
+    (s) => s.shower.key === "perseidler",
+  );
+  const hamburg = ABROAD_CITIES.find((c) => c.slug === "hamburg")!;
+  const darkHours = (c: Place) => {
+    if (!perseid) return 0;
+    const n = getMeteorNight(perseid.shower, perseid.peak, c);
+    return (n.dawn.getTime() - n.dusk.getTime()) / 3_600_000;
+  };
+  const hf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 1 });
+
+  return (
+    <section className="mt-14" aria-labelledby="avrupa">
+      <h2 id="avrupa" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Meteor yağmuru Avrupa&apos;dan ne zaman, saat kaçta izlenir?
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın büyük
+        şehirlerinde önümüzdeki büyük meteor yağmurlarının en iyi gecesi ve en iyi saatleri (her şehrin kendi yerel
+        saatiyle), şehir kenarından saatte kaç meteor görüleceği. Bu ülkelerdeki {ABROAD_CITIES.length} şehrin tamamı
+        için yukarıdaki seçiciyi kullanabilirsiniz.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full min-w-[600px] text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">Şehir</th>
+              {showers.map((s) => (
+                <th key={s.shower.key} className="px-4 py-2.5 font-medium">
+                  <span className="block text-zinc-700 dark:text-zinc-300">{s.shower.name}</span>
+                  <span className="text-xs font-normal">
+                    {nightLabel(getMeteorNight(s.shower, s.peak, BERLIN), BERLIN.timeZone)}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {FEATURED_ABROAD.map((c) => {
+              const t = timeIn(c.timeZone);
+              return (
+                <tr key={c.slug}>
+                  <td className="px-4 py-2">
+                    <Link
+                      href={`${PAGE.path}?il=${c.slug}`}
+                      rel="nofollow"
+                      scroll={false}
+                      className="font-medium hover:underline"
+                    >
+                      {c.name}
+                    </Link>
+                    <span className="ml-1.5 text-zinc-500">{c.country}</span>
+                  </td>
+                  {showers.map((s) => {
+                    const n = getMeteorNight(s.shower, s.peak, c);
+                    return (
+                      <td key={s.shower.key} className="px-4 py-2">
+                        {n.best ? (
+                          <>
+                            <span className="tabular-nums">
+                              {t.format(n.best.start)}-{t.format(n.best.end)}
+                            </span>
+                            <span className="ml-1.5 text-xs text-zinc-500">~{nf.format(n.best.rate.kenar)}/saat</span>
+                          </>
+                        ) : (
+                          <span className="text-zinc-400">radyant doğmuyor</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-sm text-zinc-500">
+        Gece başlıkları Almanya tarihine göredir. Sayılar şehir kenarı gökyüzü için tahmindir; kırsalda iki-üç katı
+        görülür, şehir merkezinde çok daha azı. Ay ışığı hesaba katılmıştır.
+      </p>
+      <div className="mx-auto max-w-3xl">
+        <Prose>
+          <p>
+            Meteor yağmuru bir ülkeye özgü değildir: Dünya toz şeridinin içinden geçerken meteorlar, radyantın ufkun
+            üzerinde olduğu her yerden görülür. Doruğun saati Türkiye&apos;de, Almanya&apos;da ya da Kıbrıs&apos;ta
+            aynı andır; ama doruk sizin bulunduğunuz yerde gündüze denk geliyorsa önemli olan, ona en yakın gecedir.
+            Tablodaki saatler bu yüzden doruk anı değil, o şehirde gökyüzünün karanlık ve radyantın yeterince yüksek
+            olduğu saatlerdir. Avrupa&apos;daki şehirler arasında en iyi saatler yalnızca birkaç dakika ile bir saat
+            arasında kayar; asıl fark gökyüzünün karanlığından gelir. Almanya&apos;da ya da Hollanda&apos;da büyük
+            şehirlerin ışığından 20-30 kilometre uzaklaşmak, gördüğünüz meteor sayısını birkaç katına çıkarır.
+          </p>
+          {perseid && (
+            <p>
+              Ağustos&apos;taki Perseid yağmurunda enlem fark yaratır. Kuzeyde yaz geceleri kısadır: Perseid gecesi
+              gökyüzü Hamburg&apos;da yalnızca {hf.format(darkHours(hamburg))} saat karanlık kalırken bu süre
+              Lefkoşa&apos;da {hf.format(darkHours(NICOSIA))} saattir. Buna karşılık Perseid&apos;in radyantı
+              gökyüzünün kuzeyindedir ve kuzeydeki şehirlerde daha yüksekte durur; bu yüzden en iyi saatlerde görülen
+              meteor sayısı Hamburg&apos;da da Kıbrıs&apos;ta da hemen hemen aynıdır. Kısa gece, yalnızca izleme
+              süresini kısaltır.
+            </p>
+          )}
+        </Prose>
+      </div>
+    </section>
   );
 }
 
@@ -700,6 +846,10 @@ async function MeteorAnswer() {
   const after = nextMajor(new Date(next.peak.getTime() + 2 * DAY_MS));
   const nf = new Intl.NumberFormat(siteConfig.locale, { maximumFractionDigits: 0 });
   const best = night.best;
+  const de = getMeteorNight(next.shower, next.peak, BERLIN);
+  const cy = getMeteorNight(next.shower, next.peak, NICOSIA);
+  const deTime = timeIn(BERLIN.timeZone);
+  const cyTime = timeIn(NICOSIA.timeZone);
 
   return (
     <AnswerBox
@@ -721,6 +871,27 @@ async function MeteorAnswer() {
           : []),
         { label: "Ay", value: moonNote(night) },
         {
+          label: `Almanya'dan (${BERLIN.name})`,
+          value: (
+            <>
+              {nightLabel(de, BERLIN.timeZone)},{" "}
+              {de.best
+                ? `en iyi saatler ${deTime.format(de.best.start)} - ${deTime.format(de.best.end)} (${BERLIN.zoneLabel})`
+                : "radyant ufkun üzerine çıkmıyor"}
+              .{" "}
+              <a href="#avrupa" className="underline underline-offset-2">
+                Diğer Avrupa şehirleri
+              </a>
+            </>
+          ),
+        },
+        {
+          label: "Kıbrıs'tan görünecek mi?",
+          value: cy.best
+            ? `Evet. ${NICOSIA.name}: ${nightLabel(cy, NICOSIA.timeZone)}, en iyi saatler ${cyTime.format(cy.best.start)} - ${cyTime.format(cy.best.end)} (${NICOSIA.zoneLabel}).`
+            : "Hayır, radyant bu gece Kıbrıs'tan ufkun üzerine çıkmıyor.",
+        },
+        {
           label: "Kusursuz koşullarda (ZHR)",
           value: (
             <>
@@ -733,9 +904,9 @@ async function MeteorAnswer() {
       ]}
       note={
         <>
-          İstanbul&apos;a göre; iliniz için{" "}
+          İstanbul&apos;a göre; iliniz ya da yurt dışında yaşadığınız şehir için{" "}
           <a href="#il-sec" className="underline underline-offset-2">
-            aşağıdan il seçin
+            aşağıdan seçin
           </a>
           . Sayılar, gökyüzünün karanlığına, radyantın yüksekliğine ve aya göre tahmindir; meteorlar kümeler halinde
           gelir, bir saatte daha az ya da daha çok görebilirsiniz.
