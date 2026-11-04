@@ -10,7 +10,11 @@ import {
   getMoonSign,
   getMoonSignIngresses,
   getNextFullMoon,
+  getSunDay,
+  getUpcomingMeteorShowers,
+  getVisiblePlanets,
   getVoidOfCoursePeriods,
+  METEOR_SHOWERS,
   TURKEY_PROVINCES,
   type PhaseKey,
 } from "@moon-app/moon";
@@ -54,6 +58,8 @@ const PHASE_ANGLE: Record<PhaseKey, number> = {
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
 const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const DIRECTIONS = ["kuzeyde", "kuzeydoğuda", "doğuda", "güneydoğuda", "güneyde", "güneybatıda", "batıda", "kuzeybatıda"];
+const WHEN = { aksam: "akşam", sabah: "sabaha karşı", "gece-boyu": "gece boyu" } as const;
 export default function HomePage({ searchParams }: PageProps<"/tr">) {
   return (
     <>
@@ -191,6 +197,14 @@ async function TodaySky({ slug }: { slug: string }) {
   });
   const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long" });
   const daysToFull = Math.ceil((nextFull.getTime() - now.getTime()) / DAY_MS);
+  const sun = getSunDay(now, city);
+  const planets = getVisiblePlanets(now, city);
+  // Büyük meteor yağmurları (ZHR ≥ 15, düzenli): doruğu 2 gün içindeyse "bu gece", değilse sıradaki.
+  const major = getUpcomingMeteorShowers(new Date(now.getTime() - 2 * DAY_MS), METEOR_SHOWERS.length).filter(
+    (m) => m.shower.zhr >= 15 && !m.shower.variable,
+  );
+  const meteorTonight = major.find((m) => Math.abs(m.peak.getTime() - now.getTime()) <= 2 * DAY_MS);
+  const meteorNext = meteorTonight ?? major.find((m) => m.peak > now)!;
 
   return (
     <section aria-labelledby="bugun" className="pt-14 sm:pt-20">
@@ -198,7 +212,7 @@ async function TodaySky({ slug }: { slug: string }) {
         <div>
           <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">Bugün gökyüzünde</p>
           <h2 id="bugun" className="mt-1 text-3xl font-semibold tracking-tight">
-            {city.name} için ay
+            {city.name} için bugün
           </h2>
         </div>
         <CitySelect action={HOME_PATH} options={CITY_OPTIONS} selected={city.slug} />
@@ -212,7 +226,7 @@ async function TodaySky({ slug }: { slug: string }) {
           {phase.name}
           <Sub>%{Math.round(phase.illumination * 100)} aydınlık</Sub>
         </SkyTile>
-        <SkyTile href={`${PAGES.bugunAy.path}?il=${city.slug}`} label="Doğuş · Batış" icon={<Arrows />}>
+        <SkyTile href={`${PAGES.bugunAy.path}?il=${city.slug}`} label="Ay doğuşu · batışı" icon={<Arrows />}>
           <span className="tabular-nums">
             {rise ? time.format(rise) : "–"} · {set ? time.format(set) : "–"}
           </span>
@@ -248,6 +262,28 @@ async function TodaySky({ slug }: { slug: string }) {
           {hijri.day} {hijri.monthName}
           <Sub>{hijri.year} · yaklaşık</Sub>
         </SkyTile>
+        <SkyTile
+          href={`${PAGES.gunDogumuBatimi.path}?il=${city.slug}`}
+          label="Gün doğumu · batımı"
+          icon={<SunIcon />}
+        >
+          <span className="tabular-nums">
+            {sun.rise ? time.format(sun.rise) : "–"} · {sun.set ? time.format(sun.set) : "–"}
+          </span>
+          <Sub>Hava {sun.civilDusk ? time.format(sun.civilDusk) : "–"} civarı kararır</Sub>
+        </SkyTile>
+        <SkyTile label="Bu gece gezegenler" icon={<PlanetIcon />}>
+          {planets.length ? planets.map((p) => p.name).join(", ") : "Parlak gezegen yok"}
+          <Sub>
+            {planets.length
+              ? `${planets[0].name}: ${WHEN[planets[0].when]} ${DIRECTIONS[Math.round(planets[0].bestAzimuth / 45) % 8]}`
+              : "Gezegenler bu gece Güneş'e çok yakın"}
+          </Sub>
+        </SkyTile>
+        <SkyTile href={PAGES.meteorYagmurlari.path} label="Meteor yağmuru" icon={<MeteorIcon />}>
+          {meteorTonight ? `Bu gece: ${meteorTonight.shower.name}` : meteorNext.shower.name}
+          <Sub>Doruk: {date.format(meteorNext.peak)}</Sub>
+        </SkyTile>
       </ul>
     </section>
   );
@@ -259,24 +295,61 @@ function SkyTile({
   icon,
   children,
 }: {
-  href: string;
+  /** Yoksa kutu bağlantısız gösterilir (ör. gezegenler: ayrı bir sayfa yok). */
+  href?: string;
   label: string;
   icon: ReactNode;
   children: ReactNode;
 }) {
+  const body = (
+    <>
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#05070d]">{icon}</span>
+      <span className="min-w-0">
+        <span className="block text-xs uppercase tracking-wider text-zinc-500">{label}</span>
+        <span className="mt-0.5 block text-lg font-semibold leading-tight">{children}</span>
+      </span>
+    </>
+  );
+  const cls =
+    "flex h-full items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900";
   return (
     <li>
-      <Link
-        href={href}
-        className="flex h-full items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
-      >
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#05070d]">{icon}</span>
-        <span className="min-w-0">
-          <span className="block text-xs uppercase tracking-wider text-zinc-500">{label}</span>
-          <span className="mt-0.5 block text-lg font-semibold leading-tight">{children}</span>
-        </span>
-      </Link>
+      {href ? (
+        <Link href={href} className={`${cls} transition hover:-translate-y-0.5 hover:shadow-md`}>
+          {body}
+        </Link>
+      ) : (
+        <div className={cls}>{body}</div>
+      )}
     </li>
+  );
+}
+
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+      <path d="M3 17h18" stroke="#a1a1aa" strokeWidth="1.6" />
+      <path d="M7 17a5 5 0 0 1 10 0" fill="#fcd34d" />
+    </svg>
+  );
+}
+
+function PlanetIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+      <circle cx="12" cy="12" r="5" fill="#fbbf24" />
+      <ellipse cx="12" cy="12" rx="10" ry="3.2" fill="none" stroke="#e4e4e7" strokeWidth="1.4" transform="rotate(-20 12 12)" />
+    </svg>
+  );
+}
+
+function MeteorIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+      <path d="M4 5l11 11" stroke="#c7d2fe" strokeOpacity="0.5" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M10 11l6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 4l7 7" stroke="#c7d2fe" strokeOpacity="0.4" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
   );
 }
 

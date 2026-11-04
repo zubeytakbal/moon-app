@@ -71,3 +71,4 @@ export {
   type SkyKind,
 } from "./meteors.ts";
 export { AURORA_DESTINATIONS, AURORA_SUN_DEG, geomagneticLatitude, getAuroraNight, getDarkMinutes, type AuroraDestination, type AuroraNight } from "./aurora.ts";
+export { getVisiblePlanets, NAKED_EYE_PLANETS, type VisiblePlanet } from "./planets.ts";
