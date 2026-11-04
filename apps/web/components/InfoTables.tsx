@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Lang } from "@/lib/i18n";
 import { InlineToc } from "./InlineToc";
 
 /**
@@ -21,11 +22,13 @@ export function AnswerBox({
   answer,
   rows,
   note,
+  lang = "tr",
 }: {
   question: string;
   answer: ReactNode;
   rows: AnswerRow[];
   note?: ReactNode;
+  lang?: Lang;
 }) {
   return (
     <>
@@ -56,7 +59,7 @@ export function AnswerBox({
           <p className="border-t border-zinc-200 px-5 py-3 text-sm text-zinc-500 sm:px-6 dark:border-zinc-800">{note}</p>
         )}
       </section>
-      <InlineToc />
+      <InlineToc lang={lang} />
     </>
   );
 }

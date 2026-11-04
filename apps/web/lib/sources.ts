@@ -18,6 +18,8 @@ export interface Source {
   /** Bu kaynaktan hangi bilgiyi aldığımız (Kaynaklar sayfasında yazar). */
   note: string;
   group: SourceGroup;
+  /** İngilizce sayfalarda görünen ad, yayımcı ve not (yoksa `title`/`publisher` aynen kullanılır). */
+  en?: { title?: string; publisher?: string; note: string };
 }
 
 export type SourceGroup = "tutulma" | "ay" | "uzay" | "takvim" | "gelenek" | "yer";
@@ -327,6 +329,10 @@ export const SOURCES = {
     url: "https://www.geonames.org/",
     note: "Gün doğumu sayfasındaki yer arama kutusunun şehir, ilçe ve kasaba listesi: adlar (Türkçe adlar dahil), koordinatlar ve saat dilimleri.",
     group: "yer",
+    en: {
+      title: "GeoNames geographical database",
+      note: "The place list behind the city search: names, coordinates and time zones of about 46,000 towns and cities.",
+    },
   },
   noaaAurora: {
     no: 38,
@@ -391,6 +397,41 @@ export const SOURCES = {
     url: "https://www.samsung.com/uk/support/mobile-devices/how-galaxy-cameras-combine-super-resolution-technologies-with-ai-to-produce-high-quality-images-of-the-moon/",
     note: "Galaxy S21 serisinden beri Scene Optimiser ayı tanır; 10'dan fazla kareyi birleştirir (Super Resolution) ve derin öğrenmeye dayalı yapay zekâ ayrıntı geliştirme motoruyla gürültüyü siler, ayrıntıyı artırır. Scene Optimiser kapatılarak yapay zekâsız çekilebilir.",
     group: "ay",
+  },
+  usnoRiseSetDefs: {
+    no: 46,
+    title: "Rise, Set, and Twilight Definitions",
+    publisher: "U.S. Naval Observatory, Astronomical Applications Department",
+    url: "https://aa.usno.navy.mil/faq/RST_defs",
+    note: "Gün doğumu/batımı Güneş'in üst kenarının ufukta olduğu andır (merkez ufkun 50' altında: 16' yarıçap + 34' ortalama kırılma). Sivil, denizci ve astronomik alacakaranlık Güneş merkezinin 6°, 12° ve 18° altında olmasıdır; sivil alacakaranlıktan sonra dışarıdaki işler için yapay ışık gerekir.",
+    group: "takvim",
+    en: {
+      note: "Sunrise and sunset are when the Sun's upper edge is on the horizon (its center 50′ below: 16′ radius plus 34′ average refraction). Civil, nautical and astronomical twilight end when the Sun's center is 6°, 12° and 18° below the horizon; after civil twilight, outdoor activities normally need artificial light.",
+    },
+  },
+  wisdomlibBrahmaMuhurta: {
+    no: 47,
+    title: "Brahma-muhurta: definitions",
+    publisher: "Wisdom Library (Śiva Purāṇa 2.1.11, Apte Sanskrit dictionary, Manusmṛti 4.92 ve diğerleri)",
+    url: "https://www.wisdomlib.org/definition/brahma-muhurta",
+    note: "Brahma muhurta: gün doğumundan önceki 4. ve 2. ghatika arası (1 ghatika 24 dk → doğuştan 96 ile 48 dk önce). Bazı gelenekler doğuştan önceki 48 dakikayı ya da 1,5 saati sayar.",
+    group: "gelenek",
+    en: {
+      title: "Brahma-muhurta: definitions",
+      publisher: "Wisdom Library (Śiva Purāṇa 2.1.11, Apte Sanskrit dictionary, Manusmṛti 4.92 and others)",
+      note: "Brahma muhurta as the span between the 4th and 2nd ghatika before sunrise (one ghatika is 24 minutes, so 96 to 48 minutes before sunrise); other traditions count the 48 minutes or the hour and a half before sunrise.",
+    },
+  },
+  wisdomlibRahukala: {
+    no: 48,
+    title: "Rahukala, Rāhu-kāla",
+    publisher: "Wisdom Library (Alar Kannada-English dictionary)",
+    url: "https://www.wisdomlib.org/definition/rahukala",
+    note: "Rahu kalam: her gün farklı saatte başlayan, bir işe başlamak için uğursuz sayılan bir buçuk saat. 6:00-18:00 gündüzde Pazar 16:30-18:00, Pazartesi 07:30-09:00, Salı 15:00-16:30, Çarşamba 12:00-13:30, Perşembe 13:30-15:00, Cuma 10:30-12:00, Cumartesi 09:00-10:30 (gündüzün 8., 2., 7., 5., 6., 4., 3. sekizde biri).",
+    group: "gelenek",
+    en: {
+      note: "Rahu kalam as a period of an hour and a half, starting at a different time each weekday, considered inauspicious for beginning anything. For a 6 am to 6 pm day: Sunday 4:30-6:00 pm, Monday 7:30-9:00 am, Tuesday 3:00-4:30 pm, Wednesday 12:00-1:30 pm, Thursday 1:30-3:00 pm, Friday 10:30 am-12:00 pm, Saturday 9:00-10:30 am (the 8th, 2nd, 7th, 5th, 6th, 4th and 3rd eighth of the daytime).",
+    },
   },
 } as const satisfies Record<string, Source>;
 

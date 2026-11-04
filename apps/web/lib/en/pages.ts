@@ -31,11 +31,32 @@ export interface EnSitePage {
 /** İngilizce ana sayfa. */
 export const EN_HOME_PATH = "/en";
 
-export const EN_PAGES = {} as const satisfies Record<string, EnSitePage>;
+/**
+ * İngilizce kurumsal sayfaların adresleri. Sayfalar İngilizce yayına açılmadan önce yazılır (About, Contact, Privacy,
+ * Cookies, Author, Sources, Methodology); yazılınca `EN_PAGES`'e "about" grubuyla eklenir.
+ */
+export const EN_AUTHOR_PATH = "/en/author";
+export const EN_SOURCES_PATH = "/en/sources";
+export const EN_METHOD_PATH = "/en/methodology";
+
+export const EN_PAGES = {
+  sunriseSunset: {
+    path: "/en/sunrise-sunset",
+    title: "Sunrise and Sunset Times",
+    navLabel: "Sunrise & Sunset",
+    group: "sun",
+    featured: true,
+    description: "Sunrise, sunset and what time it gets dark today, for any city, with day length and sun direction.",
+    cardPhaseAngle: 180,
+    tr: "/tr/gun-dogumu-gun-batimi",
+  },
+} as const satisfies Record<string, EnSitePage>;
 
 export const EN_ALL_PAGES: EnSitePage[] = Object.values(EN_PAGES);
 
 type EnPageKey = keyof typeof EN_PAGES;
 
 /** Her sayfanın altında önerilen ilgili sayfalar (elle seçilir). */
-export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {};
+export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
+  sunriseSunset: [],
+};

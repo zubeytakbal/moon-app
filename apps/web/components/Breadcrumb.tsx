@@ -11,6 +11,19 @@ export function Breadcrumb({ page, tone = "light" }: { page: SitePage; tone?: "l
     ...(page.group === "bugun" ? [] : [{ name: GROUP_NAMES[page.group] }]),
     { name: page.title, path: page.path },
   ];
+  return <BreadcrumbTrail items={items} tone={tone} label="Sayfa yolu" />;
+}
+
+/** Sayfa yolu çizimi ve BreadcrumbList verisi; dilden bağımsız (İngilizce sayfalar doğrudan kullanır). */
+export function BreadcrumbTrail({
+  items,
+  tone = "light",
+  label,
+}: {
+  items: { name: string; path?: string }[];
+  tone?: "light" | "dark";
+  label: string;
+}) {
   const linked = items.filter((i) => i.path);
   const colors =
     tone === "dark"
@@ -18,7 +31,7 @@ export function Breadcrumb({ page, tone = "light" }: { page: SitePage; tone?: "l
       : "text-zinc-500 [&_a:hover]:text-zinc-900 dark:[&_a:hover]:text-zinc-100";
 
   return (
-    <nav aria-label="Sayfa yolu" className={`text-sm ${colors}`}>
+    <nav aria-label={label} className={`text-sm ${colors}`}>
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;

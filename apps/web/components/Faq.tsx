@@ -1,16 +1,17 @@
 import Link from "next/link";
 import type { FaqItem } from "@/lib/faqs";
+import type { Lang } from "@/lib/i18n";
 import { JsonLd } from "./JsonLd";
 
 /**
  * Sayfanın sonundaki "Sık sorulan sorular": yalnızca Google'da gerçekten sorulan ve sayfanın gövdesinde
  * cevaplanmamış sorular (bkz. `lib/faqs.ts`). Açılıp kapanan sorular; FAQPage yapılandırılmış verisiyle.
  */
-export function Faq({ items }: { items: readonly FaqItem[] }) {
+export function Faq({ items, lang = "tr" }: { items: readonly FaqItem[]; lang?: Lang }) {
   return (
     <section aria-labelledby="sss" className="mt-14">
       <h2 id="sss" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
-        Sık sorulan sorular
+        {lang === "en" ? "Frequently asked questions" : "Sık sorulan sorular"}
       </h2>
       <div className="mt-5 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
         {items.map((item) => (

@@ -36,11 +36,16 @@ export {
   getEquiluxDay,
   getExtremeDay,
   getMonthSunDays,
+  getSunAltitude,
   getSunDay,
+  getSunPath,
+  getTwilights,
   getYearDayLengths,
   type DayLength,
   type SunDay,
+  type Twilights,
 } from "./daylight.ts";
+export { getBrahmaMuhurta, getRahuKaal, MUHURTA_MINUTES, RAHU_KAAL_PART, type TimeRange } from "./hindu-times.ts";
 export { getMonthCalendar, getNextBlueMoon, type CalendarDay } from "./calendar.ts";
 export { localDateParts, zonedTimeToUtc } from "./time.ts";
 export {

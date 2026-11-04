@@ -127,3 +127,44 @@ export function getMonthSunDays(year: number, month: number, location: GeoLocati
   const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
   return Array.from({ length: days }, (_, i) => getDayLength(new Date(Date.UTC(year, month - 1, i + 1, 12)), location));
 }
+
+/** Güneş'in verilen andaki yüksekliği (derece; ufkun altı eksi, ışığın kırılması dahil). */
+export function getSunAltitude(date: Date, location: GeoLocation): number {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const eq = Astronomy.Equator(Astronomy.Body.Sun, date, observer, true, true);
+  return Astronomy.Horizon(date, observer, eq.ra, eq.dec, "normal").altitude;
+}
+
+/** Bir yerel gün boyunca Güneş'in yüksekliği, `stepMinutes` aralıkla (gece yarısından gece yarısına; grafik için). */
+export function getSunPath(date: Date, location: GeoLocation, stepMinutes = 10): { time: Date; altitude: number }[] {
+  const p = localDateParts(date, location.timeZone);
+  const start = zonedTimeToUtc(p.year, p.month, p.day, 0, location.timeZone).getTime();
+  const end = zonedTimeToUtc(p.year, p.month, p.day + 1, 0, location.timeZone).getTime();
+  const out: { time: Date; altitude: number }[] = [];
+  for (let t = start; t <= end; t += stepMinutes * 60_000) {
+    const time = new Date(t);
+    out.push({ time, altitude: getSunAltitude(time, location) });
+  }
+  return out;
+}
+
+export interface Twilights {
+  /** Sivil (Güneş −6°), denizci (−12°) ve astronomik (−18°) alacakaranlığın sabah başı ve akşam sonu. */
+  civil: { dawn: Date | null; dusk: Date | null };
+  nautical: { dawn: Date | null; dusk: Date | null };
+  astronomical: { dawn: Date | null; dusk: Date | null };
+}
+
+/** Bir yerel günün üç alacakaranlık türü. Yüksek enlemde yazın Güneş yeterince inmezse o tür `null` olur. */
+export function getTwilights(date: Date, location: GeoLocation): Twilights {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const p = localDateParts(date, location.timeZone);
+  const dayStart = zonedTimeToUtc(p.year, p.month, p.day, 0, location.timeZone);
+  const within = (t: Astronomy.AstroTime | null) =>
+    t && t.date >= dayStart && t.date.getTime() < dayStart.getTime() + DAY_MS ? t.date : null;
+  const pair = (altitude: number) => ({
+    dawn: within(Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, 1, dayStart, 1, altitude)),
+    dusk: within(Astronomy.SearchAltitude(Astronomy.Body.Sun, observer, -1, dayStart, 1, altitude)),
+  });
+  return { civil: pair(-6), nautical: pair(-12), astronomical: pair(-18) };
+}
