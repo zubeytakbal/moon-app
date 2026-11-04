@@ -3,14 +3,17 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
 import {
-  findProvince,
+  ABROAD_CITIES,
+  findPlace,
   getMoonAltitude,
   getMoonDistanceKm,
   getUpcomingLunarEclipses,
-  TURKEY_PROVINCES,
+  isAbroad,
+  type GeoLocation,
   type LunarEclipse,
-  type Province,
+  type Place,
 } from "@moon-app/moon";
+import { ABROAD_OPTIONS, BERLIN, FEATURED_ABROAD, PROVINCE_OPTIONS } from "@/lib/place-options";
 import { Faq } from "@/components/Faq";
 import { MobileCollapse } from "@/components/MobileCollapse";
 import { FAQS } from "@/lib/faqs";
@@ -33,11 +36,15 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 
 const PAGE = PAGES.kanliAy;
-const UPDATED = "2026-11-01";
+const UPDATED = "2026-11-04";
 const FROM = new Date(Date.UTC(2025, 0, 1));
 const UNTIL_YEAR = 2037;
 const timeZone = siteConfig.defaultLocation.timeZone;
-const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const CITY_OPTIONS = PROVINCE_OPTIONS;
+/** Avrupa tablosunda gösterilen kanlı ay sayısı (sütun). */
+const EUROPE_COLUMNS = 3;
+/** Avrupa notundaki 2028-2029 kanlı ayları bu tarihten sonra geçmiş olur; not gizlenir (her yıl Ekim'de yenilenir). */
+const EUROPE_NOTE_UNTIL = new Date(Date.UTC(2029, 11, 21));
 /** Telefonda listede ilk açık duran öğe sayısı (sıradakinden başlayarak). */
 const MOBILE_ITEMS = 3;
 const MINUTE = 60_000;
@@ -50,7 +57,7 @@ const FAINT_PENUMBRAL_MINUTES = 30;
 export const metadata: Metadata = {
   title: `Kanlı Ay Ne Zaman? Bir Sonraki Kanlı Ay ve Türkiye'den Görünüşü | ${siteConfig.name}`,
   description:
-    "Bir sonraki kanlı ay (tam ay tutulması) ne zaman ve Türkiye'den görülecek mi? 2025-2037 kanlı ayları, kızıllığın süresi, ayın neden kırmızıya döndüğü ve Anadolu'daki tutulma gelenekleri.",
+    "Bir sonraki kanlı ay (tam ay tutulması) ne zaman, Türkiye'den ve Almanya, Hollanda, Fransa gibi Avrupa ülkelerinden saat kaçta görülecek? 2025-2037 kanlı ayları, kızıllığın süresi, ayın neden kırmızıya döndüğü ve Anadolu'daki tutulma gelenekleri.",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
@@ -67,7 +74,7 @@ interface BloodMoon {
 }
 
 /** Ayın verilen aralığın ne kadarında (0-1) ilde ufkun üzerinde olduğu; 2 dakikalık adımlarla. */
-function shareAboveHorizon(start: Date, end: Date, location: Province): number {
+function shareAboveHorizon(start: Date, end: Date, location: GeoLocation): number {
   let up = 0;
   let n = 0;
   for (let t = start.getTime(); t <= end.getTime(); t += 2 * MINUTE) {
@@ -77,7 +84,7 @@ function shareAboveHorizon(start: Date, end: Date, location: Province): number {
   return n ? up / n : 0;
 }
 
-function bloodMoons(location: Province): BloodMoon[] {
+function bloodMoons(location: GeoLocation): BloodMoon[] {
   return getUpcomingLunarEclipses(FROM, 40)
     .filter((e) => e.kind === "total" && e.peak.getUTCFullYear() <= UNTIL_YEAR)
     .map((eclipse) => {
@@ -121,8 +128,13 @@ function RedMoon({ size }: { size: number }) {
   );
 }
 
-function cityOf(il: string | string[] | undefined): Province {
-  return findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+function cityOf(il: string | string[] | undefined): Place {
+  return findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+}
+
+/** Saatin hangi saat dilimiyle yazıldığı: "Türkiye saati" ya da "Almanya saati"... */
+function zoneLabelOf(place: Place) {
+  return isAbroad(place) ? place.zoneLabel : "Türkiye saati";
 }
 
 function verdictOf(share: number) {
@@ -140,6 +152,7 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
           { href: "#cevap", label: "Ne zaman?" },
           { href: "#kanli-ay-listesi", label: "Bütün kanlı aylar" },
           { href: "#siradaki", label: "Saatler" },
+          { href: "#avrupa", label: "Avrupa'dan" },
           { href: "#yillar", label: "Hangi yıl?" },
           { href: "#neden-kirmizi", label: "Neden kırmızı?" },
           { href: "#nasil-izlenir", label: "Nasıl izlenir?" },
@@ -157,6 +170,11 @@ export default function BloodMoonPage({ searchParams }: PageProps<"/tr/kanli-ay"
 
         <div className="mx-auto max-w-3xl">
           <NextBloodMoonDetails />
+        </div>
+
+        <EuropeTable />
+
+        <div className="mx-auto max-w-3xl">
           <YearsTable />
           <Prose>
             <h2 id="neden-kirmizi">Ay neden kırmızıya döner?</h2>
@@ -278,8 +296,10 @@ async function Hero({ slug }: { slug: string }) {
   const now = new Date();
   const list = bloodMoons(city);
   const nextVisible = list.find((b) => b.eclipse.peak > now && b.visibleShare > 0.5);
-  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const tz = city.timeZone;
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "long", year: "numeric" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, hour: "2-digit", minute: "2-digit" });
+  const zone = zoneLabelOf(city);
   const days = nextVisible ? Math.ceil((nextVisible.eclipse.peak.getTime() - now.getTime()) / 86_400_000) : 0;
 
   return (
@@ -302,6 +322,7 @@ async function Hero({ slug }: { slug: string }) {
               <p className="mt-1 text-2xl font-semibold">{date.format(nextVisible.eclipse.peak)}</p>
               <p className="mt-0.5 text-zinc-300">
                 Kızıllık {time.format(nextVisible.start)}-{time.format(nextVisible.end)} · {nextVisible.minutes} dakika
+                {isAbroad(city) && ` (${zone})`}
               </p>
               <p className="mt-0.5 text-sm text-zinc-400">
                 Görünürlük ({city.name}): {verdictOf(nextVisible.visibleShare)}
@@ -311,7 +332,7 @@ async function Hero({ slug }: { slug: string }) {
                   {days} gün sonra
                 </span>
                 <a href="#il-sec" className="text-sm text-zinc-300 underline hover:text-white">
-                  İlinizi seçin
+                  İl ya da şehir seçin
                 </a>
               </div>
               <div className="mt-4">
@@ -320,7 +341,7 @@ async function Hero({ slug }: { slug: string }) {
                   event={{
                     uid: `kanli-ay-${nextVisible.eclipse.peak.toISOString().slice(0, 10)}-${city.slug}`,
                     summary: "Kanlı ay (tam ay tutulması)",
-                    description: `Ayın tamamen kızıl olduğu aralık: ${time.format(nextVisible.start)}-${time.format(nextVisible.end)} (Türkiye saati). Görünürlük (${city.name}): ${verdictOf(nextVisible.visibleShare)}. Çıplak gözle izlemek güvenlidir.`,
+                    description: `Ayın tamamen kızıl olduğu aralık: ${time.format(nextVisible.start)}-${time.format(nextVisible.end)} (${zone}). Görünürlük (${city.name}): ${verdictOf(nextVisible.visibleShare)}. Çıplak gözle izlemek güvenlidir.`,
                     url: new URL(PAGE.path, siteConfig.url).toString(),
                     start: icsTime(nextVisible.start),
                     end: icsTime(nextVisible.end),
@@ -354,10 +375,10 @@ function BloodMoonSection({ slug }: { slug: string }) {
         <h2 id="kanli-ay-listesi" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           2025-{UNTIL_YEAR} kanlı ayları
         </h2>
-        <CitySelect action={PAGE.path} options={CITY_OPTIONS} selected={city.slug} />
+        <CitySelect action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
       </div>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-        Saatler, ayın tamamen kızardığı aralıktır (Türkiye saati). Görünürlük, bu aralıkta ayın seçtiğiniz ilde ufkun
+        Saatler, ayın tamamen kızardığı aralıktır ({zoneLabelOf(city)}). Görünürlük, bu aralıkta ayın seçtiğiniz yerde ufkun
         üzerinde olup olmadığına göre hesaplanır.
       </p>
       <BloodMoonList slug={city.slug} />
@@ -377,13 +398,13 @@ async function BloodMoonList({ slug }: { slug: string }) {
   const shown = (i: number) => i >= nextIndex && i < nextIndex + MOBILE_ITEMS;
   const shownCount = list.filter((_, i) => shown(i)).length;
   const date = new Intl.DateTimeFormat(siteConfig.locale, {
-    timeZone,
+    timeZone: city.timeZone,
     day: "numeric",
     month: "long",
     year: "numeric",
     weekday: "long",
   });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: city.timeZone, hour: "2-digit", minute: "2-digit" });
 
   return (
     <MobileCollapse hiddenCount={list.length - shownCount} noun="kanlı ay" variant="cards" className="mt-6">
@@ -477,6 +498,18 @@ async function BloodMoonAnswer() {
   const weekday = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, weekday: "long" });
   const thisYear = yearOf(now);
   const days = (d: Date) => Math.ceil((d.getTime() - now.getTime()) / 86_400_000);
+  const deNext = bloodMoons(BERLIN).find((b) => b.eclipse.peak > now && b.visibleShare > 0.5);
+  const deDate = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const deTime = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   if (!next) return null;
   const nextSeen = next.visibleShare > 0.5;
@@ -496,6 +529,22 @@ async function BloodMoonAnswer() {
           value: `${hm.format(next.start)}-${hm.format(next.end)} (${next.minutes} dakika)`,
         },
         { label: "Kaç gün kaldı?", value: `${days(next.eclipse.peak)} gün` },
+        ...(deNext
+          ? [
+              {
+                label: `Almanya'dan (${BERLIN.name})`,
+                value: (
+                  <>
+                    {deDate.format(deNext.eclipse.peak)}, kızıllık {deTime.format(deNext.start)}-
+                    {deTime.format(deNext.end)} ({BERLIN.zoneLabel}).{" "}
+                    <a href="#avrupa" className="underline underline-offset-2">
+                      Diğer Avrupa şehirleri
+                    </a>
+                  </>
+                ),
+              },
+            ]
+          : []),
         ...(!nextSeen && nextVisible
           ? [{ label: "Türkiye'den görülecek ilk kanlı ay", value: fullDate.format(nextVisible.eclipse.peak) }]
           : []),
@@ -515,14 +564,135 @@ async function BloodMoonAnswer() {
       ]}
       note={
         <>
-          Görünürlük İstanbul&apos;a göre hesaplandı; iliniz için{" "}
+          Görünürlük İstanbul&apos;a göre hesaplandı; iliniz ya da yurt dışında yaşadığınız şehir için{" "}
           <a href="#il-sec" className="underline underline-offset-2">
-            listeden il seçin
+            listeden seçin
           </a>
           .
         </>
       }
     />
+  );
+}
+
+/**
+ * Önümüzdeki kanlı ayların Avrupa'daki büyük şehirlerden görünüşü: ayın kızıl kaldığı aralık, her şehrin kendi saatiyle.
+ * Seçiciden bağımsız, sayfada her zaman durur ("kanlı ay almanyada saat kaçta" aramalarının cevabı). Günde bir yenilenir.
+ */
+async function EuropeTable() {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const columns = bloodMoons(ISTANBUL)
+    .filter((b) => b.eclipse.peak > now)
+    .slice(0, EUROPE_COLUMNS)
+    .map((b) => b.eclipse);
+  // Başlıktaki tarih Almanya'ya göre; yerel tarihi farklı düşen şehirde hücreye o şehrin tarihi de yazılır.
+  const short = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const dayMonthIn = (tz: string, d: Date) =>
+    new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "short" }).format(d);
+  const verdictShort = (share: number) => (share > 0.97 ? "tamamı" : share > 0 ? "bir kısmı" : "görülmez");
+
+  return (
+    <section className="mx-auto mt-14 max-w-4xl" aria-labelledby="avrupa">
+      <h2 id="avrupa" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Kanlı ay Avrupa&apos;dan saat kaçta görülecek?
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın büyük
+        şehirlerinde önümüzdeki kanlı aylarda ayın tamamen kızıl kaldığı saatler (her şehrin kendi yerel saatiyle) ve bu
+        sürenin ne kadarında ayın ufkun üzerinde olduğu. Bu ülkelerdeki {ABROAD_CITIES.length} şehrin tamamı için
+        yukarıdaki seçiciyi kullanabilirsiniz.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full min-w-[560px] text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">Şehir</th>
+              {columns.map((e) => (
+                <th key={e.peak.toISOString()} className="px-4 py-2.5 font-medium">
+                  {short.format(e.peak)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {FEATURED_ABROAD.map((c) => {
+              const time = new Intl.DateTimeFormat(siteConfig.locale, {
+                timeZone: c.timeZone,
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <tr key={c.slug}>
+                  <td className="px-4 py-2">
+                    <Link
+                      href={`${PAGE.path}?il=${c.slug}`}
+                      rel="nofollow"
+                      scroll={false}
+                      className="font-medium hover:underline"
+                    >
+                      {c.name}
+                    </Link>
+                    <span className="ml-1.5 text-zinc-500">{c.country}</span>
+                  </td>
+                  {columns.map((e) => {
+                    const sd = e.semiDurationMinutes.total * MINUTE;
+                    const start = new Date(e.peak.getTime() - sd);
+                    const end = new Date(e.peak.getTime() + sd);
+                    const share = shareAboveHorizon(start, end, c);
+                    const localDay = dayMonthIn(c.timeZone, start);
+                    return (
+                      <td key={e.peak.toISOString()} className="px-4 py-2">
+                        {localDay !== dayMonthIn(BERLIN.timeZone, start) && (
+                          <span className="mr-1 text-xs text-zinc-500">{localDay}</span>
+                        )}
+                        <span className={`tabular-nums ${share === 0 ? "text-zinc-400" : ""}`}>
+                          {time.format(start)}-{time.format(end)}
+                        </span>
+                        <span
+                          className={`ml-1.5 text-xs ${share === 0 ? "text-zinc-400" : "text-emerald-700 dark:text-emerald-400"}`}
+                        >
+                          {verdictShort(share)}
+                        </span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-sm text-zinc-500">
+        Saatler ayın tamamen kızıl olduğu aralıktır. Başlıktaki tarihler Almanya&apos;ya göredir; yerel tarihi farklı
+        düşen şehirlerde tarih saatin önüne yazıldı. &quot;Bir kısmı&quot;: kızıllık sürerken ay doğar ya da batar.
+      </p>
+      {now < EUROPE_NOTE_UNTIL && (
+        <div className="mx-auto max-w-3xl">
+          <Prose>
+            <p>
+              Önümüzdeki üç kanlı ay Avrupa&apos;dan birbirinden çok farklı görünecek. 31 Aralık 2028&apos;de yılbaşı
+              akşamı ay, tutulmuş halde doğu ufkundan yükselir; Almanya saatiyle 17:15 ile 18:28 arasında kızıldır ve
+              tablodaki bütün şehirlerden görülür, ama ufka yakındır (Almanya&apos;da 15-20 derece). Doğusu açık bir yer
+              seçin.
+            </p>
+            <p>
+              26 Haziran 2029 kanlı ayı sabaha karşı, ay batarken ve gün ağarırken yaşanır. Ay batı ufkuna çok
+              yakındır; Paris ve Londra&apos;dan kızıllığın büyük kısmı izlenebilir, Berlin, Viyana ve daha doğudaki
+              şehirlerden ise ay kızıllık bitmeden batar ya da hiç görülmez. 20 Aralık 2029 kanlı ayı Avrupa için en rahatı: gece yarısına
+              doğru, ay gökyüzünde çok yüksektedir ve kızıllık her şehirden baştan sona görülür.
+            </p>
+          </Prose>
+        </div>
+      )}
+    </section>
   );
 }
 

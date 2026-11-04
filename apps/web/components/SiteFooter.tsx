@@ -87,7 +87,7 @@ export async function SiteFooter() {
       <div className="border-t border-white/10">
         <p className="mx-auto w-full max-w-6xl px-4 py-5 text-xs leading-relaxed text-zinc-500">
           Ay fotoğrafları: NASA Scientific Visualization Studio ve NASA görsel arşivi (kamu malı). Lunatlas, NASA ile
-          bağlantılı değildir ve NASA tarafından onaylanmamıştır. Saatler Türkiye saatine (UTC+3) göredir.
+          bağlantılı değildir ve NASA tarafından onaylanmamıştır. Aksi belirtilmedikçe saatler Türkiye saatine (UTC+3) göredir.
         </p>
       </div>
 

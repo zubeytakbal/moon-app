@@ -342,12 +342,13 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
 - Ülke taraması (`research/ulke-tarama.ts`, otomatik tamamlama `hl=tr&gl=<ülke>`, 19 ülke): Türkçe aramalar ülke adıyla "saat kaçta / görülecek mi" soruyor. Güçlü: Almanya (açık ara); orta: Hollanda, Fransa, Belçika, Avusturya, İsviçre, İngiltere; az: KKTC, Azerbaycan, Bulgaristan, ABD. Konular: güneş tutulması (en güçlü), ay tutulması/kanlı ay, "hilal göründü mü", meteor yağmuru, dolunay. Türkmenistan ayrı dil, hedef değil.
 - Karar: ülkeye özel sayfa/hreflang YOK (aynı Türkçe metin = şablon riski). Bunun yerine `packages/moon/src/places-abroad.ts` (`ABROAD_CITIES`, 14 şehir, `findPlace`, `isAbroad`, `zoneLabel`), seçicide gruplu (`CitySelect abroad=`), adres aynı (`?il=koln`).
 - Google seçiciyi okuyamaz; her sayfaya o sayfaya özgü, her zaman duran içerik: cevap kutusunda Almanya satırı, şehir tablosu (yerel saat), elle yazılmış not, gerçek sorulardan SSS. Yalnız talebi kanıtlanmış sayfalarda; başlıklara ülke adı serpiştirilmez.
-- ✅ Pilot Güneş Tutulması (#avrupa). Sırada: Ay Tutulmaları, Kanlı Ay, Meteor Yağmurları, Hilal Gözlemi. Şehir saatleri 2027 için bağımsız kaynakla doğrulanmadı (timeanddate 403); 1999 Münih tam / Paris %99 testte.
+- ✅ Güneş Tutulması, Ay Tutulmaları, Kanlı Ay (#avrupa tabloları, cevap kutusunda Berlin satırı). Liste 46 şehir (10 ülke, Bulgaristan dahil), `featured` 16 şehir tablolarda; ortak seçenekler `lib/place-options.ts`. Tablo başlıklarında tarih Almanya'ya göre, yerel tarihi farklı şehirde hücreye tarih eklenir. Alt bilgi: "Aksi belirtilmedikçe Türkiye saati". Şehir saatleri 2027 için bağımsız kaynakla doğrulanmadı (timeanddate 403); 1999 Münih tam / Paris %99 testte.
+- Kural (kullanıcı, 4 Kasım 2026): bir sonraki sayfaya geçmeden önce o konu için ülke/şehir araştırması yapılır (her aramanın ülkesi, hacmi ve amacı farklı). Sırada: Meteor Yağmurları, Hilal Gözlemi.
 
 ## 11b. Yıllık güncelleme takvimi
 - Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
 - Tablolar, "sıradaki" vurgusu, süper ay/tutulma etiketleri hesapla kendiliğinden güncellenir.
-- Yıla özgü elle yazılmış notlar (en büyük/küçük dolunay, Hasat Ayı tarihi, o yılın tutulmaları, mavi ay) **her yıl Ekim'de** bir sonraki yıla göre yeniden yazılır (kırmızı çizgi 3: her yılın kendi notu olur, kalıp metin olmaz). Ekim 2027: Dolunay Tarihleri → 2028, Yeniay Tarihleri → 2027-2028, Kanlı Ay'daki "2027 yılında kanlı ay olacak mı?" notu → 2028.
+- Yıla özgü elle yazılmış notlar (en büyük/küçük dolunay, Hasat Ayı tarihi, o yılın tutulmaları, mavi ay) **her yıl Ekim'de** bir sonraki yıla göre yeniden yazılır (kırmızı çizgi 3: her yılın kendi notu olur, kalıp metin olmaz). Ekim 2027: Dolunay Tarihleri → 2028, Yeniay Tarihleri → 2027-2028, Kanlı Ay'daki "2027 yılında kanlı ay olacak mı?" notu → 2028. Kanlı Ay "Avrupa'dan" notu (2028-2029 üç kanlı ay) 21 Aralık 2029'da kendiliğinden gizlenir (`EUROPE_NOTE_UNTIL`): Ekim 2029'da sonraki kanlı aylar için yeniden yaz.
 
 ## 12. Teknik notlar
 

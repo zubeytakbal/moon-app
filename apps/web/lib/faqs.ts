@@ -32,6 +32,11 @@ export const FAQS = {
   ],
   ayTutulmalari: [
     {
+      q: "Ay tutulması Almanya'da Türkiye ile aynı anda mı olur?",
+      a: "Evet. Ay tutulmasında ay Dünya'nın gölgesine girer; bu an her yer için aynıdır. Farklı olan yalnızca saatin yerel yazılışıdır: Almanya saati kışın Türkiye'nin 2, yazın 1 saat gerisindedir. Örneğin 31 Aralık 2028 tam tutulmasının en derin anı Türkiye saatiyle 19:51, Almanya saatiyle 17:51'dir. Görüp göremeyeceğiniz ise ayın o sırada bulunduğunuz yerde ufkun üzerinde olup olmamasına bağlıdır.",
+      link: { href: "#avrupa", label: "Avrupa şehirleri tablosu" },
+    },
+    {
       q: "Ay tutulması kaç yılda bir olur?",
       a: "Her yıl olur: yarı gölge tutulmaları dahil yılda en az iki, en çok beş ay tutulması yaşanır. Ama her tutulma her yerden görülmez; yalnızca o sırada ayın ufkun üzerinde olduğu yerlerden izlenir. Türkiye'den tam ay tutulması ortalama birkaç yılda bir görülür.",
     },
@@ -69,7 +74,7 @@ export const FAQS = {
     },
     {
       q: "Güneş tutulması Almanya'dan görülecek mi?",
-      a: "2 Ağustos 2027 tutulması Almanya'nın her yerinden parçalı görülecek; tam tutulma şeridi Almanya'ya ulaşmıyor. Güneş'in örtülen kısmı güneyde daha fazla: Münih yaklaşık %50, Berlin ve Hamburg %32-34. Tutulma öğleden önce, Almanya saatiyle yaklaşık 10:08 ile 12:16 arasında yaşanır. Hollanda, Belçika, Fransa ve Avusturya'dan da benzer şekilde parçalı görülür.",
+      a: "2 Ağustos 2027 tutulması Almanya'nın her yerinden parçalı görülecek; tam tutulma şeridi Almanya'ya ulaşmıyor. Güneş'in örtülen kısmı güneyde daha fazla: Münih yaklaşık %50, Berlin ve Hamburg %32-34. Tutulma öğleden önce, Almanya saatiyle yaklaşık 10:06 ile 12:16 arasında yaşanır. Hollanda, Belçika, Fransa ve Avusturya'dan da benzer şekilde parçalı görülür.",
       link: { href: "#avrupa", label: "Avrupa şehirleri tablosu" },
     },
     {

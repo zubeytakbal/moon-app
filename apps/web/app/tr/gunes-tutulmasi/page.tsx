@@ -8,7 +8,6 @@ import {
   getLocalSolarEclipse,
   isAbroad,
   TURKEY_PROVINCES,
-  type AbroadCity,
   type LocalSolarEclipse,
 } from "@moon-app/moon";
 import { Faq } from "@/components/Faq";
@@ -30,6 +29,7 @@ import { IMAGES } from "@/lib/images";
 import { SolarEclipseDiagram } from "@/components/EclipseDiagrams";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 import { MobileCollapse } from "@/components/MobileCollapse";
+import { ABROAD_OPTIONS, BERLIN, FEATURED_ABROAD, PROVINCE_OPTIONS } from "@/lib/place-options";
 
 const PAGE = PAGES.gunesTutulmasi;
 const UPDATED = "2026-11-04";
@@ -42,14 +42,8 @@ const src = pageSources(
 );
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
-const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
-/** Seçicideki yurt dışı şehirler, ülkeye göre gruplu. */
-const ABROAD_OPTIONS = [...new Set(ABROAD_CITIES.map((c) => c.country))].map((country) => ({
-  country,
-  cities: ABROAD_CITIES.filter((c) => c.country === country).map(({ slug, name }) => ({ slug, name })),
-}));
-/** Cevap kutusunda Almanya'yı temsil eden şehir (aramaların en çok geldiği ülke). */
-const GERMANY = ABROAD_CITIES.find((c) => c.slug === "berlin") as AbroadCity;
+const CITY_OPTIONS = PROVINCE_OPTIONS;
+const GERMANY = BERLIN;
 
 /** Güneş tutulma sırasında ufka yakınsa ya da en derin anda ufkun altındaysa kısa uyarı. */
 function horizonNote(e: LocalSolarEclipse): string | undefined {
@@ -479,7 +473,8 @@ async function EuropeTable() {
   "use cache";
   cacheLife("weeks");
 
-  const rows = ABROAD_CITIES.map((c) => ({ c, e: getLocalSolarEclipse(AUG_2027_SEARCH, c) }));
+  // Tabloda her ülkenin büyük şehirleri; geri kalanlar seçicide.
+  const rows = FEATURED_ABROAD.map((c) => ({ c, e: getLocalSolarEclipse(AUG_2027_SEARCH, c) }));
   const pct = (slug: string) => Math.round((rows.find((r) => r.c.slug === slug)?.e.obscuration ?? 0) * 100);
   const berlin = rows.find((r) => r.c.slug === "berlin")!.e;
   const istanbul = getLocalSolarEclipse(AUG_2027_SEARCH, siteConfig.defaultLocation);
@@ -492,8 +487,9 @@ async function EuropeTable() {
         2 Ağustos 2027 güneş tutulması Avrupa&apos;dan nasıl görülecek?
       </h2>
       <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
-        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, KKTC ve Azerbaycan&apos;dan seçtiğimiz
-        şehirlerde Güneş&apos;in örtülecek kısmı ve tutulmanın saatleri. Saatler her şehrin kendi yerel saatidir.
+        Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve Azerbaycan&apos;ın
+        büyük şehirlerinde Güneş&apos;in örtülecek kısmı ve tutulmanın saatleri. Saatler her şehrin kendi yerel
+        saatidir. Bu ülkelerdeki {ABROAD_CITIES.length} şehrin tamamı için yukarıdaki seçiciyi kullanabilirsiniz.
       </p>
       <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <table className="w-full text-left text-sm">
@@ -551,8 +547,8 @@ async function EuropeTable() {
             İspanya&apos;nın güney ucunda değer; oradan Fas, Cezayir, Libya, Mısır, Suudi Arabistan, Yemen ve
             Somali&apos;ye uzanır.{src.ref("eclipsewise2027")} Tablodaki şehirlerin hepsinden tutulma parçalı görülür. Örtülme güneyden
             kuzeye doğru azalır: Almanya&apos;da Münih %{pct("munih")}, Frankfurt %{pct("frankfurt")}, Hamburg %
-            {pct("hamburg")}. Avrupa&apos;da tutulma öğleden önce olur ve Güneş gökyüzünde yüksektedir; ufku açık bir
-            yer aramaya gerek yoktur, ama gözlük yine şarttır.
+            {pct("hamburg")}. Batı ve Orta Avrupa&apos;da tutulma öğleden önce olur ve Güneş gökyüzünde
+            yüksektedir; ufku açık bir yer aramaya gerek yoktur, ama gözlük yine şarttır.
           </p>
           <p>
             Tutulma her yerde aynı anda yaşanmaz, çünkü Ay&apos;ın gölgesi Dünya üzerinde batıdan doğuya ilerler.

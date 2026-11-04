@@ -9,45 +9,152 @@ export interface AbroadCity extends GeoLocation {
   country: string;
   /** Ekranda saatin yanına yazılan ad, örn. "Almanya saati". */
   zoneLabel: string;
+  /** Sayfalardaki sabit ülke tablolarında gösterilen büyük şehirlerden mi (her ülkeden 1-6). */
+  featured: boolean;
 }
 
 /** Seçicide gösterilen konum: ya bir il ya da yurt dışı şehir. */
 export type Place = Province | AbroadCity;
 
 /**
- * Yurt dışı şehirler (elle seçildi, 4 Kasım 2026 ülke taramasına göre: Türkçe aramalarda en çok geçen ülkeler,
- * her birinden başkent ya da en büyük 1-2 şehir). Koordinatlar şehir merkezinin yaklaşık konumudur.
+ * Yurt dışı şehirler (elle seçildi, 4 Kasım 2026 ülke taramasına göre: Türkçe aramalarda en çok geçen ülkeler ve
+ * bu ülkelerde Türkçe konuşanların yoğun yaşadığı şehirler). Koordinatlar şehir merkezinin yaklaşık konumudur.
  * Saat dilimi IANA adıdır; yaz saati uygulaması hesaplarda kendiliğinden işler.
  * Kuzey Kıbrıs için Asia/Famagusta (KKTC 2017'den beri Güney Kıbrıs ile aynı saati kullanır).
  */
-const DATA: [slug: string, name: string, country: string, lat: number, lon: number, tz: string, zoneLabel: string][] = [
-  ["berlin", "Berlin", "Almanya", 52.52, 13.405, "Europe/Berlin", "Almanya saati"],
-  ["koln", "Köln", "Almanya", 50.9375, 6.9603, "Europe/Berlin", "Almanya saati"],
-  ["munih", "Münih", "Almanya", 48.1351, 11.582, "Europe/Berlin", "Almanya saati"],
-  ["hamburg", "Hamburg", "Almanya", 53.5511, 9.9937, "Europe/Berlin", "Almanya saati"],
-  ["frankfurt", "Frankfurt", "Almanya", 50.1109, 8.6821, "Europe/Berlin", "Almanya saati"],
-  ["amsterdam", "Amsterdam", "Hollanda", 52.3676, 4.9041, "Europe/Amsterdam", "Hollanda saati"],
-  ["rotterdam", "Rotterdam", "Hollanda", 51.9244, 4.4777, "Europe/Amsterdam", "Hollanda saati"],
-  ["bruksel", "Brüksel", "Belçika", 50.8503, 4.3517, "Europe/Brussels", "Belçika saati"],
-  ["paris", "Paris", "Fransa", 48.8566, 2.3522, "Europe/Paris", "Fransa saati"],
-  ["viyana", "Viyana", "Avusturya", 48.2082, 16.3738, "Europe/Vienna", "Avusturya saati"],
-  ["zurih", "Zürih", "İsviçre", 47.3769, 8.5417, "Europe/Zurich", "İsviçre saati"],
-  ["londra", "Londra", "İngiltere", 51.5074, -0.1278, "Europe/London", "İngiltere saati"],
-  ["lefkosa", "Lefkoşa", "KKTC", 35.1856, 33.3823, "Asia/Famagusta", "Kıbrıs saati"],
-  ["baku", "Bakü", "Azerbaycan", 40.4093, 49.8671, "Asia/Baku", "Azerbaycan saati"],
+const COUNTRIES: [country: string, timeZone: string, zoneLabel: string, cities: [slug: string, name: string, lat: number, lon: number, featured: 0 | 1][]][] = [
+  [
+    "Almanya",
+    "Europe/Berlin",
+    "Almanya saati",
+    [
+      ["berlin", "Berlin", 52.52, 13.405, 1],
+      ["koln", "Köln", 50.9375, 6.9603, 1],
+      ["munih", "Münih", 48.1351, 11.582, 1],
+      ["hamburg", "Hamburg", 53.5511, 9.9937, 1],
+      ["frankfurt", "Frankfurt", 50.1109, 8.6821, 1],
+      ["stuttgart", "Stuttgart", 48.7758, 9.1829, 1],
+      ["dusseldorf", "Düsseldorf", 51.2277, 6.7735, 0],
+      ["dortmund", "Dortmund", 51.5136, 7.4653, 0],
+      ["duisburg", "Duisburg", 51.4344, 6.7623, 0],
+      ["essen", "Essen", 51.4556, 7.0116, 0],
+      ["nurnberg", "Nürnberg", 49.4521, 11.0767, 0],
+      ["mannheim", "Mannheim", 49.4875, 8.466, 0],
+      ["hannover", "Hannover", 52.3759, 9.732, 0],
+      ["bremen", "Bremen", 53.0793, 8.8017, 0],
+    ],
+  ],
+  [
+    "Hollanda",
+    "Europe/Amsterdam",
+    "Hollanda saati",
+    [
+      ["amsterdam", "Amsterdam", 52.3676, 4.9041, 1],
+      ["rotterdam", "Rotterdam", 51.9244, 4.4777, 1],
+      ["lahey", "Lahey", 52.0705, 4.3007, 0],
+      ["utrecht", "Utrecht", 52.0907, 5.1214, 0],
+    ],
+  ],
+  [
+    "Belçika",
+    "Europe/Brussels",
+    "Belçika saati",
+    [
+      ["bruksel", "Brüksel", 50.8503, 4.3517, 1],
+      ["anvers", "Anvers", 51.2194, 4.4025, 0],
+      ["gent", "Gent", 51.0543, 3.7174, 0],
+      ["liege", "Liège", 50.6326, 5.5797, 0],
+    ],
+  ],
+  [
+    "Fransa",
+    "Europe/Paris",
+    "Fransa saati",
+    [
+      ["paris", "Paris", 48.8566, 2.3522, 1],
+      ["lyon", "Lyon", 45.764, 4.8357, 0],
+      ["strazburg", "Strazburg", 48.5734, 7.7521, 0],
+      ["marsilya", "Marsilya", 43.2965, 5.3698, 0],
+    ],
+  ],
+  [
+    "Avusturya",
+    "Europe/Vienna",
+    "Avusturya saati",
+    [
+      ["viyana", "Viyana", 48.2082, 16.3738, 1],
+      ["linz", "Linz", 48.3069, 14.2858, 0],
+      ["salzburg", "Salzburg", 47.8095, 13.055, 0],
+      ["innsbruck", "Innsbruck", 47.2692, 11.4041, 0],
+    ],
+  ],
+  [
+    "İsviçre",
+    "Europe/Zurich",
+    "İsviçre saati",
+    [
+      ["zurih", "Zürih", 47.3769, 8.5417, 1],
+      ["basel", "Basel", 47.5596, 7.5886, 0],
+      ["cenevre", "Cenevre", 46.2044, 6.1432, 0],
+      ["bern", "Bern", 46.948, 7.4474, 0],
+    ],
+  ],
+  [
+    "İngiltere",
+    "Europe/London",
+    "İngiltere saati",
+    [
+      ["londra", "Londra", 51.5074, -0.1278, 1],
+      ["manchester", "Manchester", 53.4808, -2.2426, 0],
+    ],
+  ],
+  [
+    "Bulgaristan",
+    "Europe/Sofia",
+    "Bulgaristan saati",
+    [
+      ["sofya", "Sofya", 42.6977, 23.3219, 1],
+      ["kircaali", "Kırcaali", 41.6338, 25.3777, 0],
+      ["filibe", "Filibe", 42.1354, 24.7453, 0],
+    ],
+  ],
+  [
+    "KKTC",
+    "Asia/Famagusta",
+    "Kıbrıs saati",
+    [
+      ["lefkosa", "Lefkoşa", 35.1856, 33.3823, 1],
+      ["girne", "Girne", 35.3364, 33.3199, 0],
+      ["gazimagusa", "Gazimağusa", 35.125, 33.9417, 0],
+      ["guzelyurt", "Güzelyurt", 35.1983, 32.9928, 0],
+    ],
+  ],
+  [
+    "Azerbaycan",
+    "Asia/Baku",
+    "Azerbaycan saati",
+    [
+      ["baku", "Bakü", 40.4093, 49.8671, 1],
+      ["gence", "Gence", 40.6828, 46.3606, 0],
+      ["nahcivan", "Nahçıvan", 39.2089, 45.4122, 0],
+    ],
+  ],
 ];
 
-/** Yurt dışı şehirler, listedeki sırayla (ülkeler bir arada). */
-export const ABROAD_CITIES: readonly AbroadCity[] = DATA.map(([slug, name, country, latitude, longitude, timeZone, zoneLabel]) => ({
-  slug,
-  name,
-  country,
-  latitude,
-  longitude,
-  elevation: 0,
-  timeZone,
-  zoneLabel,
-}));
+/** Yurt dışı şehirler, listedeki sırayla (ülkeler bir arada, her ülkede önce öne çıkanlar). */
+export const ABROAD_CITIES: readonly AbroadCity[] = COUNTRIES.flatMap(([country, timeZone, zoneLabel, cities]) =>
+  cities.map(([slug, name, latitude, longitude, featured]) => ({
+    slug,
+    name,
+    country,
+    latitude,
+    longitude,
+    elevation: 0,
+    timeZone,
+    zoneLabel,
+    featured: featured === 1,
+  })),
+);
 
 export function isAbroad(place: Place): place is AbroadCity {
   return "country" in place;
