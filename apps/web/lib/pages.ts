@@ -313,6 +313,17 @@ export const PAGES = {
       "Sıradaki meteor yağmuru ne zaman? İlinizden en iyi saat, ay ışığı engelleyecek mi, saatte kaç meteor görürsünüz?",
     cardPhaseAngle: 30,
   },
+  ekinoksGundonumu: {
+    path: "/tr/ekinoks-gundonumu",
+    title: "Ekinoks ve Gündönümü",
+    navLabel: "Ekinoks ve Gündönümü",
+    group: "takvim",
+    inHeader: true,
+    featured: true,
+    description:
+      "Ekinoks ve gündönümü ne zaman? En uzun ve en kısa gün, ilinizde gündüz kaç saat, gece gündüz gerçekten eşit mi?",
+    cardPhaseAngle: 90,
+  },
   ayaYolculuk: {
     path: "/tr/aya-yolculuk",
     title: "Aya Yolculuk",
@@ -448,6 +459,7 @@ const RELATED: Record<PageKey, PageKey[]> = {
   sonDordun: ["bugunAy", "ayTakvimi", "ayEvreleri"],
   turkiyeTutulmalari: ["gunesTutulmasi", "ayTutulmalari", "yeniAy"],
   meteorYagmurlari: ["yeniAy", "bugunAy", "dolunayTarihleri"],
+  ekinoksGundonumu: ["bugunAy", "ayTakvimi", "dolunayTarihleri"],
   ayinKaranlikYuzu: ["ayEvreleri", "yeniAy", "ayaYolculuk"],
   ayUzaklik: ["superAy", "ayaYolculuk", "ayinKaranlikYuzu"],
   ayaYolculuk: ["ayUzaklik", "ayinKaranlikYuzu", "superAy"],

@@ -82,6 +82,31 @@ function Meteors() {
   );
 }
 
+/** Ekinoks ve gündönümü: ufuk ve Güneş'in yaz, ekinoks ve kış yolları. */
+function SunPaths() {
+  return (
+    <svg viewBox="0 0 120 96" className="h-24 w-32" aria-hidden="true">
+      {[
+        [10, 8, 0.9],
+        [22, 28, 0.6],
+        [34, 48, 0.35],
+      ].map(([inset, top, opacity], i) => (
+        <path
+          key={i}
+          d={`M${inset} 78 Q60 ${top - 30} ${120 - inset} 78`}
+          fill="none"
+          stroke="#fcd34d"
+          strokeOpacity={opacity}
+          strokeWidth={1.5}
+          strokeDasharray={i === 1 ? "3 3" : undefined}
+        />
+      ))}
+      <circle cx="60" cy="13" r="7" fill="#fde68a" />
+      <line x1="4" y1="78" x2="116" y2="78" stroke="#a1a1aa" strokeWidth={1.2} />
+    </svg>
+  );
+}
+
 function SolarEclipse() {
   return (
     <svg viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">
@@ -154,6 +179,7 @@ export function PageVisual({ page }: { page: SitePage }) {
       </div>
     );
   else if (path === PAGES.meteorYagmurlari.path) visual = <Meteors />;
+  else if (path === PAGES.ekinoksGundonumu.path) visual = <SunPaths />;
   else if (path === PAGES.ayinKaranlikYuzu.path)
     visual = <MoonPhaseIcon side="far" phaseAngle={30} size={96} title="" />;
   else if (path === PAGES.superAy.path) visual = <MoonPhaseIcon phaseAngle={180} size={112} glow title="" />;

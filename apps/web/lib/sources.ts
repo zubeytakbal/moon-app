@@ -296,6 +296,30 @@ export const SOURCES = {
     note: "\"İslam'da Hicri aylar hilalin ilk defa dünyanın herhangi bir yerinden görülmesi ile başlamaktadır.\" Diyanet'in ilan ettiği Hicri ay başlarının astronomi sitelerindeki yeni ay tarihlerinden neden farklı olduğu.",
     group: "takvim",
   },
+  usnoSeasons: {
+    no: 34,
+    title: "Earth's Seasons and Apsides",
+    publisher: "U.S. Naval Observatory",
+    url: "https://aa.usno.navy.mil/data/Earth_Seasons",
+    note: "Ekinoks ve gündönümü anları (UT): 2026'da 20 Mart 14:46, 21 Haziran 08:24, 23 Eylül 00:05, 21 Aralık 20:50; 2027'de 20 Mart 20:25, 21 Haziran 14:11, 23 Eylül 06:02, 22 Aralık 02:42. Kendi hesabımızla karşılaştırdık; fark en çok 1 dakika.",
+    group: "takvim",
+  },
+  nasaSeasons: {
+    no: 35,
+    title: "What Causes the Seasons?",
+    publisher: "NASA Space Place",
+    url: "https://spaceplace.nasa.gov/seasons/en/",
+    note: "Mevsimlerin nedeni Dünya'nın ekseninin eğik olmasıdır; Güneş'e uzaklık mevsimlerin nedeni değildir (Dünya Güneş'e ocakta en yakın, temmuzda en uzaktır).",
+    group: "takvim",
+  },
+  nasaEarthFactSheet: {
+    no: 36,
+    title: "Earth Fact Sheet",
+    publisher: "NASA Goddard Uzay Uçuş Merkezi (NSSDCA)",
+    url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+    note: "Dünya'nın eksen eğikliği (yörüngeye göre) 23,44°; tropikal yıl 365,242 gün.",
+    group: "takvim",
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

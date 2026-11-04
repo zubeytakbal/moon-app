@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  getSeasons,
   findProvince,
   getLocalSolarEclipse,
   getNextFullMoon,
@@ -41,6 +42,7 @@ const SOURCES = {
   diyanet: { label: "Diyanet, Dinî Günler", href: "https://vakithesaplama.diyanet.gov.tr/dini_gunler.php" },
   voc: { label: "Authority Astrology, Void of Course Moon", href: "https://www.authorityastrology.com/void-of-course-moon/" },
   imo: { label: "IMO, 2026 Meteor Shower Calendar", href: "https://www.imo.net/the-2026-meteor-shower-calendar-is-here/" },
+  usnoSeasons: { label: "USNO, Earth's Seasons and Apsides", href: "https://aa.usno.navy.mil/data/Earth_Seasons" },
 } as const;
 
 interface Check {
@@ -193,6 +195,12 @@ function buildChecks(): Check[] {
       usedOn: meteor,
     });
   }
+
+  // Ekinoks ve gündönümü: USNO dakikaya yuvarlar.
+  const seasons = getSeasons(2026);
+  const seasonsPage = { href: PAGES.ekinoksGundonumu.path, label: "Ekinoks ve Gündönümü" };
+  timed("Mart ekinoksu 2026", "usnoSeasons", "2026-03-20T14:46:00Z", seasons.marchEquinox, seasonsPage);
+  timed("Aralık gündönümü 2026", "usnoSeasons", "2026-12-21T20:50:00Z", seasons.decemberSolstice, seasonsPage);
 
   return checks;
 }

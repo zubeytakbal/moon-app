@@ -30,6 +30,7 @@ export {
 } from "./rise-set.ts";
 export { findProvince, TURKEY_PROVINCES, type Province } from "./provinces-tr.ts";
 export { ABROAD_CITIES, findPlace, isAbroad, type AbroadCity, type Place } from "./places-abroad.ts";
+export { getDayLength, getEquiluxDay, getExtremeDay, getYearDayLengths, type DayLength } from "./daylight.ts";
 export { getMonthCalendar, getNextBlueMoon, type CalendarDay } from "./calendar.ts";
 export { localDateParts, zonedTimeToUtc } from "./time.ts";
 export {

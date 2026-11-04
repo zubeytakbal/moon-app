@@ -147,6 +147,21 @@ export const FAQS = {
       a: "Başlangıç noktası, Hz. Muhammed'in Mekke'den Medine'ye hicretinin yaşandığı yıldır (Miladi 622). Takvim, Hz. Ömer döneminde, hicretten yaklaşık 17 yıl sonra bu yıl esas alınarak düzenlendi. Hicri 1 Muharrem 1, Miladi takvimde genellikle 16 Temmuz 622'ye karşılık gelir.",
     },
   ],
+  ekinoksGundonumu: [
+    {
+      q: "Gece gündüz eşitliği yılda kaç kez olur?",
+      a: "Yılda iki kez: Mart ekinoksunda (20 ya da 21 Mart) ve Eylül ekinoksunda (22 ya da 23 Eylül). Bu iki günde Güneş tam ekvatorun üzerindedir. Kuzey yarımkürede Mart ekinoksu ilkbaharın, Eylül ekinoksu sonbaharın astronomik başlangıcıdır.",
+    },
+    {
+      q: "En kısa günde hava saat kaçta kararır?",
+      a: "Aralık gündönümünde gün batımı İstanbul'da 17:38, Ankara'da 17:26, İzmir'de 17:54, Van'da 16:48 civarındadır (Türkiye saati). Türkiye bütün yıl aynı saati kullandığı için doğudaki illerde Güneş çok daha erken batar. Gündönümünden bir ay sonra gündüz İstanbul'da yaklaşık yarım saat uzamış olur.",
+      link: { href: "#gun-uzunlugu", label: "İlinizde gün uzunluğu" },
+    },
+    {
+      q: "Dünyanın her yerinde gece gündüz eşitliği yaşanır mı?",
+      a: "Ekinoks günü dünyanın neredeyse her yerinde gündüz 12 saate çok yakındır; ekvatorda da, İstanbul'da da, Oslo'da da 12 saat 7-11 dakika civarındadır. Fark, ışığın havada kırılmasından ve Güneş'in diskinin genişliğinden gelir. Yalnız kutup noktalarında Güneş o gün ufkun çizgisi boyunca dolaşır, doğup batmaz.",
+    },
+  ],
   hilalGozlemi: [
     {
       q: "Almanya'da hilal göründü mü?",
