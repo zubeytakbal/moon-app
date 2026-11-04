@@ -19,16 +19,17 @@ import { NasaFigure } from "@/components/NasaFigure";
 import { IMAGES } from "@/lib/images";
 import { CalendarSubscribe } from "@/components/CalendarSubscribe";
 import { fullMoonCity, FullMoonRiseFinder } from "./FullMoonRise";
+import { BERLIN, ONE_PER_COUNTRY } from "@/lib/place-options";
 
 const PAGE = PAGES.dolunay;
-const UPDATED = "2026-11-01";
+const UPDATED = "2026-11-04";
 const src = pageSources("nasaMoonPhases", "nasaMoonFactSheet", "nasaEclipseTypes");
 const MINUTE = 60_000;
 
 export const metadata: Metadata = {
   title: `Dolunay Ne Zaman? Önümüzdeki Dolunay Tarihleri ve Saatleri | ${siteConfig.name}`,
   description:
-    "Bir sonraki dolunay ne zaman? Önümüzdeki 12 dolunayın tarihi ve saati (Türkiye saati), ilinizde dolunayın saat kaçta ve hangi yönden doğacağı, gece ne kadar yükseleceği. Dolunay neden kışın yüksekte, ufukta neden büyük görünür?",
+    "Bir sonraki dolunay ne zaman? Önümüzdeki 12 dolunayın tarihi ve saati, Almanya, Hollanda, KKTC ve Azerbaycan'da dolunay ne zaman, ilinizde dolunayın saat kaçta ve hangi yönden doğacağı. Dolunay neden kışın yüksekte, ufukta neden büyük görünür?",
   // İl seçimi (?il=...) ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
@@ -50,12 +51,13 @@ export default function FullMoonPage({ searchParams }: PageProps<"/tr/dolunay">)
       </Suspense>
       <QuickLinks
         links={[
-          { href: "#cevap", label: "Dolunay ne zaman?" },
-          { href: "#dolunay-dogusu", label: "Doğuşu nereden izlerim?" },
-          { href: "#onumuzdeki", label: "Önümüzdeki 12 dolunay" },
-          { href: "#kis-yaz", label: "Kışın neden yüksekte?" },
-          { href: "#ay-yanilsamasi", label: "Ufukta neden büyük?" },
-          { href: "#tutulma", label: "Tutulma olur mu?" },
+          { href: "#cevap", label: "Ne zaman?" },
+          { href: "#dolunay-dogusu", label: "Doğuşu" },
+          { href: "#onumuzdeki", label: "12 dolunay" },
+          { href: "#avrupa", label: "Avrupa'da" },
+          { href: "#kis-yaz", label: "Kışın neden yüksek?" },
+          { href: "#ay-yanilsamasi", label: "Ufukta büyük" },
+          { href: "#tutulma", label: "Tutulma" },
           { href: "#sss", label: "Sık sorulanlar" },
         ]}
       />
@@ -64,12 +66,15 @@ export default function FullMoonPage({ searchParams }: PageProps<"/tr/dolunay">)
 
         <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki dolunaylar</h2>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Saat, ayın Güneş&apos;in tam karşısına geldiği andır (Türkiye saati). Son sütun, ayın o gece seçtiğiniz ilde
-          ufuktan en fazla kaç derece yükseldiğini gösterir.
+          Saat, ayın Güneş&apos;in tam karşısına geldiği andır; yukarıda seçtiğiniz il ya da şehrin saatiyle yazılır
+          (varsayılan Türkiye saati). Son sütun, ayın o gece seçtiğiniz yerde ufuktan en fazla kaç derece yükseldiğini
+          gösterir.
         </p>
         <Suspense fallback={<FullMoonTable slug={siteConfig.defaultLocation.slug} />}>
           <SelectedTable searchParams={searchParams} />
         </Suspense>
+
+        <EuropeTable />
 
         <Prose>
           <h2 id="kis-yaz">Dolunay neden kışın yüksekte, yazın alçakta?</h2>
@@ -232,6 +237,108 @@ async function FullMoonTable({ slug }: { slug: string }) {
   );
 }
 
+/**
+ * "Dolunay Avrupa'da ne zaman?": her ülkeden bir şehirde sıradaki üç dolunayın yerel tarihi ve saati.
+ * Seçiciden bağımsız, sayfada her zaman durur ("almanya'da dolunay ne zaman", "kktc dolunay ne zaman"...).
+ * Tarihi Türkiye'den farklı düşen hücreler işaretlenir. Saatte bir yenilenir.
+ */
+async function EuropeTable() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const fullMoons = getUpcomingPrincipalPhases(now, 16)
+    .filter((p) => p.key === "full-moon")
+    .slice(0, 3);
+  const trZone = siteConfig.defaultLocation.timeZone;
+  const dayKey = (d: Date, tz: string) =>
+    new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const trDate = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: trZone, day: "numeric", month: "long" });
+  const trTime = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: trZone, hour: "2-digit", minute: "2-digit" });
+  const shifted = fullMoons.flatMap((p) =>
+    ONE_PER_COUNTRY.filter((c) => dayKey(p.date, c.timeZone) !== dayKey(p.date, trZone)).map((c) => ({ p, c })),
+  );
+
+  return (
+    <section aria-labelledby="avrupa" className="mt-12">
+      <h2 id="avrupa" className="scroll-mt-32 text-2xl font-semibold tracking-tight">
+        Dolunay Almanya&apos;da ve Avrupa&apos;da ne zaman?
+      </h2>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Sıradaki üç dolunayın Almanya, Hollanda, Belçika, Fransa, Avusturya, İsviçre, İngiltere, Bulgaristan, KKTC ve
+        Azerbaycan&apos;daki tarihi ve saati, her ülkenin kendi saatiyle.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full min-w-[520px] text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">Ülke</th>
+              {fullMoons.map((p) => (
+                <th key={p.date.toISOString()} className="px-4 py-2.5 font-medium">
+                  <span className="block text-zinc-700 dark:text-zinc-300">{trDate.format(p.date)}</span>
+                  <span className="text-xs font-normal">Türkiye: {trTime.format(p.date)}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {ONE_PER_COUNTRY.map((c) => {
+              const date = new Intl.DateTimeFormat(siteConfig.locale, {
+                timeZone: c.timeZone,
+                day: "numeric",
+                month: "short",
+              });
+              const time = new Intl.DateTimeFormat(siteConfig.locale, {
+                timeZone: c.timeZone,
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              return (
+                <tr key={c.slug}>
+                  <td className="px-4 py-2">
+                    <span className="font-medium">{c.country}</span>
+                    <span className="ml-1.5 text-zinc-500">{c.name}</span>
+                  </td>
+                  {fullMoons.map((p) => {
+                    const other = dayKey(p.date, c.timeZone) !== dayKey(p.date, trZone);
+                    return (
+                      <td key={p.date.toISOString()} className="px-4 py-2 tabular-nums">
+                        <span className={other ? "rounded bg-amber-100 px-1 font-medium dark:bg-amber-900/40" : ""}>
+                          {date.format(p.date)}
+                        </span>{" "}
+                        {time.format(p.date)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-3 text-sm text-zinc-500">
+        İşaretli tarihler Türkiye&apos;dekinden farklı güne düşer. Ülkenin tamamı aynı saat dilimindedir; şehir yalnızca
+        örnektir.
+      </p>
+      <Prose>
+        <p>
+          Dolunay, ayın Güneş&apos;in tam karşısına geldiği tek bir andır ve bu an dünyanın her yerinde aynıdır.
+          Değişen yalnızca saatin nasıl yazıldığıdır: Almanya saati Türkiye&apos;nin kışın 2, yazın 1 saat
+          gerisindedir. Bu yüzden Türkiye&apos;de gece yarısından hemen sonra olan bir dolunay, Almanya&apos;da ya da
+          İngiltere&apos;de bir önceki günün akşamına düşer.
+          {shifted.length > 0 &&
+            ` Örneğin ${trDate.format(shifted[0].p.date)} dolunayı Türkiye saatiyle ${trTime.format(shifted[0].p.date)}; ${shifted[0].c.country} için tarih bir gün farklıdır.`}
+        </p>
+        <p>
+          Dolunayı izlemek için tam anı beklemek gerekmez: ay bir gece önce ve bir gece sonra da neredeyse tamamen
+          yuvarlaktır. Bulunduğunuz şehirde dolunayın saat kaçta ve hangi yönden doğacağını sayfanın başındaki{" "}
+          <a href="#dolunay-dogusu">doğuş aracında</a> yurt dışındaki şehrinizi seçerek görebilirsiniz.
+        </p>
+      </Prose>
+    </section>
+  );
+}
+
 const ECLIPSE_KIND_TR = {
   total: "tam ay tutulması (kanlı ay)",
   partial: "parçalı ay tutulması",
@@ -258,6 +365,17 @@ async function FullMoonAnswer() {
   });
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
   const kmText = `${Math.round(km).toLocaleString("tr-TR")} km`;
+  const deDay = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    day: "numeric",
+    month: "long",
+    weekday: "long",
+  });
+  const deTime = new Intl.DateTimeFormat(siteConfig.locale, {
+    timeZone: BERLIN.timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <AnswerBox
@@ -265,6 +383,17 @@ async function FullMoonAnswer() {
       answer={`Bir sonraki dolunay ${day.format(next.date)}, saat ${time.format(next.date)} (Türkiye saati).`}
       rows={[
         { label: "Kaç gün kaldı?", value: countdown(next.date.getTime() - now.getTime()) },
+        {
+          label: `Almanya'da (${BERLIN.name})`,
+          value: (
+            <>
+              {deDay.format(next.date)}, saat {deTime.format(next.date)} ({BERLIN.zoneLabel}).{" "}
+              <a href="#avrupa" className="underline underline-offset-2">
+                Diğer ülkeler
+              </a>
+            </>
+          ),
+        },
         ...(name
           ? [
               {

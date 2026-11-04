@@ -1,5 +1,6 @@
 import { cacheLife } from "next/cache";
-import { findProvince, getFullMoonRise, getUpcomingPrincipalPhases, TURKEY_PROVINCES } from "@moon-app/moon";
+import { findPlace, getFullMoonRise, getUpcomingPrincipalPhases, isAbroad } from "@moon-app/moon";
+import { ABROAD_OPTIONS, PROVINCE_OPTIONS } from "@/lib/place-options";
 import { AddToCalendar } from "@/components/AddToCalendar";
 import { CitySelect } from "@/components/CitySelect";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
@@ -7,7 +8,7 @@ import { icsTime } from "@/lib/ics";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
-const CITY_OPTIONS = TURKEY_PROVINCES.map(({ slug, name }) => ({ slug, name }));
+const CITY_OPTIONS = PROVINCE_OPTIONS;
 /** Pusula yönleri, bulunma ekiyle. */
 const DIRECTIONS = ["kuzeyde", "kuzeydoğuda", "doğuda", "güneydoğuda", "güneyde", "güneybatıda", "batıda", "kuzeybatıda"];
 /** Ay gün batımına bu kadar yakın doğarsa gökyüzü alacakaranlıktır: manzarayla birlikte fotoğraf için en güzel an. */
@@ -61,7 +62,7 @@ export function FullMoonRiseFinder({ slug }: { slug: string }) {
               </p>
             </div>
             <div className="rounded-xl bg-white p-1 text-zinc-900">
-              <CitySelect action={PAGES.dolunay.path} options={CITY_OPTIONS} selected={slug} />
+              <CitySelect action={PAGES.dolunay.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={slug} />
             </div>
           </div>
           <FullMoonRises slug={slug} />
@@ -76,8 +77,10 @@ async function FullMoonRises({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
-  const city = findProvince(slug) ?? siteConfig.defaultLocation;
+  const city = findPlace(slug) ?? siteConfig.defaultLocation;
   const timeZone = city.timeZone;
+  const zone = isAbroad(city) ? city.zoneLabel : null;
+  const placeName = isAbroad(city) ? `${city.name}, ${city.country}` : city.name;
   const now = new Date();
   const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
   const day = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", weekday: "long" });
@@ -106,7 +109,8 @@ async function FullMoonRises({ slug }: { slug: string }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm text-zinc-400">
-            Sıradaki dolunay · {city.name}
+            Sıradaki dolunay · {placeName}
+            {zone && ` · saatler ${zone}`}
           </p>
           <p className="mt-1 text-2xl font-bold">
             {day.format(first.rise)}, {time.format(first.rise)}
@@ -131,7 +135,7 @@ async function FullMoonRises({ slug }: { slug: string }) {
               event={{
                 uid: `dolunay-dogusu-${first.rise.toISOString().slice(0, 10)}-${city.slug}`,
                 summary: "Dolunay doğuşu",
-                description: `Ay ${direction(first.azimuth)} (${Math.round(first.azimuth)}°) doğar (${city.name}). Doğu ufku açık, yüksek bir yer seçin.`,
+                description: `Ay ${direction(first.azimuth)} (${Math.round(first.azimuth)}°) doğar (${city.name}${zone ? `, ${zone}` : ""}). Doğu ufku açık, yüksek bir yer seçin.`,
                 url: new URL(PAGES.dolunay.path, siteConfig.url).toString(),
                 start: icsTime(new Date(first.rise.getTime() - 10 * 60_000)),
                 end: icsTime(new Date(first.rise.getTime() + 50 * 60_000)),
@@ -167,7 +171,7 @@ async function FullMoonRises({ slug }: { slug: string }) {
   );
 }
 
-/** Adres parametresinden il. */
+/** Adres parametresinden il ya da yurt dışı şehir. */
 export function fullMoonCity(il: string | string[] | undefined) {
-  return findProvince(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  return findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
 }

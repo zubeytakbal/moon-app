@@ -16,3 +16,8 @@ export const FEATURED_ABROAD = ABROAD_CITIES.filter((c) => c.featured);
 
 /** Cevap kutularında Almanya'yı temsil eden şehir (ülke aramalarının en çok geldiği ülke). */
 export const BERLIN = ABROAD_CITIES.find((c) => c.slug === "berlin")!;
+
+/** Her ülkeden bir şehir (listedeki ilk öne çıkan şehir: Berlin, Amsterdam, Brüksel...). Ülke düzeyindeki tablolar için. */
+export const ONE_PER_COUNTRY = FEATURED_ABROAD.filter(
+  (c, i) => FEATURED_ABROAD.findIndex((x) => x.country === c.country) === i,
+);

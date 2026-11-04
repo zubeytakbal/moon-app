@@ -6,13 +6,11 @@ import type { GeoLocation, MoonPosition } from "@moon-app/moon";
 type MoonLib = typeof import("@moon-app/moon");
 
 const DIRECTIONS = ["kuzey", "kuzeydoğu", "doğu", "güneydoğu", "güney", "güneybatı", "batı", "kuzeybatı"];
-const TIME = new Intl.DateTimeFormat("tr-TR", { timeZone: "Europe/Istanbul", hour: "2-digit", minute: "2-digit" });
-const WEEKDAY_TIME = new Intl.DateTimeFormat("tr-TR", {
-  timeZone: "Europe/Istanbul",
-  weekday: "long",
-  hour: "2-digit",
-  minute: "2-digit",
-});
+const TURKEY_ZONE = "Europe/Istanbul";
+/** Saatler konumun saat dilimiyle yazılır: il seçiliyse Türkiye, "Konumumu kullan" denmişse cihazın saat dilimi. */
+const timeFmt = (timeZone: string) => new Intl.DateTimeFormat("tr-TR", { timeZone, hour: "2-digit", minute: "2-digit" });
+const weekdayTimeFmt = (timeZone: string) =>
+  new Intl.DateTimeFormat("tr-TR", { timeZone, weekday: "long", hour: "2-digit", minute: "2-digit" });
 
 function directionName(azimuth: number) {
   return DIRECTIONS[Math.round(azimuth / 45) % 8];
@@ -83,7 +81,8 @@ export function MoonCompass({ city }: { city: GeoLocation }) {
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           elevation: 0,
-          timeZone: "Europe/Istanbul",
+          // Yurt dışındaki biri konumunu kullanırsa saatler kendi saatiyle yazılsın.
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || TURKEY_ZONE,
         });
         setMessage("");
       },
@@ -222,7 +221,8 @@ export function MoonCompass({ city }: { city: GeoLocation }) {
           )}
           {state?.next && (
             <p className="mt-3 text-zinc-300">
-              {state.next.kind === "rise" ? "Doğuş" : "Batış"}: {WEEKDAY_TIME.format(state.next.date)},{" "}
+              {state.next.kind === "rise" ? "Doğuş" : "Batış"}: {weekdayTimeFmt(location.timeZone).format(state.next.date)}
+              {location.timeZone !== TURKEY_ZONE && " (yerel saat)"},{" "}
               {directionName(state.next.azimuth)} yönünde
             </p>
           )}
@@ -249,7 +249,8 @@ export function MoonCompass({ city }: { city: GeoLocation }) {
           {message && heading !== -1 && <p className="mt-3 text-sm text-zinc-300">{message}</p>}
           <p className="mt-4 text-xs text-zinc-500">
             Konumunuz yalnızca bu cihazda hesap için kullanılır, hiçbir yere gönderilmez. Telefon pusulası birkaç derece
-            sapabilir. Saat {state ? TIME.format(new Date()) : "--:--"} itibarıyla, 30 saniyede bir yenilenir.
+            sapabilir. Saat {state ? timeFmt(location.timeZone).format(new Date()) : "--:--"}
+            {location.timeZone !== TURKEY_ZONE && " (yerel saat)"} itibarıyla, 30 saniyede bir yenilenir.
           </p>
         </div>
       </div>
