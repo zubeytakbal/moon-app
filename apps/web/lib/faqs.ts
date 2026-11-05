@@ -30,6 +30,16 @@ export const FAQS = {
       a: "Ana evreler yaklaşık birer hafta arayla sırayla gelir: yeni ay, ilk dördün, dolunay, son dördün ve yeniden yeni ay. Yani ilk dördünden bir hafta sonra dolunay, iki hafta sonra son dördün gelir; dolunaydan bir hafta sonra son dördün, iki hafta sonra yeni ay gelir. Ara evrelerde de sıra aynıdır: büyüyen hilalden bir hafta sonra büyüyen şişkin ay görülür.",
     },
   ],
+  sonDordun: [
+    {
+      q: "Son dördün kaç gün sürer?",
+      a: "Son dördün tek bir andır: ayın tam yarısının aydınlık olduğu dakika. Takvimlerde o anın düştüğü günün tamamı \"son dördün\" diye geçer. Gözle bakınca ay bir gün önce ve bir gün sonra da yarım gibi görünür, çünkü aydınlık oran bu sırada günde yalnızca 10 puan kadar değişir (bir gün önce yüzde 60 kadar, bir gün sonra yüzde 40 kadar). Bir sonraki ana evre olan yeni aya ortalama 7,4 gün vardır.",
+    },
+    {
+      q: "Son dördünün İngilizcesi ne?",
+      a: "\"Last quarter\" ya da \"third quarter\". NASA iki adı da kullanır. Emojisi 🌗 (last quarter moon) şeklindedir; ilk dördünün emojisi ise 🌓.",
+    },
+  ],
   ayTutulmalari: [
     {
       q: "Ay tutulması Almanya'da Türkiye ile aynı anda mı olur?",

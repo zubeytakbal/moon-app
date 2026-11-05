@@ -30,7 +30,7 @@ const CYCLE: { page: SitePage; angle: number }[] = [
   { page: PAGES.sonDordun, angle: 270 },
 ];
 
-function fmt() {
+export function fmt() {
   return {
     date: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" }),
     weekday: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, weekday: "long" }),

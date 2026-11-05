@@ -135,4 +135,14 @@ export const IMAGES = {
     credit: "NASA Scientific Visualization Studio (LRO verisi)",
     sourceUrl: "https://svs.gsfc.nasa.gov/5587",
   },
+  lastQuarter: {
+    src: "/images/nasa/last-quarter-svs.webp",
+    width: 1000,
+    height: 1000,
+    alt: "Son dördün: ayın sol yarısı aydınlık, sağ yarısı karanlık",
+    caption:
+      "1 Kasım 2026 son dördünü. Aydınlık ile karanlık arasındaki sınır düz bir çizgi gibi uzanıyor; bu sınıra yakın kraterler gölgeleri yüzünden en belirgin olanlar.",
+    credit: "NASA Scientific Visualization Studio (LRO verisi)",
+    sourceUrl: "https://svs.gsfc.nasa.gov/5587",
+  },
 } satisfies Record<string, SiteImage>;
