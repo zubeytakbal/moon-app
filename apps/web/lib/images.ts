@@ -135,6 +135,26 @@ export const IMAGES = {
     credit: "NASA Scientific Visualization Studio (LRO verisi)",
     sourceUrl: "https://svs.gsfc.nasa.gov/5587",
   },
+  waxingGibbous: {
+    src: "/images/nasa/waxing-gibbous-svs.webp",
+    width: 1000,
+    height: 1000,
+    alt: "Büyüyen şişkin ay: yüzde 84'ü aydınlık, sol kenarında ince karanlık şerit",
+    caption:
+      "22 Ekim 2026 büyüyen şişkin ayı, yüzde 84 aydınlık. Sol kenardaki karanlık şerit her gece incelir; gölge sınırı kavisli, dışa doğru bombeli.",
+    credit: "NASA Scientific Visualization Studio (LRO verisi)",
+    sourceUrl: "https://svs.gsfc.nasa.gov/5587",
+  },
+  waningGibbous: {
+    src: "/images/nasa/waning-gibbous-svs.webp",
+    width: 1000,
+    height: 1000,
+    alt: "Küçülen şişkin ay: yüzde 85'i aydınlık, sağ kenarında ince karanlık şerit",
+    caption:
+      "29 Ekim 2026 küçülen şişkin ayı, yüzde 85 aydınlık. Dolunaydan sonra karanlık sağ kenardan başlar ve her gece genişler.",
+    credit: "NASA Scientific Visualization Studio (LRO verisi)",
+    sourceUrl: "https://svs.gsfc.nasa.gov/5587",
+  },
   lastQuarter: {
     src: "/images/nasa/last-quarter-svs.webp",
     width: 1000,

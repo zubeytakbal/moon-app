@@ -2,24 +2,29 @@ import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { getMoonPhase, getUpcomingPrincipalPhases } from "@moon-app/moon";
+import { Faq } from "@/components/Faq";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
+import { NasaFigure } from "@/components/NasaFigure";
 import { ArticleFooter, PhaseAnswer, NextPeriod, PhaseHero, PhaseNav, UpcomingPeriodTable } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickLinks } from "@/components/QuickLinks";
 import { pageSources } from "@/components/Sources";
+import { FAQS } from "@/lib/faqs";
+import { IMAGES } from "@/lib/images";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.buyuyenSiskinAy;
-const UPDATED = "2026-11-01";
+const UPDATED = "2026-11-05";
+const HEADLINE = "Büyüyen Şişkin Ay Nedir? Görseli, Çizimi ve Dolunaydan Farkı";
 const src = pageSources("nasaMoonPhases");
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {
-  title: `Büyüyen Şişkin Ay Nedir? Dolunaydan Nasıl Ayırt Edilir? | ${siteConfig.name}`,
+  title: `${HEADLINE} | ${siteConfig.name}`,
   description:
-    "İlk dördün ile dolunay arasındaki büyüyen şişkin ay: ne zaman görülür, dolunaydan nasıl ayırt edilir, ay neden dolunaya yaklaştıkça çok daha hızlı parlaklaşır? Gün gün aydınlık oranı.",
+    "Büyüyen şişkin ay nedir, ne zaman? Gerçek görseli, nasıl çizildiği, diğer adları, dolunaydan farkı, gün gün aydınlık oranı ve büyüyen ay dönemleri.",
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -38,10 +43,11 @@ export default function WaxingGibbousPage() {
       <QuickLinks
         links={[
           { href: "#cevap", label: "Ne zaman?" },
+          { href: "#ne-demek", label: "Görseli" },
+          { href: "#cizim", label: "Nasıl çizilir?" },
           { href: "#ayirt", label: "Dolunaydan farkı" },
-          { href: "#gun-gun", label: "Dolunaya gün gün" },
-          { href: "#ne-zaman", label: "Nerede görülür?" },
-          { href: "#onumuzdeki", label: "Önümüzdeki dönemler" },
+          { href: "#gun-gun", label: "Gün gün" },
+          { href: "#buyuyen-ay", label: "Büyüyen ay ne zaman?" },
         ]}
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
@@ -56,12 +62,37 @@ export default function WaxingGibbousPage() {
         />
 
         <Prose>
-          <h2>&quot;Şişkin&quot; ne demek?</h2>
+          <h2 id="ne-demek">&quot;Şişkin&quot; ne demek?</h2>
           <p>
             Ay bu evrede yarım dairenin ötesine geçmiş, ama henüz tam bir daire olmamıştır. Aydınlık kısmın sınırı dışa
             doğru bombelidir, ay sanki şişmiş gibi görünür. Adı buradan gelir. Batı dillerinde kullanılan
             &quot;gibbous&quot; kelimesi de Latincede &quot;kambur, tümsekli&quot; anlamına gelen <em>gibbus</em>
             kelimesinden türemiştir.
+          </p>
+          <p>
+            Ders kitaplarında ve sitelerde aynı evre <strong>ilk şişkin ay</strong> adıyla da geçer; dolunaydan sonraki
+            eşine ise <Link href={PAGES.kuculenSiskinAy.path}>son şişkin ay</Link> denir. Bazıları &quot;kambur ay&quot;
+            der, bu da &quot;gibbous&quot; kelimesinin anlamıyla örtüşür. İngilizcesi <em>waxing gibbous</em>
+            (büyüyen şişkin); NASA da evreyi bu adla anar.{src.ref("nasaMoonPhases")} Emojisi 🌔.
+          </p>
+        </Prose>
+        <NasaFigure images={[IMAGES.waxingGibbous]} className="mx-auto max-w-md" />
+
+        <h2 id="cizim" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Şişkin ay nasıl çizilir ve boyanır?</h2>
+        <GibbousDrawSteps />
+        <Prose>
+          <p>
+            Şişkin ayı yarım aydan ayıran tek şey gölge sınırıdır. <Link href={PAGES.sonDordun.path}>Yarım ayda</Link>{" "}
+            bu sınır düz bir çizgidir; şişkin ayda ise karanlık tarafa doğru kavis yapar. Kavisi ne kadar dışa
+            çekerseniz ay o kadar dolunaya yakın görünür: ilk dördünden sonraki gün kavis neredeyse düzdür, dolunaydan
+            bir gün önce karanlık kısım kenarda ince bir şerittir.
+          </p>
+          <p>
+            Boyarken aydınlık kısmı açık gri ya da açık sarıyla, karanlık şeridi koyu lacivert ya da koyu griyle
+            doldurmak gerçeğe en yakın sonucu verir. Karanlık kısmı hiç boyamamak ayın orada olmadığı izlenimini verir;
+            gerçekte ay oradadır, yalnızca Güneş ışığı almaz. Küçülen şişkin ay aynı şekilde, yalnızca ayna görüntüsü
+            olarak çizilir. Evreleri lamba ve topla canlandırmak ya da maket yapmak isterseniz{" "}
+            <Link href={`${PAGES.kuculenSiskinAy.path}#maket`}>ay evreleri maketi</Link> bölümüne bakın.
           </p>
 
           <h2 id="ayirt">Dolunaydan nasıl ayırt edilir?</h2>
@@ -121,13 +152,27 @@ export default function WaxingGibbousPage() {
         <h2 id="onumuzdeki" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Önümüzdeki büyüyen şişkin ay dönemleri</h2>
         <UpcomingPeriodTable from="first-quarter" to="full-moon" count={4} />
 
+        <h2 id="buyuyen-ay" className="mt-12 scroll-mt-32 text-2xl font-semibold tracking-tight">Büyüyen ay ne zaman?</h2>
+        <WaxingNow />
+        <Prose>
+          <p>
+            &quot;Büyüyen ay&quot;, yeni aydan dolunaya kadar süren yaklaşık 15 günlük dönemin genel adıdır. Bu dönem
+            büyüyen hilali, ilk dördünü ve büyüyen şişkin ayı kapsar. Dolunaydan sonraki 15 gün ise küçülen aydır.
+            Ayın her gece biraz daha geç doğması ve aydınlık kısmın sağdan sola doğru büyümesi, büyüyen ayın
+            işaretleridir.
+          </p>
+          <p>
+            Halk takvimlerinde &quot;büyüyen ayda&quot; denince bu dönem kastedilir. Bu takvimlere göre hesaplanmış
+            günler için <Link href={PAGES.sacKesim.path}>saç kesim günleri</Link> ve{" "}
+            <Link href={PAGES.ekimDikim.path}>ekim dikim takvimi</Link> sayfalarına bakabilirsiniz.
+          </p>
+        </Prose>
+        <UpcomingPeriodTable from="new-moon" to="full-moon" count={4} />
+
+        <Faq items={FAQS.buyuyenSiskinAy} />
+
         <PhaseNav current={PAGE} />
-        <ArticleFooter
-          page={PAGE}
-          headline="Büyüyen Şişkin Ay Nedir? Dolunaydan Nasıl Ayırt Edilir?"
-          updated={UPDATED}
-          src={src}
-        />
+        <ArticleFooter page={PAGE} headline={HEADLINE} updated={UPDATED} src={src} />
       </main>
     </>
   );
@@ -181,5 +226,85 @@ async function DailyIllumination() {
         );
       })}
     </ol>
+  );
+}
+
+/** Ay şu an büyüyor mu, küçülüyor mu? Saatte bir yenilenir. */
+async function WaxingNow() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const p = getMoonPhase(now, siteConfig.defaultLocation.timeZone);
+  const waxing = p.phaseAngle < 180;
+  return (
+    <div className="mt-4 flex items-center gap-4 rounded-2xl bg-[#05070d] p-5 text-white">
+      <MoonPhaseIcon phaseAngle={p.phaseAngle} size={56} title={p.name} />
+      <div>
+        <p className="text-xs uppercase tracking-wider text-zinc-400">Şu an</p>
+        <p className="text-xl font-semibold">Ay {waxing ? "büyüyor" : "küçülüyor"}</p>
+        <p className="text-sm text-zinc-300">
+          {p.name}, %{Math.round(p.illumination * 100)} aydınlık.{" "}
+          {waxing ? "Dolunaya kadar her gece daha çok aydınlanacak." : "Yeni aya kadar her gece biraz daha incelecek."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** Şişkin ay çizimi: büyüyen için üç adım, küçülen için ayna görüntüsü. Kendi çizimimiz. */
+function GibbousDrawSteps() {
+  const r = 52;
+  const cy = 78;
+  const rx = 30; // gölge sınırının yatay yarıçapı (yaklaşık yüzde 80 aydınlık)
+  const waxDark = (x: number) => `M${x},${cy - r} A${r},${r} 0 0 0 ${x},${cy + r} A${rx},${r} 0 0 1 ${x},${cy - r} Z`;
+  const waneDark = (x: number) => `M${x},${cy - r} A${r},${r} 0 0 1 ${x},${cy + r} A${rx},${r} 0 0 0 ${x},${cy - r} Z`;
+  const curve = (x: number) => `M${x},${cy - r} A${rx},${r} 0 0 0 ${x},${cy + r}`;
+  const panels = [
+    { x: 90, label: "1. Bir daire çizin" },
+    { x: 270, label: "2. Solda kavisli çizgi" },
+    { x: 450, label: "3. Soldaki şeridi karartın" },
+    { x: 630, label: "Küçülen şişkin: aynası" },
+  ];
+  return (
+    <figure className="mt-6 rounded-2xl bg-[#05070d] p-4">
+      <svg
+        viewBox="0 0 720 170"
+        className="h-auto w-full"
+        role="img"
+        aria-label="Büyüyen şişkin ay üç adımda nasıl çizilir: daire, solda dışa bombeli kavisli çizgi, soldaki ince şeridi karartma; küçülen şişkin ay bunun ayna görüntüsüdür"
+      >
+        {panels.map((p, i) => (
+          <g key={p.label}>
+            {i === 2 && (
+              <>
+                <circle cx={p.x} cy={cy} r={r} fill="#e4e4e7" />
+                <path d={waxDark(p.x)} fill="#3f3f46" />
+              </>
+            )}
+            {i === 3 && (
+              <>
+                <circle cx={p.x} cy={cy} r={r} fill="#e4e4e7" />
+                <path d={waneDark(p.x)} fill="#3f3f46" />
+              </>
+            )}
+            <circle cx={p.x} cy={cy} r={r} fill="none" stroke="#d4d4d8" strokeWidth={2} />
+            {i === 1 && <path d={curve(p.x)} fill="none" stroke="#d4d4d8" strokeWidth={2} />}
+            <text x={p.x} y={158} textAnchor="middle" fontSize={14} fill="#d4d4d8">
+              {p.label}
+            </text>
+            {i < 2 && (
+              <text x={p.x + 90} y={cy + 6} textAnchor="middle" fontSize={22} fill="#818cf8">
+                →
+              </text>
+            )}
+          </g>
+        ))}
+        <line x1={540} y1={20} x2={540} y2={136} stroke="#3f3f46" strokeWidth={1} strokeDasharray="4 4" />
+      </svg>
+      <figcaption className="mt-2 text-center text-xs text-zinc-400">
+        Türkiye&apos;den görünüşe göre. Güney yarımkürede iki çizim yer değiştirir.
+      </figcaption>
+    </figure>
   );
 }
