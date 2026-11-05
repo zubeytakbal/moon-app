@@ -389,6 +389,14 @@ Mevcutlardan: ay evreleri 10-100B, dolunay ne zaman 10-100B, doğduğum gün ay 
   - **Ülke hacimleri** (`research/sonuclar/2026-11-04-kp-ulke-ingilizce.tsv`; US, UK, IN, CA, AU): ABD ay/gökyüzü olaylarında açık ara (moon tonight, harvest moon, meteor shower tonight, aurora forecast 100B-1M). **Hindistan ikinci büyük kitle:** sunrise/sunset today 1M-10M (ABD'den 10 kat), lunar eclipse, sunrise/sunset time 100B-1M; ay olaylarında küçük. İngiltere: solar eclipse 100B-1M, northern lights forecast, solstice/equinox. Kanada/Avustralya: sunset today 100B-1M, gerisi küçük. Hindistan için tutulmada "Sutak" gibi dinî zamanlar Hicri gibi ele alınır (astronomik saat bizden, dinî hüküm yok).
 - **Almanca sürüm için hazır talep:** şehir adıyla aramalar yerel dilde: "perseiden köln uhrzeit", "perseiden hamburg himmelsrichtung", "perseiden berlin heute/wann", "perseides paris heure" (`research/sonuclar/2026-11-04-ulke-tarama-meteor-*.csv`).
 
+## 11e. SEO denetimi ve Search Console (5 Kasım 2026)
+- Üç dış repo incelendi (MIT, projeye kurulmadı): `AgriciDaniel/claude-seo` (denetim listeleri), `coreyhaines31/marketingskills` (haftalık SEO rutini: eşikteki sorgular 8-20. sıra, düşük tıklama oranı, yamyamlık; bağlantı kazanma; yeni sayfa "bilgi kazancı" cümlesi; yapay zekâ kalıp listesi yalnız İngilizce), `zubair-trabzada/geo-seo-claude` (ajans satış aracı; puanlayıcı İngilizce, llms.txt Google'a göre gereksiz → kullanılmadı).
+- Denetim bulguları (yapılmadı, sırada): 35/43 açıklama >160 karakter, 29 başlık >60; Article JSON-LD'de `datePublished`, `image`, `publisher` yok; ay görselleri SVG `<image>` (Google Görseller dizinlemez; "küçülen şişkin ay görseli" sorgusunda 1. sıradayız); ana sayfa, Bugün Ay, Meteor, Yeni Ay ilk bayt 1,1-1,5 sn; güvenlik başlıkları (HSTS) kapalı.
+- Search Console (28 Ekim-3 Kasım): ~4.700 gösterim, 40 tık, 26 sayfa aramada; telefonda tıklama oranı %0,5 (masaüstü %3,8). Dolunay, Süper Ay, Son Dördün: "Tarandı - şu anda dizine eklenmiş değil" (son tarama 28 Ekim gecesi; istek gönderildi, tekrar basılmaz). Bu sayfalar çoğu dizine girmeden AdSense'e yeniden başvurulmaz.
+- ✅ `/` → `/tr` artık kalıcı 308 (`next.config.ts` `redirects`, `app/page.tsx` silindi); Google ana sayfayı `lunatlas.com/` olarak tutuyordu. **`ingilizce` kolunda aynı yerde `permanent: false` var: birleştirirken çakışır, karar o gün verilecek.**
+- ✅ `robots.txt`: `Disallow: /tr/*?` (araç parametreli adresleri; Google bunlardan tarıyordu). `/_next` dosyaları açık.
+- Site haritası zaten önbellekli (`x-nextjs-cache: HIT`); 1,2 sn Cloudflare çalışanı gecikmesi, değiştirilmedi.
+
 ## 11b. Yıllık güncelleme takvimi
 - Adresler yılsızdır (`/tr/dolunay-tarihleri`, `/tr/yeniay-tarihleri`); başlık ve metinler yıllıdır. Adres asla değişmez.
 - Tablolar, "sıradaki" vurgusu, süper ay/tutulma etiketleri hesapla kendiliğinden güncellenir.
