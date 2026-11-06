@@ -1,5 +1,8 @@
 import { useId } from "react";
 
+/** Evre görüntüleri arasındaki açı adımı (derece). */
+const PHASE_STEP = 6;
+
 interface MoonPhaseIconProps {
   /** Ay ile Güneş arasındaki boylam farkı (0-360). 0 yeni ay, 180 dolunay. */
   phaseAngle: number;
@@ -54,6 +57,38 @@ export function MoonPhaseIcon({
   // Her çizimin tanımları (kesme şablonu, filtre) benzersiz kimlik taşımalı: aynı kimlik sayfada birden çok kez
   // geçerse tarayıcı ilkini kullanır; ilki gizli bir menüdeyse ikon hiç görünmez.
   const id = `moon-${useId().replace(/:/g, "")}`;
+  const pad = glow ? 12 : 0;
+
+  // Yakın yüzde ve 400 px'e kadar: NASA SVS'nin o evredeki gerçek görüntüsü (gölge sınırında kraterlerin gölgeleri,
+  // karanlık yanda Dünya ışığı). 6°'lik adımlarla 60 görüntü, `scripts/build-moon-phases.mjs` ile üretilir.
+  // Daha büyük çizimlerde (giriş alanlarındaki dev ay) yüksek çözünürlüklü fotoğraf + hesaplanan gölge kullanılır.
+  if (side === "near" && size <= 400) {
+    const index = Math.round(angle / PHASE_STEP) % (360 / PHASE_STEP);
+    const file = `/moon/phases/p${String(index).padStart(2, "0")}-${size <= 80 ? 160 : 640}.webp`;
+    return (
+      <svg
+        viewBox={`${-pad} ${-pad} ${100 + pad * 2} ${100 + pad * 2}`}
+        width={size}
+        height={size}
+        role="img"
+        aria-label={title}
+        style={{ maxWidth: "100%", height: "auto", transform: southern ? "scaleX(-1)" : undefined }}
+      >
+        <title>{title}</title>
+        {glow && (
+          <defs>
+            <radialGradient id={`${id}-glow`}>
+              <stop offset="70%" stopColor="#c7d2fe" stopOpacity={0.18} />
+              <stop offset="100%" stopColor="#c7d2fe" stopOpacity={0} />
+            </radialGradient>
+          </defs>
+        )}
+        {glow && <circle cx={c} cy={c} r={r + pad} fill={`url(#${id}-glow)`} />}
+        <image href={file} x={0} y={0} width={100} height={100} />
+      </svg>
+    );
+  }
+
   const src =
     side === "far"
       ? size <= 80
@@ -65,7 +100,6 @@ export function MoonPhaseIcon({
           ? "/moon/full-moon.webp"
           : "/moon/full-moon-2000.webp";
   const blur = size <= 80 ? 0.6 : size <= 500 ? 1.1 : 0.8;
-  const pad = glow ? 12 : 0;
 
   return (
     <svg
