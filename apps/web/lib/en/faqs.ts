@@ -25,4 +25,20 @@ export const EN_FAQS = {
       a: "Sunlight is a mix of all colors, and air scatters blue light much more than red; that's why the daytime sky is blue. Near the horizon, the sun's light crosses far more air to reach you, so most of the blue is scattered away and the oranges and reds are left. Dust, smoke or sea salt in the air can deepen the colors.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-04-en-{us,in,gb,au}-moon-phase-today_*.csv ("can't see moon tonight",
+  // "does the moon wax or wane first", "how big is the moon tonight", "is the moon bigger tonight").
+  moonPhaseToday: [
+    {
+      q: "Why can't I see the moon tonight?",
+      a: "Usually for one of three reasons. Around the new moon it is too close to the sun and lost in its glare for a day or two on either side. Otherwise it may simply not be up yet or already set: a waning moon rises late at night or after midnight, and a young crescent sets soon after sunset. And when it is low, buildings, trees or haze near the horizon can hide it. Check the moonrise and moonset times and the path chart above for your city.",
+    },
+    {
+      q: "Does the moon wax or wane first?",
+      a: "It waxes first. After the new moon, the lit part grows night by night (waxing crescent, first quarter, waxing gibbous) until the full moon, then shrinks again (waning gibbous, last quarter, waning crescent) back to the next new moon. One full cycle takes about 29.5 days.",
+    },
+    {
+      q: "Is the moon bigger tonight?",
+      a: "Its real size in the sky changes a little, because its orbit is an oval: at its closest (about 356,000 km, 221,000 miles) it looks about 14% wider than at its farthest (about 407,000 km, 253,000 miles). That's what a supermoon is. The much bigger moon you sometimes see near the horizon is an illusion of the eye: measured, the rising moon is no larger than when it is high in the sky. The distance card above shows how far it is today.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;

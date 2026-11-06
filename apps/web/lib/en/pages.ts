@@ -40,6 +40,16 @@ export const EN_SOURCES_PATH = "/en/sources";
 export const EN_METHOD_PATH = "/en/methodology";
 
 export const EN_PAGES = {
+  moonPhaseToday: {
+    path: "/en/moon-phase-today",
+    title: "Moon Phase Today",
+    navLabel: "Moon Phase Today",
+    group: "moon",
+    featured: true,
+    description: "Tonight's moon for your city: phase, how it looks from where you are, moonrise and moonset with direction, and the next full moon.",
+    cardPhaseAngle: 60,
+    tr: "/tr/bugun-ay",
+  },
   sunriseSunset: {
     path: "/en/sunrise-sunset",
     title: "Sunrise and Sunset Times",
@@ -58,5 +68,6 @@ type EnPageKey = keyof typeof EN_PAGES;
 
 /** Her sayfanın altında önerilen ilgili sayfalar (elle seçilir). */
 export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
-  sunriseSunset: [],
+  moonPhaseToday: ["sunriseSunset"],
+  sunriseSunset: ["moonPhaseToday"],
 };

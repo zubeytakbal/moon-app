@@ -65,6 +65,10 @@ export const SOURCES = {
     url: "https://aa.usno.navy.mil/data/MoonPhases",
     note: "Yeni ay, ilk dördün, dolunay ve son dördün anları (dünya saati, 1700-2100). Evre saatlerimizi bu tabloyla karşılaştırıyoruz.",
     group: "ay",
+    en: {
+      publisher: "U.S. Naval Observatory (USNO), Astronomical Applications Department",
+      note: "Times of new moon, first quarter, full moon and last quarter (Universal Time, 1700-2100). We compare our phase times with these tables.",
+    },
   },
   nasaPhaseCatalog: {
     no: 5,
@@ -73,6 +77,10 @@ export const SOURCES = {
     url: "https://eclipse.gsfc.nasa.gov/phase/phasecat.html",
     note: "İki yeni ay arasının ortalama 29,530588 gün sürmesi ve tek tek döngülerin, Güneş'in çekimi yüzünden 29,26 ile 29,80 gün arasında değişmesi.",
     group: "ay",
+    en: {
+      publisher: "Fred Espenak, NASA Goddard Space Flight Center",
+      note: "The time between new moons averages 29.530588 days, while individual cycles vary between about 29.26 and 29.80 days because of the Sun's pull.",
+    },
   },
   nasaMoonFactSheet: {
     no: 6,
@@ -81,6 +89,10 @@ export const SOURCES = {
     url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
     note: "Ayın temel sayıları: evre döngüsü (sinodik dönem) 29,53 gün, yörünge dönemi 27,32 gün, ortalama uzaklık 384.400 km, yakınberi 363.300 km ve uzakberi 405.500 km (ortalama), yörünge eğikliği 5,145°, Dünya'dan uzaklaşma hızı yılda 3,8 cm.",
     group: "ay",
+    en: {
+      publisher: "NASA Space Science Data Coordinated Archive (NSSDCA)",
+      note: "Basic lunar numbers: synodic period (phase cycle) 29.53 days, orbital period 27.32 days, mean distance 384,400 km, average perigee 363,300 km and apogee 405,500 km, orbital inclination 5.145°, recession from Earth 3.8 cm per year.",
+    },
   },
   nasaMoonPhases: {
     no: 7,
@@ -89,6 +101,10 @@ export const SOURCES = {
     url: "https://science.nasa.gov/moon/moon-phases/",
     note: "Güneş'in ayın her zaman yarısını aydınlatması; evrelerin bu aydınlık yarıyı farklı açılardan görmemizden doğması; sekiz evrenin adları ve döngünün yaklaşık 29,5 gün sürmesi.",
     group: "ay",
+    en: {
+      publisher: "NASA Science",
+      note: "The Sun always lights half of the Moon; the phases come from seeing that lit half from different angles as the Moon orbits Earth; the names of the eight phases and the roughly 29.5-day cycle.",
+    },
   },
   arliss2005: {
     no: 8,
@@ -178,6 +194,10 @@ export const SOURCES = {
     url: "https://www.almanac.com/full-moon-names",
     note: "Dolunayların geleneksel adları ve anlamları; adların Kuzey Amerika yerli halkları, sömürge dönemi Amerikası ve diğer Kuzey Amerika geleneklerinden derlenmesi.",
     group: "gelenek",
+    en: {
+      publisher: "The Old Farmer's Almanac (published since 1792)",
+      note: "Traditional full moon names and their meanings, drawn from Native American, Colonial American and other North American traditions.",
+    },
   },
   iauConstellations: {
     no: 18,
@@ -440,6 +460,18 @@ export const SOURCES = {
     group: "gelenek",
     en: {
       note: "Rahu kalam as a period of an hour and a half, starting at a different time each weekday, considered inauspicious for beginning anything. For a 6 am to 6 pm day: Sunday 4:30-6:00 pm, Monday 7:30-9:00 am, Tuesday 3:00-4:30 pm, Wednesday 12:00-1:30 pm, Thursday 1:30-3:00 pm, Friday 10:30 am-12:00 pm, Saturday 9:00-10:30 am (the 8th, 2nd, 7th, 5th, 6th, 4th and 3rd eighth of the daytime).",
+    },
+  },
+  svsMoonPhase2026: {
+    no: 50,
+    title: "Moon Phase and Libration, 2026",
+    publisher: "NASA Bilimsel Görselleştirme Stüdyosu (SVS)",
+    url: "https://svs.gsfc.nasa.gov/5587",
+    note: "2026'nın her saati için ayın Dünya'dan görünüşü (evre, sallanma, eksen eğikliği), kamu malı. Sitedeki evre görüntüleri bu karelerden alındı.",
+    group: "ay",
+    en: {
+      publisher: "NASA Scientific Visualization Studio (SVS)",
+      note: "The Moon as seen from Earth for every hour of 2026 (phase, libration and axis tilt), public domain. The phase images on this site are taken from these frames.",
     },
   },
 } as const satisfies Record<string, Source>;

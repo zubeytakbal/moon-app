@@ -25,11 +25,31 @@ export const MONTHLY_FULL_MOON_NAMES = [
   "Soğuk Ay",
 ];
 
+/** Bir dildeki dolunay adları: 12 aylık ad ve kurallı özel adlar. */
+export interface FullMoonLabels {
+  monthly: readonly string[];
+  blue: string;
+  harvest: string;
+  hunter: string;
+}
+
+const TR_LABELS: FullMoonLabels = {
+  monthly: MONTHLY_FULL_MOON_NAMES,
+  blue: "Mavi Ay",
+  harvest: "Hasat Ayı",
+  hunter: "Avcı Ayı",
+};
+
 /**
  * Dolunaylara geleneksel adlarını verir. Eylül ekinoksuna en yakın dolunay "Hasat Ayı",
  * ondan sonraki "Avcı Ayı" olur; aynı takvim ayındaki ikinci dolunay "Mavi Ay" diye anılır.
+ * `labels` verilmezse Türkçe adlar kullanılır (İngilizcesi `lib/en/full-moon-names.ts`).
  */
-export function nameFullMoons(fullMoons: PrincipalPhase[], timeZone: string): Map<number, string> {
+export function nameFullMoons(
+  fullMoons: PrincipalPhase[],
+  timeZone: string,
+  labels: FullMoonLabels = TR_LABELS,
+): Map<number, string> {
   const names = new Map<number, string>();
   const byYear = new Map<number, PrincipalPhase[]>();
   for (const p of fullMoons) {
@@ -46,10 +66,10 @@ export function nameFullMoons(fullMoons: PrincipalPhase[], timeZone: string): Ma
     let previousMonth = -1;
     list.forEach((p, i) => {
       const month = localDateParts(p.date, timeZone).month;
-      let name = MONTHLY_FULL_MOON_NAMES[month - 1];
-      if (month === previousMonth) name = "Mavi Ay";
-      if (p === harvest) name = "Hasat Ayı";
-      if (i > 0 && list[i - 1] === harvest) name = "Avcı Ayı";
+      let name = labels.monthly[month - 1];
+      if (month === previousMonth) name = labels.blue;
+      if (p === harvest) name = labels.harvest;
+      if (i > 0 && list[i - 1] === harvest) name = labels.hunter;
       names.set(p.date.getTime(), name);
       previousMonth = month;
     });

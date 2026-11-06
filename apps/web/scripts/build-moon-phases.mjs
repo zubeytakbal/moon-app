@@ -79,6 +79,30 @@ for (let k = 0; k < 360 / STEP; k++) {
   picks.push({ k, target, ...best });
 }
 
+// Her karede aydınlık kenarın konum açısı (gök kuzeyinden doğuya, derece; Dünya merkezinden). Görüntüler gök kuzeyi
+// yukarıda çizildiği için sayfa, ayı gözlemcinin tepe noktasına göre döndürürken bu açıyı kullanır (`getMoonView`).
+const RAD = Math.PI / 180;
+function brightLimbAngle(t) {
+  const m = A.Equator(A.Body.Moon, t, new A.Observer(0, 0, 0), true, false);
+  const s = A.Equator(A.Body.Sun, t, new A.Observer(0, 0, 0), true, false);
+  const a = m.ra * 15 * RAD, d = m.dec * RAD, a0 = s.ra * 15 * RAD, d0 = s.dec * RAD;
+  const chi = Math.atan2(Math.cos(d0) * Math.sin(a0 - a), Math.sin(d0) * Math.cos(d) - Math.cos(d0) * Math.sin(d) * Math.cos(a0 - a));
+  return Math.round((((chi / RAD) % 360) + 360) % 360 * 10) / 10;
+}
+const limbs = picks.map((p) => brightLimbAngle(new Date(T0 + (p.n - 1) * 3_600_000)));
+writeFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "..", "lib", "moon-phase-frames.ts"),
+  `/**
+ * \`public/moon/phases/pNN-*.webp\` görüntülerinde aydınlık kenarın konum açısı (gök kuzeyinden doğuya, derece).
+ * \`scripts/build-moon-phases.mjs\` üretir; elle değiştirmeyin.
+ */
+export const PHASE_FRAME_LIMB = [${limbs.join(", ")}] as const;
+
+/** Görüntüler arasındaki evre açısı adımı (derece). */
+export const PHASE_FRAME_STEP = ${STEP};
+`,
+);
+
 for (const p of picks) {
   // Ay bu karede, dolunay karesine göre uzaklıkla ters orantılı büyüklükte görünür. Kenarda 1 px pay bırakılır.
   const r = (r0 * km0) / p.km + 1;
