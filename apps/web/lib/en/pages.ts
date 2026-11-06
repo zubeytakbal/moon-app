@@ -40,6 +40,16 @@ export const EN_SOURCES_PATH = "/en/sources";
 export const EN_METHOD_PATH = "/en/methodology";
 
 export const EN_PAGES = {
+  fullMoon: {
+    path: "/en/full-moon",
+    title: "Next Full Moon",
+    navLabel: "Full Moon",
+    group: "moon",
+    featured: true,
+    description: "When the next full moon is in your time zone, what it's called, when to see it rise, and every full moon of this year and next.",
+    cardPhaseAngle: 180,
+    tr: "/tr/dolunay",
+  },
   moonPhaseToday: {
     path: "/en/moon-phase-today",
     title: "Moon Phase Today",
@@ -68,6 +78,7 @@ type EnPageKey = keyof typeof EN_PAGES;
 
 /** Her sayfanın altında önerilen ilgili sayfalar (elle seçilir). */
 export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
-  moonPhaseToday: ["sunriseSunset"],
-  sunriseSunset: ["moonPhaseToday"],
+  fullMoon: ["moonPhaseToday", "sunriseSunset"],
+  moonPhaseToday: ["fullMoon", "sunriseSunset"],
+  sunriseSunset: ["moonPhaseToday", "fullMoon"],
 };

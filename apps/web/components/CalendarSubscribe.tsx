@@ -19,11 +19,14 @@ export function CalendarSubscribe({
   path = CALENDAR_PATH,
   title = "Ay olaylarını takviminize ekleyin",
   text,
+  lang = "tr",
 }: {
   path?: string;
   title?: string;
   text?: string;
+  lang?: "tr" | "en";
 } = {}) {
+  const en = lang === "en";
   const https = new URL(path, siteConfig.url);
   const webcal = `webcal://${https.host}${https.pathname}`;
   const google = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcal)}`;
@@ -56,13 +59,13 @@ export function CalendarSubscribe({
       </div>
       <div className="mt-6 flex flex-wrap gap-3">
         <a href={google} target="_blank" rel="noopener nofollow" className={`${button} bg-white text-zinc-900 hover:bg-zinc-200`}>
-          Google Takvim&apos;e ekle
+          {en ? "Add to Google Calendar" : "Google Takvim'e ekle"}
         </a>
         <a href={webcal} rel="nofollow" className={`${button} border border-white/25 hover:bg-white/10`}>
           iPhone / Mac / Outlook
         </a>
         <a href={path} download rel="nofollow" className={`${button} text-zinc-300 underline-offset-2 hover:underline`}>
-          Dosyayı indir (.ics)
+          {en ? "Download (.ics)" : "Dosyayı indir (.ics)"}
         </a>
       </div>
     </section>

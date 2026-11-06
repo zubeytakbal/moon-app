@@ -38,12 +38,12 @@ interface CalendarEvent {
 }
 
 /** iCalendar metin alanı kaçışları (RFC 5545). */
-function escapeText(text: string) {
+export function escapeText(text: string) {
   return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
 }
 
 /** 75 baytı aşan satırları böler; Türkçe harfler UTF-8'de 2 bayt olduğu için bayt sayılır. */
-function fold(line: string) {
+export function fold(line: string) {
   const encoder = new TextEncoder();
   const out: string[] = [];
   let current = "";

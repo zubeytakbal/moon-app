@@ -113,6 +113,10 @@ export const SOURCES = {
     url: "https://pubmed.ncbi.nlm.nih.gov/15902138/",
     note: "Kuzey Karolina'da 1997-2001 arasındaki 564.039 doğumda, ayın 8 evresi arasında doğum sayısı, doğum şekli ve komplikasyonlar bakımından anlamlı bir fark bulunmaması.",
     group: "ay",
+    en: {
+      publisher: "Arliss, Kaplan and Galvin; American Journal of Obstetrics and Gynecology, 2005 (PubMed)",
+      note: "Among 564,039 births in North Carolina from 1997 to 2001, no significant difference across the 8 lunar phases in the number of births, mode of delivery or complications.",
+    },
   },
   nasaSaros: {
     no: 9,
@@ -170,6 +174,9 @@ export const SOURCES = {
     url: "https://science.nasa.gov/moon/supermoons/",
     note: "Süper ayın, dolunayın ayın Dünya'ya en yakın noktasına (yakınberi) denk gelmesi olarak tanımlanması; yakınberinin yaklaşık 363.300 km, uzakberinin yaklaşık 405.500 km olması.",
     group: "ay",
+    en: {
+      note: "A supermoon is a full moon when the Moon is at its closest point to Earth; at its closest, the full Moon can appear up to 14 percent bigger and 30 percent brighter than the faintest full moon of the year, at its farthest point.",
+    },
   },
   nolleSupermoon: {
     no: 15,
@@ -484,6 +491,18 @@ export const SOURCES = {
     en: {
       publisher: "Wisdom Library (Jyotisha and Sanskrit dictionary definitions)",
       note: "A tithi is the time it takes the Moon to increase its distance from the Sun by 12 degrees, one thirtieth of a lunation; each fortnight (paksha) has fifteen tithis; the fifteenth tithi of the bright fortnight is the full moon (Purnima), of the dark fortnight the new moon (Amavasya); the length of a tithi varies.",
+    },
+  },
+  cajochen2013: {
+    no: 52,
+    title: "Evidence that the lunar cycle influences human sleep",
+    publisher: "Cajochen ve diğerleri; Current Biology, 2013 (Europe PMC)",
+    url: "https://europepmc.org/article/MED/23891110",
+    note: "Laboratuvarda, ayı görmeyen gönüllülerde dolunay çevresinde derin uyku göstergesi (NREM delta etkinliği) %30 düştü, uykuya dalma 5 dakika uzadı, toplam uyku 20 dakika kısaldı; melatonin azaldı. Yazarlar ayın insan fizyolojisi ve davranışıyla tutarlı bir ilişkisinin bulunmadığını, çok sayıda halk inancı olduğunu belirtiyor.",
+    group: "ay",
+    en: {
+      publisher: "Cajochen et al.; Current Biology, 2013 (Europe PMC)",
+      note: "In a sleep laboratory, with volunteers unable to see the moon, deep sleep (NREM delta activity) fell by 30% around the full moon, falling asleep took 5 minutes longer and total sleep was 20 minutes shorter; melatonin was lower. The authors note there is much folklore but no consistent association of moon cycles with human physiology and behavior.",
     },
   },
 } as const satisfies Record<string, Source>;

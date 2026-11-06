@@ -41,4 +41,20 @@ export const EN_FAQS = {
       a: "Its real size in the sky changes a little, because its orbit is an oval: at its closest (about 356,000 km, 221,000 miles) it looks about 14% wider than at its farthest (about 407,000 km, 253,000 miles). That's what a supermoon is. The much bigger moon you sometimes see near the horizon is an illusion of the eye: measured, the rising moon is no larger than when it is high in the sky. The distance card above shows how far it is today.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-06-en-{us,in,gb,au}-full-moon_*.csv ("how often is there a full moon",
+  // "how many full moons 2027", "does full moon affect sleep", "can full moon cause labor").
+  fullMoon: [
+    {
+      q: "How often is there a full moon?",
+      a: "About every 29.5 days, so most years have 12 full moons and some have 13. Because the cycle is a little shorter than most calendar months, every two or three years one month gets two full moons; the second is called a Blue Moon, which is where the phrase \"once in a blue moon\" comes from. February, at 28 or 29 days, is the only month that can have no full moon at all.",
+    },
+    {
+      q: "Does the full moon affect sleep?",
+      a: "Possibly a little. In a 2013 sleep-laboratory study, volunteers who could not see the moon slept about 20 minutes less around the full moon, took 5 minutes longer to fall asleep and had 30% less deep sleep, with lower melatonin. It was a single study, and its authors point out that, despite a lot of folklore, no consistent link between the moon's cycle and human body or behavior has been found.",
+    },
+    {
+      q: "Can a full moon cause labor?",
+      a: "There is no evidence that it does. A study of 564,039 births in North Carolina over five years found no difference in the number of births, the type of delivery or complications across the eight phases of the moon.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;

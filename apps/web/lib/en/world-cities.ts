@@ -33,6 +33,8 @@ export const WORLD_CITIES: EnPlace[] = (
     [2158177, "Melbourne", "AU", "Victoria", -37.814, 144.9633, "Australia/Melbourne"],
     [2174003, "Brisbane", "AU", "Queensland", -27.4679, 153.0281, "Australia/Brisbane"],
     [2063523, "Perth", "AU", "Western Australia", -31.9522, 115.8614, "Australia/Perth"],
+    [2078025, "Adelaide", "AU", "South Australia", -34.9287, 138.5986, "Australia/Adelaide"],
+    [2073124, "Darwin", "AU", "Northern Territory", -12.4611, 130.8418, "Australia/Darwin"],
     [2193733, "Auckland", "NZ", "Auckland", -36.8485, 174.7635, "Pacific/Auckland"],
     [2332459, "Lagos", "NG", "Lagos", 6.4541, 3.3947, "Africa/Lagos"],
     [184745, "Nairobi", "KE", "Nairobi County", -1.2833, 36.8167, "Africa/Nairobi"],
