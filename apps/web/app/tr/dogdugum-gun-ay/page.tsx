@@ -15,12 +15,13 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { nearestNamedFullMoon } from "@/lib/full-moon-names";
 import { ShareButton } from "@/components/ShareButton";
+import { MoonCardDownload } from "@/components/MoonCardDownload";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.dogdugumGun;
-const UPDATED = "2026-11-01";
+const UPDATED = "2026-11-06";
 const src = pageSources("nasaMoonFactSheet", "arliss2005");
 const timeZone = siteConfig.defaultLocation.timeZone;
 const DAY_MS = 86_400_000;
@@ -372,9 +373,22 @@ async function BirthResult({ year, month, day, hour, minute, hasTime }: BirthInp
           </dl>
         )}
 
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap items-start gap-3">
           <ShareButton title={PAGE.title} text={shareText} />
+          <MoonCardDownload
+            phaseAngle={phase.phaseAngle}
+            dateLabel={`${date.format(birth)}${hasTime ? `, ${time.format(birth)}` : ""}`}
+            phaseName={phase.name}
+            detail={`%${pct} aydınlık · ${phase.isWaxing ? "büyüyordu" : "küçülüyordu"}`}
+            fullMoonName={nearestName ?? undefined}
+            fileName={`dogdugum-gun-ay-${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`}
+          />
         </div>
+        <p className="mt-3 max-w-md text-sm text-zinc-400">
+          İndirilen görsel telefon ekranı boyutundadır (1080 × 1920), duvar kâğıdı yapabilir ya da paylaşabilirsiniz.
+          Görseldeki ay, NASA Bilimsel Görselleştirme Stüdyosu&apos;nun kamu malı gerçek ay fotoğrafıdır; üzerindeki
+          gölge doğduğunuz ana göre hesaplanır.
+        </p>
       </div>
 
       {metonic.length > 0 && (
