@@ -474,6 +474,18 @@ export const SOURCES = {
       note: "The Moon as seen from Earth for every hour of 2026 (phase, libration and axis tilt), public domain. The phase images on this site are taken from these frames.",
     },
   },
+  wisdomlibTithi: {
+    no: 51,
+    title: "Tithi: definitions",
+    publisher: "Wisdom Library (Jyotisha ve Sanskrit sözlük tanımları)",
+    url: "https://www.wisdomlib.org/definition/tithi",
+    note: "Tithi, ayın Güneş'ten uzaklığının 12 derece artması için geçen süredir (ay döngüsünün otuzda biri); her yarım ay (paksha) 15 tithi; parlak yarının 15. tithisi dolunay (Purnima), karanlık yarınınki yeni ay (Amavasya); tithi süresi değişkendir.",
+    group: "gelenek",
+    en: {
+      publisher: "Wisdom Library (Jyotisha and Sanskrit dictionary definitions)",
+      note: "A tithi is the time it takes the Moon to increase its distance from the Sun by 12 degrees, one thirtieth of a lunation; each fortnight (paksha) has fifteen tithis; the fifteenth tithi of the bright fortnight is the full moon (Purnima), of the dark fortnight the new moon (Amavasya); the length of a tithi varies.",
+    },
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

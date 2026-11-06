@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import { getMoonPhase, getNextMoonEvent, getUpcomingPrincipalPhases, PHASE_NAMES_EN } from "@moon-app/moon";
+import {
+  getMoonPhase,
+  getMoonPosition,
+  getMoonRiseSet,
+  getNextMoonEvent,
+  getUpcomingPrincipalPhases,
+  localDateParts,
+  PHASE_NAMES_EN,
+  zonedTimeToUtc,
+} from "@moon-app/moon";
 import { BreadcrumbTrail } from "@/components/Breadcrumb";
 import { Byline } from "@/components/Byline";
 import { EnArticleFooter } from "@/components/en/EnArticleFooter";
 import { Faq } from "@/components/Faq";
+import { MobileCollapse } from "@/components/MobileCollapse";
 import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { Prose } from "@/components/Prose";
 import { QuickLinks } from "@/components/QuickLinks";
@@ -12,7 +22,8 @@ import { enPageSources } from "@/components/Sources";
 import { EN_FAQS } from "@/lib/en/faqs";
 import { englishFullMoonNames } from "@/lib/en/full-moon-names";
 import { EN_GROUP_NAMES, EN_HOME_PATH, EN_PAGES } from "@/lib/en/pages";
-import { DEFAULT_PLACE } from "@/lib/en/places";
+import { DEFAULT_PLACE, placeLabel } from "@/lib/en/places";
+import { WORLD_CITIES } from "@/lib/en/world-cities";
 import { siteConfig } from "@/site.config";
 import { MoonExplorer } from "./MoonExplorer";
 
@@ -26,6 +37,7 @@ const src = enPageSources(
   "usnoMoonPhases",
   "svsMoonPhase2026",
   "geonames",
+  "wisdomlibTithi",
 );
 
 export const metadata: Metadata = {
@@ -44,16 +56,17 @@ export default function MoonPhaseTodayPage() {
         lang="en"
         links={[
           { href: "#tonight", label: "Tonight" },
-          { href: "#now", label: "Right now" },
           { href: "#path", label: "Tonight's path" },
           { href: "#calendar", label: "Next 30 days" },
-          { href: "#next-phases", label: "Next phases" },
+          { href: "#traditional", label: "Tithi & Hijri" },
+          { href: "#world", label: "World" },
           { href: "#waxing-waning", label: "Waxing or waning?" },
           { href: "#faq", label: "FAQ" },
         ]}
       />
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <Explorer />
+        <WorldTable />
         <div className="mx-auto max-w-3xl">
           <Explainer />
           <div id="faq" className="scroll-mt-32">
@@ -100,7 +113,69 @@ async function Hero() {
 async function Explorer() {
   "use cache";
   cacheLife("hours");
-  return <MoonExplorer initialNow={new Date().toISOString()} />;
+  return <MoonExplorer initialNow={new Date().toISOString()} refs={{ tithi: src.ref("wisdomlibTithi") }} />;
+}
+
+const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+const MOBILE_ROWS = 10;
+
+/**
+ * "Moonrise and moonset today around the world": elle seçilmiş şehirler, her biri kendi yerel gününde ve saatinde.
+ * Evre her yerde aynı olduğu için tek satırda yazılır. Saatte bir yenilenir.
+ */
+async function WorldTable() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const phase = getMoonPhase(now, "UTC");
+  return (
+    <section aria-labelledby="world" className="mt-14">
+      <h2 id="world" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Moonrise and moonset today around the world
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        The phase is the same everywhere ({PHASE_NAMES_EN[phase.key].toLowerCase()}, {Math.round(phase.illumination * 100)}% lit),
+        but rise and set times are not. Each city is shown in its own local time and date. Tap a city for its full night.
+      </p>
+      <MobileCollapse
+        hiddenCount={WORLD_CITIES.length - MOBILE_ROWS}
+        noun="cities"
+        className="mt-6 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+      >
+        <table className="w-full text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-4 py-2.5 font-medium">City</th>
+              <th className="px-4 py-2.5 font-medium">Moonrise</th>
+              <th className="px-4 py-2.5 font-medium">Moonset</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {WORLD_CITIES.map((p, i) => {
+              const d = localDateParts(now, p.timeZone);
+              const rs = getMoonRiseSet(zonedTimeToUtc(d.year, d.month, d.day, 12, p.timeZone), p);
+              const t = new Intl.DateTimeFormat("en-US", { timeZone: p.timeZone, hour: "numeric", minute: "2-digit" });
+              const dir = (x: Date) => COMPASS[Math.round(getMoonPosition(x, p).azimuth / 22.5) % 16];
+              return (
+                <tr key={p.id} data-extra={i >= MOBILE_ROWS || undefined}>
+                  <td className="px-4 py-2">
+                    <a href={`${PAGE.path}?place=${p.id}`} rel="nofollow" className="font-medium hover:underline">
+                      {placeLabel(p)}
+                    </a>
+                  </td>
+                  <td className="px-4 py-2 tabular-nums">
+                    {rs.rise ? `${t.format(rs.rise)} ${dir(rs.rise)}` : "–"}
+                  </td>
+                  <td className="px-4 py-2 tabular-nums">{rs.set ? `${t.format(rs.set)} ${dir(rs.set)}` : "–"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </MobileCollapse>
+    </section>
+  );
 }
 
 /**

@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import {
+  getCrescentEvenings,
   getMoonDistanceKm,
   getMoonPhase,
   getMoonPosition,
@@ -9,6 +10,7 @@ import {
   getMoonView,
   getNextMoonEvent,
   getSunAltitude,
+  getTithi,
   getUpcomingPrincipalPhases,
   localDateParts,
   PHASE_NAMES_EN,
@@ -20,6 +22,7 @@ import { MoonPhaseIcon } from "@/components/MoonPhaseIcon";
 import { PlacePicker, usePlaceAndDate } from "@/components/en/PlacePicker";
 import { englishFullMoonNames } from "@/lib/en/full-moon-names";
 import { placeLabel, type EnPlace } from "@/lib/en/places";
+import { toHijri } from "@/lib/hijri-calendar";
 import { PHASE_FRAME_LIMB, PHASE_FRAME_STEP } from "@/lib/moon-phase-frames";
 
 /**
@@ -58,7 +61,7 @@ function makeFmt(locale: string, tz: string) {
   };
 }
 
-export function MoonExplorer({ initialNow }: { initialNow: string }) {
+export function MoonExplorer({ initialNow, refs }: { initialNow: string; refs: { tithi: ReactNode } }) {
   const { place, source, now, locale, dateIso, isToday, choose, setDateInput, backToToday } = usePlaceAndDate(initialNow);
   const date = dateIso ? new Date(dateIso) : now;
   const tz = place.timeZone;
@@ -102,6 +105,7 @@ export function MoonExplorer({ initialNow }: { initialNow: string }) {
       <PathChart night={night} now={isToday ? now : null} fmt={fmt} label={label} />
       <CalendarTable startNoon={dayNoon} place={place} fmt={fmt} label={label} todayKey={isToday ? dayKey : null} />
       <PhasesList from={date} tz={tz} fmt={fmt} southern={place.latitude < 0} />
+      <TraditionalSection date={date} dayNoon={dayNoon} place={place} fmt={fmt} label={label} tithiRef={refs.tithi} />
     </div>
   );
 }
@@ -510,4 +514,136 @@ function PhasesList({ from, tz, fmt, southern }: { from: Date; tz: string; fmt: 
       </ul>
     </section>
   );
+}
+
+/* ───────────────────────── Geleneksel takvimler ───────────────────────── */
+
+const HIJRI_MONTHS_EN = [
+  "Muharram",
+  "Safar",
+  "Rabi al-Awwal",
+  "Rabi al-Thani",
+  "Jumada al-Ula",
+  "Jumada al-Akhirah",
+  "Rajab",
+  "Shaban",
+  "Ramadan",
+  "Shawwal",
+  "Dhu al-Qadah",
+  "Dhu al-Hijjah",
+];
+
+/**
+ * Hindu (tithi) ve İslami (Hicri tarih, hilal) takvim kutusu. Yalnız astronomik bilgi: oruç, bayram ve tören günlerinin
+ * kesin tarihi panchang ya da yerel hilal komitesi/cami kuralına bırakılır (Türkçedeki Diyanet çizgisi gibi).
+ */
+function TraditionalSection({
+  date,
+  dayNoon,
+  place,
+  fmt,
+  label,
+  tithiRef,
+}: {
+  date: Date;
+  dayNoon: Date;
+  place: EnPlace;
+  fmt: Fmt;
+  label: string;
+  tithiRef: ReactNode;
+}) {
+  const data = useMemo(() => {
+    const tithi = getTithi(date);
+    const upcoming = getUpcomingPrincipalPhases(date, 4);
+    const full = upcoming.find((p) => p.key === "full-moon")!;
+    const nextNew = upcoming.find((p) => p.key === "new-moon")!;
+    // Purnima ve Amavasya tithisi: dolunay/yeni ay anıyla biten 15. ve 30. tithi.
+    const purnima = getTithi(new Date(full.date.getTime() - 60_000));
+    const amavasya = getTithi(new Date(nextNew.date.getTime() - 60_000));
+    const moonrise = getMoonRiseSet(dayNoon, place).rise;
+    // Hilal: son yeni ay 3 günden yeniyse ve hilalin görülebileceği akşam henüz geçmediyse o; değilse sıradaki yeni ay.
+    const age = getMoonPhase(date, place.timeZone).ageDays;
+    const lastNew = new Date(date.getTime() - age * DAY_MS);
+    const firstVisible = (newMoon: Date) => getCrescentEvenings(newMoon, place, 4).find((e) => e.meetsCriteria) ?? null;
+    let crescentNewMoon = nextNew.date;
+    let crescent = age < 3 ? firstVisible(lastNew) : null;
+    if (crescent && crescent.sunset.getTime() > date.getTime() - 3 * 3_600_000) crescentNewMoon = lastNew;
+    else crescent = firstVisible(nextNew.date);
+    return { tithi, purnima, amavasya, moonrise, hijri: toHijri(date, place.timeZone), crescentNewMoon, crescent };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date.getTime(), dayNoon.getTime(), place.latitude, place.longitude, place.timeZone]);
+
+  const { tithi, purnima, amavasya, moonrise, hijri, crescentNewMoon, crescent } = data;
+  const inPaksha = tithi.number > 15 ? tithi.number - 15 : tithi.number;
+  const pakshaWords = tithi.paksha === "Shukla" ? "waxing fortnight" : "waning fortnight";
+  const span = (t: { start: Date; end: Date }) =>
+    `${fmt.short.format(t.start)}, ${fmt.time(t.start)} – ${fmt.short.format(t.end)}, ${fmt.time(t.end)}`;
+
+  return (
+    <section aria-labelledby="traditional" className="mt-12">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 dark:text-violet-300">Traditional calendars</p>
+      <h2 id="traditional" className="mt-1 scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Tithi, Purnima, Amavasya and the Hijri date
+      </h2>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        The Hindu and Islamic calendars both follow the moon. Below is what the moon itself is doing, worked out for {label}.
+        Fasts, festivals and the official start of a month follow each tradition&apos;s own rules.
+      </p>
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-violet-200 bg-violet-50/60 p-5 dark:border-violet-900 dark:bg-violet-950/30">
+          <h3 className="text-lg font-semibold">Hindu calendar</h3>
+          <dl className="mt-3 space-y-3 text-sm">
+            <Row label="Tithi now">
+              {tithi.paksha} {tithi.name} ({ordinal(inPaksha)} of the {pakshaWords}), until {fmt.short.format(tithi.end)},{" "}
+              {fmt.time(tithi.end)}
+            </Row>
+            <Row label="Next Purnima tithi">{span(purnima)}</Row>
+            <Row label="Next Amavasya tithi">{span(amavasya)}</Row>
+            <Row label="Chandrodaya (moonrise)">
+              {moonrise ? `${fmt.time(moonrise)} on ${fmt.short.format(dayNoon)}` : "No moonrise on this day"}
+            </Row>
+          </dl>
+          <p className="mt-4 text-xs text-zinc-600 dark:text-zinc-400">
+            A tithi is the time the moon takes to move 12° farther from the sun, so its length varies.{tithiRef} Times here
+            are astronomical. Which day a fast or festival falls on also depends on panchang rules, such as the tithi at
+            sunrise; check your local panchang or temple.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-5 dark:border-emerald-900 dark:bg-emerald-950/30">
+          <h3 className="text-lg font-semibold">Islamic calendar</h3>
+          <dl className="mt-3 space-y-3 text-sm">
+            <Row label="Hijri date">
+              {hijri.day} {HIJRI_MONTHS_EN[hijri.month - 1]} {hijri.year} AH (Umm al-Qura calendar)
+            </Row>
+            <Row label="New moon">{`${fmt.short.format(crescentNewMoon)}, ${fmt.time(crescentNewMoon)}`}</Row>
+            <Row label={`New crescent from ${place.name}`}>
+              {crescent
+                ? `Likely visible on the evening of ${fmt.short.format(crescent.sunset)}, after sunset at ${fmt.time(crescent.sunset)} (moon ${Math.round(crescent.moonAltitude)}° high, low in the west)`
+                : "Hard to see in the first evenings after the new moon from here"}
+            </Row>
+          </dl>
+          <p className="mt-4 text-xs text-zinc-600 dark:text-zinc-400">
+            The crescent estimate is astronomical: the moon at least 5° above the horizon and 8° from the sun at sunset.
+            Many communities begin a month only after the crescent is actually sighted, locally or by a national
+            committee, so dates can differ by a day from the Umm al-Qura calendar used in Saudi Arabia. For Ramadan and
+            Eid, follow your local moon sighting committee or mosque.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Row({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <dt className="text-xs font-semibold uppercase tracking-wider text-zinc-500">{label}</dt>
+      <dd className="mt-0.5 text-zinc-900 dark:text-zinc-100">{children}</dd>
+    </div>
+  );
+}
+
+function ordinal(n: number) {
+  const s = n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th";
+  return `${n}${s}`;
 }
