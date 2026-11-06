@@ -15,24 +15,32 @@ import { Prose } from "@/components/Prose";
 import { AnswerBox, DataTable } from "@/components/InfoTables";
 import { QuickLinks } from "@/components/QuickLinks";
 import { pageSources } from "@/components/Sources";
-import { fromHijri, HIJRI_MONTHS, toHijri } from "@/lib/hijri-calendar";
+import {
+  fromHijri,
+  getUpcomingReligiousDays,
+  HIJRI_MONTHS,
+  todayNoonUtc,
+  toHijri,
+  type ReligiousDay,
+} from "@/lib/hijri-calendar";
+import { MobileCollapse } from "@/components/MobileCollapse";
 import { HijriConverter } from "@/components/HijriConverter";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.hicriTakvim;
-const UPDATED = "2026-11-04";
-const src = pageSources("diyanet2027", "diyanetAyTanim");
+const UPDATED = "2026-11-06";
+const src = pageSources("diyanet2027", "diyanet2026", "diyanetAyTanim");
 const timeZone = siteConfig.defaultLocation.timeZone;
 /** Hilal tahmini Türkiye'nin ortasına yakın bir noktadan, Ankara'dan yapılır. */
 const OBSERVER = findProvince("ankara")!;
 const DAY_MS = 86_400_000;
 
 export const metadata: Metadata = {
-  title: `Hicri Takvim: Hicri Miladi Tarih Çevirme, Hicri Aylar | ${siteConfig.name}`,
+  title: `Hicri Takvim: Dinî Günler, Kandiller, Hicri Miladi Çevirme | ${siteConfig.name}`,
   description:
-    "Hicri tarihi Miladiye, Miladi tarihi Hicriye çevirin. Ramazan ve bayramlar ne zaman, Almanya, Hollanda, Fransa gibi yurt dışında da aynı gün mü? Hicri aylar ve önümüzdeki ay başları. Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
+    "Kandiller, Kadir Gecesi, Ramazan ve bayramlar ne zaman? Önümüzdeki 12 ayın dinî günleri, Hicri Miladi tarih çevirici. Yurt dışında da aynı gün mü? Resmî tarihler için Diyanet takvimi esas alınmalıdır.",
   alternates: { canonical: PAGE.path },
   openGraph: pageOpenGraph(PAGE),
 };
@@ -71,6 +79,7 @@ export default function HijriCalendarPage() {
       <QuickLinks
         links={[
           { href: "#cevap", label: "Bugün" },
+          { href: "#dini-gunler", label: "Dinî günler" },
           { href: "#cevirici", label: "Çevirici" },
           { href: "#yurt-disi", label: "Yurt dışında" },
           { href: "#ay-baslari", label: "Ay başları" },
@@ -82,6 +91,10 @@ export default function HijriCalendarPage() {
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <div className="mx-auto max-w-3xl">
           <HijriAnswer />
+        </div>
+
+        <div className="mx-auto max-w-3xl">
+          <ReligiousDays />
         </div>
 
         <div id="cevirici" className="mx-auto max-w-3xl scroll-mt-32">
@@ -258,6 +271,7 @@ async function HijriAnswer() {
   const nextMonth = t.month === 12 ? { year: t.year + 1, month: 1 } : { year: t.year, month: t.month + 1 };
   const nextStart = fromHijri(nextMonth.year, nextMonth.month, 1);
   const inRamadan = t.month === 9;
+  const nextDay = getUpcomingReligiousDays(now, timeZone)[0];
 
   return (
     <AnswerBox
@@ -268,6 +282,21 @@ async function HijriAnswer() {
           label: `${HIJRI_MONTHS[nextMonth.month - 1]} ayının başı`,
           value: nextStart ? miladi.format(nextStart) : "Hesaplanamadı",
         },
+        ...(nextDay
+          ? [
+              {
+                label: "Sıradaki dinî gün",
+                value: (
+                  <>
+                    {nextDay.name}: {dayText(nextDay)}{" "}
+                    <a href="#dini-gunler" className="underline underline-offset-2">
+                      Bütün liste
+                    </a>
+                  </>
+                ),
+              },
+            ]
+          : []),
         {
           label: "Ramazan başlangıcı",
           value: inRamadan ? `Şu an Ramazan ayındayız (${t.day}. gün).` : fmt(nextHijri(9, 1, now), "1 Ramazan"),
@@ -457,5 +486,95 @@ async function MonthStarts() {
         ],
       }))}
     />
+  );
+}
+
+const dayMonth = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: "UTC", day: "numeric", month: "long" });
+
+/** "5 Mart 2027 Cuma akşamı", bayramlarda "9-11 Mart 2027 (Salı-Perşembe)". */
+function dayText(r: ReligiousDay): string {
+  if (r.kind === "gece") return `${miladi.format(r.date)} akşamı`;
+  if (r.days === 1) return miladi.format(r.date);
+  const last = new Date(r.date.getTime() + (r.days - 1) * DAY_MS);
+  const wd = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: "UTC", weekday: "long" });
+  const year = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: "UTC", year: "numeric" });
+  const sameMonth = r.date.getUTCMonth() === last.getUTCMonth();
+  const range = sameMonth
+    ? `${r.date.getUTCDate()}-${dayMonth.format(last)}`
+    : `${dayMonth.format(r.date)} - ${dayMonth.format(last)}`;
+  return `${range} ${year.format(last)} (${wd.format(r.date)}-${wd.format(last)})`;
+}
+
+/**
+ * Önümüzdeki 12 ayın dinî günleri (kandiller, Kadir Gecesi, Ramazan, arefeler, bayramlar, Hicri yılbaşı, Aşure).
+ * "Kadir gecesi ne zaman", "kandil ne zaman" aramalarının cevabı. Yalnız tarih verilir; dua, ibadet ya da hüküm yok.
+ * Adres parametresi okumaz, bu yüzden tablo HTML'de tam durur. Saatte bir yenilenir (sıradaki vurgusu kayar).
+ */
+async function ReligiousDays() {
+  "use cache";
+  cacheLife("hours");
+
+  const now = new Date();
+  const days = getUpcomingReligiousDays(now, timeZone);
+  const today = todayNoonUtc(now, timeZone);
+  const left = (r: ReligiousDay) => {
+    const n = Math.round((r.date.getTime() - today) / DAY_MS);
+    if (n < 0) return "Sürüyor";
+    if (n === 0) return r.kind === "gece" ? "Bu akşam" : "Bugün";
+    if (n === 1) return r.kind === "gece" ? "Yarın akşam" : "Yarın";
+    return `${n} gün`;
+  };
+  const SHOWN = 6;
+
+  return (
+    <section aria-labelledby="dini-gunler" className="mt-14">
+      <h2 id="dini-gunler" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Dinî günler: kandiller ve bayramlar ne zaman?
+      </h2>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Önümüzdeki 12 ayın kandilleri, Kadir Gecesi, Ramazan ve bayramlar. Tarihler Ümmülkurâ takvimiyle hesaplanır;
+        Diyanet&apos;in 2026 ve 2027 dinî günler listeleriyle karşılaştırdık, hepsi aynı güne düşüyor.
+        {src.ref("diyanet2027")}
+        {src.ref("diyanet2026")}
+      </p>
+      <MobileCollapse hiddenCount={Math.max(0, days.length - SHOWN)} noun="dinî gün" className="mt-6">
+        <DataTable
+          columns={["Dinî gün", "Tarih", "Hicri tarih", "Kalan"]}
+          highlight={days[0]?.id}
+          extra={(key) => days.findIndex((d) => d.id === key) >= SHOWN}
+          rows={days.map((r) => ({
+            key: r.id,
+            cells: [
+              r.name,
+              r.kind === "gece" ? (
+                <>
+                  {dayText(r)}
+                  <span className="block text-xs text-zinc-500">
+                    {dayMonth.format(new Date(r.date.getTime() + DAY_MS))} sabahına bağlayan gece
+                  </span>
+                </>
+              ) : (
+                dayText(r)
+              ),
+              `${r.hijri.day} ${HIJRI_MONTHS[r.hijri.month - 1]} ${r.hijri.year}`,
+              left(r),
+            ],
+          }))}
+        />
+      </MobileCollapse>
+      <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+        Hicri gün akşam güneş batınca başlar. Bu yüzden kandiller ve Kadir Gecesi, tabloda yazan günün akşamıdır: örneğin
+        Kadir Gecesi Ramazan&apos;ın 26. gününü 27. gününe bağlayan gecedir. Regaip Kandili, Recep ayının ilk Cuma
+        gününden önceki Perşembe akşamıdır. Ramazan&apos;ın ilk sahuru da ilk günden önceki gecededir.
+      </p>
+      <p className="mt-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+        Bu liste bilgi amaçlıdır. Türkiye&apos;de dinî günler Diyanet İşleri Başkanlığı&apos;nın takvimine göre
+        belirlenir; resmî tarih için{" "}
+        <a href="https://vakithesaplama.diyanet.gov.tr/dini_gunler.php" className="underline underline-offset-2" rel="noopener">
+          Diyanet&apos;in dinî günler sayfasına
+        </a>{" "}
+        bakın.
+      </p>
+    </section>
   );
 }

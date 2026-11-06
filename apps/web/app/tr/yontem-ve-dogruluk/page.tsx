@@ -17,13 +17,14 @@ import { ArticleFooter } from "@/components/phase/PhaseParts";
 import { Prose } from "@/components/Prose";
 import { QuickFacts } from "@/components/QuickFacts";
 import { toHijri } from "@/lib/hijri";
+import { religiousDaysOfYear } from "@/lib/hijri-calendar";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { SUPERMOON_KM } from "@/lib/supermoon";
 import { siteConfig } from "@/site.config";
 
 const PAGE = PAGES.yontem;
-const UPDATED = "2026-10-29";
+const UPDATED = "2026-11-06";
 const timeZone = siteConfig.defaultLocation.timeZone;
 const NF = new Intl.NumberFormat("tr-TR");
 
@@ -161,6 +162,29 @@ function buildChecks(): Check[] {
     result: ramadanOk ? "Aynı gün" : "Farklı gün",
     ok: ramadanOk,
     usedOn: { href: PAGES.hicriTakvim.path, label: "Hicri Takvim" },
+  });
+
+  // Diyanet'in 2026 ve 2027 dinî günler listelerindeki adlı günler (Aralık 2026 + bütün 2027), elle.
+  const DIYANET_DAYS: [string, string][] = [
+    ["uc-aylar-1448", "2026-12-10"], ["regaip-1448", "2026-12-10"], ["mirac-1448", "2027-01-04"],
+    ["berat-1448", "2027-01-22"], ["ramazan-1448", "2027-02-08"], ["kadir-1448", "2027-03-05"],
+    ["ramazan-arefe-1448", "2027-03-08"], ["ramazan-bayrami-1448", "2027-03-09"],
+    ["kurban-arefe-1448", "2027-05-15"], ["kurban-bayrami-1448", "2027-05-16"],
+    ["hicri-yilbasi-1449", "2027-06-06"], ["asure-1449", "2027-06-15"], ["mevlid-1449", "2027-08-13"],
+    ["uc-aylar-1449", "2027-11-29"], ["regaip-1449", "2027-12-02"], ["mirac-1449", "2027-12-24"],
+  ];
+  const ourDays = new Map(
+    [1448, 1449].flatMap(religiousDaysOfYear).map((r) => [r.id, r.date.toISOString().slice(0, 10)]),
+  );
+  const sameDays = DIYANET_DAYS.filter(([id, iso]) => ourDays.get(id) === iso).length;
+  checks.push({
+    topic: "Dinî günler: kandiller, Kadir Gecesi, bayramlar",
+    source: "diyanet",
+    reference: `Aralık 2026 - Aralık 2027, ${DIYANET_DAYS.length} gün`,
+    ours: `${sameDays} gün aynı`,
+    result: sameDays === DIYANET_DAYS.length ? "Hepsi aynı gün" : `${DIYANET_DAYS.length - sameDays} gün farklı`,
+    ok: sameDays === DIYANET_DAYS.length,
+    usedOn: { href: `${PAGES.hicriTakvim.path}#dini-gunler`, label: "Hicri Takvim" },
   });
 
   const voc = getVoidOfCoursePeriods(from("2026-11-04"), 1)[0];
@@ -329,8 +353,8 @@ export default function MethodPage() {
               değildir. Bizim Ankara için kullandığımız ölçüt (gün batımında ay en az 5° yüksekte, Güneş&apos;ten en
               az 8° uzakta) çoğu ay, Diyanet&apos;in takviminden bir gün sonrasını gösterir. Bu yüzden{" "}
               <Link href={PAGES.hicriTakvim.path}>Hicri tarihleri</Link> Ümmülkurâ takvimiyle veriyoruz. Bu takvim
-              Diyanet&apos;in 2027 dinî günlerinden dokuzuyla aynı güne düşüyor: Miraç, Berat, Kadir ve Mevlid
-              kandilleri, Ramazan başı, iki bayram, Hicri yılbaşı ve Aşure. Yine de resmî tarih için her zaman Diyanet&apos;e bakın.
+              Diyanet&apos;in Aralık 2026 - Aralık 2027 dinî günlerinin hepsiyle (16 gün) aynı güne düşüyor: Üç
+              Aylar, Regaip, Miraç, Berat, Kadir ve Mevlid, Ramazan başı, arefeler, iki bayram, Hicri yılbaşı ve Aşure. Yine de resmî tarih için her zaman Diyanet&apos;e bakın.
             </li>
             <li>
               <strong>Tutulmanın görünmesi:</strong> Hesap, tutulmanın o anda gökyüzünde olup olmadığını söyler. Bulut
