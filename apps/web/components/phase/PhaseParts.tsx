@@ -30,7 +30,7 @@ const CYCLE: { page: SitePage; angle: number }[] = [
   { page: PAGES.sonDordun, angle: 270 },
 ];
 
-function fmt() {
+export function fmt() {
   return {
     date: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" }),
     weekday: new Intl.DateTimeFormat(siteConfig.locale, { timeZone, weekday: "long" }),
@@ -173,9 +173,11 @@ function getPeriods(now: Date, from: PrincipalKey, to: PrincipalKey, count: numb
   // Şu an bir dönemin içinde olabileceğimiz için aramaya bir döngü öncesinden başlarız.
   const phases = getUpcomingPrincipalPhases(new Date(now.getTime() - 30 * DAY_MS), 4 * (count + 2));
   const periods: { start: Date; end: Date }[] = [];
-  for (let i = 0; i < phases.length - 1; i++) {
-    if (phases[i].key === from && phases[i + 1].key === to)
-      periods.push({ start: phases[i].date, end: phases[i + 1].date });
+  // `to` ardışık evre olmak zorunda değil (ör. yeni aydan dolunaya "büyüyen ay").
+  for (let i = 0; i < phases.length; i++) {
+    if (phases[i].key !== from) continue;
+    const end = phases.slice(i + 1).find((p) => p.key === to);
+    if (end) periods.push({ start: phases[i].date, end: end.date });
   }
   return periods.filter((p) => p.end > now).slice(0, count);
 }

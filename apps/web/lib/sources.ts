@@ -114,6 +114,15 @@ export const SOURCES = {
     note: "2027'nin resmî dinî günleri: 1 Ramazan 1448 = 8 Şubat 2027, Ramazan Bayramı 1. günü (1 Şevval) = 9 Mart 2027 ve diğerleri. Ümmülkurâ takvimiyle karşılaştırdık; Ramazan, bayramlar ve kandiller aynı günlere düşüyor.",
     group: "takvim",
   },
+  diyanet2026: {
+    // 46-48 İngilizce kolunda kullanıldı; numaralar çakışmasın diye 49.
+    no: 49,
+    title: "2026 Dinî Günler Listesi",
+    publisher: "Diyanet İşleri Başkanlığı, Vakit Hesaplama",
+    url: "https://vakithesaplama.diyanet.gov.tr/icerik.php?icerik=153",
+    note: "2026'nın resmî dinî günleri. Aralık 2026: Üç Ayların başlangıcı ve Regaip Kandili 10 Aralık 2026 Perşembe (1 Recep 1448). Ümmülkurâ takvimiyle karşılaştırdık, aynı gün.",
+    group: "takvim",
+  },
   nasaSolarCatalog: {
     no: 11,
     title: "Five Millennium Catalog of Solar Eclipses: 2001 to 2100",

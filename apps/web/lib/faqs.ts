@@ -30,6 +30,42 @@ export const FAQS = {
       a: "Ana evreler yaklaşık birer hafta arayla sırayla gelir: yeni ay, ilk dördün, dolunay, son dördün ve yeniden yeni ay. Yani ilk dördünden bir hafta sonra dolunay, iki hafta sonra son dördün gelir; dolunaydan bir hafta sonra son dördün, iki hafta sonra yeni ay gelir. Ara evrelerde de sıra aynıdır: büyüyen hilalden bir hafta sonra büyüyen şişkin ay görülür.",
     },
   ],
+  buyuyenSiskinAy: [
+    {
+      q: "Şişkin ay kaç gün sürer?",
+      a: "Büyüyen şişkin ay, ilk dördünden dolunaya kadar ortalama 7,4 gün sürer. Ayın yörüngesi tam daire olmadığı için bu süre yaklaşık 6,6 ile 8,2 gün arasında değişir (2000-2060 arasındaki 720 dönemin hesabı). Her döngüde iki şişkin dönem vardır: dolunaydan önce büyüyen, dolunaydan sonra küçülen şişkin ay. İkisi birlikte ayda yaklaşık 15 gün eder; yani ayı yarıdan fazla aydınlık gördüğümüz günler, ayın yarısı kadardır.",
+    },
+    {
+      q: "Şişkin ay ana evre midir, ara evre midir?",
+      a: "Ara evredir. Ana evreler anlık olan dört evredir: yeni ay, ilk dördün, dolunay ve son dördün. Hilal ve şişkin ay, bu anların arasında kalan günlerin adıdır. Büyüyen şişkin ay ilk dördün ile dolunay arasında görülür.",
+    },
+  ],
+  kuculenSiskinAy: [
+    {
+      q: "Şişkin ay hangi ana evreler arasında görülür?",
+      a: "Her döngüde iki kez. Büyüyen şişkin ay ilk dördün ile dolunay arasında, küçülen şişkin ay dolunay ile son dördün arasında görülür. İkisi de yaklaşık birer hafta sürer. Ayın yarıdan fazlası aydınlıktır ama tam yuvarlak değildir; farkları, karanlık şeridin hangi kenarda olduğudur.",
+      link: { href: PAGES.buyuyenSiskinAy.path, label: "Büyüyen şişkin ay" },
+    },
+    {
+      q: "Küçülen şişkin aydan sonra hangi evre gelir?",
+      a: "Son dördün. Küçülen şişkin ay, dolunaydan yaklaşık bir hafta sonra son dördüne ulaşınca ayın tam yarısı aydınlık kalır. Ardından küçülen hilal gelir ve yaklaşık iki hafta sonra döngü yeni ayla yeniden başlar.",
+      link: { href: PAGES.sonDordun.path, label: "Son dördün" },
+    },
+    {
+      q: "Küçülen şişkin ayın diğer adı ve İngilizcesi ne?",
+      a: "Ders kitaplarında ve sitelerde \"son şişkin ay\" adıyla da geçer; dolunaydan önceki eşine \"ilk şişkin ay\" denir. İngilizcesi \"waning gibbous\"tır: \"waning\" küçülen, \"gibbous\" şişkin demektir. Emojisi 🌖.",
+    },
+  ],
+  sonDordun: [
+    {
+      q: "Son dördün kaç gün sürer?",
+      a: "Son dördün tek bir andır: ayın tam yarısının aydınlık olduğu dakika. Takvimlerde o anın düştüğü günün tamamı \"son dördün\" diye geçer. Gözle bakınca ay bir gün önce ve bir gün sonra da yarım gibi görünür, çünkü aydınlık oran bu sırada günde yalnızca 10 puan kadar değişir (bir gün önce yüzde 60 kadar, bir gün sonra yüzde 40 kadar). Bir sonraki ana evre olan yeni aya ortalama 7,4 gün vardır.",
+    },
+    {
+      q: "Son dördünün İngilizcesi ne?",
+      a: "\"Last quarter\" ya da \"third quarter\". NASA iki adı da kullanır. Emojisi 🌗 (last quarter moon) şeklindedir; ilk dördünün emojisi ise 🌓.",
+    },
+  ],
   ayTutulmalari: [
     {
       q: "Ay tutulması Almanya'da Türkiye ile aynı anda mı olur?",

@@ -7,9 +7,11 @@ const nextConfig: NextConfig = {
     // Her dilin ayrı kök düzeni var (app/tr, app/en); hiçbir rotaya uymayan adresler için ortak 404.
     globalNotFound: true,
   },
-  // Kök adres Türkçe ana sayfaya gider. Geçici (307): ileride dile göre yönlendirmeye çevrilebilir.
+  // Kök adres Türkçe ana sayfaya KALICI (308) yönlenir: geçici (307) yönlendirmede Google ana sayfayı
+  // "lunatlas.com/" olarak dizinde tutuyordu (Search Console, 5 Kasım 2026). İngilizce yayına çıkınca
+  // kökün ne yapacağına yeniden karar verilecek (ingilizce kolunda şimdilik geçici yönlendirme var).
   async redirects() {
-    return [{ source: "/", destination: "/tr", permanent: false }];
+    return [{ source: "/", destination: "/tr", permanent: true }];
   },
   cacheComponents: true,
   // Cloudflare Workers'ta süresi dolan sayfanın sunucuda yeniden üretimi takılıyor (Next "setTimeout" uyarısı,

@@ -170,72 +170,97 @@ async function MonthCalendar({ year, month }: { year: number; month: number }) {
           ))}
         </ul>
 
-        {/* Masaüstü: takvim ızgarası */}
-        <div className="mt-8 hidden md:block">
-          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-wider text-zinc-500">
-            {WEEKDAYS.map((w) => (
-              <div key={w}>{w}</div>
-            ))}
+        {/* Takvim, koyu giriş alanının üstünde beyaz kartta: ayın karanlık yanı açık zeminde seçilir. */}
+        <div className="mt-8 rounded-3xl bg-white p-2 text-zinc-900 shadow-2xl shadow-black/40 sm:p-4">
+          {/* Masaüstü: takvim ızgarası */}
+          <div className="hidden md:block">
+            <div className="grid grid-cols-7 gap-2 pb-1 text-center text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              {WEEKDAYS.map((w) => (
+                <div key={w}>{w}</div>
+              ))}
+            </div>
+            <ol className="mt-2 grid grid-cols-7 gap-2">
+              {days.map((d) => (
+                <li
+                  key={d.day}
+                  style={d.day === 1 ? { gridColumnStart: d.weekday + 1 } : undefined}
+                  className={`flex flex-col items-center gap-1 rounded-xl px-1 pb-2.5 pt-1.5 ${
+                    d.principal ? "border-2 border-indigo-500 bg-indigo-50" : "border border-zinc-200 bg-white"
+                  } ${isToday(d) ? "ring-2 ring-indigo-600 ring-offset-2" : ""}`}
+                  aria-current={isToday(d) ? "date" : undefined}
+                >
+                  <span className="flex w-full items-center justify-between px-1">
+                    <span className="text-sm font-bold tabular-nums">{d.day}</span>
+                    {isToday(d) && (
+                      <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[0.65rem] font-bold text-white">
+                        Bugün
+                      </span>
+                    )}
+                  </span>
+                  <MoonPhaseIcon phaseAngle={d.phase.phaseAngle} size={72} title={`${d.day}: ${d.phase.name}`} />
+                  {d.principal ? (
+                    <span className="text-center text-[0.72rem] font-bold leading-tight text-indigo-700">
+                      {d.principal.name}
+                      <span className="block tabular-nums">{time.format(d.principal.date)}</span>
+                    </span>
+                  ) : (
+                    <span className="flex min-h-[2.1em] items-center text-center text-[0.72rem] font-medium leading-tight text-zinc-700">
+                      {d.phase.name}
+                    </span>
+                  )}
+                  <IlluminationPill value={d.phase.illumination} />
+                </li>
+              ))}
+            </ol>
           </div>
-          <ol className="mt-2 grid grid-cols-7 gap-2">
+
+          {/* Telefon: gün gün liste */}
+          <ol className="divide-y divide-zinc-200 md:hidden">
             {days.map((d) => (
               <li
                 key={d.day}
-                style={d.day === 1 ? { gridColumnStart: d.weekday + 1 } : undefined}
-                className={`flex flex-col items-center rounded-xl px-1 pb-2 pt-1.5 ${
-                  d.principal
-                    ? "bg-indigo-500/15 ring-1 ring-indigo-400/60"
-                    : isToday(d)
-                      ? "bg-white/10 ring-1 ring-white/40"
-                      : "bg-white/[0.03]"
+                className={`flex items-center gap-3 px-3 py-2 ${
+                  d.principal ? "rounded-xl bg-indigo-50" : isToday(d) ? "rounded-xl bg-zinc-100" : ""
                 }`}
                 aria-current={isToday(d) ? "date" : undefined}
               >
-                <span className="self-start pl-1 text-sm font-semibold tabular-nums text-zinc-300">
-                  {d.day}
-                  {isToday(d) && <span className="ml-1 text-[0.65rem] font-medium uppercase text-white">Bugün</span>}
+                <span className="w-12 shrink-0 leading-tight">
+                  <span className="block font-bold tabular-nums">{d.day}</span>
+                  <span className="block text-xs text-zinc-500">{WEEKDAYS[d.weekday]}</span>
                 </span>
-                <MoonPhaseIcon phaseAngle={d.phase.phaseAngle} size={52} title={`${d.day}: ${d.phase.name}`} />
-                <span className="mt-1 text-xs tabular-nums text-zinc-400">
-                  %{Math.round(d.phase.illumination * 100)}
-                </span>
-                {d.principal && (
-                  <span className="mt-0.5 text-center text-[0.7rem] font-semibold leading-tight text-indigo-200">
-                    {d.principal.name} {time.format(d.principal.date)}
+                <MoonPhaseIcon phaseAngle={d.phase.phaseAngle} size={44} title={d.phase.name} />
+                <span className="min-w-0 flex-1 leading-tight">
+                  <span className={`block text-sm ${d.principal ? "font-bold text-indigo-700" : "text-zinc-800"}`}>
+                    {d.principal ? `${d.principal.name} · ${time.format(d.principal.date)}` : d.phase.name}
                   </span>
-                )}
+                  {isToday(d) && (
+                    <span className="mt-0.5 inline-block rounded-full bg-indigo-600 px-2 py-0.5 text-[0.65rem] font-bold text-white">
+                      Bugün
+                    </span>
+                  )}
+                </span>
+                <IlluminationPill value={d.phase.illumination} />
               </li>
             ))}
           </ol>
         </div>
-
-        {/* Telefon: gün gün liste */}
-        <ol className="mt-8 divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 md:hidden">
-          {days.map((d) => (
-            <li
-              key={d.day}
-              className={`flex items-center gap-3 px-4 py-2.5 ${
-                d.principal ? "bg-indigo-500/15" : isToday(d) ? "bg-white/10" : ""
-              }`}
-            >
-              <span className="w-14 shrink-0 leading-tight">
-                <span className="block font-semibold tabular-nums">{d.day}</span>
-                <span className="block text-xs text-zinc-500">{WEEKDAYS[d.weekday]}</span>
-              </span>
-              <MoonPhaseIcon phaseAngle={d.phase.phaseAngle} size={36} title={d.phase.name} />
-              <span className="min-w-0 flex-1 leading-tight">
-                <span className={`block text-sm ${d.principal ? "font-semibold text-indigo-200" : "text-zinc-200"}`}>
-                  {d.principal ? `${d.principal.name} · ${time.format(d.principal.date)}` : d.phase.name}
-                </span>
-                {isToday(d) && <span className="text-xs font-medium uppercase text-white">Bugün</span>}
-              </span>
-              <span className="text-sm tabular-nums text-zinc-400">%{Math.round(d.phase.illumination * 100)}</span>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
+}
+
+/** Aydınlık oranı rozeti: renk arttıkça ısınır (karanlık gri → mor → sarı), göz takvimi hızlı tarar. */
+function IlluminationPill({ value }: { value: number }) {
+  const pct = Math.round(value * 100);
+  const tone =
+    pct < 25
+      ? "bg-zinc-100 text-zinc-700"
+      : pct < 50
+        ? "bg-indigo-100 text-indigo-800"
+        : pct < 75
+          ? "bg-amber-100 text-amber-900"
+          : "bg-amber-300 text-amber-950";
+  return <span className={`rounded-full px-2 py-0.5 text-xs font-bold tabular-nums ${tone}`}>%{pct}</span>;
 }
 
 /** Açıklama metni; içindeki tarihler (mavi ay, 19 yıllık döngü örneği) hesaplanır. */

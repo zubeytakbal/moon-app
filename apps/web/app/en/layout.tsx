@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   title: siteConfig.name,
   robots: indexable ? undefined : { index: false, follow: false },
   twitter: { card: "summary_large_image" },
+  // AdSense sahiplik etiketi (yalnız meta; kod yok). Hiçbir sayfa kendi `other` alanını tanımlamamalı, yoksa bu ezilir.
+  other: { "google-adsense-account": siteConfig.adsenseClient },
 };
 
 /** İngilizce sürümün kök düzeni (Amerikan İngilizcesi; bkz. CLAUDE.md). */
