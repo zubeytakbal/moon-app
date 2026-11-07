@@ -33,7 +33,7 @@ export const siteConfig = {
    */
   languages: [
     { code: "tr", label: "Türkçe", home: "/tr", locale: "tr-TR", tagline: "Ay rehberi", published: true },
-    { code: "en", label: "English", home: "/en", locale: "en-US", tagline: "Moon guide", published: false },
+    { code: "en", label: "English", home: "/en", locale: "en-US", tagline: "Moon guide", published: true },
   ],
   defaultLocation: findProvince("istanbul") as Province,
 } as const;
