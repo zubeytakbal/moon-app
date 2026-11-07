@@ -41,6 +41,10 @@ export const SOURCES = {
     url: "https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html",
     note: "Ay tutulmalarının tarihleri, türleri (tam, parçalı, yarı gölge) ve büyüklükleri; örneğin 2027'deki üç tutulmanın da yarı gölge tutulması olduğu, 18 Temmuz 2027'nin büyüklüğünün yalnız 0,0014 olduğu. Saatlerimizi bu katalogla karşılaştırıyoruz.",
     group: "tutulma",
+    en: {
+      publisher: "Fred Espenak, NASA Goddard Space Flight Center",
+      note: "Dates, types (total, partial, penumbral) and magnitudes of every lunar eclipse from 2001 to 2100; all three lunar eclipses of 2027 are penumbral. We compare our times with this catalog.",
+    },
   },
   nasaEclipseTypes: {
     no: 2,
@@ -57,6 +61,9 @@ export const SOURCES = {
     url: "https://eclipse.gsfc.nasa.gov/OH/Danjon.html",
     note: "Danjon ölçeğinin beş basamağı (L0-L4); atmosferin Güneş ışığını gölgeye kırması; büyük yanardağ patlamalarından sonra tutulmaların birkaç yıl çok karanlık geçmesi.",
     group: "tutulma",
+    en: {
+      note: "The five steps of the Danjon scale (L0 to L4) for how dark a total lunar eclipse is; Earth's atmosphere bends sunlight into the shadow; after big volcanic eruptions, eclipses can be very dark for a few years.",
+    },
   },
   usnoMoonPhases: {
     no: 4,
@@ -525,6 +532,18 @@ export const SOURCES = {
     en: {
       publisher: "NASA, Eclipse 2017 website (Web Archive copy)",
       note: "The ideas that an eclipse harms pregnant women or the unborn baby, and that food prepared during an eclipse is poisoned, are false; the light of the corona is harmless, and the real danger is looking at the bright solar surface before totality.",
+    },
+  },
+  nasaLunarEclipseGuide: {
+    no: 54,
+    title: "What You Need to Know about the Lunar Eclipse",
+    publisher: "NASA, moon.nasa.gov (2019, Web Archive kopyası)",
+    url: "https://web.archive.org/web/2019/https://moon.nasa.gov/news/172/what-you-need-to-know-about-the-lunar-eclipse/",
+    note: "Ay tutulmasını izlemek için özel bir araç gerekmediği (dürbün ve teleskop görüntüyü ve kızıllığı güzelleştirir); ayın, ona ulaşan tek Güneş ışığı Dünya atmosferinden geçtiği için kızardığı, atmosferde toz ve bulut arttıkça daha kızıl görüneceği, \"dünyadaki bütün gün doğumları ve batımları aya yansıtılmış gibi\" olduğu.",
+    group: "tutulma",
+    en: {
+      publisher: "NASA, moon.nasa.gov (2019, Web Archive copy)",
+      note: "No special equipment is needed to watch a lunar eclipse, though binoculars or a telescope enhance the view and the red color; the Moon turns red because the only sunlight reaching it passes through Earth's atmosphere, and the more dust or clouds there are, the redder it looks: as if all the world's sunrises and sunsets were projected onto the Moon.",
     },
   },
 } as const satisfies Record<string, Source>;

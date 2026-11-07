@@ -40,6 +40,16 @@ export const EN_SOURCES_PATH = "/en/sources";
 export const EN_METHOD_PATH = "/en/methodology";
 
 export const EN_PAGES = {
+  lunarEclipse: {
+    path: "/en/lunar-eclipse",
+    title: "Lunar Eclipses and Blood Moons",
+    navLabel: "Lunar Eclipses",
+    group: "eclipses",
+    featured: true,
+    description: "The next lunar eclipse and blood moon you can see from your city, with local times for every stage, and every lunar eclipse to 2030.",
+    cardPhaseAngle: 180,
+    tr: "/tr/ay-tutulmalari",
+  },
   solarEclipse: {
     path: "/en/solar-eclipse",
     title: "Solar Eclipses",
@@ -88,7 +98,8 @@ type EnPageKey = keyof typeof EN_PAGES;
 
 /** Her sayfanın altında önerilen ilgili sayfalar (elle seçilir). */
 export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
-  solarEclipse: ["fullMoon", "sunriseSunset"],
+  lunarEclipse: ["solarEclipse", "fullMoon"],
+  solarEclipse: ["lunarEclipse", "fullMoon"],
   fullMoon: ["moonPhaseToday", "solarEclipse"],
   moonPhaseToday: ["fullMoon", "sunriseSunset"],
   sunriseSunset: ["moonPhaseToday", "fullMoon"],

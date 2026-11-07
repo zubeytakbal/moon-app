@@ -69,4 +69,16 @@ export const EN_FAQS = {
       a: "In a solar eclipse the moon passes between the sun and Earth and blocks the sun; it can only happen at new moon, lasts a few hours and is seen from a limited part of the world. In a lunar eclipse Earth passes between the sun and the moon, and Earth's shadow darkens the full moon, often turning it red; it happens at full moon and is visible from the whole night side of Earth at once. A lunar eclipse is safe to watch with the naked eye; a solar eclipse never is, except during totality.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-06-en-{us,in,gb,au}-solar-eclipse_*.csv içindeki ay tutulması soruları
+  // ("how long does a lunar eclipse last", "blood moon when is the next one", "how often"). Sayılar 2026-2045 hesabımız.
+  lunarEclipse: [
+    {
+      q: "How long does a lunar eclipse last?",
+      a: "A total lunar eclipse takes about five and a half to six hours from the first faint dimming to the end, but the parts you really notice are shorter: the moon is partly in Earth's dark shadow for about three and a half hours, and fully red for usually 45 minutes to an hour and a half. The blood moon of June 26, 2029 is a long one, red for about 1 hour 43 minutes.",
+    },
+    {
+      q: "How often is there a blood moon?",
+      a: "By our count there are 17 total lunar eclipses between 2026 and 2045, a little under one a year on average, but they come unevenly: there are two in 2029 and none at all in 2027. Any one place sees only some of them, because the moon has to be above your horizon at the time.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;
