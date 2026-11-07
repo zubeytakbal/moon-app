@@ -2,13 +2,30 @@
 
 import { useState } from "react";
 
-/** Telefon ekranına uygun dikey kart (9:16). */
-const W = 1080;
-const H = 1920;
-/** Ayın kart üzerindeki merkezi ve yarıçapı. */
-const CX = W / 2;
-const CY = 820;
-const R = 410;
+/**
+ * İki biçim: telefon duvar kâğıdı (9:16, 1080x1920) ve yazdırılabilir A4 poster (300 dpi, 2480x3508). Çizim her ikisinde
+ * de 1080 piksel genişliğinde sanal bir düzende yapılır; poster tuvali `scale` ile büyütülür.
+ */
+type Format = "phone" | "print";
+interface Layout {
+  W: number;
+  H: number;
+  CX: number;
+  CY: number;
+  R: number;
+  /** Gerçek tuval boyutu / sanal düzen. */
+  scale: number;
+  titleY: number;
+  dateY: number;
+  phaseGap: number;
+  detailGap: number;
+  fullGap: number;
+  footer: number;
+}
+const LAYOUTS: Record<Format, Layout> = {
+  phone: { W: 1080, H: 1920, CX: 540, CY: 820, R: 410, scale: 1, titleY: 190, dateY: 262, phaseGap: 190, detailGap: 270, fullGap: 400, footer: 130 },
+  print: { W: 1080, H: 1527, CX: 540, CY: 660, R: 360, scale: 2480 / 1080, titleY: 150, dateY: 218, phaseGap: 160, detailGap: 232, fullGap: 340, footer: 100 },
+};
 
 /**
  * "Doğduğum gün ay nasıldı" sonucunu indirilebilir bir görsele çevirir (duvar kâğıdı / paylaşım).
@@ -23,7 +40,10 @@ export function MoonCardDownload({
   fullMoonName,
   fileName,
   lang = "tr",
+  print = false,
 }: {
+  /** Yazdırılabilir A4 poster düğmesini de göster. */
+  print?: boolean;
   /** Görseldeki ve düğmedeki yazıların dili. */
   lang?: "tr" | "en";
   phaseAngle: number;
@@ -36,18 +56,19 @@ export function MoonCardDownload({
   /** Uzantısız dosya adı. */
   fileName: string;
 }) {
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<Format | null>(null);
   const [failed, setFailed] = useState(false);
+  const en = lang === "en";
 
-  async function download() {
-    setBusy(true);
+  async function download(format: Format) {
+    setBusy(format);
     setFailed(false);
     try {
-      const blob = await drawCard({ phaseAngle, dateLabel, phaseName, detail, fullMoonName, lang });
+      const blob = await drawCard({ phaseAngle, dateLabel, phaseName, detail, fullMoonName, lang }, LAYOUTS[format]);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${fileName}.png`;
+      a.download = `${fileName}${format === "print" ? "-poster-a4" : ""}.png`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -55,23 +76,33 @@ export function MoonCardDownload({
     } catch {
       setFailed(true);
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   }
 
+  const button =
+    "inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:opacity-60";
+  const preparing = en ? "Preparing…" : "Hazırlanıyor…";
+  const icon = (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+    </svg>
+  );
+
   return (
     <div>
-      <button
-        type="button"
-        onClick={download}
-        disabled={busy}
-        className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:opacity-60"
-      >
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
-        </svg>
-        {busy ? (lang === "en" ? "Preparing…" : "Hazırlanıyor…") : lang === "en" ? "Download image" : "Görseli indir"}
-      </button>
+      <div className="flex flex-wrap gap-3">
+        <button type="button" onClick={() => download("phone")} disabled={busy !== null} className={button}>
+          {icon}
+          {busy === "phone" ? preparing : print ? (en ? "Phone wallpaper" : "Telefon duvar kâğıdı") : en ? "Download image" : "Görseli indir"}
+        </button>
+        {print && (
+          <button type="button" onClick={() => download("print")} disabled={busy !== null} className={button}>
+            {icon}
+            {busy === "print" ? preparing : en ? "Printable poster (A4)" : "Yazdırılabilir poster (A4)"}
+          </button>
+        )}
+      </div>
       {failed && (
         <p className="mt-2 text-sm text-red-300">
           {lang === "en" ? "The image couldn't be created. Reload the page and try again." : "Görsel hazırlanamadı. Sayfayı yenileyip tekrar deneyin."}
@@ -91,7 +122,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 /** Rastgele görünen ama her seferinde aynı yıldızlar (aynı tarih aynı kartı versin). */
-function stars(ctx: CanvasRenderingContext2D) {
+function stars(ctx: CanvasRenderingContext2D, { W, H, CX, CY, R }: Layout) {
   let seed = 7;
   const rnd = () => {
     seed = (seed * 16807) % 2147483647;
@@ -130,14 +161,16 @@ async function drawCard(o: {
   detail: string;
   fullMoonName?: string;
   lang?: "tr" | "en";
-}): Promise<Blob> {
+}, L: Layout): Promise<Blob> {
   const en = o.lang === "en";
+  const { W, H, CX, CY, R } = L;
   const [moon] = await Promise.all([loadImage("/moon/full-moon-2000.webp"), document.fonts?.ready]);
   const canvas = document.createElement("canvas");
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = Math.round(W * L.scale);
+  canvas.height = Math.round(H * L.scale);
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas");
+  ctx.scale(L.scale, L.scale);
   const font = getComputedStyle(document.body).fontFamily || "sans-serif";
 
   // Arka plan: sitenin koyu uzay tonu, hafif yıldızlar.
@@ -146,7 +179,7 @@ async function drawCard(o: {
   bg.addColorStop(1, "#0b1020");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
-  stars(ctx);
+  stars(ctx, L);
 
   // Ayın etrafındaki hafif hale.
   const glow = ctx.createRadialGradient(CX, CY, R * 0.9, CX, CY, R * 1.35);
@@ -163,7 +196,7 @@ async function drawCard(o: {
   ctx.drawImage(moon, CX - R, CY - R, R * 2, R * 2);
   // Gölge: küçük bir tuvalde çizilip büyütülür; böylece kenarı her tarayıcıda yumuşak olur
   // (Safari tuvalde bulanıklaştırma filtresini desteklemiyor).
-  const s = 1 / 10;
+  const s = 1 / (10 * L.scale);
   const small = document.createElement("canvas");
   small.width = Math.ceil(R * 2 * s) + 8;
   small.height = small.width;
@@ -181,20 +214,20 @@ async function drawCard(o: {
   ctx.textAlign = "center";
   ctx.fillStyle = "#a5b4fc";
   ctx.font = `600 34px ${font}`;
-  ctx.fillText(en ? "MY BIRTHDAY MOON" : "DOĞDUĞUM GÜN AY", CX, 190);
+  ctx.fillText(en ? "MY BIRTHDAY MOON" : "DOĞDUĞUM GÜN AY", CX, L.titleY);
   ctx.fillStyle = "#e4e4e7";
   ctx.font = `400 44px ${font}`;
-  fitText(ctx, o.dateLabel, CX, 262, W - 120);
+  fitText(ctx, o.dateLabel, CX, L.dateY, W - 120);
 
   ctx.fillStyle = "#ffffff";
   ctx.font = `700 104px ${font}`;
-  fitText(ctx, o.phaseName, CX, CY + R + 190, W - 120);
+  fitText(ctx, o.phaseName, CX, CY + R + L.phaseGap, W - 120);
   ctx.fillStyle = "#d4d4d8";
   ctx.font = `300 50px ${font}`;
-  fitText(ctx, o.detail, CX, CY + R + 270, W - 120);
+  fitText(ctx, o.detail, CX, CY + R + L.detailGap, W - 120);
 
   if (o.fullMoonName) {
-    const y = CY + R + 400;
+    const y = CY + R + L.fullGap;
     ctx.font = `500 44px ${font}`;
     const label = `${en ? "Birth full moon" : "Doğum dolunayı"}: ${o.fullMoonName}`;
     const tw = Math.min(ctx.measureText(label).width, W - 160);
@@ -210,10 +243,10 @@ async function drawCard(o: {
 
   ctx.fillStyle = "#e4e4e7";
   ctx.font = `500 40px ${font}`;
-  ctx.fillText("lunatlas.com", CX, H - 130);
+  ctx.fillText("lunatlas.com", CX, H - L.footer);
   ctx.fillStyle = "#71717a";
   ctx.font = `400 26px ${font}`;
-  ctx.fillText(`${en ? "Moon image" : "Ay fotoğrafı"}: NASA Scientific Visualization Studio`, CX, H - 80);
+  ctx.fillText(`${en ? "Moon image" : "Ay fotoğrafı"}: NASA Scientific Visualization Studio`, CX, H - L.footer + 50);
 
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob"))), "image/png"),

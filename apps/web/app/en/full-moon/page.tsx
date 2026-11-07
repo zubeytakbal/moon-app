@@ -148,6 +148,11 @@ async function YearNotes() {
   const supers = withKm.filter((x) => x.km < SUPERMOON_KM);
   const harvest = moons.find((m) => names.get(m.date.getTime()) === "Harvest Moon");
   const blue = moons.find((m) => names.get(m.date.getTime()) === "Blue Moon");
+  // Yeni aylar: süper yeni ay (yakınberiye yakın) ve kara ay (aynı takvim ayındaki ikinci yeni ay), ABD Doğu saatiyle.
+  const newMoons = getUpcomingPrincipalPhases(new Date(Date.UTC(year - 1, 11, 20)), 60)
+    .filter((p) => p.key === "new-moon" && localDateParts(p.date, NY.timeZone).year === year);
+  const superNew = newMoons.filter((p) => getMoonDistanceKm(p.date) < SUPERMOON_KM);
+  const blackMoon = newMoons.find((p, i) => i > 0 && localDateParts(p.date, NY.timeZone).month === localDateParts(newMoons[i - 1].date, NY.timeZone).month);
   const nextBlue = blue ? null : getNextBlueMoon(new Date(Date.UTC(year + 1, 0, 1)), NY.timeZone);
   const eclipses = getUpcomingLunarEclipses(new Date(Date.UTC(year, 0, 1)), 4).filter(
     (e) => localDateParts(e.peak, NY.timeZone).year === year,
@@ -184,6 +189,14 @@ async function YearNotes() {
             {blue
               ? `yes, on ${md.format(blue.date)}, the second full moon of the month.`
               : `none this year${nextBlue ? `; the next one is on ${mdy.format(nextBlue.date)}` : ""}.`}
+          </li>
+          <li>
+            <strong>Super new moons:</strong>{" "}
+            {superNew.length
+              ? `${superNew.map((p) => md.format(p.date)).join(", ")}. You can't see a new moon, but when it is this close, tides run a little higher than usual.`
+              : "none this year."}{" "}
+            <strong>Black Moon</strong> (a second new moon in one calendar month):{" "}
+            {blackMoon ? `${md.format(blackMoon.date)}.` : "none this year."}
           </li>
           <li>
             <strong>Lunar eclipses:</strong>{" "}

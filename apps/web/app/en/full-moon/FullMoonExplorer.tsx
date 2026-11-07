@@ -176,6 +176,12 @@ function AnswerSection({
       <h2 id="next" data-toc-label="Next full moon" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
         When is the next full moon in {label}?
       </h2>
+      {/* Tek cümlelik düz cevap: arama motorlarının ve yapay zekâ cevaplarının alıntılayabileceği biçimde. */}
+      <p className="mt-2 text-lg text-zinc-700 dark:text-zinc-300">
+        The next full moon is on {fmt.long.format(next.moon.date)}, at {fmt.time(next.moon.date)} local time
+        {next.name ? `: the ${next.name}` : ""}
+        {next.km < SUPERMOON_KM ? ", a supermoon" : ""}.
+      </p>
       <div className="mt-6 grid items-center gap-8 rounded-3xl bg-[#05070d] p-6 text-white sm:p-8 md:grid-cols-[auto_1fr]">
         <div className="mx-auto w-[min(60vw,220px)]">
           <MoonPhaseIcon phaseAngle={180} size={220} glow title={`${next.name}, ${fmt.short.format(next.moon.date)}`} />

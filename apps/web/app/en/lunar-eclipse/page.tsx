@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { enPageOpenGraph } from "@/lib/og";
 import Image from "next/image";
 import { cacheLife } from "next/cache";
-import { getUpcomingLunarEclipses, localDateParts, type LunarEclipse } from "@moon-app/moon";
+import { getLunarEclipseVisibilityGrid, getUpcomingLunarEclipses, localDateParts, type LunarEclipse } from "@moon-app/moon";
+import { EclipseVisibilityMap } from "@/components/EclipseVisibilityMap";
 import { BreadcrumbTrail } from "@/components/Breadcrumb";
 import { Byline } from "@/components/Byline";
 import { EnArticleFooter } from "@/components/en/EnArticleFooter";
@@ -53,6 +54,7 @@ export default function LunarEclipsePage() {
         links={[
           { href: "#your-city", label: "From your city" },
           { href: "#this-year", label: "Blood moon this year?" },
+          { href: "#maps", label: "Where visible" },
           { href: "#all-eclipses", label: "All eclipses to 2030" },
           { href: "#world", label: "World" },
           { href: "#why-red", label: "Why red?" },
@@ -62,6 +64,7 @@ export default function LunarEclipsePage() {
       <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
         <Explorer />
         <ThisYear />
+        <WhereVisible />
         <AllEclipses />
         <WorldTable />
         <div className="mx-auto max-w-3xl">
@@ -154,6 +157,47 @@ async function ThisYear() {
         {src.ref("nasaLunarCatalog")}
       </p>
       <p className="mt-3 text-zinc-600 dark:text-zinc-400">Dates in UTC; in the Americas the same eclipse can fall on the evening before.</p>
+    </section>
+  );
+}
+
+/** Sıradaki 3 ay tutulmasının dünya görünürlük haritası ve geri sayım. Günde bir (harita hesabı hafif). */
+async function WhereVisible() {
+  "use cache";
+  cacheLife("days");
+
+  const now = new Date();
+  const list = getUpcomingLunarEclipses(now, 3);
+  const md = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "long", day: "numeric", year: "numeric" });
+  const time = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  return (
+    <section aria-labelledby="maps" className="mt-14">
+      <h2 id="maps" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Where the next lunar eclipses are visible
+      </h2>
+      <p className="mt-2 max-w-3xl text-zinc-600 dark:text-zinc-400">
+        A lunar eclipse can be seen from anywhere the moon is above the horizon at the time: roughly the half of Earth
+        that is in night. The maps shade where the whole eclipse is visible and where the moon rises or sets during it.
+      </p>
+      <div className="mt-6 space-y-6">
+        {list.map((e) => {
+          const days = Math.ceil((e.peak.getTime() - now.getTime()) / 86_400_000);
+          return (
+            <article key={e.peak.getTime()} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5 dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                <h3 className="text-lg font-semibold">
+                  {md.format(e.peak)}: {KIND[e.kind].toLowerCase()} lunar eclipse
+                  {e.kind === "total" && <span className="ml-2 text-sm font-medium text-red-700 dark:text-red-300">blood moon, {totalMinutes(e)} min</span>}
+                </h3>
+                <span className="text-sm text-zinc-500">
+                  greatest {time.format(e.peak)} UTC · in {days} days
+                </span>
+              </div>
+              <EclipseVisibilityMap grid={getLunarEclipseVisibilityGrid(e, 3)} title={`Where the lunar eclipse of ${md.format(e.peak)} is visible`} />
+            </article>
+          );
+        })}
+      </div>
     </section>
   );
 }

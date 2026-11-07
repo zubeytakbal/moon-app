@@ -154,3 +154,42 @@ export function getUpcomingLunarApsides(from: Date, count: number): LunarApsis[]
   }
   return result;
 }
+
+/** Ay tutulması görünürlük ızgarası: her hücre için 0 (görülmez), 1 (bir kısmı), 2 (tamamı). */
+export interface LunarVisibilityGrid {
+  /** Hücre boyu (derece). Satır 0 kuzey kutbundan başlar (enlem 90 − step/2), sütun 0 boylam −180'den. */
+  step: number;
+  rows: number[][];
+}
+
+/**
+ * Tutulmanın gözle fark edilen evresi (parçalı varsa o, yoksa yarı gölge) boyunca 7 anda ayın yerin merkezinden
+ * görünen konumu bir kez hesaplanır; her hücrede yükseklik basit küresel trigonometriyle bulunur (ufuk −0,8°: kırılma
+ * ve ay yarıçapı). Dünya haritasında "nereden görülür" taraması için; tek şehir için `lunarVisibility` daha hassastır.
+ */
+export function getLunarEclipseVisibilityGrid(e: LunarEclipse, step = 3): LunarVisibilityGrid {
+  const sd = e.semiDurationMinutes.partial > 0 ? e.semiDurationMinutes.partial : e.semiDurationMinutes.penumbral;
+  const samples = 7;
+  const RAD = Math.PI / 180;
+  const pos = Array.from({ length: samples }, (_, i) => {
+    const t = new Date(e.peak.getTime() + (-sd + (2 * sd * i) / (samples - 1)) * 60_000);
+    const eq = Astronomy.Equator(Astronomy.Body.Moon, t, new Astronomy.Observer(0, 0, 0), true, true);
+    return { ra: eq.ra * 15, dec: eq.dec * RAD, gst: Astronomy.SiderealTime(t) * 15 };
+  });
+  const minSin = Math.sin(-0.8 * RAD);
+  const rows: number[][] = [];
+  for (let lat = 90 - step / 2; lat > -90; lat -= step) {
+    const phi = lat * RAD;
+    const row: number[] = [];
+    for (let lon = -180 + step / 2; lon < 180; lon += step) {
+      let up = 0;
+      for (const p of pos) {
+        const h = (p.gst + lon - p.ra) * RAD;
+        if (Math.sin(phi) * Math.sin(p.dec) + Math.cos(phi) * Math.cos(p.dec) * Math.cos(h) > minSin) up++;
+      }
+      row.push(up === 0 ? 0 : up === samples ? 2 : 1);
+    }
+    rows.push(row);
+  }
+  return { step, rows };
+}

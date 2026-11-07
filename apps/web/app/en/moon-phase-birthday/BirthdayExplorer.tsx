@@ -207,11 +207,12 @@ export function BirthdayExplorer({ initialNow }: { initialNow: string }) {
                 detail={`${pct}% lit · ${me.phase.isWaxing ? "waxing" : "waning"}`}
                 fullMoonName={me.fullName}
                 fileName={`birthday-moon-${dayKey}`}
+                print
               />
             </div>
             <p className="mt-3 max-w-md text-xs text-zinc-500">
-              The image is phone-wallpaper size (1080 × 1920). The moon picture is NASA&apos;s public-domain rendering of
-              that phase.
+              Free to download: a phone wallpaper (1080 × 1920) or an A4 poster at print quality (300 dpi). The moon
+              picture is NASA&apos;s public-domain rendering of that phase.
             </p>
           </div>
         </div>

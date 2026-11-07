@@ -82,7 +82,7 @@ export function LunarExplorer({ initialNow }: { initialNow: string }) {
         <h2 id="your-city" data-toc-label="From your city" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
           The next lunar eclipse you can see from {label}
         </h2>
-        {next ? <EclipseCard found={next} fmt={fmt} place={place} /> : <p className="mt-6">No lunar eclipse visible from here in the next ten years.</p>}
+        {next ? <EclipseCard found={next} fmt={fmt} place={place} now={now} /> : <p className="mt-6">No lunar eclipse visible from here in the next ten years.</p>}
 
         <div className="mt-6 rounded-2xl border border-red-200 bg-red-50/60 p-5 dark:border-red-900 dark:bg-red-950/30">
           <h3 className="text-lg font-semibold">Next blood moon from {place.name}</h3>
@@ -102,7 +102,7 @@ export function LunarExplorer({ initialNow }: { initialNow: string }) {
   );
 }
 
-function EclipseCard({ found, fmt, place }: { found: Found; fmt: { time: (t: number) => string; long: Intl.DateTimeFormat; short: Intl.DateTimeFormat }; place: EnPlace }) {
+function EclipseCard({ found, fmt, place, now }: { found: Found; fmt: { time: (t: number) => string; long: Intl.DateTimeFormat; short: Intl.DateTimeFormat }; place: EnPlace; now: Date }) {
   const { e, v } = found;
   const phases = lunarPhases(e);
   const outer = phases[0];
@@ -114,6 +114,12 @@ function EclipseCard({ found, fmt, place }: { found: Found; fmt: { time: (t: num
     <div className="mt-6 rounded-3xl bg-[#05070d] p-5 text-white sm:p-7">
       <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">{KIND[e.kind]} lunar eclipse</p>
       <p className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{fmt.long.format(e.peak)}</p>
+      <p className="mt-1 inline-block rounded-full bg-white/10 px-3 py-0.5 text-sm text-zinc-200">
+        {(() => {
+          const d = Math.ceil((e.peak.getTime() - now.getTime()) / 86_400_000);
+          return d <= 0 ? "today" : d === 1 ? "tomorrow" : `in ${d} days`;
+        })()}
+      </p>
       <p className="mt-2 text-zinc-300">
         {verdict} from {place.name}. Deepest at {fmt.time(e.peak.getTime())}.
         {e.kind === "penumbral" && " A penumbral eclipse only dims the moon slightly; many people don't notice it."}

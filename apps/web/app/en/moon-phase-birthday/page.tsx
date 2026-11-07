@@ -19,9 +19,9 @@ const UPDATED = "2026-11-07";
 const src = enPageSources("nasaMoonFactSheet", "nasaPhaseCatalog", "svsMoonPhaseGallery", "svsMoonPhase2026", "almanacFullMoonNames", "arliss2005", "geonames");
 
 export const metadata: Metadata = {
-  title: `Moon Phase on Your Birthday: What Did the Moon Look Like? | ${siteConfig.name}`,
+  title: `Moon Phase on Your Birthday or Any Date: What Did the Moon Look Like? | ${siteConfig.name}`,
   description:
-    "See the moon on the day you were born, as it looked from your birthplace, for any date from 1900 to 2100. Download it as a wallpaper, compare with your partner, and see your birth full moon's name.",
+    "See the moon on the day you were born, or on any special date like an anniversary or wedding, as it looked from that place, for any date from 1900 to 2100. Free wallpaper and printable poster, partner comparison and your birth full moon's name.",
   alternates: { canonical: PAGE.path },
   openGraph: enPageOpenGraph(PAGE),
 };
@@ -40,8 +40,9 @@ export default function BirthdayPage() {
             <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">Tool</p>
             <h1 className="mt-3 max-w-3xl text-5xl font-bold tracking-tight sm:text-6xl">What Did the Moon Look Like on Your Birthday?</h1>
             <p className="mt-5 max-w-2xl text-lg text-zinc-200">
-              Pick your birthday and birthplace to see the moon exactly as it looked that night, then save it as a
-              wallpaper or compare it with someone else&apos;s.
+              Pick your birthday and birthplace, or any date that matters to you, like an anniversary or a wedding, to see
+              the moon exactly as it looked that night. Save it as a free wallpaper or printable poster, or compare it with
+              someone else&apos;s.
             </p>
             <Byline updated={UPDATED} lang="en" />
           </div>

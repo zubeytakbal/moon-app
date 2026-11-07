@@ -89,8 +89,8 @@ export const EN_FAQS = {
       a: "Many people like the idea, and in some traditions a full moon is a time of celebration, but there's no evidence that the moon on your birthday brings luck, good or bad. What is true is that it's rare: a given date falls on a full moon only three to five times in a century, often 19 years apart. November 24, for example, gets one in 1996, 2007, 2026 and 2045. The tool above shows the next year it happens for your birthday.",
     },
     {
-      q: "How do I save my birthday moon as a wallpaper?",
-      a: "Press \"Download image\" under your result. On a computer the picture goes to your downloads folder. On an iPhone it opens as a preview: tap the share button and choose \"Save Image\", then set it from the Photos app. On Android it saves to your downloads or gallery. The image is 1080 × 1920 pixels, the shape of a phone screen.",
+      q: "How do I save my birthday moon as a wallpaper or poster?",
+      a: "Press \"Phone wallpaper\" or \"Printable poster (A4)\" under your result. On a computer the picture goes to your downloads folder. On an iPhone it opens as a preview: tap the share button and choose \"Save Image\", then set it from the Photos app. On Android it saves to your downloads or gallery. The wallpaper is 1080 × 1920 pixels, the shape of a phone screen; the poster is A4 at 300 dpi (2480 × 3508 pixels), sharp enough to print and frame.",
     },
   ],
 } as const satisfies Record<string, readonly FaqItem[]>;

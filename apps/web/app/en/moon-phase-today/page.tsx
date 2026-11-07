@@ -61,7 +61,7 @@ export default function MoonPhaseTodayPage() {
           { href: "#path", label: "Tonight's path" },
           { href: "#calendar", label: "Next 30 days" },
           { href: "#traditional", label: "Tithi & Hijri" },
-          { href: "#world", label: "World" },
+          { href: "#year-phases", label: "Year table" },
           { href: "#waxing-waning", label: "Waxing or waning?" },
           { href: "#faq", label: "FAQ" },
         ]}

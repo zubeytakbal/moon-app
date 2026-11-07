@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   getCrescentEvenings,
   getMoonDistanceKm,
@@ -105,6 +105,7 @@ export function MoonExplorer({ initialNow, refs }: { initialNow: string; refs: {
       <PathChart night={night} now={isToday ? now : null} fmt={fmt} label={label} />
       <CalendarTable startNoon={dayNoon} place={place} fmt={fmt} label={label} todayKey={isToday ? dayKey : null} />
       <PhasesList from={date} tz={tz} fmt={fmt} southern={place.latitude < 0} />
+      <YearPhases year={localDateParts(date, tz).year} now={now} tz={tz} locale={locale} label={label} />
       <TraditionalSection date={date} dayNoon={dayNoon} place={place} fmt={fmt} label={label} tithiRef={refs.tithi} />
     </div>
   );
@@ -180,6 +181,11 @@ function TonightSection({
       </h2>
       <p className="mt-1 text-zinc-600 dark:text-zinc-400">
         {fmt.day.format(dayNoon)} · times in local time ({zone})
+      </p>
+      {/* Tek cümlelik düz cevap: arama motorlarının ve yapay zekâ cevaplarının alıntılayabileceği biçimde. */}
+      <p className="mt-3 text-lg text-zinc-700 dark:text-zinc-300">
+        {isToday ? "Today" : "On this day"} the moon is a {name.toLowerCase()}, {pct}% illuminated and{" "}
+        {phase.isWaxing ? "growing" : "shrinking"}. The next full moon is on {fmt.short.format(nextFull.date)}.
       </p>
 
       <div className="mt-6 grid items-center gap-8 rounded-3xl bg-[#05070d] p-6 text-white sm:p-8 md:grid-cols-[auto_1fr]">
@@ -474,6 +480,97 @@ function CalendarTable({
 }
 
 /* ───────────────────────── Sıradaki ana evreler ───────────────────────── */
+
+/**
+ * Yıllık evre tablosu (timeanddate'teki "Moon Phases <yıl>" gibi): her ay döngüsü bir satır, dört ana evrenin yerel
+ * tarih ve saati, döngünün süresi (yeni aydan yeni aya). Yıl ileri-geri değiştirilebilir; içinde bulunulan döngü vurgulu.
+ */
+function YearPhases({ year: initialYear, now, tz, locale, label }: { year: number; now: Date; tz: string; locale: string; label: string }) {
+  const [year, setYear] = useState(initialYear);
+  const rows = useMemo(() => {
+    const start = zonedTimeToUtc(year, 1, 1, 0, tz).getTime();
+    const end = zonedTimeToUtc(year + 1, 1, 1, 0, tz).getTime();
+    const phases = getUpcomingPrincipalPhases(new Date(start - 32 * DAY_MS), 64).filter((p) => p.date.getTime() < end + 32 * DAY_MS);
+    const news = phases.filter((p) => p.key === "new-moon");
+    const out: { start: Date; next: Date | null; items: Partial<Record<string, Date>> }[] = [];
+    for (let i = 0; i < news.length; i++) {
+      const a = news[i].date;
+      const b = news[i + 1]?.date ?? null;
+      const items: Partial<Record<string, Date>> = { "new-moon": a };
+      for (const p of phases) if (p.date > a && (!b || p.date < b) && p.key !== "new-moon") items[p.key] = p.date;
+      // Bu yılın içine düşen bir evresi olan döngüler.
+      const all = [a, ...Object.values(items)].filter(Boolean) as Date[];
+      if (all.some((d) => d.getTime() >= start && d.getTime() < end) && b) out.push({ start: a, next: b, items });
+    }
+    return out;
+  }, [year, tz]);
+  const fmtDay = new Intl.DateTimeFormat(locale, { timeZone: tz, month: "short", day: "numeric" });
+  const fmtTime = new Intl.DateTimeFormat(locale, { timeZone: tz, hour: "numeric", minute: "2-digit" });
+  const inYear = (d: Date | undefined) => d && localDateParts(d, tz).year === year;
+  const cell = (d: Date | undefined) =>
+    d && inYear(d) ? (
+      <>
+        {fmtDay.format(d)}
+        <span className="block text-xs text-zinc-500">{fmtTime.format(d)}</span>
+      </>
+    ) : (
+      <span className="text-zinc-300 dark:text-zinc-700">–</span>
+    );
+  const length = (a: Date, b: Date) => {
+    const m = Math.round((b.getTime() - a.getTime()) / 60_000);
+    return `${Math.floor(m / 1440)}d ${Math.floor((m % 1440) / 60)}h ${String(m % 60).padStart(2, "0")}m`;
+  };
+
+  return (
+    <section aria-labelledby="year-phases" className="mt-12">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h2 id="year-phases" className="scroll-mt-32 text-2xl font-semibold tracking-tight sm:text-3xl">
+          Moon phases {year}
+        </h2>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => setYear((y) => Math.max(1900, y - 1))} className="rounded-full border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800" aria-label="Previous year">
+            ‹ {year - 1}
+          </button>
+          <button type="button" onClick={() => setYear((y) => Math.min(2100, y + 1))} className="rounded-full border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800" aria-label="Next year">
+            {year + 1} ›
+          </button>
+        </div>
+      </div>
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Every new moon, first quarter, full moon and last quarter of the year in {label}, local time, with the length of
+        each lunar cycle from new moon to new moon.
+      </p>
+      <div className="mt-6 overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <table className="w-full min-w-[36rem] text-left text-sm">
+          <thead className="bg-zinc-50 text-zinc-500 dark:bg-zinc-950">
+            <tr>
+              <th className="px-3 py-2.5 font-medium">New moon</th>
+              <th className="px-3 py-2.5 font-medium">First quarter</th>
+              <th className="px-3 py-2.5 font-medium">Full moon</th>
+              <th className="px-3 py-2.5 font-medium">Last quarter</th>
+              <th className="px-3 py-2.5 font-medium">Cycle length</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            {rows.map((r) => {
+              const current = now >= r.start && r.next !== null && now < r.next;
+              return (
+                <tr key={r.start.getTime()} className={current ? "bg-indigo-50 dark:bg-indigo-950/40" : undefined}>
+                  <td className="whitespace-nowrap px-3 py-2 tabular-nums">{cell(r.items["new-moon"])}</td>
+                  <td className="whitespace-nowrap px-3 py-2 tabular-nums">{cell(r.items["first-quarter"])}</td>
+                  <td className="whitespace-nowrap px-3 py-2 font-medium tabular-nums">{cell(r.items["full-moon"])}</td>
+                  <td className="whitespace-nowrap px-3 py-2 tabular-nums">{cell(r.items["last-quarter"])}</td>
+                  <td className="whitespace-nowrap px-3 py-2 tabular-nums text-zinc-600 dark:text-zinc-400">{r.next ? length(r.start, r.next) : "–"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-sm text-zinc-500">The cycle you are in now is highlighted. Cycles differ by several hours; the explanation below says why.</p>
+    </section>
+  );
+}
 
 function PhasesList({ from, tz, fmt, southern }: { from: Date; tz: string; fmt: Fmt; southern: boolean }) {
   const phases = useMemo(() => getUpcomingPrincipalPhases(from, 8), [from.getTime()]); // eslint-disable-line react-hooks/exhaustive-deps

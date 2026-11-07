@@ -56,6 +56,8 @@ export {
   getSeasons,
   getUpcomingLunarApsides,
   getUpcomingLunarEclipses,
+  getLunarEclipseVisibilityGrid,
+  type LunarVisibilityGrid,
   type LunarApsis,
   type LunarEclipse,
   type LunarEclipseKind,
