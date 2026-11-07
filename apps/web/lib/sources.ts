@@ -562,6 +562,18 @@ export const SOURCES = {
       note: "Rise, set and transit times of the Sun and Moon and civil twilight for a given place and day, rounded to the minute. We compare our rise and set times with these data.",
     },
   },
+  svsMoonPhaseGallery: {
+    no: 56,
+    title: "Moon Phase and Libration Gallery (Dial-A-Moon)",
+    publisher: "NASA Bilimsel Görselleştirme Stüdyosu (SVS)",
+    url: "https://svs.gsfc.nasa.gov/gallery/moonphase/",
+    note: "Dial-A-Moon: bir an girilince ayın o andaki görünüşü; yıllık ay evresi görselleştirmeleri 2011-2026 yıllarını kapsıyor.",
+    group: "ay",
+    en: {
+      publisher: "NASA Scientific Visualization Studio (SVS)",
+      note: "Dial-A-Moon shows what the Moon looked like at a time you enter; the yearly Moon phase visualizations it draws on cover 2011 to 2026.",
+    },
+  },
 } as const satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

@@ -118,7 +118,9 @@ export function PlacePicker({
   onPlace,
   onDate,
   onToday,
+  dateLabel = "Date",
 }: {
+  dateLabel?: string;
   place: EnPlace;
   label: string;
   source: PlaceSource;
@@ -262,7 +264,7 @@ export function PlacePicker({
           Use my location
         </button>
         <label className="flex flex-col text-xs font-semibold uppercase tracking-wider text-amber-300">
-          Date
+          {dateLabel}
           <input
             type="date"
             min="1900-01-01"

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /** Sayfanın adresini paylaşır: telefonda paylaşım menüsü, bilgisayarda panoya kopyalama. */
-export function ShareButton({ title, text }: { title: string; text: string }) {
+export function ShareButton({ title, text, lang = "tr" }: { title: string; text: string; lang?: "tr" | "en" }) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
@@ -42,7 +42,7 @@ export function ShareButton({ title, text }: { title: string; text: string }) {
       >
         <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14" />
       </svg>
-      {copied ? "Bağlantı kopyalandı" : "Sonucu paylaş"}
+      {copied ? (lang === "en" ? "Link copied" : "Bağlantı kopyalandı") : lang === "en" ? "Share" : "Sonucu paylaş"}
     </button>
   );
 }

@@ -40,6 +40,16 @@ export const EN_SOURCES_PATH = "/en/sources";
 export const EN_METHOD_PATH = "/en/methodology";
 
 export const EN_PAGES = {
+  moonPhaseBirthday: {
+    path: "/en/moon-phase-birthday",
+    title: "Moon Phase on Your Birthday",
+    navLabel: "Moon on Your Birthday",
+    group: "moon",
+    featured: true,
+    description: "What the moon looked like on the day you were born, as seen from your birthplace, with a wallpaper to download and a partner comparison.",
+    cardPhaseAngle: 135,
+    tr: "/tr/dogdugum-gun-ay",
+  },
   lunarEclipse: {
     path: "/en/lunar-eclipse",
     title: "Lunar Eclipses and Blood Moons",
@@ -163,6 +173,7 @@ type EnPageKey = keyof typeof EN_PAGES;
 export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
   lunarEclipse: ["solarEclipse", "fullMoon"],
   solarEclipse: ["lunarEclipse", "fullMoon"],
+  moonPhaseBirthday: ["moonPhaseToday", "fullMoon"],
   fullMoon: ["moonPhaseToday", "solarEclipse"],
   moonPhaseToday: ["fullMoon", "sunriseSunset"],
   sunriseSunset: ["moonPhaseToday", "fullMoon"],

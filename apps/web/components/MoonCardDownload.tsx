@@ -22,7 +22,10 @@ export function MoonCardDownload({
   detail,
   fullMoonName,
   fileName,
+  lang = "tr",
 }: {
+  /** Görseldeki ve düğmedeki yazıların dili. */
+  lang?: "tr" | "en";
   phaseAngle: number;
   /** "12 Mart 1995 Pazar, saat 14:30" */
   dateLabel: string;
@@ -40,7 +43,7 @@ export function MoonCardDownload({
     setBusy(true);
     setFailed(false);
     try {
-      const blob = await drawCard({ phaseAngle, dateLabel, phaseName, detail, fullMoonName });
+      const blob = await drawCard({ phaseAngle, dateLabel, phaseName, detail, fullMoonName, lang });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -67,9 +70,13 @@ export function MoonCardDownload({
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
         </svg>
-        {busy ? "Hazırlanıyor…" : "Görseli indir"}
+        {busy ? (lang === "en" ? "Preparing…" : "Hazırlanıyor…") : lang === "en" ? "Download image" : "Görseli indir"}
       </button>
-      {failed && <p className="mt-2 text-sm text-red-300">Görsel hazırlanamadı. Sayfayı yenileyip tekrar deneyin.</p>}
+      {failed && (
+        <p className="mt-2 text-sm text-red-300">
+          {lang === "en" ? "The image couldn't be created. Reload the page and try again." : "Görsel hazırlanamadı. Sayfayı yenileyip tekrar deneyin."}
+        </p>
+      )}
     </div>
   );
 }
@@ -122,7 +129,9 @@ async function drawCard(o: {
   phaseName: string;
   detail: string;
   fullMoonName?: string;
+  lang?: "tr" | "en";
 }): Promise<Blob> {
+  const en = o.lang === "en";
   const [moon] = await Promise.all([loadImage("/moon/full-moon-2000.webp"), document.fonts?.ready]);
   const canvas = document.createElement("canvas");
   canvas.width = W;
@@ -172,7 +181,7 @@ async function drawCard(o: {
   ctx.textAlign = "center";
   ctx.fillStyle = "#a5b4fc";
   ctx.font = `600 34px ${font}`;
-  ctx.fillText("DOĞDUĞUM GÜN AY", CX, 190);
+  ctx.fillText(en ? "MY BIRTHDAY MOON" : "DOĞDUĞUM GÜN AY", CX, 190);
   ctx.fillStyle = "#e4e4e7";
   ctx.font = `400 44px ${font}`;
   fitText(ctx, o.dateLabel, CX, 262, W - 120);
@@ -187,7 +196,7 @@ async function drawCard(o: {
   if (o.fullMoonName) {
     const y = CY + R + 400;
     ctx.font = `500 44px ${font}`;
-    const label = `Doğum dolunayı: ${o.fullMoonName}`;
+    const label = `${en ? "Birth full moon" : "Doğum dolunayı"}: ${o.fullMoonName}`;
     const tw = Math.min(ctx.measureText(label).width, W - 160);
     ctx.fillStyle = "rgba(251,191,36,0.12)";
     ctx.strokeStyle = "rgba(252,211,77,0.35)";
@@ -204,7 +213,7 @@ async function drawCard(o: {
   ctx.fillText("lunatlas.com", CX, H - 130);
   ctx.fillStyle = "#71717a";
   ctx.font = `400 26px ${font}`;
-  ctx.fillText("Ay fotoğrafı: NASA Scientific Visualization Studio", CX, H - 80);
+  ctx.fillText(`${en ? "Moon image" : "Ay fotoğrafı"}: NASA Scientific Visualization Studio`, CX, H - 80);
 
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob"))), "image/png"),

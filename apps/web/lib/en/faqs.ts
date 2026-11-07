@@ -81,4 +81,16 @@ export const EN_FAQS = {
       a: "By our count there are 17 total lunar eclipses between 2026 and 2045, a little under one a year on average, but they come unevenly: there are two in 2029 and none at all in 2027. Any one place sees only some of them, because the moon has to be above your horizon at the time.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-0*-en-{us,in,gb,au}-moon-phase-on-my-birthday_*.csv ("is a full moon on your
+  // birthday good luck", "how to download moon phase on my birthday", "birthday moon wallpaper").
+  moonPhaseBirthday: [
+    {
+      q: "Is a full moon on your birthday lucky?",
+      a: "Many people like the idea, and in some traditions a full moon is a time of celebration, but there's no evidence that the moon on your birthday brings luck, good or bad. What is true is that it's rare: a given date falls on a full moon only three to five times in a century, often 19 years apart. November 24, for example, gets one in 1996, 2007, 2026 and 2045. The tool above shows the next year it happens for your birthday.",
+    },
+    {
+      q: "How do I save my birthday moon as a wallpaper?",
+      a: "Press \"Download image\" under your result. On a computer the picture goes to your downloads folder. On an iPhone it opens as a preview: tap the share button and choose \"Save Image\", then set it from the Photos app. On Android it saves to your downloads or gallery. The image is 1080 × 1920 pixels, the shape of a phone screen.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;
