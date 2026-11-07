@@ -40,6 +40,16 @@ export const EN_SOURCES_PATH = "/en/sources";
 export const EN_METHOD_PATH = "/en/methodology";
 
 export const EN_PAGES = {
+  solarEclipse: {
+    path: "/en/solar-eclipse",
+    title: "Solar Eclipses",
+    navLabel: "Solar Eclipses",
+    group: "eclipses",
+    featured: true,
+    description: "The next solar eclipse you can see from your city, with local times and how much of the sun is covered, plus the total eclipse of August 2, 2027.",
+    cardPhaseAngle: 0,
+    tr: "/tr/gunes-tutulmasi",
+  },
   fullMoon: {
     path: "/en/full-moon",
     title: "Next Full Moon",
@@ -78,7 +88,8 @@ type EnPageKey = keyof typeof EN_PAGES;
 
 /** Her sayfanın altında önerilen ilgili sayfalar (elle seçilir). */
 export const EN_RELATED: Record<EnPageKey, EnPageKey[]> = {
-  fullMoon: ["moonPhaseToday", "sunriseSunset"],
+  solarEclipse: ["fullMoon", "sunriseSunset"],
+  fullMoon: ["moonPhaseToday", "solarEclipse"],
   moonPhaseToday: ["fullMoon", "sunriseSunset"],
   sunriseSunset: ["moonPhaseToday", "fullMoon"],
 };

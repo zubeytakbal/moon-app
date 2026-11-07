@@ -57,4 +57,16 @@ export const EN_FAQS = {
       a: "There is no evidence that it does. A study of 564,039 births in North Carolina over five years found no difference in the number of births, the type of delivery or complications across the eight phases of the moon.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-06-en-{us,in,gb,au}-solar-eclipse_*.csv ("how long will the next eclipse
+  // last", "lunar eclipse vs solar eclipse"). Süreler 2 Ağustos 2027 için kendi hesabımız.
+  solarEclipse: [
+    {
+      q: "How long does a solar eclipse last?",
+      a: "From the first bite out of the sun to the last, usually two to three hours; totality itself lasts only a few minutes. On August 2, 2027, for example, the whole eclipse takes about 2 hours 46 minutes in Luxor, Egypt, with 6 minutes 25 seconds of totality, and about 1 hour 56 minutes in London, where it stays partial. The exact times for your city are in the tool at the top of this page.",
+    },
+    {
+      q: "What's the difference between a solar and a lunar eclipse?",
+      a: "In a solar eclipse the moon passes between the sun and Earth and blocks the sun; it can only happen at new moon, lasts a few hours and is seen from a limited part of the world. In a lunar eclipse Earth passes between the sun and the moon, and Earth's shadow darkens the full moon, often turning it red; it happens at full moon and is visible from the whole night side of Earth at once. A lunar eclipse is safe to watch with the naked eye; a solar eclipse never is, except during totality.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;

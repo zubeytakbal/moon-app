@@ -150,6 +150,10 @@ export const SOURCES = {
     url: "https://eclipse.gsfc.nasa.gov/SEcat5/SE2001-2100.html",
     note: "Güneş tutulmalarının tarihleri ve türleri: 29 Mart 2006 tam, 2 Ağustos 2027 tam, 1 Haziran 2030 halkalı tutulma. Türkiye'den görünüşlerini kendi hesabımızla buluyoruz.",
     group: "tutulma",
+    en: {
+      publisher: "Fred Espenak, NASA Goddard Space Flight Center",
+      note: "Dates and types of every solar eclipse from 2001 to 2100, including the total eclipse of August 2, 2027. How each one looks from a given city is our own calculation.",
+    },
   },
   nasaSolarCatalog1900: {
     no: 12,
@@ -166,6 +170,9 @@ export const SOURCES = {
     url: "https://science.nasa.gov/eclipses/safety/",
     note: "Güneş'e yalnızca ISO 12312-2 standardına uygun tutulma gözlüğüyle bakılması, çizik ya da hasarlı gözlüğün atılması, iğne deliği yöntemiyle güvenli izleme.",
     group: "tutulma",
+    en: {
+      note: "Look at the Sun only through eclipse glasses or handheld solar viewers that meet the ISO 12312-2 standard; regular sunglasses, however dark, are not safe; never look through a camera lens, telescope or binoculars without a solar filter attached to the front; it is safe to look without protection only while no part of the Sun is visible during totality, and glasses go back on as soon as the bright Sun reappears; pinhole projection is a safe indirect way to watch.",
+    },
   },
   nasaSupermoons: {
     no: 14,
@@ -325,6 +332,9 @@ export const SOURCES = {
     url: "http://www.eclipsewise.com/solar/SEprime/2001-2100/SE2027Aug02Tprime.html",
     note: "2 Ağustos 2027 tutulmasının tam görüleceği ülkeler (Fas, İspanya, Cezayir, Libya, Mısır, Suudi Arabistan, Yemen, Somali), Avrupa'nın geri kalanından parçalı görülmesi, en büyük tutulmanın 10:06 UT'de Mısır'da (25,5° K, 33,2° D) olması.",
     group: "tutulma",
+    en: {
+      note: "Total eclipse visible from Morocco, Spain, Algeria, Libya, Egypt, Saudi Arabia, Yemen and Somalia; partial eclipse from Africa, Europe, the Middle East and west and south Asia; greatest eclipse at 10:06:37 UT1 at 25°30.2' N, 33°11.0' E, with totality lasting 6m23s.",
+    },
   },
   diyanetAyTanim: {
     no: 33,
@@ -503,6 +513,18 @@ export const SOURCES = {
     en: {
       publisher: "Cajochen et al.; Current Biology, 2013 (Europe PMC)",
       note: "In a sleep laboratory, with volunteers unable to see the moon, deep sleep (NREM delta activity) fell by 30% around the full moon, falling asleep took 5 minutes longer and total sleep was 20 minutes shorter; melatonin was lower. The authors note there is much folklore but no consistent association of moon cycles with human physiology and behavior.",
+    },
+  },
+  nasaEclipseMyths: {
+    no: 53,
+    title: "Eclipse Misconceptions",
+    publisher: "NASA, Eclipse 2017 sitesi (Web Archive kopyası)",
+    url: "https://web.archive.org/web/2017/https://eclipse2017.nasa.gov/eclipse-misconceptions",
+    note: "Tutulmanın hamilelere ve bebeğe zarar verdiği, tutulma sırasında hazırlanan yemeğin zehirlendiği inançlarının yanlış olduğu; koronanın ışığının zararsız olduğu, asıl tehlikenin tam tutulmadan önce Güneş yüzeyine bakmak olduğu.",
+    group: "tutulma",
+    en: {
+      publisher: "NASA, Eclipse 2017 website (Web Archive copy)",
+      note: "The ideas that an eclipse harms pregnant women or the unborn baby, and that food prepared during an eclipse is poisoned, are false; the light of the corona is harmless, and the real danger is looking at the bright solar surface before totality.",
     },
   },
 } as const satisfies Record<string, Source>;
