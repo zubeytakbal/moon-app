@@ -9,25 +9,34 @@ interface CitySelectProps {
   selected: string;
   /** Yurt dışı şehirler, ülkeye göre gruplu (yalnız yurt dışını destekleyen sayfalarda). */
   abroad?: { country: string; cities: { slug: string; name: string }[] }[];
+  /** Aynı sayfada ikinci bir seçici varsa farklı kimlik verilir (aynı `id` iki kez olamaz). */
+  id?: string;
+  /** Koyu zemin (giriş alanı kartı) üzerinde. */
+  tone?: "light" | "dark";
 }
 
 /**
  * İl seçici. Seçim yeni bir sayfa açmaz, aynı sayfaya `?il=...` ile döner.
  * JavaScript kapalıysa "Göster" butonuyla yine çalışır.
  */
-export function CitySelect({ action, options, selected, abroad }: CitySelectProps) {
+export function CitySelect({ action, options, selected, abroad, id = "il", tone = "light" }: CitySelectProps) {
+  const dark = tone === "dark";
   return (
     <Form action={action} replace scroll={false} className="flex items-center gap-2">
-      <label htmlFor="il" className="text-sm text-zinc-600 dark:text-zinc-400">
+      <label htmlFor={id} className={`text-sm ${dark ? "text-zinc-300" : "text-zinc-600 dark:text-zinc-400"}`}>
         {abroad ? "İl / şehir" : "İl"}
       </label>
       <select
-        id="il"
+        id={id}
         name="il"
         key={selected}
         defaultValue={selected}
         onChange={(e) => e.currentTarget.form?.requestSubmit()}
-        className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base dark:border-zinc-700 dark:bg-zinc-900"
+        className={
+          dark
+            ? "rounded-lg border border-white/25 bg-[#0d111c] px-3 py-2 text-base text-white"
+            : "rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base dark:border-zinc-700 dark:bg-zinc-900"
+        }
       >
         {abroad ? (
           <>

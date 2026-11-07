@@ -89,6 +89,7 @@ export default function MoonPhasesPage() {
       <QuickLinks
         links={[
           { href: "#cevap", label: "Ay şu an hangi evrede?" },
+          { href: "#model", label: "Evre modeli" },
           { href: "#nasil-olusur", label: "Nasıl oluşur?" },
           { href: "#sekiz-evre", label: "8 evre tablosu" },
           { href: "#kac-gun", label: "Kaç gün sürer?" },
@@ -98,6 +99,11 @@ export default function MoonPhasesPage() {
       />
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
         <PhasesAnswer />
+
+        {/* Araç önce (yapay zekâ cevaplarının veremediği etkileşim), açıklamalar altında. */}
+        <div id="model" className="scroll-mt-32">
+          <TodayPhaseModel />
+        </div>
 
         <Prose>
           <h2 id="nasil-olusur">Ay evreleri nasıl oluşur?</h2>
@@ -115,7 +121,6 @@ export default function MoonPhasesPage() {
         </Prose>
 
         <OrbitDiagram />
-        <TodayPhaseModel />
 
         <Prose>
           <p>

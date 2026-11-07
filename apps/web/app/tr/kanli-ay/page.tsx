@@ -327,7 +327,7 @@ async function Hero({ slug }: { slug: string }) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#1a0605] to-[#05070d] text-white">
       <div className="mx-auto grid w-full max-w-5xl items-center gap-10 px-4 pb-14 pt-6 md:grid-cols-[1fr_auto] md:pb-20">
-        <div className="order-2 md:order-1">
+        <div>
           <Breadcrumb page={PAGE} tone="dark" />
           <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-red-300">Tam ay tutulması</p>
           <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl">{PAGE.title}</h1>
@@ -349,13 +349,12 @@ async function Hero({ slug }: { slug: string }) {
               <p className="mt-0.5 text-sm text-zinc-400">
                 Görünürlük ({city.name}): {verdictOf(nextVisible.visibleShare)}
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
                 <span className="rounded-full bg-red-500/20 px-3 py-1 text-sm font-medium text-red-100">
                   {days} gün sonra
                 </span>
-                <a href="#il-sec" className="text-sm text-zinc-300 underline hover:text-white">
-                  İl ya da şehir seçin
-                </a>
+                {/* Araç en üstte: il değişince bu kart ve aşağıdaki liste o ile göre hesaplanır. */}
+                <CitySelect id="il-ust" tone="dark" action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
               </div>
               <div className="mt-4">
                 <AddToCalendar
@@ -373,8 +372,9 @@ async function Hero({ slug }: { slug: string }) {
             </div>
           )}
         </div>
-        <div className="order-1 flex justify-center md:order-2">
-          <div className="w-[min(70vw,340px)]">
+        {/* Telefonda görsel metnin altında ve küçük: il seçici ve cevap ilk ekranda kalsın. */}
+        <div className="flex justify-center">
+          <div className="w-[min(45vw,340px)] md:w-[340px]">
             <RedMoon size={340} />
           </div>
         </div>

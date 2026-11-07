@@ -113,7 +113,10 @@ const CENTRAL_ECLIPSES = [
 export default function SolarEclipsePage({ searchParams }: PageProps<"/tr/gunes-tutulmasi">) {
   return (
     <>
-      <Hero />
+      {/* İl seçici giriş alanındaki kartta: seçim yapılınca kart ve aşağıdaki liste o ile göre hesaplanır. */}
+      <Suspense fallback={<Hero slug={siteConfig.defaultLocation.slug} />}>
+        <SelectedHero searchParams={searchParams} />
+      </Suspense>
       <QuickLinks
         links={[
           { href: "#cevap", label: "Ne zaman?" },
@@ -272,20 +275,28 @@ function formatIso(iso: string) {
 
 
 /** Giriş: Türkiye'den görülecek bir sonraki güneş tutulması (İstanbul'a göre). */
-async function Hero() {
+async function SelectedHero({ searchParams }: Pick<PageProps<"/tr/gunes-tutulmasi">, "searchParams">) {
+  const { il } = await searchParams;
+  const city = findPlace(typeof il === "string" ? il : undefined) ?? siteConfig.defaultLocation;
+  return <Hero slug={city.slug} />;
+}
+
+async function Hero({ slug }: { slug: string }) {
   "use cache";
   cacheLife("hours");
 
+  const city = findPlace(slug) ?? siteConfig.defaultLocation;
   const now = new Date();
-  const next = getLocalSolarEclipse(now, siteConfig.defaultLocation);
-  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, day: "numeric", month: "long", year: "numeric" });
-  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone, hour: "2-digit", minute: "2-digit" });
+  const next = getLocalSolarEclipse(now, city);
+  const tz = city.timeZone;
+  const date = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, day: "numeric", month: "long", year: "numeric" });
+  const time = new Intl.DateTimeFormat(siteConfig.locale, { timeZone: tz, hour: "2-digit", minute: "2-digit" });
   const days = Math.ceil((next.peak.getTime() - now.getTime()) / DAY_MS);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#1f1405] to-[#05070d] text-white">
       <div className="mx-auto grid w-full max-w-5xl items-center gap-10 px-4 pb-14 pt-6 md:grid-cols-[1fr_auto] md:pb-20">
-        <div className="order-2 md:order-1">
+        <div>
           <Breadcrumb page={PAGE} tone="dark" />
           <p className="mt-10 text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">Tarihler</p>
           <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl">{PAGE.title}</h1>
@@ -296,19 +307,22 @@ async function Hero() {
           <Byline updated={UPDATED} />
           <div className="mt-8 max-w-md rounded-2xl border border-amber-300/30 bg-amber-400/10 p-5">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">
-              Türkiye&apos;den görülecek bir sonraki tutulma
+              Görülecek bir sonraki tutulma ({city.name})
             </p>
             <p className="mt-1 text-2xl font-semibold">{date.format(next.peak)}</p>
             <p className="mt-0.5 text-zinc-300">
-              İstanbul: en derin an {time.format(next.peak)} · örtülme oranı %{Math.round(next.obscuration * 100)}
+              {city.name}: en derin an {time.format(next.peak)}
+              {isAbroad(city) ? ` (${city.zoneLabel})` : ""} · örtülme oranı %{Math.round(next.obscuration * 100)}
             </p>
-            <p className="mt-3 inline-block rounded-full bg-amber-400/20 px-3 py-1 text-sm font-medium text-amber-100">
-              {days} gün sonra
-            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-amber-400/20 px-3 py-1 text-sm font-medium text-amber-100">{days} gün sonra</span>
+              <CitySelect id="il-ust" tone="dark" action={PAGE.path} options={CITY_OPTIONS} abroad={ABROAD_OPTIONS} selected={city.slug} />
+            </div>
           </div>
         </div>
-        <div className="order-1 flex justify-center md:order-2">
-          <div className="w-[min(70vw,320px)]">
+        {/* Telefonda çizim metnin altında ve küçük: il seçici ilk ekranda kalsın. */}
+        <div className="flex justify-center">
+          <div className="w-[min(45vw,320px)] md:w-[320px]">
             <EclipseDisc separation={next.peakSeparation} ratio={next.moonToSunRadius} size={320} />
           </div>
         </div>
