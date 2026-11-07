@@ -78,11 +78,11 @@ export default function SupermoonPage() {
             <h2>Süper ay nasıl oluşur?</h2>
             <p>
               Ayın Dünya etrafındaki yörüngesi tam bir daire değil, hafif bir elipstir. Bu yüzden ay her ay bir kez
-              Dünya&apos;ya en çok yaklaşır (yakınberi), bir kez de en çok uzaklaşır (uzakberi).{src.ref("nasaSupermoons")} Yakın noktada uzaklık
+              Dünya&apos;ya en çok yaklaşır (yakınberi), bir kez de en çok uzaklaşır (uzakberi).{src.ref("nasaSupermoons")} Yakın noktada <Link href={PAGES.ayUzaklik.path}>uzaklık</Link>
               yaklaşık 356.000-370.000 km, uzak noktada ise 404.000-406.700 km arasındadır.
             </p>
             <p>
-              Ayın evreleri ile bu yaklaşıp uzaklaşma döngüsü aynı uzunlukta değildir. Bu yüzden dolunay bazen yakın
+              <Link href={PAGES.ayEvreleri.path}>Ayın evreleri</Link> ile bu yaklaşıp uzaklaşma döngüsü aynı uzunlukta değildir. Bu yüzden dolunay bazen yakın
               noktaya, bazen uzak noktaya denk gelir. Dolunay yakın noktaya denk geldiğinde <strong>süper ay</strong>,
               uzak noktaya denk geldiğinde <strong>mikro ay</strong> oluşur. Süper aylar genellikle art arda iki üç
               dolunay boyunca görülür, sonra yaklaşık bir yıl ara verir.

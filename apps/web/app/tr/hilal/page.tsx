@@ -150,8 +150,8 @@ export default function CrescentPage() {
 
           <h2 id="hicri">Hilal ve Hicri takvim</h2>
           <p>
-            Hicri takvimde her ay, <Link href={PAGES.yeniAy.path}>yeni aydan</Link> sonra ilk hilalin görülebildiği
-            akşam başlar. Bu yüzden hilalin ilk kez görüldüğü an yüzyıllardır özenle gözlenir. Çok ince bir hilali
+            <Link href={PAGES.hicriTakvim.path}>Hicri takvimde</Link> her ay, <Link href={PAGES.yeniAy.path}>yeni aydan</Link> sonra ilk hilalin görülebildiği
+            akşam başlar. Bu yüzden hilalin ilk kez görüldüğü an yüzyıllardır özenle gözlenir; ilinizden nereye ve ne zaman bakacağınızı <Link href={PAGES.hilalGozlemi.path}>Hilal Gözlemi</Link> sayfasında bulabilirsiniz. Çok ince bir hilali
             görebilmek için ayın Güneş&apos;ten yeterince uzaklaşmış olması, havanın açık ve batı ufkunun engelsiz
             olması gerekir.
           </p>

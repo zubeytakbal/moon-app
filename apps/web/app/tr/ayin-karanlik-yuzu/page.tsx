@@ -78,7 +78,7 @@ export default function DarkSidePage() {
             <p>
               Güneş ayı tıpkı Dünya&apos;yı aydınlattığı gibi her zaman yarım küre olarak aydınlatır. Ay döndükçe bu
               aydınlık yarım küre ayın yüzeyinde dolaşır; ayın her noktası yaklaşık iki hafta gündüz, iki hafta gece
-              yaşar. Ön yüzde gece olduğunda arka yüzde gündüz olur. Yukarıdaki iki görsel bu yüzden hep birbirinin tersi
+              yaşar. Ön yüzde gece olduğunda arka yüzde gündüz olur: <Link href={PAGES.yeniAy.path}>yeni ayda</Link> bize dönük yüz karanlıkken arka yüzün tamamı güneş alır. Bizim gördüğümüz <Link href={PAGES.ayEvreleri.path}>ay evreleri</Link> de bu dolaşmanın sonucudur. Yukarıdaki iki görsel bu yüzden hep birbirinin tersi
               aydınlıktır: ikisinin aydınlık oranlarının toplamı her zaman %100&apos;dür.
             </p>
 

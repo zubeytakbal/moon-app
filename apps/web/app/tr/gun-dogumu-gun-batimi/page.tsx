@@ -126,7 +126,7 @@ export default function SunrisePage({ searchParams }: PageProps<"/tr/gun-dogumu-
               hesaplanır; ışığın havada kırılması hesaba katılır. Dağlık bir yerde ya da önünüzde yüksek binalar varsa
               Güneş birkaç dakika geç doğar ve erken batar gibi görünür. İlçeler il merkezinden birkaç dakika farklı
               olabilir; ilçeniz için yukarıdaki arama kutusuna yer adını yazın ya da &quot;Konumumu kullan&quot; düğmesine basın. Yılın en uzun ve en
-              kısa günleri için <Link href={PAGES.ekinoksGundonumu.path}>Ekinoks ve Gündönümü</Link> sayfasına bakın.
+              kısa günleri için <Link href={PAGES.ekinoksGundonumu.path}>Ekinoks ve Gündönümü</Link> sayfasına bakın. Ayın doğuş ve batış saatleri <Link href={PAGES.bugunAy.path}>Bugün Ay</Link> sayfasında, ayı alacakaranlıkta fotoğraflamak için en uygun akşamlar <Link href={PAGES.ayFotografi.path}>Ay Fotoğrafı</Link> sayfasında.
             </p>
           </Prose>
           <Faq items={FAQS.gunDogumuBatimi} />

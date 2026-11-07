@@ -201,7 +201,7 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
             </p>
             <p>
               Yukarıdaki hesaplayıcı, Uluslararası Meteor Örgütü&apos;nün (IMO) her yağmur için verdiği ZHR&apos;den
-              yola çıkar ve seçtiğiniz ilde radyantın o saatteki yüksekliğine, ayın ufkun üzerinde olup olmadığına ve
+              yola çıkar ve seçtiğiniz ilde radyantın o saatteki yüksekliğine, <Link href={PAGES.bugunAy.path}>ayın ufkun üzerinde olup olmadığına</Link> ve
               gökyüzünüzün karanlığına göre gerçekçi bir sayı tahmin eder. Gökyüzü karanlığını, çıplak gözle
               seçilebilen en sönük yıldızla ölçüyoruz: şehir merkezinde 4. kadir, kırsalda 6. kadir civarı.
             </p>
@@ -233,7 +233,7 @@ export default function MeteorShowersPage({ searchParams }: PageProps<"/tr/meteo
             </ul>
             <p>
               Ayın ufkun altında olduğu karanlık gecelerin saatlerini{" "}
-              <Link href={PAGES.yeniAy.path}>Yeni Ay</Link> sayfasındaki planlayıcıdan da görebilirsiniz.
+              <Link href={PAGES.yeniAy.path}>Yeni Ay</Link> sayfasındaki planlayıcıdan da görebilirsiniz; havanın kaçta karardığı <Link href={PAGES.gunDogumuBatimi.path}>Gün Doğumu ve Gün Batımı</Link> sayfasında.
             </p>
           </Prose>
 

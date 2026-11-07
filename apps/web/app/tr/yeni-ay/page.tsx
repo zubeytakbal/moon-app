@@ -106,7 +106,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
           <p>
             Hilal, yeni aydan hemen sonra görünmez. Ayın Güneş&apos;ten yeterince uzaklaşması ve gün batımından sonra
             ufkun üzerinde kalması gerekir. Bu genellikle yeni aydan bir iki gün sonrasına denk gelir. Bu yüzden
-            takvimdeki yeni ay tarihi ile Ramazan ya da bayram gibi Hicri ayların ilk günü çoğu zaman aynı gün değildir.
+            takvimdeki yeni ay tarihi ile Ramazan ya da bayram gibi <Link href={PAGES.hicriTakvim.path}>Hicri ayların</Link> ilk günü çoğu zaman aynı gün değildir.
           </p>
           <p>
             Türkiye&apos;de Diyanet, hilalin görülebilirliğine dair astronomik ölçütlere dayanan hesaplı bir takvim
@@ -116,7 +116,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
 
           <h2>Güneş tutulması neden sadece yeni ayda olur?</h2>
           <p>
-            Güneş tutulması, ayın Güneş&apos;in önünden geçip onu kısmen ya da tamamen örtmesidir. Bunun için ayın Dünya
+            <Link href={PAGES.gunesTutulmasi.path}>Güneş tutulması</Link>, ayın Güneş&apos;in önünden geçip onu kısmen ya da tamamen örtmesidir. Bunun için ayın Dünya
             ile Güneş&apos;in arasında olması gerekir. Bu da yalnızca yeni ayda olur.
           </p>
           <p>
@@ -131,7 +131,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
           <h2>Yıldız gözlemi için en iyi hafta</h2>
           <p>
             Yeni ay günleri, gökyüzü meraklılarının en çok beklediği zamandır. Ayın ışığı geceyi aydınlatmadığı için
-            sönük yıldızlar, Samanyolu ve meteor yağmurları çok daha iyi görülür. Yeni aydan önceki ve sonraki birkaç
+            sönük yıldızlar, Samanyolu ve <Link href={PAGES.meteorYagmurlari.path}>meteor yağmurları</Link> çok daha iyi görülür. Yeni aydan önceki ve sonraki birkaç
             gece de ay ya çok geç doğar ya da çok erken batar, gökyüzü yine karanlık kalır.
           </p>
           <p>
@@ -156,7 +156,7 @@ export default function NewMoonPage({ searchParams }: PageProps<"/tr/yeni-ay">) 
 
           <h2>Aydan bakınca: &quot;dolu Dünya&quot;</h2>
           <p>
-            Yeni ayda ayın bize bakan yüzü karanlıktır, ama o yüzde duran biri için durum tam tersidir. Aydan bakan biri
+            Yeni ayda ayın bize bakan yüzü karanlıktır (o sırada <Link href={PAGES.ayinKaranlikYuzu.path}>arka yüz</Link> güneş alır), ama o yüzde duran biri için durum tam tersidir. Aydan bakan biri
             gökyüzünde neredeyse tamamı aydınlık bir Dünya görürdü. Ay ve Dünya evreleri birbirinin tersidir: bizde yeni
             ay varken ayda &quot;dolu Dünya&quot; vardır. Bu parlak Dünya ışığı, birkaç gün sonra hilalin karanlık
             kısmını hafifçe aydınlatan ışıktır.
