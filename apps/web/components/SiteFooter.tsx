@@ -36,8 +36,8 @@ export async function SiteFooter({ lang }: { lang: Lang }) {
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-zinc-400">{shell.footerBlurb}</p>
           <ul className="mt-5 space-y-2 text-sm">
             <li>
-              <a href={`mailto:${siteConfig.contactEmail}`} className="text-zinc-300 hover:text-white hover:underline">
-                {siteConfig.contactEmail}
+              <a href={`mailto:${shell.contactEmail}`} className="text-zinc-300 hover:text-white hover:underline">
+                {shell.contactEmail}
               </a>
             </li>
             {shell.methodPath && (

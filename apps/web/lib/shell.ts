@@ -33,6 +33,8 @@ export interface ShellData {
   footerBlurb: string;
   footerSections: { name: string; pages: ShellPage[] }[];
   corporate: ShellPage[];
+  /** Alt bilgide gösterilen iletişim adresi. */
+  contactEmail: string;
   methodPath?: string;
   cookiePolicyPath?: string;
   /** Sayfa yolu → ilgili sayfalar. */
@@ -119,6 +121,7 @@ function trShell(): ShellData {
       { name: GROUP_NAMES["gelenek-burclar"], pages: [PAGES.ayHangiBurcta, PAGES.ayBurcu, PAGES.sacKesim, PAGES.aybosluk] },
     ],
     corporate: [PAGES.hakkimizda, PAGES.yazar, PAGES.iletisim, PAGES.yontem, PAGES.kaynaklar, PAGES.gizlilik, PAGES.cerez],
+    contactEmail: siteConfig.contactEmail,
     methodPath: PAGES.yontem.path,
     cookiePolicyPath: PAGES.cerez.path,
     related: Object.fromEntries(ALL_PAGES.map((p) => [p.path, relatedPages(p.path)])),
@@ -161,6 +164,9 @@ function enShell(): ShellData {
       "Moon phases, sunrise and sunset, full moons and eclipses, calculated for wherever you are on Earth.",
     footerSections: groups.filter((g) => g.group !== "about").map((g) => ({ name: g.name, pages: g.pages.slice(0, 5) })),
     corporate: groups.find((g) => g.group === "about")?.pages ?? [],
+    contactEmail: siteConfig.contactEmailEn,
+    methodPath: EN_PAGES.methodology.path,
+    cookiePolicyPath: EN_PAGES.cookiePolicy.path,
     related: Object.fromEntries(Object.keys(pages).map((k) => [pages[k].path, (related[k] ?? []).map((r) => pages[r])])),
     counterparts: {
       tr: {

@@ -62,6 +62,7 @@ export const SOURCES = {
     note: "Danjon ölçeğinin beş basamağı (L0-L4); atmosferin Güneş ışığını gölgeye kırması; büyük yanardağ patlamalarından sonra tutulmaların birkaç yıl çok karanlık geçmesi.",
     group: "tutulma",
     en: {
+      publisher: "Fred Espenak, NASA Goddard Space Flight Center",
       note: "The five steps of the Danjon scale (L0 to L4) for how dark a total lunar eclipse is; Earth's atmosphere bends sunlight into the shadow; after big volcanic eruptions, eclipses can be very dark for a few years.",
     },
   },
@@ -358,6 +359,9 @@ export const SOURCES = {
     url: "https://aa.usno.navy.mil/data/Earth_Seasons",
     note: "Ekinoks ve gündönümü anları (UT): 2026'da 20 Mart 14:46, 21 Haziran 08:24, 23 Eylül 00:05, 21 Aralık 20:50; 2027'de 20 Mart 20:25, 21 Haziran 14:11, 23 Eylül 06:02, 22 Aralık 02:42. Kendi hesabımızla karşılaştırdık; fark en çok 1 dakika.",
     group: "takvim",
+    en: {
+      note: "Times of the equinoxes and solstices (UT): in 2026 March 20 14:46, June 21 08:24, September 23 00:05, December 21 20:50; in 2027 March 20 20:25, June 21 14:11, September 23 06:02, December 22 02:42.",
+    },
   },
   nasaSeasons: {
     no: 35,
@@ -544,6 +548,18 @@ export const SOURCES = {
     en: {
       publisher: "NASA, moon.nasa.gov (2019, Web Archive copy)",
       note: "No special equipment is needed to watch a lunar eclipse, though binoculars or a telescope enhance the view and the red color; the Moon turns red because the only sunlight reaching it passes through Earth's atmosphere, and the more dust or clouds there are, the redder it looks: as if all the world's sunrises and sunsets were projected onto the Moon.",
+    },
+  },
+  usnoRiseSetOneDay: {
+    no: 55,
+    title: "Sun and Moon Rise/Set/Transit Times for One Day",
+    publisher: "ABD Deniz Gözlemevi (USNO), Astronomical Applications Department",
+    url: "https://aa.usno.navy.mil/data/RS_OneDay",
+    note: "Bir yer ve gün için Güneş ve ayın doğuş, batış, meridyen geçişi ve sivil alacakaranlık saatleri (dakikaya yuvarlanmış). Doğuş-batış hesaplarımızı bu verilerle karşılaştırıyoruz.",
+    group: "takvim",
+    en: {
+      publisher: "U.S. Naval Observatory (USNO), Astronomical Applications Department",
+      note: "Rise, set and transit times of the Sun and Moon and civil twilight for a given place and day, rounded to the minute. We compare our rise and set times with these data.",
     },
   },
 } as const satisfies Record<string, Source>;
