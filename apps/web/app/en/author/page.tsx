@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { JsonLd } from "@/components/JsonLd";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   title: `${name}, Founder and Editor of Lunatlas | ${siteConfig.name}`,
   description: `${name} writes and builds Lunatlas, an independent guide to the moon and the sky. Background, why the site exists and how to get in touch.`,
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 /**

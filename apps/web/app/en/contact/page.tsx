@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { Prose } from "@/components/Prose";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   title: `Contact Lunatlas | ${siteConfig.name}`,
   description: "Found a mistake, have a question or a suggestion? How to reach the Lunatlas team by email.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 export default function ContactPage() {

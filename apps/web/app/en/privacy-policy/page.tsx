@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { Prose } from "@/components/Prose";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   description:
     "What information is processed when you use Lunatlas, why, who it is shared with, how long it is kept, and your rights under GDPR and US state privacy laws.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 /** İngilizce gizlilik politikası: Türkçe sürümle aynı hizmetler; KVKK yerine GDPR ve ABD eyalet yasaları anlatılır. */

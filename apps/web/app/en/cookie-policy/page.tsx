@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { Prose } from "@/components/Prose";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   title: `Cookie Policy | ${siteConfig.name}`,
   description: "Which cookies Lunatlas uses, who sets them, what they are for, how long they last and how to manage them.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 /** Çerez tablosu Türkçe sürümle aynı (aynı hizmetler); çerez adları ve süreleri değişirse ikisi birlikte güncellenir. */

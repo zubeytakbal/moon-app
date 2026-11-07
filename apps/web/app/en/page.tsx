@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cacheLife } from "next/cache";
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
   description:
     "Tonight's moon phase, moonrise and moonset, the next full moon, solar and lunar eclipses, and sunrise and sunset, all calculated for your own city. Free tools with clear explanations.",
   alternates: { canonical: "/en" },
+  openGraph: enPageOpenGraph({ path: "/en", title: "Lunatlas: Moon guide", description: "Moon phase, moonrise and moonset, full moons, eclipses and sunrise, calculated for your own city." }),
 };
 
 const SEARCH_ITEMS = EN_ALL_PAGES.map((p) => ({ path: p.path, title: p.title, description: p.description, group: EN_GROUP_NAMES[p.group] }));

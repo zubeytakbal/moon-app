@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { Prose } from "@/components/Prose";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   description:
     "Lunatlas is an independent guide to the moon and the sky. Who makes it, how every time and date is calculated and checked against NASA and the U.S. Naval Observatory, and how we treat tradition.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 export default function AboutPage() {

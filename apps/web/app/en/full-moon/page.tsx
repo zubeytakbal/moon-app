@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import { cacheLife } from "next/cache";
 import {
   getFullMoonRise,
@@ -50,6 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: `When is the next full moon? The date and exact time in your time zone, its name, when it rises where you are, and every full moon of ${y} and ${y1} with supermoons and eclipses.`,
     // Yer ve tarih seÃ§imi (?place=, ?date=) tarayÄ±cÄ±da; ayrÄ± sayfa sayÄ±lmasÄ±n.
     alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
   };
 }
 

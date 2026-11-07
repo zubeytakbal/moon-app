@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import { EnCorporatePage } from "@/components/en/EnCorporatePage";
 import { EN_PAGES } from "@/lib/en/pages";
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   description:
     "Every source behind Lunatlas: NASA eclipse catalogs, the U.S. Naval Observatory and other primary sources, each with the permanent number used in the [n] marks on our pages.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 const GROUP_NAMES: Record<SourceGroup, string> = {

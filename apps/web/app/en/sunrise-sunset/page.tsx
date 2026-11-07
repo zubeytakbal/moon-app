@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import { cacheLife } from "next/cache";
 import { getSeasons, getSunDay, getYearDayLengths, localDateParts, type SunDay } from "@moon-app/moon";
 import { BreadcrumbTrail } from "@/components/Breadcrumb";
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
     "Sunrise, sunset and what time it gets dark today in your city, plus first light, golden hour, day length, the sun's direction, the next 10 days and the whole year. Works for any town worldwide.",
   // Yer ve tarih seçimi (?place=, ?date=) tarayıcıda; ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 

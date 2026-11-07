@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import { cacheLife } from "next/cache";
 import {
   getMoonPhase,
@@ -46,6 +47,7 @@ export const metadata: Metadata = {
     "What the moon looks like tonight where you are: today's phase and illumination, whether it's waxing or waning, moonrise and moonset with direction, the next full moon and a 30-day moon calendar.",
   // Yer ve tarih seçimi (?place=, ?date=) tarayıcıda; ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 export default function MoonPhaseTodayPage() {

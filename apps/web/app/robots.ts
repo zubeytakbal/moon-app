@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
     // AdSense tarayıcısı (Mediapartners-Google) yalnız kendi grubunu okur; parametreli sayfalarda da reklamın
     // konuya uygun çıkması için ona her yer açık.
     rules: [
-      { userAgent: "*", allow: "/", disallow: "/tr/*?" },
+      { userAgent: "*", allow: "/", disallow: ["/tr/*?", "/en/*?"] },
       { userAgent: "Mediapartners-Google", allow: "/" },
     ],
     sitemap: new URL("/sitemap.xml", siteConfig.url).toString(),

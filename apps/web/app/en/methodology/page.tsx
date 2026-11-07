@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Link from "next/link";
 import {
   getLocalSolarEclipse,
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
   description:
     "How Lunatlas calculates moon phases, rise and set times, full moons and eclipses, and a live comparison with NASA and U.S. Naval Observatory data, with our definitions and known limits.",
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 type SourceKey = "usnoMoonPhases" | "nasaLunarCatalog" | "nasaSolarCatalog" | "eclipsewise2027" | "usnoSeasons" | "usnoRiseSetOneDay";

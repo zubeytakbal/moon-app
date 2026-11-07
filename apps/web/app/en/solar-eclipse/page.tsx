@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Image from "next/image";
 import { cacheLife } from "next/cache";
 import { getLocalSolarEclipse, getUpcomingSolarEclipses, type LocalSolarEclipse, type SolarEclipseKind } from "@moon-app/moon";
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
     "When is the next solar eclipse you can see? Local times and how much of the sun is covered for your city, the path and times of the August 2, 2027 total eclipse, every solar eclipse to 2036, and how to watch safely.",
   // Yer ve tarih seçimi (?place=, ?date=) tarayıcıda; ayrı sayfa sayılmasın.
   alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
 };
 
 /** Tam tutulma yolundaki ve yakınındaki şehirler (koordinatlar GeoNames). Yalnız bu tabloda; adres bağlantısı yok. */

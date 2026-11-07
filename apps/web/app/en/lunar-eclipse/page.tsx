@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { enPageOpenGraph } from "@/lib/og";
 import Image from "next/image";
 import { cacheLife } from "next/cache";
 import { getUpcomingLunarEclipses, localDateParts, type LunarEclipse } from "@moon-app/moon";
@@ -39,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: `Next Lunar Eclipse and Blood Moon: Is There One in ${y}? | ${siteConfig.name}`,
     description: `When is the next lunar eclipse and blood moon you can see? Local times for every stage in your city, whether there is a blood moon in ${y}, every lunar eclipse to 2030 and why the moon turns red.`,
     alternates: { canonical: PAGE.path },
+    openGraph: enPageOpenGraph(PAGE),
   };
 }
 
