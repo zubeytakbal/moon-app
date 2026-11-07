@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { findProvince, getMeteorNight, getShowerPeak, getUpcomingMeteorShowers, METEOR_SHOWERS } from "./index.ts";
+import { findProvince, getActiveShowers, getMeteorNight, getRadiantPosition, getShowerActivity, tryMeteorNight, getShowerPeak, getUpcomingMeteorShowers, METEOR_SHOWERS } from "./index.ts";
 
 const shower = (code: string) => METEOR_SHOWERS.find((s) => s.code === code)!;
 const minutesApart = (a: Date, b: string) => Math.abs(a.getTime() - new Date(b).getTime()) / 60_000;
@@ -68,5 +68,33 @@ describe("getMeteorNight", () => {
     const n = getMeteorNight(shower("PER"), getShowerPeak(shower("PER"), 2026), findProvince("istanbul")!);
     const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Istanbul", hour: "2-digit", hourCycle: "h23" }).format(n.best!.peakTime));
     assert.ok(hour >= 2 && hour <= 5, `en yoğun saat ${hour}`);
+  });
+});
+
+describe("getShowerActivity / getActiveShowers / tryMeteorNight", () => {
+  it("dorukta oran 1'e yakın, iki gün önce belirgin düşük, dönem dışında 0", () => {
+    const peak = getShowerPeak(shower("PER"), 2027);
+    assert.ok(getShowerActivity(shower("PER"), peak).factor > 0.99);
+    const before = getShowerActivity(shower("PER"), new Date(peak.getTime() - 2 * 86_400_000)).factor;
+    assert.ok(before > 0.2 && before < 0.6, `iki gün önce ${before}`);
+    assert.equal(getShowerActivity(shower("PER"), new Date("2027-10-01T00:00Z")).factor, 0);
+  });
+  it("Kuadrantidler yılbaşını aşan dönemde etkin, doruğu birkaç saat", () => {
+    const peak = getShowerPeak(shower("QUA"), 2027);
+    assert.ok(getActiveShowers(new Date("2026-12-30T00:00Z")).some((a) => a.shower.code === "QUA"));
+    assert.ok(getShowerActivity(shower("QUA"), new Date(peak.getTime() + 12 * 3_600_000)).factor < 0.4);
+  });
+  it("Aralık ortasında en yoğun etkin yağmur İkizler", () => {
+    assert.equal(getActiveShowers(getShowerPeak(shower("GEM"), 2026))[0].shower.code, "GEM");
+  });
+  it("Perseid radyantı Sidney'den hiç yükselmez gibidir; yaz ortasında Tromsø'da gece kararmaz (null)", () => {
+    const peak = getShowerPeak(shower("PER"), 2027);
+    const sydney = { name: "Sydney", latitude: -33.87, longitude: 151.21, elevation: 0, timeZone: "Australia/Sydney" };
+    const n = tryMeteorNight(shower("PER"), peak, sydney)!;
+    assert.ok(n.best === null || n.best.rate.karanlik < 15, `Sidney ${n.best?.rate.karanlik}`);
+    const tromso = { name: "Tromso", latitude: 69.65, longitude: 18.96, elevation: 0, timeZone: "Europe/Oslo" };
+    assert.equal(tryMeteorNight(shower("ETA"), getShowerPeak(shower("ETA"), 2027), tromso), null);
+    const r = getRadiantPosition(shower("PER"), new Date("2027-08-13T01:00Z"), findProvince("istanbul")!);
+    assert.ok(r.altitude > 30 && r.azimuth > 0 && r.azimuth < 90, JSON.stringify(r));
   });
 });

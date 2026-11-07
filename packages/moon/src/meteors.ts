@@ -203,3 +203,58 @@ export function getMeteorNight(shower: MeteorShower, peak: Date, location: GeoLo
     best,
   };
 }
+
+/**
+ * Doruktan uzaklaştıkça etkinlik: ZHR(λ) = ZHR·10^(−B·|λ − λmax|) (IMO'nun kullandığı basit üstel profil).
+ * B gerçekte yağmura ve yıla göre değişir; burada tipik bir değer (0,2: her ~1,5 günde yarıya iner) ve dorukları
+ * yalnız birkaç saat süren Kuadrantidler için çok daha dik bir değer (2,0) kullanılır. Etkinlik dönemi dışında 0.
+ * Sayfalarda "kaba tahmin" olarak sunulur.
+ */
+const PROFILE_B: Record<string, number> = { QUA: 2.0 };
+
+function inActivityWindow(shower: MeteorShower, date: Date): boolean {
+  const m = date.getUTCMonth() + 1;
+  const d = date.getUTCDate();
+  const v = m * 100 + d;
+  const from = shower.activeFrom[0] * 100 + shower.activeFrom[1];
+  const to = shower.activeTo[0] * 100 + shower.activeTo[1];
+  return from <= to ? v >= from && v <= to : v >= from || v <= to;
+}
+
+/** `date` anında yağmurun doruğa göre etkinlik oranı (0-1) ve en yakın doruk. */
+export function getShowerActivity(shower: MeteorShower, date: Date): { factor: number; peak: Date } {
+  const y = date.getUTCFullYear();
+  const peak = [y - 1, y, y + 1]
+    .map((yy) => getShowerPeak(shower, yy))
+    .reduce((a, b) => (Math.abs(b.getTime() - date.getTime()) < Math.abs(a.getTime() - date.getTime()) ? b : a));
+  if (!inActivityWindow(shower, date)) return { factor: 0, peak };
+  const dl = Math.abs(((sunLongitudeJ2000(date) - shower.peakLongitude + 540) % 360) - 180);
+  return { factor: Math.pow(10, -(PROFILE_B[shower.code] ?? 0.2) * dl), peak };
+}
+
+/** `date` anında etkin olan yağmurlar (etkinlik dönemi içinde), en yoğundan aza. */
+export function getActiveShowers(date: Date): { shower: MeteorShower; factor: number; peak: Date }[] {
+  return METEOR_SHOWERS.map((shower) => ({ shower, ...getShowerActivity(shower, date) }))
+    .filter((a) => a.factor > 0)
+    .sort((a, b) => b.shower.zhr * b.factor - a.shower.zhr * a.factor);
+}
+
+/** Radyantın (meteorların geldiği noktanın) `date` anında `location`dan yüksekliği ve yönü (kuzeyden saat yönünde). */
+export function getRadiantPosition(shower: MeteorShower, date: Date, location: GeoLocation): { altitude: number; azimuth: number } {
+  const observer = new Astronomy.Observer(location.latitude, location.longitude, location.elevation);
+  const h = Astronomy.Horizon(date, observer, shower.radiantRa / 15, shower.radiantDec, "normal");
+  return { altitude: h.altitude, azimuth: h.azimuth };
+}
+
+/**
+ * `getMeteorNight`in güvenli sürümü: gece hiç yeterince kararmıyorsa (yüksek enlemde yaz) null döner.
+ * `zhrScale` doruk dışındaki geceler için (bkz. `getShowerActivity`).
+ */
+export function tryMeteorNight(shower: MeteorShower, around: Date, location: GeoLocation, zhrScale = 1): MeteorNight | null {
+  try {
+    const night = getMeteorNight(zhrScale === 1 ? shower : { ...shower, zhr: shower.zhr * zhrScale }, around, location);
+    return night.dusk && night.dawn ? { ...night, shower } : null;
+  } catch {
+    return null;
+  }
+}

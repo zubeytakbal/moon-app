@@ -243,6 +243,10 @@ export const SOURCES = {
     publisher: "Uluslararası Meteor Örgütü (IMO), Jürgen Rendtel",
     url: "https://www.imo.net/files/meteor-shower/cal2026.pdf",
     note: "Meteor yağmurlarının etkinlik dönemleri, doruk anlarının Güneş boylamı, radyant konumları, hızları, nüfus indeksleri ve saatlik zenit sayıları (Tablo 5); ZHR'nin tanımı (radyant tepedeyken, +6,5 kadirlik kusursuz gökyüzünde bir gözlemcinin saatte göreceği meteor sayısı).",
+    en: {
+      publisher: "International Meteor Organization (IMO), Jürgen Rendtel",
+      note: "Activity periods, peak times (as solar longitude), radiant positions, speeds, population indexes and zenithal hourly rates of the meteor showers (Table 5); the definition of ZHR: the number one observer would see in an hour with the radiant overhead and a perfect sky showing stars to magnitude +6.5.",
+    },
     group: "ay",
   },
   imoCalendar2027: {
@@ -251,6 +255,10 @@ export const SOURCES = {
     publisher: "Uluslararası Meteor Örgütü (IMO)",
     url: "https://www.imo.net/meteor-shower-calendar-2027/",
     note: "2027 meteor yağmuru takvimi; hesapladığımız 2027 doruk saatlerinin karşılaştırıldığı kaynak.",
+    en: {
+      publisher: "International Meteor Organization (IMO)",
+      note: "The 2027 meteor shower calendar; we compare our calculated 2027 peak times with it.",
+    },
     group: "ay",
   },
   nasaMeteors: {
@@ -259,6 +267,9 @@ export const SOURCES = {
     publisher: "NASA Science",
     url: "https://science.nasa.gov/solar-system/meteors-meteorites/",
     note: "Meteor yağmurlarının, Dünya bir kuyruklu yıldızın bıraktığı toz şeridinden geçerken her yıl görülmesi; atmosfere giren parçacıkların yanması; Perseidlerin Swift-Tuttle kuyruklu yıldızından gelmesi.",
+    en: {
+      note: "Meteor showers happen every year as Earth passes through the trail of dusty debris left by a comet; meteoroid, meteor and meteorite; almost all the material vaporizes in the atmosphere; every Perseid is a piece of comet Swift-Tuttle; several meteors an hour on any night.",
+    },
     group: "ay",
   },
   nasaGeminids: {
@@ -267,6 +278,9 @@ export const SOURCES = {
     publisher: "NASA Science",
     url: "https://science.nasa.gov/solar-system/meteors-meteorites/geminids/",
     note: "İkizler yağmurunun kuyruklu yıldızdan değil, 3200 Phaethon asteroidinden gelmesi; izlemek için şehir ışıklarından uzak bir yer seçilmesi.",
+    en: {
+      note: "The Geminids come from an asteroid, 3200 Phaethon, not a comet; up to 120 an hour at the peak under perfect conditions; watch well away from city lights, lying on your back, and give your eyes about 30 minutes to adapt.",
+    },
     group: "ay",
   },
   nasaMoonFacts: {

@@ -93,4 +93,20 @@ export const EN_FAQS = {
       a: "Press \"Phone wallpaper\" or \"Printable poster (A4)\" under your result. On a computer the picture goes to your downloads folder. On an iPhone it opens as a preview: tap the share button and choose \"Save Image\", then set it from the Photos app. On Android it saves to your downloads or gallery. The wallpaper is 1080 × 1920 pixels, the shape of a phone screen; the poster is A4 at 300 dpi (2480 × 3508 pixels), sharp enough to print and frame.",
     },
   ],
+  // Kaynak: research/sonuclar/2026-11-07-en-{us,in,gb,au}-meteor-shower-tonight_*.csv ("is meteor shower dangerous",
+  // "meteor shower how long will it last", "what meteor shower was last night").
+  meteorShowers: [
+    {
+      q: "Is a meteor shower dangerous?",
+      a: "No. The particles in a meteor shower are comet or asteroid dust, mostly far smaller than a pebble, and they burn up high in the atmosphere, typically 50 miles (80 km) or more above the ground. That burning is the streak of light you see. Watching a meteor shower is perfectly safe, and unlike a solar eclipse you don't need any eye protection.",
+    },
+    {
+      q: "How long does a meteor shower last?",
+      a: "Each shower is active for days or weeks, but the strong part is short. The Perseids run from mid-July to late August and are worth watching for two or three nights around the peak; the Geminids are active for about two weeks in December. The Quadrantids are the exception: their peak lasts only a few hours. On a single night, the show goes on from when the radiant rises until dawn, so you can watch for as long as you like; give your eyes 20 to 30 minutes to adjust first.",
+    },
+    {
+      q: "What was the meteor shower last night?",
+      a: "Pick yesterday's date at the top of this page: it lists the showers that were active that night for your city. If none were, a single bright streak was most likely a random (sporadic) meteor or a fireball, a meteor brighter than the planet Venus. A few random meteors cross the sky every hour on any dark night, unrelated to any shower.",
+    },
+  ],
 } as const satisfies Record<string, readonly FaqItem[]>;

@@ -4,12 +4,51 @@ import { useEffect, useRef, useState } from "react";
 
 type Sky = "sehir" | "kenar" | "koy" | "karanlik";
 
-const SKIES: { key: Sky; label: string; hint: string; stars: number; glow: number }[] = [
-  { key: "sehir", label: "Şehir merkezi", hint: "Sokak lambaları, en parlak yıldızlar seçilir", stars: 35, glow: 0.55 },
-  { key: "kenar", label: "Şehir kenarı", hint: "Banliyö, site bahçesi, şehir dışı yol kenarı", stars: 160, glow: 0.3 },
-  { key: "koy", label: "Köy / kırsal", hint: "Samanyolu seçilebiliyor", stars: 520, glow: 0.1 },
-  { key: "karanlik", label: "Karanlık dağ başı", hint: "En yakın şehirden 50+ km uzak", stars: 950, glow: 0 },
+const SKY_LOOK: { key: Sky; stars: number; glow: number }[] = [
+  { key: "sehir", stars: 35, glow: 0.55 },
+  { key: "kenar", stars: 160, glow: 0.3 },
+  { key: "koy", stars: 520, glow: 0.1 },
+  { key: "karanlik", stars: 950, glow: 0 },
 ];
+
+const TEXT = {
+  tr: {
+    skies: {
+      sehir: { label: "Şehir merkezi", hint: "Sokak lambaları, en parlak yıldızlar seçilir" },
+      kenar: { label: "Şehir kenarı", hint: "Banliyö, site bahçesi, şehir dışı yol kenarı" },
+      koy: { label: "Köy / kırsal", hint: "Samanyolu seçilebiliyor" },
+      karanlik: { label: "Karanlık dağ başı", hint: "En yakın şehirden 50+ km uzak" },
+    },
+    question: "Gökyüzünüz nasıl?",
+    skyGroup: "Gökyüzü türü",
+    atBest: (name: string) => `${name}, en iyi saatte:`,
+    unit: "meteor / saat",
+    none: "Bu koşullarda meteor görmek çok zor.",
+    many: "Dakikada birden fazla meteor.",
+    every: (m: number) => `Ortalama ${m} dakikada bir meteor.`,
+    note: "Tahmindir: IMO'nun saatlik zenit sayısından (ZHR), yağmurun geldiği noktanın yüksekliği, ay ışığı ve gökyüzü karanlığına göre hesaplanır. Gerçek sayı yıldan yıla değişebilir.",
+    aria: (sky: string) => `${sky} gökyüzünde meteor yağmuru canlandırması`,
+    speed: (m: number) => `Hızlandırılmış: 1 saniye = ${m} dakika`,
+  },
+  en: {
+    skies: {
+      sehir: { label: "City center", hint: "Street lights; only the brightest stars show" },
+      kenar: { label: "Suburbs", hint: "A backyard or a park at the edge of town" },
+      koy: { label: "Countryside", hint: "You can make out the Milky Way" },
+      karanlik: { label: "Dark site", hint: "50+ miles from the nearest city" },
+    },
+    question: "What is your sky like?",
+    skyGroup: "Sky type",
+    atBest: (name: string) => `${name}, at the best time:`,
+    unit: "meteors / hour",
+    none: "Under this sky you may not see any.",
+    many: "More than one meteor a minute.",
+    every: (m: number) => `About one meteor every ${m} minutes.`,
+    note: "An estimate: worked out from the shower's zenithal hourly rate (ZHR) published by the International Meteor Organization, the height of the radiant, moonlight and how dark your sky is. Real numbers vary from year to year.",
+    aria: (sky: string) => `Animation of a meteor shower in a ${sky.toLowerCase()} sky`,
+    speed: (m: number) => `Sped up: 1 second = ${m} minute${m === 1 ? "" : "s"}`,
+  },
+} as const;
 
 /**
  * Hızlandırma (ekrandaki 1 saniye = gökyüzünde kaç dakika). Zayıf yağmurlarda ekranda birkaç saniyede bir
@@ -40,11 +79,14 @@ export function MeteorSimulator({
   showerName,
   rates,
   moonNote,
+  lang = "tr",
 }: {
   showerName: string;
   rates: Record<Sky, number>;
   moonNote: string;
+  lang?: "tr" | "en";
 }) {
+  const T = TEXT[lang];
   const [sky, setSky] = useState<Sky>("kenar");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rate = rates[sky];
@@ -57,7 +99,7 @@ export function MeteorSimulator({
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const conf = SKIES.find((s) => s.key === sky)!;
+    const conf = SKY_LOOK.find((s) => s.key === sky)!;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0;
     let h = 0;
@@ -182,15 +224,15 @@ export function MeteorSimulator({
     };
   }, [sky, rate, speedup]);
 
-  const current = SKIES.find((s) => s.key === sky)!;
+  const current = { key: sky, ...T.skies[sky] };
 
   return (
     <div className="overflow-hidden rounded-2xl bg-[#05070d] text-white shadow-sm">
       <div className="grid gap-0 md:grid-cols-[1fr_1.2fr]">
         <div className="p-5 sm:p-6">
-          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">Gökyüzünüz nasıl?</p>
-          <div className="mt-3 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Gökyüzü türü">
-            {SKIES.map((s) => (
+          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-300">{T.question}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2" role="radiogroup" aria-label={T.skyGroup}>
+            {SKY_LOOK.map(({ key }) => ({ key, label: T.skies[key].label })).map((s) => (
               <button
                 key={s.key}
                 type="button"
@@ -209,33 +251,30 @@ export function MeteorSimulator({
           </div>
           <p className="mt-2 text-xs text-zinc-400">{current.hint}</p>
 
-          <p className="mt-6 text-sm text-zinc-400">{showerName}, en iyi saatte:</p>
+          <p className="mt-6 text-sm text-zinc-400">{T.atBest(showerName)}</p>
           <p className="mt-1 text-5xl font-extralight tabular-nums">
             {perHour < 1 ? "<1" : `~${perHour}`}
-            <span className="ml-2 text-lg font-normal text-zinc-300">meteor / saat</span>
+            <span className="ml-2 text-lg font-normal text-zinc-300">{T.unit}</span>
           </p>
           <p className="mt-2 text-zinc-300">
             {everyMinutes === Infinity
-              ? "Bu koşullarda meteor görmek çok zor."
+              ? T.none
               : everyMinutes < 1
-                ? "Dakikada birden fazla meteor."
-                : `Ortalama ${Math.round(everyMinutes)} dakikada bir meteor.`}
+                ? T.many
+                : T.every(Math.round(everyMinutes))}
           </p>
           <p className="mt-3 text-sm text-zinc-400">{moonNote}</p>
-          <p className="mt-4 text-xs text-zinc-500">
-            Tahmindir: IMO&apos;nun saatlik zenit sayısından (ZHR), yağmurun geldiği noktanın yüksekliği, ay ışığı ve
-            gökyüzü karanlığına göre hesaplanır. Gerçek sayı yıldan yıla değişebilir.
-          </p>
+          <p className="mt-4 text-xs text-zinc-500">{T.note}</p>
         </div>
         <div className="relative min-h-64 md:min-h-full">
           <canvas
             ref={canvasRef}
             className="absolute inset-0 h-full w-full"
             role="img"
-            aria-label={`${current.label} gökyüzünde meteor yağmuru canlandırması`}
+            aria-label={T.aria(current.label)}
           />
           <p className="absolute bottom-2 right-3 rounded bg-black/50 px-2 py-0.5 text-[11px] text-zinc-300">
-            Hızlandırılmış: 1 saniye = {speedup / 60} dakika
+            {T.speed(speedup / 60)}
           </p>
         </div>
       </div>

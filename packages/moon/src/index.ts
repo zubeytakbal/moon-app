@@ -68,8 +68,12 @@ export { getCurrentSignIngress, getMoonConstellation, getMoonEclipticLongitude, 
 export { BODY_NAMES_TR, findLastAspect, getVoidOfCoursePeriods, type LastAspect, type VoidOfCourse } from "./void-of-course.ts";
 export {
   expectedHourlyRate,
+  getActiveShowers,
   getMeteorNight,
+  getRadiantPosition,
+  getShowerActivity,
   getShowerPeak,
+  tryMeteorNight,
   getUpcomingMeteorShowers,
   METEOR_SHOWERS,
   SKY_LIMITING_MAGNITUDE,

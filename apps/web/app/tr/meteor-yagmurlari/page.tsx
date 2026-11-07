@@ -32,7 +32,7 @@ import { icsTime } from "@/lib/ics";
 import { pageOpenGraph } from "@/lib/og";
 import { PAGES } from "@/lib/pages";
 import { siteConfig } from "@/site.config";
-import { MeteorSimulator } from "./MeteorSimulator";
+import { MeteorSimulator } from "@/components/MeteorSimulator";
 
 const PAGE = PAGES.meteorYagmurlari;
 const UPDATED = "2026-11-04";
