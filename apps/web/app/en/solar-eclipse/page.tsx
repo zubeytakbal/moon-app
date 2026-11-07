@@ -347,12 +347,12 @@ async function Explainer() {
         sun&apos;s faint outer atmosphere, the corona, appears. In an <strong>annular</strong> eclipse the moon is too far
         away to cover the whole sun and leaves a bright &quot;ring of fire&quot;. Both are seen only along a narrow track
         a few hundred kilometers wide; on either side of it, and far beyond, people see a <strong>partial</strong> eclipse,
-        with a bite taken out of the sun. Even a 90% partial eclipse leaves the day surprisingly bright.
+        with a bite taken out of the sun. Even a 90% partial eclipse leaves the day surprisingly bright. (When Earth&apos;s shadow falls on the moon instead, it is a <a href={EN_PAGES.lunarEclipse.path}>lunar eclipse</a>.)
       </p>
 
       <h2 id="why-rare">Why there isn&apos;t an eclipse every month</h2>
       <p>
-        The moon passes between Earth and the sun at every new moon, but its orbit is tilted about 5° to Earth&apos;s.
+        The moon passes between Earth and the sun at every <a href={EN_PAGES.moonPhaseToday.path}>new moon</a>, but its orbit is tilted about 5° to Earth&apos;s.
         {src.ref("nasaMoonFactSheet")} Most months it passes a little above or below the sun. Only when a new moon falls
         near the points where the two orbits cross does its shadow touch Earth. That happens two to five times a year,
         but the shadow&apos;s darkest part is so narrow that any one city sees a total eclipse only rarely. In New York,

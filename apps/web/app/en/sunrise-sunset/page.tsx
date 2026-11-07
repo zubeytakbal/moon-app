@@ -210,7 +210,7 @@ async function Explainer() {
         because sunlight still reaches the upper atmosphere and scatters down to you. Astronomers split this twilight
         into three stages by how far the sun is below the horizon: civil (down to 6°), nautical (12°) and astronomical
         (18°).{src.ref("usnoRiseSetDefs")} The time we show as &quot;dark at&quot; is the end of civil twilight, the point
-        after which you&apos;d normally need a light to be outdoors. Truly dark skies, good for faint stars, come only after
+        after which you&apos;d normally need a light to be outdoors. Truly dark skies, good for faint stars and <a href={EN_PAGES.meteorShowers.path}>meteor showers</a>, come only after
         astronomical twilight ends, roughly an hour or more after sunset.
       </p>
       <p>
@@ -255,7 +255,7 @@ async function Explainer() {
       <p>
         We calculate every time from the sun&apos;s position for the coordinates of the place you choose, using the
         standard definitions: sunrise and sunset when the sun&apos;s upper edge is on the horizon, with the bending of
-        light by the atmosphere included.{src.ref("usnoRiseSetDefs")} The city list comes from GeoNames
+        light by the atmosphere included.{src.ref("usnoRiseSetDefs")} Moonrise and moonset are worked out the same way on our <a href={EN_PAGES.moonPhaseToday.path}>Moon Phase Today</a> page. The city list comes from GeoNames
         {src.ref("geonames")} and uses each city&apos;s center. The times assume a flat horizon at sea level: behind
         mountains or tall buildings the sun appears a few minutes later and disappears earlier, while from a high
         viewpoint or over the sea you may see it a minute or two longer. Unusual air temperatures near the ground can

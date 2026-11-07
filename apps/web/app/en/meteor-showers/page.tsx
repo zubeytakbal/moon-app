@@ -343,7 +343,7 @@ async function Explainer() {
         Meteors appear all over the sky, and the ones far from the radiant have the longest trails. Look at the darkest
         part of the sky, about halfway up, and take in as much of it as you can. NASA&apos;s advice for the Geminids works
         for every shower: get well away from city and street lights, lie flat on your back, and give your eyes about 30
-        minutes to adapt to the dark.{src.ref("nasaGeminids")} Don&apos;t look at your phone in between: its light resets
+        minutes to adapt to the dark.{src.ref("nasaGeminids")} Our <a href={EN_PAGES.sunriseSunset.path}>sunrise and sunset</a> page shows when the sky gets truly dark where you are. Don&apos;t look at your phone in between: its light resets
         your night vision.
       </p>
 
@@ -361,7 +361,7 @@ async function Explainer() {
       <p>
         News stories quote the zenithal hourly rate (ZHR): the number one observer would see in an hour with the radiant
         directly overhead and a perfect sky showing stars down to magnitude 6.5.{src.ref("imoCalendar2026")} Real nights
-        are never that good. The radiant is lower, there is haze or moonlight, and most of us live under skies that hide
+        are never that good. The radiant is lower, there is haze or <a href={EN_PAGES.moonPhaseToday.path}>moonlight</a>, and most of us live under skies that hide
         the fainter stars. The Geminids&apos; ZHR is {gem.zhr}, but in {year} the best hour from a suburb of New York brings about {gemSuburbs}. That&apos;s
         why we give two numbers, for the suburbs and for a dark site, and an animation of what each sky looks like.
       </p>

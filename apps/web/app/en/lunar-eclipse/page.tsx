@@ -345,7 +345,7 @@ function Explainer() {
 
       <h2 id="why-not-every-month">Why there isn&apos;t an eclipse every full moon</h2>
       <p>
-        A lunar eclipse can only happen at full moon, when the moon is opposite the sun. But the moon&apos;s orbit is tilted
+        A lunar eclipse can only happen at <a href={EN_PAGES.fullMoon.path}>full moon</a>, when the moon is opposite the sun. But the moon&apos;s orbit is tilted
         about 5° to Earth&apos;s,{src.ref("nasaMoonFactSheet")} so most full moons pass a little above or below Earth&apos;s
         shadow. Only when a full moon falls near the points where the two orbits cross does the moon go through it. That
         gives two lunar eclipses in most years, sometimes three or four, but many of them are only partial or penumbral.
@@ -353,7 +353,7 @@ function Explainer() {
 
       <h2 id="watch">How to watch</h2>
       <p>
-        A lunar eclipse is completely safe to look at: unlike a solar eclipse, you don&apos;t need glasses or any special
+        A lunar eclipse is completely safe to look at: unlike a <a href={EN_PAGES.solarEclipse.path}>solar eclipse</a>, you don&apos;t need glasses or any special
         equipment, though binoculars or a small telescope show the colors better.{src.ref("nasaLunarEclipseGuide")} Find a
         spot with a clear view of the moon away from bright lights. The red stage is the highlight; the partial stages
         before and after are worth watching too, as the shadow creeps across the moon&apos;s face. For photos, use a tripod:

@@ -253,7 +253,7 @@ async function Explainer() {
         Yes. The phase depends only on where the moon is in its orbit, so at any given moment it is the same for
         everyone on Earth. Three things do change with your location: the local date and time of a phase (a full moon at
         2 a.m. in London happens the evening before in New York), the way the moon is turned in the sky, and when it
-        rises and sets.
+        rises and sets. That&apos;s why the moon on <a href={EN_PAGES.moonPhaseBirthday.path}>your birthday</a> depends on where you were born.
       </p>
 
       <h2 id="later-each-day">Why the moon rises later every day</h2>
@@ -270,7 +270,7 @@ async function Explainer() {
         Each month&apos;s full moon has a traditional name from North American folklore, such as the Wolf Moon in January
         and the Strawberry Moon in June. The full moon closest to the September equinox is the Harvest Moon, the one after
         it the Hunter&apos;s Moon, and a second full moon in the same calendar month is a Blue Moon.
-        {src.ref("almanacFullMoonNames")} The next full moon, on {md.format(nextFull.date)}, is the {fullName}. These names
+        {src.ref("almanacFullMoonNames")} The <a href={EN_PAGES.fullMoon.path}>next full moon</a>, on {md.format(nextFull.date)}, is the {fullName}. These names
         follow Northern Hemisphere seasons, so they don&apos;t really fit in Australia or New Zealand.
       </p>
 

@@ -36,7 +36,7 @@ const UPDATED = "2026-11-06";
 const NY = DEFAULT_PLACE;
 const src = enPageSources("almanacFullMoonNames", "nasaMoonPhases", "nasaMoonFactSheet", "nasaSupermoons", "arliss2005", "cajochen2013", "wisdomlibTithi", "geonames");
 
-/** BaÅŸlÄ±ktaki yÄ±llar kendiliÄŸinden ilerler (New York'taki bu yÄ±l ve gelecek yÄ±l). */
+/** Başlıktaki yıllar kendiliğinden ilerler (New York'taki bu yıl ve gelecek yıl). */
 async function titleYears() {
   "use cache";
   cacheLife("days");
@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Next Full Moon: Date, Time and Full Moon Calendar ${y}-${y1} | ${siteConfig.name}`,
     description: `When is the next full moon? The date and exact time in your time zone, its name, when it rises where you are, and every full moon of ${y} and ${y1} with supermoons and eclipses.`,
-    // Yer ve tarih seÃ§imi (?place=, ?date=) tarayÄ±cÄ±da; ayrÄ± sayfa sayÄ±lmasÄ±n.
+    // Yer ve tarih seçimi (?place=, ?date=) tarayıcıda; ayrı sayfa sayılmasın.
     alternates: { canonical: PAGE.path },
     openGraph: enPageOpenGraph(PAGE),
   };
@@ -119,7 +119,7 @@ function Hero() {
   );
 }
 
-/** AraÃ§: sunucu (ve Google) New York iÃ§in hazÄ±r HTML Ã¼retir; saatte bir yenilenir. */
+/** Araç: sunucu (ve Google) New York için hazır HTML üretir; saatte bir yenilenir. */
 async function Explorer() {
   "use cache";
   cacheLife("hours");
@@ -127,8 +127,8 @@ async function Explorer() {
 }
 
 /**
- * YÄ±lÄ±n Ã¶ne Ã§Ä±kanlarÄ±: dolunay sayÄ±sÄ±, en bÃ¼yÃ¼k/kÃ¼Ã§Ã¼k, Hasat AyÄ±, mavi ay, dolunaya denk gelen tutulmalar.
- * Ekimden itibaren gelecek yÄ±l anlatÄ±lÄ±r. Tarihler ABD DoÄŸu saatine gÃ¶re (adlar Kuzey Amerika geleneÄŸinden). GÃ¼nde bir.
+ * Yılın öne çıkanları: dolunay sayısı, en büyük/küçük, Hasat Ayı, mavi ay, dolunaya denk gelen tutulmalar.
+ * Ekimden itibaren gelecek yıl anlatılır. Tarihler ABD Doğu saatine göre (adlar Kuzey Amerika geleneğinden). Günde bir.
  */
 async function YearNotes() {
   "use cache";
@@ -199,7 +199,7 @@ async function YearNotes() {
             {blackMoon ? `${md.format(blackMoon.date)}.` : "none this year."}
           </li>
           <li>
-            <strong>Lunar eclipses:</strong>{" "}
+            <strong><a href={EN_PAGES.lunarEclipse.path}>Lunar eclipses</a>:</strong>{" "}
             {eclipses.length ? eclipseSentence(eclipses.map((e) => ({ kind: e.kind, date: md.format(e.peak) }))) : "none this year."}
           </li>
         </ul>
@@ -233,7 +233,7 @@ function eclipseSentence(list: { kind: keyof typeof ECLIPSE_NOTES; date: string 
 
 const MOBILE_ROWS = 10;
 
-/** SÄ±radaki dolunayÄ±n ÅŸehirlerdeki yerel tarihi, saati ve o akÅŸamki doÄŸuÅŸu. Saatte bir. */
+/** Sıradaki dolunayın şehirlerdeki yerel tarihi, saati ve o akşamki doğuşu. Saatte bir. */
 async function WorldTable() {
   "use cache";
   cacheLife("hours");
@@ -289,9 +289,9 @@ async function WorldTable() {
   );
 }
 
-/** Bilgi metni. SayÄ±lar New York iÃ§in hesaplanÄ±r; metin elle yazÄ±lmÄ±ÅŸtÄ±r. */
+/** Bilgi metni. Sayılar New York için hesaplanır; metin elle yazılmıştır. */
 function Explainer() {
-  // New York'ta Haziran ve AralÄ±k dolunayÄ±nÄ±n en yÃ¼ksek konumu (yaklaÅŸÄ±k: Ã¶ÄŸle yÃ¼ksekliÄŸi = 90 âˆ’ enlem Â± eÄŸim).
+  // New York'ta Haziran ve Aralık dolunayının en yüksek konumu (yaklaşık: öğle yüksekliği = 90 − enlem ± eğim).
   const winterAlt = Math.round(90 - NY.latitude + 23.4);
   const summerAlt = Math.round(90 - NY.latitude - 23.4);
 
@@ -320,8 +320,8 @@ function Explainer() {
       <p>
         A full moon sits opposite the sun, so it takes the path the sun takes six months later. In winter, when the sun is
         low, the full moon climbs high and stays up for most of the long night; in summer it stays low. In New York the
-        December full moon can reach about {winterAlt}Â° above the southern horizon, while the June full moon gets only to
-        about {summerAlt}Â°. In the Southern Hemisphere it&apos;s the other way round, with the high full moons in June and
+        December full moon can reach about {winterAlt}° above the southern horizon, while the June full moon gets only to
+        about {summerAlt}°. In the Southern Hemisphere it&apos;s the other way round, with the high full moons in June and
         July.
       </p>
 
@@ -347,7 +347,7 @@ function Explainer() {
 
       <h2 id="how">How we calculate</h2>
       <p>
-        Every full moon is the moment the moon reaches 180Â° from the sun in longitude, calculated from the positions of the
+        Every full moon is the moment the moon reaches 180° from the sun in longitude, calculated from the positions of the
         sun and moon; the cycle averages 29.53 days.{src.ref("nasaMoonFactSheet")} Times are shown in the time zone of the
         place you choose. We count a full moon as a supermoon when it is closer than {SUPERMOON_KM.toLocaleString("en-US")}{" "}
         km; there is no official definition, so other sites draw the line a little differently. City data come from

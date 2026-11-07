@@ -101,7 +101,7 @@ function Explainer() {
 
       <h2 id="time-zone">Why your birthplace and time matter</h2>
       <p>
-        The phase itself is the same everywhere at a given moment, but the date isn&apos;t: if you were born late at night,
+        The phase itself is <a href={EN_PAGES.moonPhaseToday.path}>the same everywhere</a> at a given moment, but the date isn&apos;t: if you were born late at night,
         the moon a few hours later might belong to the next calendar day. The moon also looks turned differently depending
         on where you are: in the Northern Hemisphere a growing moon is lit on the right, in the Southern Hemisphere on the
         left. That&apos;s why this tool asks for your birthplace and, if you know it, your time of birth.
@@ -117,7 +117,7 @@ function Explainer() {
 
       <h2 id="names">Your birth full moon</h2>
       <p>
-        Each month&apos;s full moon has a traditional North American name, from the Wolf Moon in January to the Cold Moon in
+        Each month&apos;s <a href={EN_PAGES.fullMoon.path}>full moon</a> has a traditional North American name, from the Wolf Moon in January to the Cold Moon in
         December, with the Harvest Moon nearest the September equinox.{src.ref("almanacFullMoonNames")} We show the full
         moon closest to your birthday, before or after it, and its name.
       </p>
